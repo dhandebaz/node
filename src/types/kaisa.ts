@@ -68,10 +68,10 @@ export interface KaisaTask {
 export interface KaisaUserActivity {
   id: string;
   userId: string;
-  action: string; // e.g., "Replied to guest", "Updated inventory"
+  type: "system_action" | "user_command" | "alert";
+  description: string;
   module: KaisaModuleType;
   timestamp: string;
-  status: "success" | "warning" | "error";
 }
 
 export interface KaisaCreditUsage {

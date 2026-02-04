@@ -24,7 +24,7 @@ export default function AdminLoginPage() {
       if (res.success) {
         setStep("otp");
       } else {
-        setError(res.message);
+        setError(res.message || "Failed to send OTP");
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
       if (res.success) {
         router.push("/admin/dashboard");
       } else {
-        setError(res.message);
+        setError(res.message || "Failed to verify OTP");
       }
     } catch (err) {
       setError("An error occurred. Please try again.");

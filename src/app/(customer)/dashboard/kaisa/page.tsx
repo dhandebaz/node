@@ -20,8 +20,8 @@ export default async function KaisaDashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white mb-1">
-          Hello, {identity?.firstName || "Manager"}
-        </h1>
+            Hello, {identity?.email || "Manager"}
+          </h1>
         <p className="text-zinc-400">
           Here is what kaisa is doing for your <span className="text-white font-medium">{profile.businessType}</span> business.
         </p>
