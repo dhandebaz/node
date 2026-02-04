@@ -1,0 +1,73 @@
+"use client";
+
+import { KaisaAdminAuditLog } from "@/types/kaisa";
+import { useState } from "react";
+import { FileText, Clock, User, Settings, AlertTriangle, ToggleLeft } from "lucide-react";
+
+export function KaisaAuditLog({ logs }: { logs: KaisaAdminAuditLog[] }) {
+  const [showAll, setShowAll] = useState(false);
+  const displayLogs = showAll ? logs : logs.slice(0, 5);
+
+  const getIcon = (type: KaisaAdminAuditLog["actionType"]) => {
+    switch (type) {
+      case "emergency_action": return <AlertTriangle className="w-4 h-4 text-red-500" />;
+      case "module_toggle": return <ToggleLeft className="w-4 h-4 text-blue-500" />;
+      case "user_pause": return <User className="w-4 h-4 text-amber-500" />;
+      default: return <Settings className="w-4 h-4 text-zinc-500" />;
+    }
+  };
+
+  return (
+    <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-medium text-white flex items-center gap-2">
+          <FileText className="w-5 h-5 text-zinc-400" />
+          Audit Trail
+        </h3>
+        <span className="text-xs text-zinc-500 font-mono">
+            {logs.length} Total Records
+        </span>
+      </div>
+
+      <div className="space-y-0 divide-y divide-zinc-800 border border-zinc-800 rounded bg-zinc-950/50">
+        {displayLogs.length === 0 ? (
+            <div className="p-4 text-center text-zinc-500 text-sm">No actions recorded yet.</div>
+        ) : (
+            displayLogs.map(log => (
+                <div key={log.id} className="p-3 text-sm flex gap-3 hover:bg-zinc-900/30 transition-colors">
+                    <div className="mt-0.5">{getIcon(log.actionType)}</div>
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="font-medium text-zinc-300 capitalize">
+                                {log.actionType.replace("_", " ")}
+                            </span>
+                            <span className="text-zinc-600 text-xs flex items-center gap-1 whitespace-nowrap">
+                                <Clock className="w-3 h-3" />
+                                {new Date(log.timestamp).toLocaleString()}
+                            </span>
+                        </div>
+                        <p className="text-zinc-500 text-xs truncate">
+                            {log.details}
+                        </p>
+                        {log.targetUserId && (
+                            <p className="text-zinc-600 text-xs font-mono mt-0.5">
+                                Target: {log.targetUserId}
+                            </p>
+                        )}
+                    </div>
+                </div>
+            ))
+        )}
+      </div>
+
+      {logs.length > 5 && (
+        <button 
+            onClick={() => setShowAll(!showAll)}
+            className="w-full mt-4 text-xs text-zinc-500 hover:text-white transition-colors text-center py-2 border border-zinc-800/0 hover:border-zinc-800 rounded"
+        >
+            {showAll ? "Show Less" : `Show All (${logs.length - 5} more)`}
+        </button>
+      )}
+    </div>
+  );
+}
