@@ -260,6 +260,16 @@ export const spaceService = {
     ];
   },
 
+  async getResourceUsage(userId: string) {
+    // Mock usage data
+    return {
+        cpu: 45,
+        memory: 60,
+        storage: 35,
+        bandwidth: 20
+    };
+  },
+
   // Audit Logs
   async getAuditLogs(): Promise<SpaceAuditLog[]> {
     return [...AUDIT_LOGS].sort((a, b) => 

@@ -618,7 +618,8 @@ export default function KaisaPage() {
                         variants={fadeInUp}
                         initial="initial"
                         whileInView="animate"
-                        viewport={{ once: true, delay: i * 0.1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1, duration: 0.6 }}
                         className="p-6 rounded-2xl glass-card hover:bg-white/10 transition-colors"
                     >
                         <div className="w-10 h-10 bg-brand-saffron/10 border border-brand-saffron/20 rounded-lg flex items-center justify-center mb-4 text-brand-saffron">

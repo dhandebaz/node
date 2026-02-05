@@ -72,16 +72,18 @@ export async function getSpaceDashboardData() {
   const user = await getCurrentUser();
   if (!user.roles.isSpaceUser) throw new Error("Access Denied: Not a Space user");
 
-  const [projects, services] = await Promise.all([
+  const [projects, services, usage] = await Promise.all([
     spaceService.getUserProjects(user.identity.id),
-    spaceService.getUserServices(user.identity.id)
+    spaceService.getUserServices(user.identity.id),
+    spaceService.getResourceUsage(user.identity.id)
   ]);
 
   return {
     identity: user.identity,
     profile: user.products.space,
     projects,
-    services
+    services,
+    usage
   };
 }
 

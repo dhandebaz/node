@@ -138,9 +138,9 @@ export default function NodebaseSpacePage() {
 
     // Suggestions
     if (websites > 20) {
-      setSuggestion(t("Consider 'Dedicated' for better isolation with 20+ sites."));
+      setSuggestion("Consider 'Dedicated' for better isolation with 20+ sites.");
     } else if (sharedBandwidth > 800) {
-      setSuggestion(t("High traffic detected. Enable 'Compute Boost'."));
+      setSuggestion("High traffic detected. Enable 'Compute Boost'.");
       if (!computeBoost) setComputeBoost(true);
     } else {
       setSuggestion(null);
@@ -828,7 +828,8 @@ export default function NodebaseSpacePage() {
                             variants={fadeInUp}
                             initial="initial"
                             whileInView="animate"
-                            viewport={{ once: true, delay: i * 0.1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1, duration: 0.6 }}
                             className="p-6 rounded-2xl glass-card hover:bg-white/10 transition-colors"
                         >
                             <div className="w-10 h-10 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 text-white">
@@ -1243,7 +1244,8 @@ export default function NodebaseSpacePage() {
                             variants={fadeInUp}
                             initial="initial"
                             whileInView="animate"
-                            viewport={{ once: true, delay: i * 0.1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1, duration: 0.6 }}
                             className="p-6 rounded-2xl glass-card hover:bg-white/10 transition-colors"
                         >
                             <div className="w-10 h-10 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mb-4 text-white">

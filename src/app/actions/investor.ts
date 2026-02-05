@@ -46,5 +46,4 @@ export async function createSupportTicketAction(formData: FormData) {
   
   await investorService.createTicket(MOCK_USER_ID, { category, subject });
   revalidatePath("/node/dashboard/support");
-  return { success: true };
 }

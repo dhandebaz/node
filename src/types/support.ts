@@ -1,7 +1,7 @@
 
 export type TicketStatus = "open" | "in_progress" | "resolved" | "closed";
 export type TicketPriority = "low" | "medium" | "high" | "critical";
-export type TicketProduct = "kaisa" | "space" | "general";
+export type TicketProduct = "kaisa" | "space" | "node" | "general";
 
 export interface TicketMessage {
   id: string;

@@ -145,7 +145,7 @@ export default async function ProjectDetailsPage({ params }: { params: Promise<{
                     </div>
                     <div>
                         <div className="text-xs text-zinc-500 mb-1">Last Backup</div>
-                        <div className="text-sm text-white">{new Date(project.lastBackup).toLocaleString()}</div>
+                        <div className="text-sm text-white">{project.lastBackup ? new Date(project.lastBackup).toLocaleString() : 'N/A'}</div>
                     </div>
                     <div>
                         <div className="text-xs text-zinc-500 mb-1">SSL Status</div>
