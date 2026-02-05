@@ -54,8 +54,8 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-sm mb-4 text-white">{t("footer.products")}</h3>
             <ul className="space-y-3">
-              {footerLinks.products.map((link) => (
-                <li key={link.name}>
+              {footerLinks.products.map((link, index) => (
+                <li key={`${link.name}-${index}`}>
                   <Link href={link.href} className="text-sm text-white/60 hover:text-brand-saffron transition-colors">
                     {link.name}
                   </Link>
@@ -67,8 +67,8 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-sm mb-4 text-white">{t("footer.company")}</h3>
             <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.name}>
+              {footerLinks.company.map((link, index) => (
+                <li key={`${link.name}-${index}`}>
                   <Link href={link.href} className="text-sm text-white/60 hover:text-brand-saffron transition-colors">
                     {link.name}
                   </Link>
@@ -80,8 +80,8 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-sm mb-4 text-white">{t("footer.legal")}</h3>
             <ul className="space-y-3">
-              {footerLinks.legal.map((link) => (
-                <li key={link.name}>
+              {footerLinks.legal.map((link, index) => (
+                <li key={`${link.name}-${index}`}>
                   <Link href={link.href} className="text-sm text-white/60 hover:text-brand-saffron transition-colors">
                     {link.name}
                   </Link>

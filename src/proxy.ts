@@ -4,7 +4,7 @@ import { decrypt } from "@/lib/auth/jwt";
 
 const COOKIE_NAME = "nodebase_session";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   
   // Define protected routes

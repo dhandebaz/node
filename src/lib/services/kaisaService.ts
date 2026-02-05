@@ -96,7 +96,7 @@ export const kaisaService = {
       }
     });
 
-    return stats;
+    return true;
   },
 
   async toggleModule(
@@ -169,7 +169,7 @@ export const kaisaService = {
       details: `Integration ${name} global enabled set to ${enabled}`,
     });
 
-    return stats;
+    return true;
   },
 
   async getIntegrationStats(name: string): Promise<Record<string, number>> {

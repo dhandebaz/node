@@ -92,7 +92,7 @@ export function Header({ user }: HeaderProps) {
             
             return (
               <motion.div
-                key={item.name}
+                key={`${item.name}-${index}`}
                 animate={{ y: [0, -3, 0] }}
                 transition={{ 
                   duration: 4, 
@@ -281,9 +281,9 @@ export function Header({ user }: HeaderProps) {
             >
               <div className="p-3 space-y-2">
                 <nav className="flex flex-col gap-1">
-                  {navItems.map((item) => (
+                  {navItems.map((item, index) => (
                     <motion.div
-                      key={item.name}
+                      key={`${item.name}-${index}`}
                       variants={{
                         closed: { opacity: 0, x: -10 },
                         open: { opacity: 1, x: 0 }
