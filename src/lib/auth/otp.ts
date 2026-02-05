@@ -1,6 +1,8 @@
 // OTP Provider Abstraction
 // Currently implements a mock provider for development
 
+import { settingsService } from "../services/settingsService";
+
 interface OTPProvider {
   sendOTP(phone: string, otp: string): Promise<boolean>;
 }
@@ -12,13 +14,79 @@ class MockProvider implements OTPProvider {
   }
 }
 
-// In future, add TwilioProvider, FirebaseProvider etc.
-const provider: OTPProvider = new MockProvider();
+class FirebaseProvider implements OTPProvider {
+  async sendOTP(phone: string, otp: string): Promise<boolean> {
+    const settings = await settingsService.getSettings();
+    const fbConfig = settings.integrations.find(i => i.id === "int_firebase");
+    
+    if (fbConfig && fbConfig.status === "connected") {
+         console.log(`[FIREBASE] Simulating OTP send for project: ${fbConfig.projectId || "unknown"}`);
+         // In real implementation: verify client-side or use Admin SDK
+         return true;
+    } 
+    
+    console.log(`[FIREBASE] Integration not ready or failed.`);
+    return false;
+  }
+}
+
+class TwilioProvider implements OTPProvider {
+  async sendOTP(phone: string, otp: string): Promise<boolean> {
+    const settings = await settingsService.getSettings();
+    const config = settings.integrations.find(i => i.id === "int_twilio");
+
+    if (!config || config.status !== "connected" || !config.accountSid || !config.authToken || !config.fromPhoneNumber) {
+      console.log(`[TWILIO] Integration not configured.`);
+      return false;
+    }
+
+    console.log(`[TWILIO] Sending OTP via Twilio API...`);
+    
+    try {
+      // Basic Auth header
+      const auth = btoa(`${config.accountSid}:${config.authToken}`);
+      const body = new URLSearchParams({
+        To: phone,
+        From: config.fromPhoneNumber,
+        Body: `Your verification code is: ${otp}`
+      });
+
+      const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${config.accountSid}/Messages.json`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Basic ${auth}`,
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: body.toString()
+      });
+
+      if (!response.ok) {
+        const err = await response.text();
+        console.error(`[TWILIO] API Error: ${err}`);
+        return false;
+      }
+
+      const data = await response.json();
+      console.log(`[TWILIO] Message sent! SID: ${data.sid}`);
+      return true;
+
+    } catch (error) {
+      console.error(`[TWILIO] Network/Client Error:`, error);
+      return false;
+    }
+  }
+}
+
+const mockProvider = new MockProvider();
+const firebaseProvider = new FirebaseProvider();
+const twilioProvider = new TwilioProvider();
 
 // In-memory OTP store (Replace with Redis in production)
 const otpStore = new Map<string, { otp: string; expires: number; attempts: number }>();
 
 export async function generateAndSendOTP(phone: string): Promise<boolean> {
+  const isProduction = await settingsService.isProductionMode();
+  
   // Generate 6 digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   
@@ -29,22 +97,29 @@ export async function generateAndSendOTP(phone: string): Promise<boolean> {
     attempts: 0
   });
 
-  // In production, this would call the actual provider
-  if (process.env.NODE_ENV === 'development') {
-    // For Dev convenience: always log the fixed OTP for the super admin
-    if (phone === "9999999999") {
-       // We can force a specific OTP for testing if needed, or just log the random one
+  if (isProduction) {
+    // 1. Try Firebase Primary
+    const fbSuccess = await firebaseProvider.sendOTP(phone, otp);
+    if (fbSuccess) return true;
+
+    // 2. Fallback to Twilio
+    console.warn(`[OTP] Primary provider failed. Attempting fallback to Twilio...`);
+    const twilioSuccess = await twilioProvider.sendOTP(phone, otp);
+    return twilioSuccess;
+  } else {
+    // In Mock/Dev, use mock provider and log OTP
+    if (phone === "9910778576") {
        console.log(`[DEV MODE] OTP for ${phone}: ${otp}`);
     }
+    return await mockProvider.sendOTP(phone, otp);
   }
-
-  return await provider.sendOTP(phone, otp);
 }
 
 export async function verifyOTP(phone: string, inputOtp: string): Promise<{ valid: boolean; reason?: string }> {
-  // DEV BACKDOOR: Always allow 123456 for the test user in development
-  // This prevents "Invalid OTP" errors if the server restarts and clears the memory cache
-  if (process.env.NODE_ENV === 'development' && phone === "9999999999" && inputOtp === "123456") {
+  const isProduction = await settingsService.isProductionMode();
+
+  // DEV BACKDOOR: Only in Mock Mode
+  if (!isProduction && phone === "9910778576" && inputOtp === "223344") {
     console.log(`[DEV MODE] Accepting Master OTP for ${phone}`);
     return { valid: true };
   }

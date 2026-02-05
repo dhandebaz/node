@@ -18,7 +18,7 @@ export function RoleGovernance({ roles }: { roles: KaisaRoleConfig[] }) {
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden">
       <div className="px-6 py-4 border-b border-zinc-800 flex items-center gap-2">
-        <Crown className="w-5 h-5 text-brand-blue" />
+        <Crown className="w-5 h-5 text-white" />
         <h3 className="font-medium text-white">Pricing & Role Governance</h3>
       </div>
       
@@ -37,7 +37,7 @@ export function RoleGovernance({ roles }: { roles: KaisaRoleConfig[] }) {
                         checked={role.inviteOnly}
                         onChange={(e) => handleToggle(role.type, 'inviteOnly', e.target.checked)}
                         disabled={!!loading}
-                        className="rounded bg-zinc-800 border-zinc-700 text-brand-blue focus:ring-0"
+                        className="rounded bg-zinc-800 border-zinc-700 text-white focus:ring-0"
                     />
                     Invite Only
                 </label>

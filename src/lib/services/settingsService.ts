@@ -32,25 +32,54 @@ let SETTINGS: AppSettings = {
     {
       id: "int_firebase",
       name: "Firebase Auth",
-      enabled: true,
-      apiKey: "sk_live_xxxxxxxxxxxx",
-      status: "connected",
-      lastChecked: "2024-02-14T10:00:00Z",
+      enabled: false,
+      apiKey: "",
+      authDomain: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: "",
+      measurementId: "",
+      status: "disconnected",
     },
     {
       id: "int_twilio",
       name: "Twilio SMS",
       enabled: false,
-      apiKey: "AC_xxxxxxxxxxxx",
+      apiKey: "",
       status: "disconnected",
     },
     {
       id: "int_stripe",
       name: "Stripe Payments",
-      enabled: true,
-      apiKey: "rk_live_xxxxxxxxxxxx",
-      status: "connected",
-      lastChecked: "2024-02-14T12:00:00Z",
+      enabled: false,
+      apiKey: "",
+      status: "disconnected",
+    },
+    {
+      id: "int_paypal",
+      name: "PayPal",
+      enabled: false,
+      clientId: "",
+      clientSecret: "",
+      status: "disconnected",
+    },
+    {
+      id: "int_paddle",
+      name: "Paddle",
+      enabled: false,
+      vendorId: "",
+      apiKey: "",
+      publicKey: "", // Client-side token
+      status: "disconnected",
+    },
+    {
+      id: "int_razorpay",
+      name: "Razorpay",
+      enabled: false,
+      clientId: "", // Key ID
+      clientSecret: "", // Key Secret
+      status: "disconnected",
     },
   ],
   features: [
@@ -79,6 +108,7 @@ let SETTINGS: AppSettings = {
     },
   ],
   platform: {
+    environment: "mock",
     maintenanceMode: false,
     readOnlyMode: false,
     signupEnabled: {
@@ -139,9 +169,43 @@ export const settingsService = {
     // Mask API key in logs if updated
     const safeUpdates = { ...updates };
     if (safeUpdates.apiKey) safeUpdates.apiKey = "***MASKED***";
+    if (safeUpdates.clientSecret) safeUpdates.clientSecret = "***MASKED***";
+    if (safeUpdates.authToken) safeUpdates.authToken = "***MASKED***";
 
     Object.assign(int, updates);
+
+    // Auto-update status based on keys
+    const hasKeys = this.validateIntegrationKeys(int);
+    if (hasKeys) {
+      int.status = "connected";
+      int.enabled = true; // Auto-enable if configured
+      int.lastChecked = new Date().toISOString();
+    } else {
+      int.status = "disconnected";
+      int.enabled = false;
+    }
+
     await this.log(adminId, "integrations", "update_config", `Updated integration ${int.name}: ${Object.keys(safeUpdates).join(", ")}`);
+  },
+
+  validateIntegrationKeys(int: IntegrationConfig): boolean {
+    if (int.id === "int_paddle") {
+      return !!(int.vendorId && int.apiKey && int.publicKey);
+    }
+    if (int.id === "int_paypal") {
+      return !!(int.clientId && int.clientSecret);
+    }
+    if (int.id === "int_razorpay") {
+      return !!(int.clientId && int.clientSecret);
+    }
+    if (int.id === "int_firebase") {
+      return !!(int.apiKey && int.authDomain && int.projectId && int.appId);
+    }
+    if (int.id === "int_twilio") {
+      return !!(int.accountSid && int.authToken && int.fromPhoneNumber);
+    }
+    // Default (Stripe)
+    return !!int.apiKey;
   },
 
   async updateApi(adminId: string, updates: Partial<ApiSettings>): Promise<void> {
@@ -164,6 +228,10 @@ export const settingsService = {
   async updatePlatform(adminId: string, updates: Partial<PlatformSettings>): Promise<void> {
     SETTINGS.platform = { ...SETTINGS.platform, ...updates };
     await this.log(adminId, "platform", "update_mode", `Updated platform mode: ${JSON.stringify(updates)}`);
+  },
+
+  async isProductionMode(): Promise<boolean> {
+    return SETTINGS.platform.environment === "production";
   },
   
   async updatePlatformSignups(adminId: string, product: keyof PlatformSettings["signupEnabled"], enabled: boolean): Promise<void> {

@@ -28,7 +28,7 @@ export default async function AdminUsersPage({
           <p className="text-zinc-400">Manage unified userbase.</p>
         </div>
         {/* Only Super Admin should see this, currently simulated */}
-        <button className="bg-brand-blue text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+        <button className="bg-white text-black px-4 py-2 rounded-md text-sm font-medium hover:bg-zinc-200 transition-colors">
           Add User
         </button>
       </div>

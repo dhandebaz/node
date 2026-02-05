@@ -41,7 +41,43 @@ const MOCK_DOCS: InvestorDocument[] = [
     type: "mou",
     signedDate: "2023-11-25",
     version: "1.0",
-    downloadUrl: "#"
+    downloadUrl: "#",
+    content: `
+      <h2>MEMORANDUM OF UNDERSTANDING</h2>
+      <p><strong>This Memorandum of Understanding (MOU)</strong> is made and entered into on this 25th day of November, 2023 (the "Effective Date"), by and between:</p>
+      
+      <p><strong>1. Chishti Ventures Private Limited</strong>, a company incorporated under the laws of India, operating the platform "Nodebase" (hereinafter referred to as the "Platform" or "Company"); AND</p>
+      
+      <p><strong>2. Rahul Sharma</strong>, an individual/entity residing/registered at [Investor Address] (hereinafter referred to as the "Partner" or "Node Owner").</p>
+
+      <h3>1. PURPOSE & SCOPE</h3>
+      <p>The Partner wishes to acquire and deploy high-performance computing hardware ("Nodes") through the Platform to participate in the Node Network. The Platform agrees to host, manage, and monetize these Nodes on behalf of the Partner.</p>
+
+      <h3>2. OBLIGATIONS OF THE PARTNER</h3>
+      <ul>
+        <li><strong>Capital Commitment:</strong> The Partner agrees to fund the acquisition of 2 Unit(s) of Compute Nodes as specified in Annexure A.</li>
+        <li><strong>Ownership:</strong> The Partner retains full legal ownership of the hardware assets for the duration of this agreement.</li>
+      </ul>
+
+      <h3>3. OBLIGATIONS OF THE PLATFORM</h3>
+      <ul>
+        <li><strong>Hosting & Maintenance:</strong> The Platform shall house the Nodes in its Tier-3 Data Center facility (Okhla, Delhi) and provide power, cooling, and network connectivity.</li>
+        <li><strong>Utilization:</strong> The Platform is authorized to lease the compute power to third-party clients (Kaisa AI, Space Cloud, etc.).</li>
+      </ul>
+
+      <h3>4. REVENUE SHARING</h3>
+      <p>Net revenue generated from the utilization of the Nodes shall be distributed as follows:</p>
+      <ul>
+        <li><strong>Partner Share:</strong> 80% of Net Revenue.</li>
+        <li><strong>Platform Fee:</strong> 20% of Net Revenue (covering management, sales, and software).</li>
+      </ul>
+
+      <h3>5. TERM & TERMINATION</h3>
+      <p>This MOU is valid for a period of 36 months from the Effective Date. Either party may terminate with 90 days' written notice, subject to the Exit Clause defined in Section 8.</p>
+
+      <hr />
+      <p><em>Signed digitally via Nodebase SecureSign™</em></p>
+    `
   },
   {
     id: "DOC-RISK-001",
@@ -49,7 +85,25 @@ const MOCK_DOCS: InvestorDocument[] = [
     type: "risk_disclosure",
     signedDate: "2023-11-25",
     version: "2.1",
-    downloadUrl: "#"
+    downloadUrl: "#",
+    content: `
+      <h2>RISK DISCLOSURE STATEMENT</h2>
+      <p><strong>Important Notice:</strong> Participation in the Node Network involves significant risks. Before deploying capital, you should carefully consider the following:</p>
+
+      <h3>1. HARDWARE RISKS</h3>
+      <p>While the Platform maintains high-quality facilities, hardware components (GPU, CPU, SSDs) have a finite lifespan and may suffer failure or degradation. The Platform facilitates warranty claims but is not liable for manufacturing defects.</p>
+
+      <h3>2. MARKET & UTILIZATION RISK</h3>
+      <p>Revenue is variable and depends on market demand for compute power. The Platform does not guarantee a fixed rate of return (ROI) or specific utilization levels. Past performance is not indicative of future results.</p>
+
+      <h3>3. REGULATORY RISK</h3>
+      <p>Changes in laws regarding digital assets, data sovereignty, or taxation in India or other jurisdictions may adversely affect the operation of the Node Network.</p>
+
+      <h3>4. LIQUIDITY</h3>
+      <p>Node ownership is a tangible asset commitment. Liquidation of hardware before the end of the useful life may result in loss of capital due to depreciation and market conditions.</p>
+
+      <p>By signing the Master MOU, you acknowledge that you have read, understood, and accepted these risks.</p>
+    `
   }
 ];
 
@@ -150,6 +204,10 @@ export const investorService = {
 
   async getDocuments(userId: string): Promise<InvestorDocument[]> {
     return MOCK_DOCS;
+  },
+
+  async getDocument(userId: string, docId: string): Promise<InvestorDocument | undefined> {
+    return MOCK_DOCS.find(d => d.id === docId);
   },
 
   // Support

@@ -16,10 +16,31 @@ export interface KaisaModuleConfig {
   enabledFor: KaisaBusinessType[]; // Empty means none, all present means all
 }
 
+export interface IntegrationConfigDetails {
+  // Calendar
+  googleClientId?: string;
+  googleClientSecret?: string;
+  
+  // CRM
+  supportedProviders?: string[];
+  
+  // Listings
+  icalGenerationEnabled?: boolean;
+  icalBaseUrl?: string;
+  
+  // Messaging
+  metaAppId?: string;
+  metaAppSecret?: string;
+  
+  // Generic
+  [key: string]: any;
+}
+
 export interface KaisaIntegrationConfig {
   name: "Calendar" | "CRM" | "Listings" | "Messaging";
   status: "active" | "issues" | "disabled";
   enabledGlobal: boolean;
+  config?: IntegrationConfigDetails;
 }
 
 export interface KaisaGlobalConfig {

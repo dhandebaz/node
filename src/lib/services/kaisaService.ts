@@ -8,7 +8,8 @@ import {
   KaisaBusinessType,
   KaisaTask,
   KaisaUserActivity,
-  KaisaCreditUsage
+  KaisaCreditUsage,
+  IntegrationConfigDetails
 } from "@/types/kaisa";
 import { userService } from "./userService"; // Reusing mock user store
 
@@ -27,10 +28,41 @@ let GLOBAL_CONFIG: KaisaGlobalConfig = {
     { type: "Inventory", enabledGlobal: true, enabledFor: ["Retail"] },
   ],
   integrations: [
-    { name: "Calendar", status: "active", enabledGlobal: true },
-    { name: "CRM", status: "active", enabledGlobal: true },
-    { name: "Listings", status: "issues", enabledGlobal: true },
-    { name: "Messaging", status: "active", enabledGlobal: true },
+    { 
+      name: "Calendar", 
+      status: "active", 
+      enabledGlobal: true,
+      config: {
+        googleClientId: "mock-client-id",
+        googleClientSecret: "mock-secret"
+      }
+    },
+    { 
+      name: "CRM", 
+      status: "active", 
+      enabledGlobal: true,
+      config: {
+        supportedProviders: ["Salesforce", "HubSpot", "Zoho"]
+      }
+    },
+    { 
+      name: "Listings", 
+      status: "issues", 
+      enabledGlobal: true,
+      config: {
+        icalGenerationEnabled: true,
+        icalBaseUrl: "https://api.nodebase.io/ical"
+      }
+    },
+    { 
+      name: "Messaging", 
+      status: "active", 
+      enabledGlobal: true,
+      config: {
+        metaAppId: "",
+        metaAppSecret: ""
+      }
+    },
   ],
 };
 
@@ -135,6 +167,43 @@ export const kaisaService = {
       actionType: "config_change",
       scope: "global",
       details: `Integration ${name} global enabled set to ${enabled}`,
+    });
+
+    return stats;
+  },
+
+  async getIntegrationStats(name: string): Promise<Record<string, number>> {
+    const users = await userService.getUsers();
+    const stats: Record<string, number> = {};
+
+    if (name === "Listings") {
+      // Count users with "Bookings" module active as a proxy for active iCal users
+      // In a real DB, this would count actual Listing records or generated iCal links
+      const activeIcalUsers = users.filter(u => 
+        u.products.kaisa?.status === "active" && 
+        u.products.kaisa?.activeModules?.includes("Bookings")
+      ).length;
+      stats["active_icals"] = activeIcalUsers;
+    }
+
+    return stats;
+  },
+
+  async updateIntegrationConfig(
+    adminId: string, 
+    name: string, 
+    config: IntegrationConfigDetails
+  ): Promise<boolean> {
+    const int = GLOBAL_CONFIG.integrations.find(i => i.name === name);
+    if (!int) return false;
+
+    int.config = { ...int.config, ...config };
+    
+    await this.logAction({
+      adminId,
+      actionType: "config_change",
+      scope: "global",
+      details: `Updated integration config for ${name}`,
     });
 
     return true;

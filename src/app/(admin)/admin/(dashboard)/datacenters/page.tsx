@@ -2,6 +2,7 @@
 import { dcService } from "@/lib/services/datacenterService";
 import { Server, MapPin } from "lucide-react";
 import Link from "next/link";
+import { DCActionMenu } from "@/components/admin/datacenter/DCActionMenu";
 
 export default async function DataCentersPage() {
   const centers = await dcService.getAll();
@@ -11,14 +12,19 @@ export default async function DataCentersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Data Centers</h1>
-          <p className="text-zinc-400">Physical infrastructure capacity and deployment.</p>
+          <p className="text-zinc-400 mt-1">Manage infrastructure locations and capacity</p>
         </div>
-        {/* Admin-only add button could go here, but omitted for now per scope lock */}
+        <Link 
+          href="/admin/datacenters/new" 
+          className="bg-white text-black px-4 py-2 rounded-md text-sm font-medium hover:bg-zinc-200 transition-colors"
+        >
+          Add Location
+        </Link>
       </div>
 
-      <div className="border border-zinc-800 rounded-lg overflow-hidden">
+      <div className="border border-zinc-800 rounded-lg">
         <table className="w-full text-left text-sm text-zinc-400">
-          <thead className="bg-zinc-900 text-zinc-200 uppercase font-medium text-xs">
+          <thead className="bg-zinc-900 text-zinc-200 font-medium">
             <tr>
               <th className="px-6 py-3">Name</th>
               <th className="px-6 py-3">Location</th>
@@ -26,6 +32,7 @@ export default async function DataCentersPage() {
               <th className="px-6 py-3 text-right">Active Nodes</th>
               <th className="px-6 py-3 text-right">Total Capacity</th>
               <th className="px-6 py-3 text-right">Available</th>
+              <th className="px-6 py-3 w-10"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-800 bg-black">
@@ -36,7 +43,7 @@ export default async function DataCentersPage() {
               >
                 <td className="px-6 py-4">
                   <Link href={`/admin/datacenters/${dc.id}`} className="block">
-                    <div className="font-medium text-white group-hover:text-brand-blue transition-colors flex items-center gap-2">
+                    <div className="font-medium text-white group-hover:text-white transition-colors flex items-center gap-2">
                       <Server className="w-4 h-4 text-zinc-500" />
                       {dc.name}
                     </div>
@@ -66,6 +73,14 @@ export default async function DataCentersPage() {
                   }`}>
                     {dc.capacity.total - dc.capacity.active}
                   </span>
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <DCActionMenu 
+                    dcId={dc.id} 
+                    dcName={dc.name}
+                    currentConfig={dc.hardwareConfig}
+                    currentCapacity={dc.capacity.total}
+                  />
                 </td>
               </tr>
             ))}

@@ -11,7 +11,7 @@ export default function CookiesPage() {
       {/* Ambient Background */}
       <div className="absolute inset-0 pointer-events-none">
          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl opacity-20"></div>
-         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-blue/10 rounded-full blur-3xl opacity-20"></div>
+         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl opacity-20"></div>
       </div>
 
       {/* Glass Overlay */}

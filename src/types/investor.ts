@@ -65,6 +65,7 @@ export interface InvestorDocument {
   signedDate?: string;
   version: string;
   downloadUrl: string;
+  content?: string;
 }
 
 export interface SupportTicket {

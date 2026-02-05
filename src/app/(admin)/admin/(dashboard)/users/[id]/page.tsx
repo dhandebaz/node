@@ -52,7 +52,7 @@ export default async function UserProfilePage({
           {/* Identity Card */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
             <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-              <UserIcon className="w-5 h-5 text-brand-blue" />
+              <UserIcon className="w-5 h-5 text-white" />
               Identity & Contact
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -126,7 +126,7 @@ export default async function UserProfilePage({
                     Participating Nodes
                 </h3>
                 {user.roles.isNodeParticipant && (
-                    <Link href="/admin/nodes/create" className="text-xs text-brand-blue hover:underline">
+                    <Link href="/admin/nodes/create" className="text-xs text-white hover:underline">
                         Allocate New Node
                     </Link>
                 )}
@@ -166,7 +166,7 @@ export default async function UserProfilePage({
                                     <NodeStatusBadge status={node.state.status} />
                                 </td>
                                 <td className="px-4 py-2 text-right">
-                                    <Link href={`/admin/nodes/${node.identity.id}`} className="text-brand-blue hover:text-blue-400 text-xs font-medium">
+                                    <Link href={`/admin/nodes/${node.identity.id}`} className="text-white hover:text-blue-400 text-xs font-medium">
                                         Manage
                                     </Link>
                                 </td>

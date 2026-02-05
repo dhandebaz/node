@@ -280,6 +280,10 @@ export const translations = {
     "space.shared.comparison.refund_desc": "30 Days No Questions",
     "space.shared.comparison.refund_others": "7 Days / Conditional",
 
+    // Contact Locations
+    "contact.hq_title": "Headquarters & Data Center",
+    "contact.hq_desc": "Okhla Industrial Estate\nNew Delhi, Delhi 110020",
+
     // Space Shared - FAQ
     "space.shared.faq.title": "Frequently Asked Questions",
     "space.shared.faq.q1": "Can I upgrade later?",
@@ -287,7 +291,7 @@ export const translations = {
     "space.shared.faq.q2": "Is SSL included?",
     "space.shared.faq.a2": "Yes, free AutoSSL is included for all domains.",
     "space.shared.faq.q3": "Where is my data hosted?",
-    "space.shared.faq.a3": "All data is hosted in our Tier-4 Mumbai data center.",
+    "space.shared.faq.a3": "All data is hosted in our Tier-4 Okhla, Delhi data center.",
 
     
     // Nodebase Space - Dedicated Hosting
@@ -356,7 +360,7 @@ export const translations = {
     "infra.features.sovereign.title": "Sovereign Data",
     "infra.features.sovereign.desc": "Data never leaves Indian soil. Fully compliant with DPDP Act 2023.",
     "infra.features.colo.title": "Colocation",
-    "infra.features.colo.desc": "Secure physical space in our Tier-4 data centers across 4 regions.",
+    "infra.features.colo.desc": "Secure physical space in our Tier-4 Okhla, Delhi data center.",
 
     "infra.cta": "Request Access",
 

@@ -1,10 +1,9 @@
-
 "use client";
 
 import { AuthSettings, OTPProvider } from "@/types/settings";
 import { updateAuthSettingsAction } from "@/app/actions/settings";
 import { useState } from "react";
-import { Shield, Lock, Smartphone, AlertTriangle } from "lucide-react";
+import { Shield, Lock, AlertTriangle } from "lucide-react";
 
 export function AuthSettingsPanel({ settings }: { settings: AuthSettings }) {
   const [formData, setFormData] = useState(settings);
@@ -99,56 +98,6 @@ export function AuthSettingsPanel({ settings }: { settings: AuthSettings }) {
             </div>
           </div>
         </div>
-
-        {/* Firebase Config Section */}
-        {formData.otpProvider === "Firebase" && (
-            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 space-y-4">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h4 className="text-sm font-medium text-white flex items-center gap-2">
-                            <Smartphone className="w-4 h-4 text-orange-400" />
-                            Firebase OTP Configuration
-                        </h4>
-                        <p className="text-xs text-zinc-500 mt-1">
-                            Only active when site is live on <strong>nodebase.space</strong> domain.
-                        </p>
-                    </div>
-                    <button
-                        onClick={() => handleChange("firebaseEnabled", !formData.firebaseEnabled)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                            formData.firebaseEnabled ? "bg-orange-500" : "bg-zinc-700"
-                        }`}
-                    >
-                        <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                formData.firebaseEnabled ? "translate-x-6" : "translate-x-1"
-                            }`}
-                        />
-                    </button>
-                </div>
-
-                {formData.firebaseEnabled && (
-                    <div className="space-y-3">
-                        <label className="block text-xs font-medium text-zinc-400">
-                            Firebase SDK Snippet
-                        </label>
-                        <textarea
-                            value={formData.firebaseConfig || ""}
-                            onChange={(e) => handleChange("firebaseConfig", e.target.value)}
-                            placeholder="// Paste your Firebase SDK code here..."
-                            className="w-full h-48 bg-black border border-zinc-800 rounded-lg p-3 text-xs font-mono text-zinc-300 focus:outline-none focus:border-orange-500 resize-none"
-                        />
-                        <div className="flex items-start gap-2 p-3 bg-orange-900/10 border border-orange-900/30 rounded text-orange-400 text-xs">
-                            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                            <p>
-                                Ensure you paste the full initialization code. The system will use this configuration for OTP authentication only. 
-                                Analytics and other services will be ignored unless explicitly configured elsewhere.
-                            </p>
-                        </div>
-                    </div>
-                )}
-            </div>
-        )}
 
         {/* Emergency Admin Login Toggle */}
         <div className="pt-6 border-t border-zinc-800">

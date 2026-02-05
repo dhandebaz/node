@@ -128,7 +128,7 @@ export function NodeControls({ node }: { node: Node }) {
               value={noteInput}
               onChange={(e) => setNoteInput(e.target.value)}
               placeholder="Add note..."
-              className="bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white w-full focus:outline-none focus:border-brand-blue text-sm"
+              className="bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white w-full focus:outline-none focus:border-white text-sm"
             />
             <button 
               onClick={handleAddNote}

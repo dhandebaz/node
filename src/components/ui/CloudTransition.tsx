@@ -23,7 +23,7 @@ export const CloudTransition = ({ isTransitioning }: { isTransitioning: boolean 
         animate={{ x: "20%", opacity: 1 }}
         exit={{ x: "-100%", opacity: 0 }}
         transition={{ duration: 0.8, ease: "easeInOut", delay: 0.1 }}
-        className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-blue/20 blur-[80px] rounded-full"
+        className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/20 blur-[80px] rounded-full"
       />
 
       {/* Cloud 3 - Center (Main Cover) */}

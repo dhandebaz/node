@@ -10,7 +10,7 @@ export default function PrivacyPage() {
     <div className="bg-black min-h-screen text-white relative overflow-hidden">
       {/* Ambient Background */}
       <div className="absolute inset-0 pointer-events-none">
-         <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-blue/10 rounded-full blur-3xl opacity-20"></div>
+         <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl opacity-20"></div>
          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-green/10 rounded-full blur-3xl opacity-20"></div>
       </div>
 
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
         tag="Legal"
         align="left"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--color-brand-blue)_0%,_transparent_20%)] opacity-20"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,white_0%,_transparent_20%)] opacity-20"></div>
       </PageHeader>
       
       <section className="py-24 relative z-10">
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
              <ul className="list-disc pl-6 space-y-2">
                <li><strong>Encryption:</strong> Data is encrypted at rest (AES-256) and in transit (TLS 1.3).</li>
                <li><strong>Access Control:</strong> Strict role-based access control (RBAC) and Multi-Factor Authentication (MFA) for internal administrative access.</li>
-               <li><strong>Physical Security:</strong> Our data centers in Mumbai and Bangalore feature biometric access controls and 24/7 surveillance.</li>
+               <li><strong>Physical Security:</strong> Our Tier-4 data center in <strong>Okhla, New Delhi, India</strong> features 24/7 physical security, biometric access control, and strict data isolation protocols.</li>
              </ul>
 
              <h3 className="text-2xl font-bold mt-12 mb-6 text-white">5. Third-Party Sharing</h3>

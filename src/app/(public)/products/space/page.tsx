@@ -177,7 +177,7 @@ export default function NodebaseSpacePage() {
         { text: "$ nb init my-app", color: "text-brand-green" },
         { text: "Initializing project...", color: "text-white/50" },
         { text: "$ nb deploy .", color: "text-brand-green" },
-        { text: "Deploying to Mumbai-1...", color: "text-white/50" },
+        { text: "Deploying to Delhi-1...", color: "text-white/50" },
         { text: "✓ Deployed: https://app.nodebase.space", color: "text-brand-green" }
       ],
       [
@@ -188,8 +188,8 @@ export default function NodebaseSpacePage() {
       [
         { text: "$ nb logs -f", color: "text-brand-green" },
         { text: "Starting log stream...", color: "text-white/50" },
-        { text: "2024-02-04 10:00:01 [INFO] Request received", color: "text-brand-blue" },
-        { text: "2024-02-04 10:00:02 [INFO] Processing...", color: "text-brand-blue" }
+        { text: "2024-02-04 10:00:01 [INFO] Request received", color: "text-white" },
+        { text: "2024-02-04 10:00:02 [INFO] Processing...", color: "text-white" }
       ]
     ];
     let currentCmdIndex = 0;
@@ -318,7 +318,7 @@ export default function NodebaseSpacePage() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_var(--color-brand-blue)_0%,_transparent_15%)] opacity-20"></div>
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,white_0%,_transparent_15%)] opacity-20"></div>
         <div className="absolute inset-0 bg-black/80 backdrop-blur-[1px]"></div>
         <NetworkBackground />
         
@@ -329,7 +329,7 @@ export default function NodebaseSpacePage() {
             variants={stagger}
             className="max-w-5xl mx-auto text-center"
           >
-            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-dark text-white text-sm font-medium mb-8 border border-brand-blue/20">
+            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-dark text-white text-sm font-medium mb-8 border border-white/20">
               <Cloud className="w-4 h-4" />
               <span>Sovereign Cloud Infrastructure</span>
             </motion.div>
@@ -397,7 +397,7 @@ export default function NodebaseSpacePage() {
                 transition={{ duration: 0.4 }}
               >
                 {/* SHARED CONFIGURATOR */}
-                <div className="max-w-6xl mx-auto glass-card rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl shadow-brand-blue/5 backdrop-blur-xl">
+                <div className="max-w-6xl mx-auto glass-card rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl shadow-white/5 backdrop-blur-xl">
                    <div className="p-8 md:p-12 flex-1 space-y-10">
                       <div className="space-y-6">
                         <div className="flex items-center justify-between">
@@ -588,7 +588,7 @@ export default function NodebaseSpacePage() {
 
                    {/* Shared Summary */}
                    <div className="p-8 md:p-12 lg:w-96 flex flex-col justify-between relative overflow-hidden shrink-0 border-l border-white/10 bg-white/5">
-                      <div className="absolute inset-0 bg-brand-blue/5 opacity-20"></div>
+                      <div className="absolute inset-0 bg-white/5 opacity-20"></div>
                       <div className="relative z-10 flex flex-col h-full">
                         <div className="mb-6">
                             <div className="w-12 h-12 glass-dark rounded-xl flex items-center justify-center mb-6 relative">
@@ -879,7 +879,7 @@ export default function NodebaseSpacePage() {
 
                 {/* Built for Creators (Shared Features) */}
                 <section className="py-24 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-brand-blue/5 opacity-20"></div>
+                    <div className="absolute inset-0 bg-white/5 opacity-20"></div>
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="text-center max-w-3xl mx-auto mb-16">
                             <h2 className="text-4xl font-bold mb-6 text-white">Built for Creators</h2>
@@ -889,7 +889,7 @@ export default function NodebaseSpacePage() {
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-8">
-                            <div className="p-8 rounded-3xl glass-card hover:border-brand-blue/30 transition-all group">
+                            <div className="p-8 rounded-3xl glass-card hover:border-white/30 transition-all group">
                                 <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                                     <Zap className="w-7 h-7 text-blue-400" />
                                 </div>
@@ -932,7 +932,7 @@ export default function NodebaseSpacePage() {
                 transition={{ duration: 0.4 }}
               >
                 {/* DEDICATED CONFIGURATOR */}
-                <div className="max-w-6xl mx-auto glass-card rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl shadow-brand-blue/5 backdrop-blur-xl">
+                <div className="max-w-6xl mx-auto glass-card rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl shadow-white/5 backdrop-blur-xl">
                    <div className="p-8 md:p-12 flex-1 space-y-10">
                       <div className="space-y-6">
                         <h2 className="text-2xl font-bold text-white">{t("space.dedicated.config.title")}</h2>
@@ -1051,7 +1051,7 @@ export default function NodebaseSpacePage() {
 
                    {/* Dedicated Summary */}
                    <div className="p-8 md:p-12 lg:w-96 flex flex-col justify-between relative overflow-hidden shrink-0 border-l border-white/10 bg-white/5">
-                      <div className="absolute inset-0 bg-brand-blue/5 opacity-20"></div>
+                      <div className="absolute inset-0 bg-white/5 opacity-20"></div>
                       <div className="relative z-10 flex flex-col h-full">
                         <div className="mb-6">
                             <div className="w-12 h-12 glass-dark rounded-xl flex items-center justify-center mb-6 relative">
@@ -1370,7 +1370,7 @@ export default function NodebaseSpacePage() {
 
       {/* Developer Experience (CLI) */}
       <section className="py-24 glass-dark text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-brand-blue/20 opacity-20"></div>
+        <div className="absolute inset-0 bg-white/20 opacity-20"></div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="flex flex-col md:flex-row items-center gap-16 max-w-6xl mx-auto">
             <div className="flex-1 space-y-8">

@@ -20,7 +20,11 @@ export function IntegrationSettingsPanel({ integrations }: { integrations: Integ
 
   const startEdit = (integration: IntegrationConfig) => {
     setEditingId(integration.id);
-    setEditForm({ apiKey: "", webhookUrl: integration.webhookUrl }); // Clear API key on edit
+    setEditForm({ 
+      ...integration,
+      apiKey: "", 
+      clientSecret: "" // Clear secrets
+    });
   };
 
   const saveEdit = async (id: string) => {
@@ -28,6 +32,249 @@ export function IntegrationSettingsPanel({ integrations }: { integrations: Integ
     await updateIntegrationAction(id, editForm);
     setLoading(false);
     setEditingId(null);
+  };
+
+  const renderConfigFields = (id: string) => {
+    const inputClass = "w-full bg-black border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200 focus:border-purple-500 focus:outline-none";
+    const labelClass = "text-xs text-zinc-500 font-mono mb-1 block";
+
+    if (id === "int_paddle") {
+      return (
+        <>
+          <div>
+            <label className={labelClass}>Vendor ID</label>
+            <input 
+              type="text"
+              value={editForm.vendorId || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, vendorId: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Client-side Token (Public Key)</label>
+            <input 
+              type="text"
+              value={editForm.publicKey || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, publicKey: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>API Key (pdl_...) - Leave empty to keep unchanged</label>
+            <input 
+              type="password"
+              value={editForm.apiKey || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, apiKey: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+        </>
+      );
+    }
+
+    if (id === "int_paypal") {
+      return (
+        <>
+          <div>
+            <label className={labelClass}>Client ID</label>
+            <input 
+              type="text"
+              value={editForm.clientId || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, clientId: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Client Secret - Leave empty to keep unchanged</label>
+            <input 
+              type="password"
+              value={editForm.clientSecret || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, clientSecret: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+        </>
+      );
+    }
+
+    if (id === "int_razorpay") {
+      return (
+        <>
+          <div>
+            <label className={labelClass}>Key ID</label>
+            <input 
+              type="text"
+              value={editForm.clientId || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, clientId: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Key Secret - Leave empty to keep unchanged</label>
+            <input 
+              type="password"
+              value={editForm.clientSecret || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, clientSecret: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+        </>
+      );
+    }
+
+    if (id === "int_firebase") {
+      return (
+        <div className="space-y-4">
+           {/* Auto-parser */}
+           <div className="p-3 bg-zinc-950/50 border border-zinc-800 rounded">
+              <label className={`${labelClass} text-purple-400`}>Paste Config Snippet (Auto-fill)</label>
+              <textarea
+                className="w-full bg-black border border-zinc-800 rounded px-3 py-2 text-xs font-mono text-zinc-400 focus:border-purple-500 focus:outline-none h-24"
+                placeholder={`const firebaseConfig = { \n  apiKey: "...", \n  ... \n};`}
+                onChange={(e) => {
+                   const txt = e.target.value;
+                   const updates: any = {};
+                   const match = (key: string) => {
+                      // Match both key: "value" and key: 'value'
+                      const regex = new RegExp(`${key}:\\s*["']([^"']+)["']`);
+                      const m = txt.match(regex);
+                      if (m) updates[key] = m[1];
+                   };
+                   match("apiKey");
+                   match("authDomain");
+                   match("projectId");
+                   match("storageBucket");
+                   match("messagingSenderId");
+                   match("appId");
+                   match("measurementId");
+                   
+                   if (Object.keys(updates).length > 0) {
+                      setEditForm(prev => ({ ...prev, ...updates }));
+                   }
+                }}
+              />
+              <p className="text-[10px] text-zinc-600 mt-1">
+                Paste your firebaseConfig object here to automatically populate the fields below.
+              </p>
+           </div>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className={labelClass}>API Key</label>
+                <input 
+                  type="text"
+                  value={editForm.apiKey || ""}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, apiKey: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Project ID</label>
+                <input 
+                  type="text"
+                  value={editForm.projectId || ""}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, projectId: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Auth Domain</label>
+                <input 
+                  type="text"
+                  value={editForm.authDomain || ""}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, authDomain: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Storage Bucket</label>
+                <input 
+                  type="text"
+                  value={editForm.storageBucket || ""}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, storageBucket: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Messaging Sender ID</label>
+                <input 
+                  type="text"
+                  value={editForm.messagingSenderId || ""}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, messagingSenderId: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="col-span-2">
+                <label className={labelClass}>App ID</label>
+                <input 
+                  type="text"
+                  value={editForm.appId || ""}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, appId: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="col-span-2">
+                <label className={labelClass}>Measurement ID (Optional)</label>
+                <input 
+                  type="text"
+                  value={editForm.measurementId || ""}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, measurementId: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+           </div>
+        </div>
+      );
+    }
+
+    if (id === "int_twilio") {
+      return (
+        <>
+          <div>
+            <label className={labelClass}>Account SID</label>
+            <input 
+              type="text"
+              value={editForm.accountSid || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, accountSid: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Auth Token - Leave empty to keep unchanged</label>
+            <input 
+              type="password"
+              value={editForm.authToken || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, authToken: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>From Phone Number</label>
+            <input 
+              type="text"
+              placeholder="+1234567890"
+              value={editForm.fromPhoneNumber || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, fromPhoneNumber: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+        </>
+      );
+    }
+
+    // Default (Stripe)
+    return (
+      <div>
+        <label className={labelClass}>API Key (Leave empty to keep unchanged)</label>
+        <input 
+          type="password"
+          placeholder="Enter new API key to update..."
+          value={editForm.apiKey || ""}
+          onChange={(e) => setEditForm(prev => ({ ...prev, apiKey: e.target.value }))}
+          className={inputClass}
+        />
+      </div>
+    );
   };
 
   return (
@@ -77,16 +324,7 @@ export function IntegrationSettingsPanel({ integrations }: { integrations: Integ
             {editingId === int.id && (
               <div className="p-4 border-t border-zinc-800 bg-zinc-900/50 space-y-4">
                 <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="text-xs text-zinc-500 font-mono mb-1 block">API Key (Leave empty to keep unchanged)</label>
-                    <input 
-                      type="password"
-                      placeholder="Enter new API key to update..."
-                      value={editForm.apiKey || ""}
-                      onChange={(e) => setEditForm(prev => ({ ...prev, apiKey: e.target.value }))}
-                      className="w-full bg-black border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200 focus:border-purple-500 focus:outline-none"
-                    />
-                  </div>
+                  {renderConfigFields(int.id)}
                   <div>
                     <label className="text-xs text-zinc-500 font-mono mb-1 block">Webhook URL</label>
                     <input 

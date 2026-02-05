@@ -1,51 +1,12 @@
 
 import { DataCenter, DCAuditLog, DCStatus } from "@/types/datacenter";
+import { COMPANY_CONFIG } from "@/lib/config/company";
 
 // Mock Data Store
-let MOCK_DCS: DataCenter[] = [
-  {
-    id: "DC-DEL-01",
-    name: "Okhla – Delhi",
-    location: {
-      city: "New Delhi",
-      state: "Delhi",
-      country: "India",
-    },
-    status: "active",
-    goLiveDate: "2023-11-15T00:00:00Z",
-    capacity: {
-      total: 166,
-      active: 6,
-    },
-    infrastructure: {
-      powerProfile: "Dual source grid + N+1 DG Backup",
-      networkProfile: "Carrier Neutral, 10Gbps Uplink",
-      coolingProfile: "Precision AC (N+1)",
-    },
-    notes: ["Initial deployment site."],
-  },
-  {
-    id: "DC-BLR-01",
-    name: "Whitefield – Bangalore",
-    location: {
-      city: "Bangalore",
-      state: "Karnataka",
-      country: "India",
-    },
-    status: "planned",
-    goLiveDate: "2024-06-01T00:00:00Z",
-    capacity: {
-      total: 200,
-      active: 0,
-    },
-    infrastructure: {
-      powerProfile: "Tier 3 Specs",
-      networkProfile: "Planned 40Gbps Ring",
-      coolingProfile: "Liquid Immersion Ready",
-    },
-    notes: ["Site survey completed."],
-  },
-];
+let MOCK_DCS: DataCenter[] = COMPANY_CONFIG.datacenters.map(dc => ({
+  ...dc,
+  status: dc.status as DCStatus // Ensure type compatibility
+}));
 
 let MOCK_LOGS: DCAuditLog[] = [];
 
@@ -177,6 +138,31 @@ export const dcService = {
     });
 
     return true;
+  },
+
+  async updateHardwareConfig(
+    adminId: string,
+    dcId: string,
+    config: any
+  ): Promise<{ success: boolean; error?: string }> {
+    const dc = MOCK_DCS.find(d => d.id === dcId);
+    if (!dc) return { success: false, error: "Data center not found" };
+
+    dc.hardwareConfig = {
+      ...dc.hardwareConfig,
+      ...config,
+      connectionStatus: "connected", // Simulate successful connection
+      lastHeartbeat: new Date().toISOString()
+    };
+
+    await this.logAction({
+      adminId,
+      targetDcId: dcId,
+      actionType: "update_status",
+      details: `Updated hardware configuration: ${config.ipAddress}`,
+    });
+
+    return { success: true };
   },
 
   async getAuditLogs(dcId: string): Promise<DCAuditLog[]> {

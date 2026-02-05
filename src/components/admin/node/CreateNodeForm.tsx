@@ -62,7 +62,7 @@ export default function CreateNodeForm({
         <select
           value={formData.userId}
           onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
-          className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white focus:outline-none focus:border-brand-blue"
+          className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white focus:outline-none focus:border-white"
           disabled={isLoading}
         >
           <option value="">Select User</option>
@@ -77,7 +77,7 @@ export default function CreateNodeForm({
         <select
           value={formData.dcId}
           onChange={(e) => setFormData({ ...formData, dcId: e.target.value })}
-          className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white focus:outline-none focus:border-brand-blue"
+          className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white focus:outline-none focus:border-white"
           disabled={isLoading}
         >
           <option value="">Select Data Center</option>
@@ -94,7 +94,7 @@ export default function CreateNodeForm({
         <select
           value={formData.pool}
           onChange={(e) => setFormData({ ...formData, pool: e.target.value as any })}
-          className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white focus:outline-none focus:border-brand-blue"
+          className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white focus:outline-none focus:border-white"
           disabled={isLoading}
         >
           <option value="Standard">Standard</option>
@@ -110,7 +110,7 @@ export default function CreateNodeForm({
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-brand-blue text-white px-6 py-2 rounded font-medium hover:bg-blue-600 disabled:opacity-50 flex items-center gap-2"
+          className="bg-white text-black px-6 py-2 rounded font-medium hover:bg-zinc-200 disabled:opacity-50 flex items-center gap-2"
         >
           {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
           Create Node

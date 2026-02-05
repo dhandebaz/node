@@ -11,7 +11,7 @@ export default function ContentManagementPage() {
                     <FileText className="w-5 h-5 text-zinc-500" />
                     <span className="text-white">{page}</span>
                 </div>
-                <button className="flex items-center gap-2 text-sm text-brand-blue hover:text-white transition-colors">
+                <button className="flex items-center gap-2 text-sm text-white hover:text-white/80 transition-colors">
                     <Edit className="w-4 h-4" />
                     Edit
                 </button>

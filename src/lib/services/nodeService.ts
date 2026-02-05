@@ -1,6 +1,7 @@
 
 import { Node, NodeAuditLog, NodeFilterOptions, NodeStatus, MoUStatus } from "@/types/node";
 import { dcService } from "./datacenterService";
+import { settingsService } from "./settingsService";
 
 // Mock Data
 let MOCK_NODES: Node[] = [
@@ -64,7 +65,8 @@ let MOCK_LOGS: NodeAuditLog[] = [];
 
 export const nodeService = {
   async getAll(filters?: NodeFilterOptions): Promise<Node[]> {
-    let nodes = [...MOCK_NODES];
+    const isProduction = await settingsService.isProductionMode();
+    let nodes = isProduction ? [] : [...MOCK_NODES];
 
     if (filters) {
       if (filters.dcId) {
@@ -88,10 +90,14 @@ export const nodeService = {
   },
 
   async getById(id: string): Promise<Node | null> {
+    const isProduction = await settingsService.isProductionMode();
+    if (isProduction) return null;
     return MOCK_NODES.find(n => n.identity.id === id) || null;
   },
 
   async getByUserId(userId: string): Promise<Node[]> {
+    const isProduction = await settingsService.isProductionMode();
+    if (isProduction) return [];
     return MOCK_NODES.filter(n => n.participant.userId === userId);
   },
 

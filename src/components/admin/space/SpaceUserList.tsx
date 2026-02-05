@@ -81,7 +81,7 @@ export function SpaceUserList({ services }: { services: SpaceServiceProfile[] })
                                 {service.id}
                             </td>
                             <td className="px-6 py-4">
-                                <Link href={`/admin/users/${service.userId}`} className="text-white font-medium hover:text-brand-blue">
+                                <Link href={`/admin/users/${service.userId}`} className="text-white font-medium hover:text-white">
                                     {service.userId}
                                 </Link>
                             </td>
@@ -102,7 +102,7 @@ export function SpaceUserList({ services }: { services: SpaceServiceProfile[] })
                                 </span>
                             </td>
                             <td className="px-6 py-4 text-right">
-                                <Link href={`/admin/users/${service.userId}`} className="text-brand-blue hover:text-blue-400 text-xs font-medium">
+                                <Link href={`/admin/users/${service.userId}`} className="text-white hover:text-blue-400 text-xs font-medium">
                                     Manage
                                 </Link>
                             </td>

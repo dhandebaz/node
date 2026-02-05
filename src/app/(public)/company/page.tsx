@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { 
   Shield, 
   Users, 
@@ -34,7 +35,7 @@ export default function CompanyPage() {
       
       {/* 1. HERO: Why Nodebase Exists */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_var(--color-brand-blue)_0%,_transparent_15%)] opacity-20"></div>
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,white_0%,_transparent_15%)] opacity-20"></div>
         <div className="absolute inset-0 bg-black/80 backdrop-blur-[1px]"></div>
         
         <div className="container mx-auto px-6 relative z-10">
@@ -118,7 +119,7 @@ export default function CompanyPage() {
 
       {/* 3. INFRASTRUCTURE DONE DIFFERENTLY */}
       <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-brand-blue/5"></div>
+        <div className="absolute inset-0 bg-white/5"></div>
         <div className="container mx-auto px-6 relative z-10">
            <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
               <div className="flex-1 space-y-8">
@@ -150,7 +151,7 @@ export default function CompanyPage() {
               </div>
               <div className="flex-1">
                  <div className="relative aspect-square">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-brand-blue/20 to-brand-green/20 rounded-full blur-3xl"></div>
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-brand-green/20 rounded-full blur-3xl"></div>
                     <div className="glass-dark rounded-2xl p-8 border border-white/10 relative z-10 h-full flex flex-col justify-center">
                        <div className="flex items-center gap-4 mb-6 p-4 bg-white/5 rounded-xl border border-white/5">
                           <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
@@ -289,21 +290,67 @@ export default function CompanyPage() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-32 bg-black text-center">
+      <section className="py-32 bg-black text-center overflow-hidden">
          <div className="container mx-auto px-6">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="max-w-3xl mx-auto glass-dark p-12 rounded-3xl border border-white/10 relative overflow-hidden"
+              className="max-w-4xl mx-auto glass-dark p-12 rounded-3xl border border-white/10 relative overflow-hidden group"
             >
                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-saffron via-white to-brand-green"></div>
-               <h2 className="text-3xl md:text-5xl font-bold mb-8 text-white">Nodebase is not a platform you rent.</h2>
-               <p className="text-2xl text-brand-saffron font-medium mb-10">It’s infrastructure you build on.</p>
+               <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+               <h2 className="text-3xl md:text-5xl font-bold mb-8 text-white relative z-10">Nodebase is not a platform you rent.</h2>
+               <p className="text-2xl text-brand-saffron font-medium mb-16 relative z-10">It’s infrastructure you build on.</p>
                
-               <button className="px-8 py-4 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                  Start Building Today
-               </button>
+               {/* Animated Data Pipeline */}
+               <div className="relative h-40 w-full max-w-3xl mx-auto flex items-center justify-center">
+                  
+                  {/* The Track */}
+                  <div className="absolute inset-x-0 h-px bg-white/10"></div>
+                  
+                  {/* Moving Data Packets (Left to Right) */}
+                  <div className="absolute inset-x-0 h-2 overflow-hidden">
+                     {[...Array(5)].map((_, i) => (
+                       <motion.div
+                         key={`packet-l-${i}`}
+                         className="absolute top-0 h-1 w-12 bg-gradient-to-r from-transparent via-white to-transparent rounded-full opacity-50"
+                         initial={{ x: "-10%" }}
+                         animate={{ x: "110%" }}
+                         transition={{
+                           duration: 3 + Math.random() * 2,
+                           repeat: Infinity,
+                           ease: "linear",
+                           delay: i * 0.8
+                         }}
+                       />
+                     ))}
+                  </div>
+
+                  {/* Nodes along the track */}
+                  <div className="absolute left-[10%] w-3 h-3 rounded-full bg-zinc-800 border border-white/30 z-0"></div>
+                  <div className="absolute right-[10%] w-3 h-3 rounded-full bg-zinc-800 border border-white/30 z-0"></div>
+
+                  {/* Central Button (Static but Interactive) */}
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative z-20"
+                  >
+                    <Link 
+                      href="/dashboard"
+                      className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-black font-bold text-lg rounded-full overflow-hidden transition-all hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                      
+                      <Zap className="w-5 h-5 fill-current group-hover:text-brand-saffron transition-colors" />
+                      <span>Start Building Today</span>
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    </Link>
+                  </motion.div>
+               </div>
+
             </motion.div>
          </div>
       </section>

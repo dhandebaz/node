@@ -19,6 +19,15 @@ export interface DCMetadata {
   coolingProfile: string;
 }
 
+export interface DCHardwareConfig {
+  connectionStatus: "connected" | "disconnected" | "error";
+  ipAddress?: string;
+  sshPort?: number;
+  agentVersion?: string;
+  lastHeartbeat?: string;
+  authType?: "ssh_key" | "password" | "agent_token";
+}
+
 export interface DataCenter {
   id: string; // Immutable
   name: string;
@@ -28,6 +37,7 @@ export interface DataCenter {
   capacity: DCCapacity;
   infrastructure: DCMetadata;
   notes: string[]; // Admin-only notes
+  hardwareConfig?: DCHardwareConfig; // For connecting physical servers
 }
 
 export interface DCAuditLog {

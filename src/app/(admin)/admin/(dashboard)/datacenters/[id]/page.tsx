@@ -44,7 +44,7 @@ export default async function DataCenterProfilePage({
           {/* Overview Card */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
             <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-              <Activity className="w-5 h-5 text-brand-blue" />
+              <Activity className="w-5 h-5 text-white" />
               Facility Overview
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -59,11 +59,11 @@ export default async function DataCenterProfilePage({
           {/* Node Allocation */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
             <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-brand-blue" />
+              <Cpu className="w-5 h-5 text-white" />
               Node Allocation
             </h2>
             
-            <div className="border border-zinc-800 rounded overflow-hidden">
+            <div className="border border-zinc-800 rounded">
                <table className="w-full text-left text-sm text-zinc-400">
                   <thead className="bg-zinc-950 text-zinc-500 font-medium text-xs uppercase">
                     <tr>

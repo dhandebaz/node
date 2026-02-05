@@ -163,12 +163,12 @@ export default async function BillingPage() {
             </div>
             <div className="space-y-2 text-sm text-zinc-400">
               <p className="text-white font-medium">Aditya Sharma</p>
-              <p>123, Tech Park, Sector 4</p>
-              <p>Bangalore, KA 560103</p>
+              <p>Okhla Industrial Estate</p>
+              <p>Phase III, New Delhi - 110020</p>
               <p>India</p>
               <div className="pt-2 mt-2 border-t border-zinc-800">
                 <span className="text-xs uppercase tracking-wider text-zinc-500">GSTIN</span>
-                <p className="font-mono text-zinc-300">29ABCDE1234F1Z5</p>
+                <p className="font-mono text-zinc-300">07ABCDE1234F1Z5</p>
               </div>
             </div>
           </section>

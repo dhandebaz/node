@@ -12,24 +12,8 @@ interface KaisaVerificationOverlayProps {
 
 const LOG_STEPS = [
   "Initializing Kaisa Vision Model v2.4...",
-  "Calibrating optical character recognition...",
   "Scanning document features & holograms...",
-  "Extracting Region of Interest (ROI)...",
-  "Normalizing image perspective & contrast...",
-  "Detecting face landmarks for liveness...",
-  "Processing Devanagari/Latin script patterns...",
-  "Identifying document type signatures...",
-  "Extracting alphanumeric entities...",
   "Validating ID checksum algorithms...",
-  "Cross-referencing government ID format...",
-  "Checking against fraud database patterns...",
-  "Analyzing pixel-level forgery traces...",
-  "Verifying holographic security threads...",
-  "Authenticating issuer digital signature...",
-  "Matching biometric data points...",
-  "Encrypting extracted personal data...",
-  "Establishing secure handshake with core...",
-  "Identity confidence score calculated.",
   "Verification successful."
 ];
 
@@ -68,7 +52,7 @@ export function KaisaVerificationOverlay({ isVisible, onComplete, documentType }
         setIsScanning(false);
         setTimeout(onComplete, 1000); // Wait a moment after logs finish before closing
       }
-    }, 250); // Speed up logs to fit ~5 seconds (250ms * 19 = ~4.75s)
+    }, 1000); // Speed up logs to fit ~5 seconds (1000ms * 4 = 4s)
 
     return () => {
       clearInterval(timerInterval);

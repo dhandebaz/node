@@ -27,10 +27,10 @@ export default function DocsIndexPage() {
         </Link>
 
         <Link href="/docs/space/cli" className="glass-card p-6 rounded-2xl hover:bg-white/10 transition-colors group">
-          <div className="w-10 h-10 bg-brand-blue/10 rounded-lg flex items-center justify-center mb-4 text-brand-blue">
+          <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center mb-4 text-white">
             <Code2 className="w-5 h-5" />
           </div>
-          <h3 className="text-lg font-bold mb-2 group-hover:text-brand-blue transition-colors">CLI Reference</h3>
+          <h3 className="text-lg font-bold mb-2 group-hover:text-white transition-colors">CLI Reference</h3>
           <p className="text-sm text-white/60 mb-4">Master the `nb` command line tool for deployment and management.</p>
           <div className="flex items-center text-xs font-bold text-white/40 group-hover:text-white transition-colors">
             View Commands <ArrowRight className="w-3 h-3 ml-1" />
@@ -59,13 +59,13 @@ export default function DocsIndexPage() {
 
             <div className="glass-card p-6 rounded-2xl border border-white/5">
               <div className="mb-4">
-                <Server className="w-8 h-8 text-brand-blue" />
+                <Server className="w-8 h-8 text-white" />
               </div>
               <h3 className="font-bold mb-2">Nodebase Space</h3>
               <ul className="space-y-2 text-sm text-white/60">
-                <li><Link href="/docs/space" className="hover:text-brand-blue transition-colors">Hosting Basics</Link></li>
-                <li><Link href="/docs/space/storage" className="hover:text-brand-blue transition-colors">Object Storage (S3)</Link></li>
-                <li><Link href="/docs/space/cdn" className="hover:text-brand-blue transition-colors">CDN Configuration</Link></li>
+                <li><Link href="/docs/space" className="hover:text-white transition-colors">Hosting Basics</Link></li>
+                <li><Link href="/docs/space/storage" className="hover:text-white transition-colors">Object Storage (S3)</Link></li>
+                <li><Link href="/docs/space/cdn" className="hover:text-white transition-colors">CDN Configuration</Link></li>
               </ul>
             </div>
 

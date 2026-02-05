@@ -15,6 +15,7 @@ import {
   LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { adminLogoutAction } from "@/app/actions/auth";
 
 const navItems = [
   { name: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -62,10 +63,15 @@ export function AdminSidebar() {
       </nav>
 
       <div className="p-4 border-t border-zinc-800">
-        <Link href="/admin/login" className="flex items-center gap-3 px-3 py-2 w-full text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-900/10 rounded-md transition-colors">
-          <LogOut className="w-4 h-4" />
-          Logout
-        </Link>
+        <form action={adminLogoutAction}>
+          <button 
+            type="submit"
+            className="flex items-center gap-3 px-3 py-2 w-full text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-900/10 rounded-md transition-colors text-left"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
+        </form>
       </div>
     </div>
   );

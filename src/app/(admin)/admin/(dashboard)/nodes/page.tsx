@@ -37,7 +37,7 @@ export default async function NodesPage({
         </div>
         <Link 
             href="/admin/nodes/create" // We might need a create page, or just use a modal. For now, button implies intent.
-            className="bg-brand-blue text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-600 transition-colors"
+            className="bg-white text-black px-4 py-2 rounded text-sm font-medium hover:bg-zinc-200 transition-colors"
         >
             Create New Node
         </Link>
@@ -74,7 +74,7 @@ export default async function NodesPage({
                 >
                   <td className="px-6 py-4">
                     <Link href={`/admin/nodes/${node.identity.id}`} className="block">
-                      <div className="font-medium text-white group-hover:text-brand-blue transition-colors flex items-center gap-2">
+                      <div className="font-medium text-white group-hover:text-white transition-colors flex items-center gap-2">
                         <Server className="w-4 h-4 text-zinc-500" />
                         {node.identity.id}
                       </div>

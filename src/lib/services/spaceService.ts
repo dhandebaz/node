@@ -9,6 +9,7 @@ import {
   SpaceProject,
   SpaceDnsRecord
 } from "@/types/space";
+import { settingsService } from "./settingsService";
 
 // Mock Data Storage
 let GLOBAL_CONFIG: SpaceGlobalConfig = {
@@ -45,7 +46,7 @@ let MOCK_SERVICES: SpaceServiceProfile[] = [
     type: "Dedicated",
     status: "active",
     planName: "Pro Cloud",
-    dataCenterId: "DC-MUM-01",
+    dataCenterId: "DC-DEL-01",
     createdAt: "2023-12-05T10:00:00Z",
     limits: {
       storageGB: 100,
@@ -58,24 +59,26 @@ let MOCK_SERVICES: SpaceServiceProfile[] = [
   {
     id: "SVC-1002",
     userId: "USR-001",
-    type: "CDN",
+    type: "Shared",
     status: "active",
-    planName: "Global CDN",
-    dataCenterId: "global",
-    createdAt: "2023-12-06T11:00:00Z",
+    planName: "Starter",
+    dataCenterId: "DC-DEL-01",
+    createdAt: "2024-01-15T14:30:00Z",
     limits: {
-      storageGB: 0,
-      bandwidthGB: 5000,
-      cdnTrafficTier: "medium",
+      storageGB: 10,
+      bandwidthGB: 100,
+      vCPU: 1,
+      ramGB: 2,
+      dedicatedIP: false,
     },
   },
   {
     id: "SVC-1003",
-    userId: "USR-003", // The suspended user
-    type: "Shared",
-    status: "suspended",
-    planName: "Starter Shared",
-    dataCenterId: "DC-BLR-01",
+    userId: "USR-001",
+    type: "Dedicated",
+    status: "maintenance",
+    planName: "Enterprise",
+    dataCenterId: "DC-DEL-01",
     createdAt: "2023-11-25T14:00:00Z",
     limits: {
       storageGB: 10,
@@ -153,10 +156,14 @@ export const spaceService = {
 
   // Services
   async getAllServices(): Promise<SpaceServiceProfile[]> {
+    const isProduction = await settingsService.isProductionMode();
+    if (isProduction) return [];
     return MOCK_SERVICES;
   },
 
   async getUserServices(userId: string): Promise<SpaceServiceProfile[]> {
+    const isProduction = await settingsService.isProductionMode();
+    if (isProduction) return [];
     return MOCK_SERVICES.filter((s) => s.userId === userId);
   },
 

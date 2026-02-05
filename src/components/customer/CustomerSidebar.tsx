@@ -15,6 +15,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { UserProductProfiles, UserRoles } from "@/types/user";
+import { logoutAction } from "@/app/actions/auth";
 
 interface CustomerSidebarProps {
   roles: UserRoles;
@@ -188,7 +189,7 @@ export function CustomerSidebar({ roles, products }: CustomerSidebarProps) {
 
       {/* Footer */}
       <div className="p-4 border-t border-white/5">
-        <form action="/actions/logout" method="post">
+        <form action={logoutAction}>
             <button 
                 type="submit"
                 className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-lg text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-colors"

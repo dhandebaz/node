@@ -21,7 +21,7 @@ export default function AdminDashboardPage() {
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex items-center justify-between py-2 border-b border-zinc-800 last:border-0">
               <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-brand-blue" />
+                <div className="w-2 h-2 rounded-full bg-white" />
                 <span className="text-zinc-300 text-sm">User updated profile settings</span>
               </div>
               <span className="text-zinc-500 text-xs">2 mins ago</span>

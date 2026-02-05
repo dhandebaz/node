@@ -54,7 +54,7 @@ export default async function NodeProfilePage({
           {/* Overview */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
             <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-              <Activity className="w-5 h-5 text-brand-blue" />
+              <Activity className="w-5 h-5 text-white" />
               Overview
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -88,7 +88,7 @@ export default async function NodeProfilePage({
           {/* Timeline */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
             <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-brand-blue" />
+              <Calendar className="w-5 h-5 text-white" />
               Lifecycle Timeline
             </h2>
             

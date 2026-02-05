@@ -1,11 +1,16 @@
 
 import { Database, MapPin, CheckCircle, Server, Shield } from "lucide-react";
+import { COMPANY_CONFIG } from "@/lib/config/company";
 
 export const metadata = {
   title: "Data Centers",
 };
 
 export default function DataCentersPage() {
+  const dc = COMPANY_CONFIG.datacenters[0];
+  const available = dc.capacity.total - dc.capacity.active;
+  const utilization = ((dc.capacity.active / dc.capacity.total) * 100).toFixed(1);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -40,17 +45,17 @@ export default function DataCentersPage() {
                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
                     <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Capacity</div>
-                    <div className="text-xl font-bold text-white">500 Units</div>
+                    <div className="text-xl font-bold text-white">{dc.capacity.total} Units</div>
                     <div className="text-xs text-zinc-600 mt-1">Rack Space</div>
                   </div>
                   <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
                     <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Active Nodes</div>
-                    <div className="text-xl font-bold text-white">428 Units</div>
-                    <div className="text-xs text-green-500 mt-1">85% Utilization</div>
+                    <div className="text-xl font-bold text-white">{dc.capacity.active} Units</div>
+                    <div className="text-xs text-green-500 mt-1">{utilization}% Utilization</div>
                   </div>
                   <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
                     <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Available</div>
-                    <div className="text-xl font-bold text-white">72 Units</div>
+                    <div className="text-xl font-bold text-white">{available} Units</div>
                     <div className="text-xs text-zinc-600 mt-1">Ready for deployment</div>
                   </div>
                </div>
@@ -76,38 +81,8 @@ export default function DataCentersPage() {
             <h3 className="text-lg font-bold text-white px-1">Planned Expansion</h3>
             
             <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 opacity-75">
-                <div className="flex items-start justify-between mb-4">
-                    <div>
-                        <h4 className="font-bold text-white text-lg">Mumbai (Navi Mumbai)</h4>
-                        <span className="text-xs text-zinc-500">Proposed Location</span>
-                    </div>
-                    <span className="px-2 py-1 bg-zinc-800 text-zinc-400 text-xs font-bold rounded">PLANNED</span>
-                </div>
-                <div className="space-y-3 text-sm text-zinc-500">
-                    <div className="flex items-center gap-2">
-                        <Server className="w-4 h-4" />
-                        <span>High-density GPU Clusters</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>Site surveys completed</span>
-                    </div>
-                </div>
                 <div className="mt-4 pt-4 border-t border-zinc-800 text-xs text-zinc-600 italic">
-                    Timelines are subject to regulatory approval and demand. No pre-bookings accepted.
-                </div>
-            </div>
-
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 opacity-75">
-                <div className="flex items-start justify-between mb-4">
-                    <div>
-                        <h4 className="font-bold text-white text-lg">Bangalore (Whitefield)</h4>
-                        <span className="text-xs text-zinc-500">Proposed Location</span>
-                    </div>
-                    <span className="px-2 py-1 bg-zinc-800 text-zinc-400 text-xs font-bold rounded">PLANNED</span>
-                </div>
-                <div className="mt-4 pt-4 border-t border-zinc-800 text-xs text-zinc-600 italic">
-                    Early planning phase.
+                    Expansion plans are currently under review.
                 </div>
             </div>
         </div>

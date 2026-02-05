@@ -63,12 +63,12 @@ export function DCControls({ dc }: { dc: DataCenter }) {
                 type="number" 
                 value={capacityInput}
                 onChange={(e) => setCapacityInput(e.target.value)}
-                className="bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white w-full focus:outline-none focus:border-brand-blue"
+                className="bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white w-full focus:outline-none focus:border-white"
               />
               <button 
                 onClick={handleCapacityUpdate}
                 disabled={isLoading || parseInt(capacityInput) === dc.capacity.total}
-                className="bg-brand-blue text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-white text-black px-4 py-2 rounded hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               </button>
@@ -124,7 +124,7 @@ export function DCControls({ dc }: { dc: DataCenter }) {
               value={noteInput}
               onChange={(e) => setNoteInput(e.target.value)}
               placeholder="Add incident or maintenance note..."
-              className="bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white w-full focus:outline-none focus:border-brand-blue text-sm"
+              className="bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-white w-full focus:outline-none focus:border-white text-sm"
             />
             <button 
               onClick={handleAddNote}

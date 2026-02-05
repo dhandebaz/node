@@ -12,6 +12,44 @@
 let MOCK_USERS: User[] = [
   {
     identity: {
+      id: "ADMIN-001",
+      phone: "+91 9910778576",
+      email: "admin@nodebase.com",
+      createdAt: "2023-11-01T10:00:00Z",
+    },
+    status: {
+      account: "active",
+      kyc: "verified",
+    },
+    roles: {
+      isKaisaUser: true,
+      isSpaceUser: true,
+      isNodeParticipant: true,
+    },
+    metadata: {
+      tags: ["admin", "staff"],
+      notes: ["Super Admin User"],
+      lastActivity: new Date().toISOString(),
+    },
+    products: {
+      kaisa: {
+        businessType: "Technology",
+        activeModules: ["Bookings", "Inventory", "Staff"],
+        role: "owner",
+        status: "active",
+      },
+      space: {
+        hostingPlans: ["Pro Cloud", "Dedicated"],
+        status: "active",
+      },
+      node: {
+        nodeUnits: 10,
+        mouStatus: "signed",
+      }
+    },
+  },
+  {
+    identity: {
       id: "USR-001",
       phone: "+91 9876543210",
       email: "rahul@homestay.com",
@@ -53,6 +91,30 @@ let MOCK_USERS: User[] = [
     status: {
       account: "active",
       kyc: "pending",
+      kycDocuments: [
+        {
+          type: "PAN",
+          fileUrl: "/mock-docs/pan-card.jpg",
+          verified: false,
+          verificationDetails: {
+            name: "Rahul Sharma",
+            idNumber: "ABCDE1234F",
+            confidence: 0.95,
+            dob: "1990-01-01"
+          }
+        },
+        {
+          type: "AADHAAR",
+          fileUrl: "/mock-docs/aadhaar-front.jpg",
+          verified: false,
+          verificationDetails: {
+            name: "Rahul Kumar Sharma",
+            idNumber: "1234 5678 9012",
+            address: "123, Main Street, Delhi",
+            confidence: 0.88
+          }
+        }
+      ]
     },
     roles: {
       isKaisaUser: false,
@@ -107,9 +169,14 @@ let MOCK_AUDIT_LOGS: AuditLog[] = [];
 
 // Service Methods
 
+import { settingsService } from "./settingsService";
+
 export const userService = {
   async getUsers(filters?: UserFilterOptions): Promise<User[]> {
-    let users = [...MOCK_USERS];
+    const isProduction = await settingsService.isProductionMode();
+    // In production, return empty array for now (or real DB connection later)
+    // In mock mode, return the mock users
+    let users = isProduction ? [] : [...MOCK_USERS];
 
     if (filters) {
       // Search
@@ -175,6 +242,24 @@ export const userService = {
 
     const oldStatus = user.status.kyc;
     user.status.kyc = status;
+
+    // Auto-update document verification status based on global decision
+    if (status === "verified" && user.status.kycDocuments) {
+      user.status.kycDocuments.forEach(doc => {
+        doc.verified = true;
+        doc.verifiedAt = new Date().toISOString();
+      });
+    } else if (status === "rejected" && user.status.kycDocuments) {
+       // If rejected, we might want to mark them as failed or leave them as is with a reason
+       // For now, let's just leave them as unverified but ensuring they aren't marked as verified
+       user.status.kycDocuments.forEach(doc => {
+        doc.verified = false;
+        // In a real scenario, we might add the rejection reason to the document details
+        if (reason && doc.verificationDetails) {
+            doc.verificationDetails.reason = reason;
+        }
+      });
+    }
 
     await this.logAction(adminId, userId, "kyc_decision", `Changed KYC from ${oldStatus} to ${status}. ${reason ? `Reason: ${reason}` : ""}`);
     return true;

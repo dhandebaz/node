@@ -3,7 +3,7 @@
 
 import { kaisaService } from "@/lib/services/kaisaService";
 import { revalidatePath } from "next/cache";
-import { KaisaModuleType, KaisaBusinessType, KaisaRoleType } from "@/types/kaisa";
+import { KaisaModuleType, KaisaBusinessType, KaisaRoleType, IntegrationConfigDetails } from "@/types/kaisa";
 
 const ADMIN_ID = "admin-123";
 
@@ -36,6 +36,17 @@ export async function toggleIntegrationAction(name: string, enabled: boolean) {
   const success = await kaisaService.toggleIntegration(ADMIN_ID, name, enabled);
   if (success) revalidatePath("/admin/kaisa");
   return { success };
+}
+
+export async function updateIntegrationConfigAction(name: string, config: IntegrationConfigDetails) {
+  const success = await kaisaService.updateIntegrationConfig(ADMIN_ID, name, config);
+  if (success) revalidatePath("/admin/kaisa");
+  return { success };
+}
+
+export async function getIntegrationStatsAction(name: string) {
+  const stats = await kaisaService.getIntegrationStats(name);
+  return { stats };
 }
 
 export async function toggleUserKaisaStatusAction(userId: string, status: "active" | "paused") {

@@ -35,6 +35,10 @@ export async function getInvestorDocuments() {
   return await investorService.getDocuments(MOCK_USER_ID);
 }
 
+export async function getInvestorDocument(docId: string) {
+  return await investorService.getDocument(MOCK_USER_ID, docId);
+}
+
 // Support
 export async function getSupportTickets() {
   return await investorService.getTickets(MOCK_USER_ID);

@@ -21,6 +21,22 @@ export interface IntegrationConfig {
   webhookUrl?: string;
   status: "connected" | "disconnected" | "error";
   lastChecked?: string;
+  // Extended configuration fields
+  clientId?: string;     // PayPal, etc.
+  clientSecret?: string; // PayPal, Razorpay
+  vendorId?: string;     // Paddle
+  publicKey?: string;    // Paddle (Client-side token)
+  // Firebase specific fields
+  authDomain?: string;
+  projectId?: string;
+  storageBucket?: string;
+  messagingSenderId?: string;
+  appId?: string;
+  measurementId?: string;
+  // Twilio specific fields
+  accountSid?: string;
+  authToken?: string;
+  fromPhoneNumber?: string;
 }
 
 export interface FeatureFlag {
@@ -34,6 +50,7 @@ export interface FeatureFlag {
 }
 
 export interface PlatformSettings {
+  environment: "mock" | "production";
   maintenanceMode: boolean;
   readOnlyMode: boolean;
   signupEnabled: {

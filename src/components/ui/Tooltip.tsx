@@ -22,7 +22,7 @@ export function Tooltip({ content, children, icon = true }: TooltipProps) {
     >
       {children}
       {icon && (
-        <span className="ml-1.5 text-muted-foreground/60 hover:text-brand-blue cursor-help transition-colors">
+        <span className="ml-1.5 text-muted-foreground/60 hover:text-white cursor-help transition-colors">
           <Info className="w-4 h-4" />
         </span>
       )}

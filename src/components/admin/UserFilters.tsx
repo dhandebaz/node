@@ -40,7 +40,7 @@ export function UserFilters() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by ID, Phone, Email, or Tag..." 
-            className="w-full bg-zinc-950 border border-zinc-800 rounded-md pl-10 pr-4 py-2 text-white focus:outline-none focus:ring-1 focus:ring-brand-blue placeholder:text-zinc-600"
+            className="w-full bg-zinc-950 border border-zinc-800 rounded-md pl-10 pr-4 py-2 text-white focus:outline-none focus:ring-1 focus:ring-white placeholder:text-zinc-600"
           />
         </div>
         <button 

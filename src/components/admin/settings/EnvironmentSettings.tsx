@@ -18,6 +18,16 @@ export function EnvironmentSettingsPanel({ settings }: { settings: PlatformSetti
     setLoading(false);
   };
 
+  const toggleEnvironment = async () => {
+    const isProduction = settings.environment === "production";
+    const action = isProduction ? "Switch to MOCK" : "GO LIVE (Production)";
+    if (!confirm(`Are you sure you want to ${action}? This will completely change the data source for all users.`)) return;
+
+    setLoading(true);
+    await updatePlatformAction({ environment: isProduction ? "mock" : "production" });
+    setLoading(false);
+  };
+
   const toggleSignup = async (product: keyof PlatformSettings["signupEnabled"]) => {
     setLoading(true);
     await updateSignupAction(product, !settings.signupEnabled[product]);
@@ -32,6 +42,44 @@ export function EnvironmentSettingsPanel({ settings }: { settings: PlatformSetti
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Environment Control */}
+        <div className="md:col-span-2">
+            <div className={`p-6 rounded-lg border flex items-center justify-between transition-colors ${
+                settings.environment === "production"
+                ? "bg-green-900/10 border-green-900/50"
+                : "bg-blue-900/10 border-blue-900/50"
+            }`}>
+                <div>
+                    <div className="flex items-center gap-3">
+                        <h4 className="text-lg font-bold text-white">System Environment</h4>
+                        <span className={`px-2 py-0.5 text-xs font-bold rounded uppercase ${
+                            settings.environment === "production" 
+                            ? "bg-green-500 text-black" 
+                            : "bg-blue-500 text-white"
+                        }`}>
+                            {settings.environment === "production" ? "LIVE / PRODUCTION" : "MOCK / DEMO"}
+                        </span>
+                    </div>
+                    <p className="text-sm text-zinc-400 mt-1 max-w-2xl">
+                        {settings.environment === "production" 
+                            ? "System is running with real customer data. Mock data is hidden. All signups and transactions are real."
+                            : "System is in Mock Mode. Showing generated demo data for testing. Switch to Production to go live."}
+                    </p>
+                </div>
+                <button
+                    onClick={toggleEnvironment}
+                    disabled={loading}
+                    className={`px-6 py-3 rounded font-bold text-sm shadow-lg transition-all transform active:scale-95 ${
+                        settings.environment === "production"
+                        ? "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 border border-zinc-700"
+                        : "bg-green-600 text-white hover:bg-green-500 shadow-green-900/20"
+                    }`}
+                >
+                    {settings.environment === "production" ? "Switch to Mock Mode" : "GO LIVE (Enable Production)"}
+                </button>
+            </div>
+        </div>
+
         {/* Global Modes */}
         <div className="space-y-4">
             <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Global Modes</h4>

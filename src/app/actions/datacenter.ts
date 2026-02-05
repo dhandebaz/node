@@ -32,3 +32,12 @@ export async function addDCNoteAction(dcId: string, note: string) {
   }
   return { success };
 }
+
+export async function updateHardwareConfigAction(dcId: string, config: any) {
+  const result = await dcService.updateHardwareConfig(ADMIN_ID, dcId, config);
+  if (result.success) {
+    revalidatePath(`/admin/datacenters`);
+    revalidatePath(`/admin/datacenters/${dcId}`);
+  }
+  return result;
+}

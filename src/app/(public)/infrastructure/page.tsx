@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { COMPANY_CONFIG } from "@/lib/config/company";
 import { 
   Shield, 
   Zap, 
@@ -121,30 +122,32 @@ export default function InfrastructurePage() {
           <div className="max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 text-brand-green font-medium mb-8">
               <Globe className="w-5 h-5" />
-              <span>Pan-India Network</span>
+              <span>Strategic Location</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-12">Low Latency Across the Subcontinent</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-12">Centralized Power in Delhi</h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-left">
-              <div className="p-6 glass-card rounded-xl hover:bg-white/10 transition-colors">
-                <div className="w-2 h-2 rounded-full bg-brand-green mb-4 animate-pulse"></div>
-                <h3 className="font-bold text-lg">Mumbai</h3>
-                <p className="text-sm text-white/70">Primary Region</p>
-              </div>
-              <div className="p-6 glass-card rounded-xl hover:bg-white/10 transition-colors">
-                <div className="w-2 h-2 rounded-full bg-brand-green mb-4 animate-pulse"></div>
-                <h3 className="font-bold text-lg">Delhi NCR</h3>
-                <p className="text-sm text-white/70">Primary Region</p>
-              </div>
-              <div className="p-6 glass-card rounded-xl hover:bg-white/10 transition-colors">
-                <div className="w-2 h-2 rounded-full bg-brand-green mb-4 animate-pulse"></div>
-                <h3 className="font-bold text-lg">Bangalore</h3>
-                <p className="text-sm text-white/70">Edge Zone</p>
-              </div>
-              <div className="p-6 glass-card rounded-xl hover:bg-white/10 transition-colors">
-                <div className="w-2 h-2 rounded-full bg-brand-green mb-4 animate-pulse"></div>
-                <h3 className="font-bold text-lg">Hyderabad</h3>
-                <p className="text-sm text-white/70">Edge Zone</p>
+            <div className="flex justify-center">
+              <div className="p-8 glass-card rounded-2xl hover:bg-white/10 transition-colors max-w-md w-full">
+                <div className="flex items-center justify-between mb-6">
+                   <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-brand-green animate-pulse"></div>
+                      <h3 className="font-bold text-2xl">Okhla, Delhi</h3>
+                   </div>
+                   <span className="px-3 py-1 rounded-full bg-brand-green/20 text-brand-green text-xs font-bold border border-brand-green/20">
+                     HQ & Datacenter
+                   </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6 text-left border-t border-white/10 pt-6">
+                  <div>
+                     <p className="text-sm text-white/50 mb-1">Total Capacity</p>
+                     <p className="text-2xl font-bold text-white">{COMPANY_CONFIG.datacenters[0].capacity.total} Nodes</p>
+                  </div>
+                  <div>
+                     <p className="text-sm text-white/50 mb-1">Active Nodes</p>
+                     <p className="text-2xl font-bold text-brand-saffron">{COMPANY_CONFIG.datacenters[0].capacity.active} Online</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

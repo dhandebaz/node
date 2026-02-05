@@ -188,7 +188,7 @@ export default async function SpaceDashboardPage() {
             <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
                 <div className="flex items-center gap-3">
                     <Cloud className="w-5 h-5 text-zinc-400" />
-                    <span className="text-zinc-300">Mumbai Region</span>
+                    <span className="text-zinc-300">Delhi Region (HQ)</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-green-500 text-xs font-medium">
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />

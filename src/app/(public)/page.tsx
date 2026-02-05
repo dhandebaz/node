@@ -131,7 +131,7 @@ export default function Home() {
                 title: t("story.own.title"), 
                 desc: t("story.own.desc"), 
                 icon: HardDrive,
-                gradient: "from-brand-blue/20 to-transparent"
+                gradient: "from-white/20 to-transparent"
               },
               { 
                 title: t("story.india.title"), 

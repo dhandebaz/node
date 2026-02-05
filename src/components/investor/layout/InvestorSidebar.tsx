@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logoutAction } from "@/app/actions/auth";
 import { 
   LayoutDashboard, 
   Server, 
@@ -73,7 +74,10 @@ export function InvestorSidebar() {
             <p className="text-xs text-zinc-500 truncate">Node Investor</p>
           </div>
         </div>
-        <button className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-zinc-400 hover:text-red-400 hover:bg-red-900/10 rounded-lg transition-colors">
+        <button 
+          onClick={() => logoutAction()}
+          className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-zinc-400 hover:text-red-400 hover:bg-red-900/10 rounded-lg transition-colors"
+        >
           <LogOut className="w-3 h-3" />
           Sign Out
         </button>

@@ -102,7 +102,7 @@ export function KaisaUserList({ users }: { users: User[] }) {
                                 </div>
                             </td>
                             <td className="px-6 py-4 text-right">
-                                <Link href={`/admin/users/${user.identity.id}`} className="text-brand-blue hover:text-blue-400 text-xs font-medium">
+                                <Link href={`/admin/users/${user.identity.id}`} className="text-white hover:text-blue-400 text-xs font-medium">
                                     Manage
                                 </Link>
                             </td>

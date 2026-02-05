@@ -10,7 +10,7 @@ export default function CareersPage() {
       {/* Ambient Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-brand-saffron/20 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-brand-blue/20 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-white/20 rounded-full blur-3xl opacity-30"></div>
       </div>
 
       <PageHeader 
@@ -25,18 +25,18 @@ export default function CareersPage() {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto space-y-8">
             
-            <div className="glass-card p-8 rounded-2xl border-l-4 border-brand-blue hover:bg-white/5 transition-colors group cursor-pointer">
+            <div className="glass-card p-8 rounded-2xl border-l-4 border-white hover:bg-white/5 transition-colors group cursor-pointer">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-brand-blue transition-colors">Senior Frontend Engineer</h3>
-                  <p className="text-white/60 text-sm mt-1">Engineering • Mumbai • Remote Hybrid</p>
+                  <h3 className="text-xl font-bold text-white group-hover:text-white transition-colors">Senior Frontend Engineer</h3>
+                  <p className="text-white/60 text-sm mt-1">Engineering • Delhi • Remote Hybrid</p>
                 </div>
-                <Code2 className="w-6 h-6 text-brand-blue opacity-50 group-hover:opacity-100 transition-opacity" />
+                <Code2 className="w-6 h-6 text-white opacity-50 group-hover:opacity-100 transition-opacity" />
               </div>
               <p className="text-white/70 mb-6">
                 Build the next generation of cloud interfaces. Work with React, Next.js, and WebGL to create immersive, high-performance dashboards for our users.
               </p>
-              <div className="flex items-center gap-2 text-sm font-medium text-brand-blue">
+              <div className="flex items-center gap-2 text-sm font-medium text-white">
                 Apply Now <ArrowRight className="w-4 h-4" />
               </div>
             </div>
@@ -44,15 +44,15 @@ export default function CareersPage() {
             <div className="glass-card p-8 rounded-2xl border-l-4 border-brand-saffron hover:bg-white/5 transition-colors group cursor-pointer">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-brand-saffron transition-colors">AI Research Scientist</h3>
-                  <p className="text-white/60 text-sm mt-1">Research • Bangalore • On-site</p>
+                  <h3 className="text-xl font-bold text-white group-hover:text-white transition-colors">AI Research Scientist</h3>
+                  <p className="text-white/60 text-sm mt-1">Research • Delhi • On-site</p>
                 </div>
-                <BrainCircuit className="w-6 h-6 text-brand-saffron opacity-50 group-hover:opacity-100 transition-opacity" />
+                <BrainCircuit className="w-6 h-6 text-white opacity-50 group-hover:opacity-100 transition-opacity" />
               </div>
               <p className="text-white/70 mb-6">
                 Advance the state of Indic LLMs. Work on fine-tuning, tokenization strategies for Indian languages, and optimizing inference on H100 clusters.
               </p>
-              <div className="flex items-center gap-2 text-sm font-medium text-brand-saffron">
+              <div className="flex items-center gap-2 text-sm font-medium text-white">
                 Apply Now <ArrowRight className="w-4 h-4" />
               </div>
             </div>
@@ -60,15 +60,15 @@ export default function CareersPage() {
             <div className="glass-card p-8 rounded-2xl border-l-4 border-brand-green hover:bg-white/5 transition-colors group cursor-pointer">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-brand-green transition-colors">Infrastructure Operations Lead</h3>
-                  <p className="text-white/60 text-sm mt-1">Ops • Mumbai • On-site</p>
+                  <h3 className="text-xl font-bold text-white group-hover:text-white transition-colors">Infrastructure Operations Lead</h3>
+                  <p className="text-white/60 text-sm mt-1">Ops • Delhi • On-site</p>
                 </div>
-                <Server className="w-6 h-6 text-brand-green opacity-50 group-hover:opacity-100 transition-opacity" />
+                <Server className="w-6 h-6 text-white opacity-50 group-hover:opacity-100 transition-opacity" />
               </div>
               <p className="text-white/70 mb-6">
                 Manage our physical data center footprint. Oversee server deployment, network architecture, and ensure 99.99% uptime for our sovereign cloud.
               </p>
-              <div className="flex items-center gap-2 text-sm font-medium text-brand-green">
+              <div className="flex items-center gap-2 text-sm font-medium text-white">
                 Apply Now <ArrowRight className="w-4 h-4" />
               </div>
             </div>
