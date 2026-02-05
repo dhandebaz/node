@@ -10,9 +10,25 @@ export interface UserIdentity {
   createdAt: string; // ISO date string
 }
 
+export interface KYCDocument {
+  type: "PAN" | "AADHAAR";
+  fileUrl: string; // This would typically be a secure URL or path
+  verified: boolean;
+  verifiedAt?: string;
+  verificationDetails?: {
+    name?: string;
+    idNumber?: string;
+    dob?: string;
+    address?: string;
+    confidence: number;
+    reason?: string;
+  };
+}
+
 export interface UserStatus {
   account: AccountStatus;
   kyc: KYCStatus;
+  kycDocuments?: KYCDocument[];
 }
 
 export interface UserRoles {

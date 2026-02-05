@@ -15,7 +15,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>("en");
 
   const t = (key: TranslationKey): string => {
-    return translations[language][key] || key;
+    // Fallback to English if key is missing in current language
+    const langTranslations = translations[language] as Record<string, string>;
+    return langTranslations[key] || translations["en"][key as keyof typeof translations.en] || key;
   };
 
   return (

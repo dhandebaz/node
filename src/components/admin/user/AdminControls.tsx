@@ -9,7 +9,7 @@ import {
   addNoteAction, 
   updateTagsAction 
 } from "@/app/actions/user";
-import { Loader2, AlertTriangle, CheckCircle, XCircle, Plus, Tag } from "lucide-react";
+import { Loader2, AlertTriangle, CheckCircle, XCircle, Plus, Tag, FileText, ExternalLink } from "lucide-react";
 
 interface AdminControlsProps {
   user: User;
@@ -124,6 +124,41 @@ export function AdminControls({ user }: AdminControlsProps) {
           <div className="col-span-2 text-sm text-zinc-400 bg-zinc-950 p-3 rounded border border-zinc-800 mb-2">
             Current Status: <span className="text-white uppercase font-bold">{user.status.kyc.replace("_", " ")}</span>
           </div>
+          
+          {user.status.kycDocuments && user.status.kycDocuments.length > 0 && (
+            <div className="col-span-2 space-y-2 mb-2">
+                <h4 className="text-xs font-bold text-zinc-500 uppercase">Submitted Documents</h4>
+                {user.status.kycDocuments.map((doc, idx) => (
+                    <div key={idx} className="bg-zinc-950 p-3 rounded border border-zinc-800 flex items-start justify-between">
+                        <div>
+                            <div className="flex items-center gap-2 text-white font-medium text-sm">
+                                <FileText className="w-4 h-4 text-zinc-400" />
+                                {doc.type} Card
+                            </div>
+                            {doc.verificationDetails?.confidence && (
+                                <div className="mt-1 flex items-center gap-2">
+                                    <span className={`text-xs px-1.5 py-0.5 rounded border ${
+                                        doc.verified 
+                                            ? "bg-green-900/20 border-green-900/50 text-green-400" 
+                                            : "bg-red-900/20 border-red-900/50 text-red-400"
+                                    }`}>
+                                        AI Score: {Math.round(doc.verificationDetails.confidence * 100)}%
+                                    </span>
+                                    {doc.verified && <span className="text-xs text-zinc-500">Verified</span>}
+                                </div>
+                            )}
+                            {doc.verificationDetails?.name && (
+                                <div className="text-xs text-zinc-500 mt-1">Name: {doc.verificationDetails.name}</div>
+                            )}
+                        </div>
+                        <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:text-white">
+                            <ExternalLink className="w-4 h-4" />
+                        </a>
+                    </div>
+                ))}
+            </div>
+          )}
+
           <button
             onClick={() => handleKYCChange("verified")}
             disabled={isLoading}

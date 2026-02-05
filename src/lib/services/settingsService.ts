@@ -96,6 +96,10 @@ let SETTINGS: AppSettings = {
     sessionTimeoutMinutes: 60,
     adminAccessLocked: false,
   },
+  analytics: {
+    firebaseConfig: "",
+    enabled: false
+  }
 };
 
 let AUDIT_LOGS: SettingsAuditLog[] = [

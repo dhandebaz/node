@@ -404,6 +404,7 @@ export const translations = {
   hi: {
     "nav.products": "उत्पाद",
     "nav.infrastructure": "इंफ्रास्ट्रक्चर",
+    "nav.node": "नोड",
     "nav.company": "कंपनी",
     "nav.contact": "संपर्क",
 
@@ -411,6 +412,8 @@ export const translations = {
     "hero.headline": "nodebase",
     "hero.subheadline": "भारत का संप्रभु बुद्धिमत्ता और अवसंरचना मंच।",
     "hero.description": "आत्मनिर्भर भारत के लिए डिजिटल रीढ़ का निर्माण। अगली पीढ़ी के लिए संस्थागत स्तर की तकनीक।",
+    "hero.cta.primary": "नोड इंफ्रास्ट्रक्चर देखें",
+    "hero.cta.secondary": "मॉडल कैसे काम करता है",
 
     // Mission Section
     "mission.what.label": "मंच",

@@ -1,10 +1,11 @@
 
-import { 
+  import { 
   User, 
   UserFilterOptions, 
   AuditLog, 
   AccountStatus, 
-  KYCStatus 
+  KYCStatus,
+  KYCDocument
 } from "@/types/user";
 
 // Mock Data
@@ -35,6 +36,7 @@ let MOCK_USERS: User[] = [
         businessType: "Homestay",
         activeModules: ["Bookings", "Inventory"],
         role: "manager",
+        status: "active",
       },
       space: {
         hostingPlans: ["Pro Cloud"],
@@ -213,6 +215,39 @@ export const userService = {
         "status_change", 
         `Changed kaisa status from ${oldStatus} to ${status}`
     );
+    return true;
+  },
+
+  async addKYCDocument(userId: string, document: KYCDocument): Promise<boolean> {
+    const user = MOCK_USERS.find(u => u.identity.id === userId);
+    if (!user) return false;
+
+    if (!user.status.kycDocuments) {
+      user.status.kycDocuments = [];
+    }
+
+    user.status.kycDocuments.push(document);
+    
+    // Auto-update status if document is verified
+    if (document.verified) {
+      // If we have both verified PAN and Aadhaar, mark user as verified
+      const hasPan = user.status.kycDocuments.some(d => d.type === "PAN" && d.verified);
+      const hasAadhaar = user.status.kycDocuments.some(d => d.type === "AADHAAR" && d.verified);
+      
+      if (hasPan && hasAadhaar) {
+        user.status.kyc = "verified";
+      } else {
+        user.status.kyc = "pending";
+      }
+    }
+
+    await this.logAction(
+      "SYSTEM", 
+      userId, 
+      "kyc_decision", 
+      `Uploaded ${document.type} document. Verification status: ${document.verified ? "Verified" : "Pending/Failed"}`
+    );
+    
     return true;
   },
 

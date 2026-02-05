@@ -61,6 +61,7 @@ export interface ApiSettings {
   partnerApiEnabled: boolean;
   webhookOutgoingEnabled: boolean;
   rotationLastPerformed?: string;
+  geminiApiKey?: string;
 }
 
 export interface AnalyticsSettings {
@@ -76,6 +77,7 @@ export interface AppSettings {
   platform: PlatformSettings;
   notifications: NotificationSettings;
   security: SecuritySettings;
+  analytics: AnalyticsSettings;
 }
 
 export interface SettingsAuditLog {

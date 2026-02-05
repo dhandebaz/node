@@ -4,7 +4,7 @@
 import { SecuritySettings } from "@/types/settings";
 import { updateSecurityAction, forceLogoutAllAction } from "@/app/actions/settings";
 import { useState } from "react";
-import { ShieldAlert, LogOut, Clock, Lock } from "lucide-react";
+import { ShieldAlert, LogOut, Clock, Lock, AlertTriangle } from "lucide-react";
 
 export function SecuritySettingsPanel({ settings }: { settings: SecuritySettings }) {
   const [loading, setLoading] = useState(false);
@@ -93,9 +93,9 @@ export function SecuritySettingsPanel({ settings }: { settings: SecuritySettings
                     <span className="font-bold text-sm">Force Logout All Sessions</span>
                 </button>
             </div>
-            {settings.security?.forceLogoutTriggeredAt && (
+            {settings.forceLogoutTriggeredAt && (
                 <div className="text-center text-xs text-zinc-500">
-                    Last forced logout: {new Date(settings.security.forceLogoutTriggeredAt).toLocaleString()}
+                    Last forced logout: {new Date(settings.forceLogoutTriggeredAt).toLocaleString()}
                 </div>
             )}
         </div>
@@ -103,5 +103,3 @@ export function SecuritySettingsPanel({ settings }: { settings: SecuritySettings
     </div>
   );
 }
-
-import { AlertTriangle } from "lucide-react";

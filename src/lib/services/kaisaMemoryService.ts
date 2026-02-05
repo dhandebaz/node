@@ -56,7 +56,7 @@ export const kaisaMemoryService = {
       outcome: 0
     };
     
-    let lastLearnedAt = null;
+    let lastLearnedAt: string | null = null;
 
     userMemories.forEach(m => {
       byType[m.type]++;
