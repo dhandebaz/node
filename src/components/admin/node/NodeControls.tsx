@@ -94,7 +94,7 @@ export function NodeControls({ node }: { node: Node }) {
             </div>
 
             <div className="grid grid-cols-2 gap-2">
-                {(["draft", "signed", "active", "terminated"] as MoUStatus[]).map((status) => (
+                {(["draft", "signed", "active", "terminated", "pending", "not_signed"] as MoUStatus[]).map((status) => (
                     <button
                     key={status}
                     onClick={() => handleMoUChange(status)}

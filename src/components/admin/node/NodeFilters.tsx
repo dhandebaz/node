@@ -71,6 +71,8 @@ export function NodeFilters({ dcs }: { dcs: { id: string; name: string }[] }) {
         <option value="signed">Signed</option>
         <option value="active">Active</option>
         <option value="terminated">Terminated</option>
+        <option value="pending">Pending</option>
+        <option value="not_signed">Not Signed</option>
       </select>
     </div>
   );

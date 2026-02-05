@@ -17,6 +17,7 @@ import { userService } from "./userService"; // Reusing mock user store
 let GLOBAL_CONFIG: KaisaGlobalConfig = {
   systemStatus: "operational",
   roles: [
+    { type: "owner", priceMonthly: 0, enabled: true, inviteOnly: false },
     { type: "manager", priceMonthly: 299, enabled: true, inviteOnly: false },
     { type: "co-founder", priceMonthly: 999, enabled: true, inviteOnly: true },
   ],
@@ -82,7 +83,7 @@ export const kaisaService = {
       activeUsers: kaisaUsers.filter(u => u.status.account === "active").length,
       pausedUsers: kaisaUsers.filter(u => u.status.account === "suspended").length, // Mapping suspended to paused context
       byType: { Doctor: 0, Homestay: 0, Retail: 0, Other: 0 },
-      byRole: { manager: 0, "co-founder": 0 },
+      byRole: { owner: 0, manager: 0, "co-founder": 0 },
     };
 
     kaisaUsers.forEach(u => {

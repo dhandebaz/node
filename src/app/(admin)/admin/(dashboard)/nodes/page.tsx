@@ -147,11 +147,13 @@ function MoUBadge({ status }: { status: MoUStatus }) {
       signed: "text-blue-400",
       active: "text-green-400",
       terminated: "text-red-400",
+      pending: "text-amber-400",
+      not_signed: "text-zinc-600",
     };
     return (
         <span className={`flex items-center gap-1.5 text-xs font-medium ${styles[status]}`}>
             <FileText className="w-3 h-3" />
-            <span className="capitalize">{status}</span>
+            <span className="capitalize">{status.replace('_', ' ')}</span>
         </span>
     );
 }
