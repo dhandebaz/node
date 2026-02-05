@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import { MessageCircle, Mail, Calendar, CreditCard, ShoppingBag, Stethoscope } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Integrations - Kaisa AI Docs",
-  description: "Connect Kaisa AI with your favorite tools.",
+  title: "Integrations - kaisa AI Docs",
+  description: "Connect kaisa AI with your favorite tools.",
 };
 
 export default function Page() {
@@ -11,7 +11,7 @@ export default function Page() {
     <div className="prose prose-invert prose-lg max-w-none text-zinc-300">
       <h1 className="text-4xl font-bold text-white mb-6">Integrations</h1>
       <p className="lead text-xl text-zinc-400 mb-8">
-        Kaisa agents become powerful when connected to your business tools. We support a wide range of native integrations tailored for Indian businesses.
+        kaisa agents become powerful when connected to your business tools. We support a wide range of native integrations tailored for Indian businesses.
       </p>
 
       <h2 className="text-white mt-12 mb-6">Communication</h2>
@@ -24,7 +24,7 @@ export default function Page() {
           <div>
             <h3 className="text-lg font-bold text-white mb-1">WhatsApp Business</h3>
             <p className="text-sm text-zinc-400 mb-3">
-              The primary interface for Kaisa agents. Enable agents to read, reply, and manage WhatsApp conversations automatically.
+              The primary interface for kaisa agents. Enable agents to read, reply, and manage WhatsApp conversations automatically.
             </p>
             <ul className="text-sm text-zinc-500 list-disc list-inside">
               <li>Automatic reply handling</li>
@@ -56,7 +56,7 @@ export default function Page() {
           <div>
             <h3 className="text-lg font-bold text-white mb-1">Google Calendar</h3>
             <p className="text-sm text-zinc-400 mb-3">
-              Real-time slot checking and appointment booking. Kaisa respects your "Busy" status and working hours.
+              Real-time slot checking and appointment booking. kaisa respects your "Busy" status and working hours.
             </p>
           </div>
         </div>

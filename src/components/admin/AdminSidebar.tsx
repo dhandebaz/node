@@ -21,7 +21,7 @@ const navItems = [
   { name: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Users", href: "/admin/users", icon: Users },
   { name: "Data Centers", href: "/admin/datacenters", icon: Server },
-  { name: "Kaisa AI", href: "/admin/kaisa", icon: Bot },
+  { name: "kaisa AI", href: "/admin/kaisa", icon: Bot },
   { name: "Space", href: "/admin/space", icon: Cloud },
   { name: "Nodes", href: "/admin/nodes", icon: Database },
   { name: "Content", href: "/admin/content", icon: FileText },

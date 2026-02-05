@@ -99,7 +99,7 @@ export function SupportTicketList({ tickets }: { tickets: SupportTicket[] }) {
                             name="product"
                             className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500"
                         >
-                            <option value="kaisa">Kaisa AI</option>
+                            <option value="kaisa">kaisa AI</option>
                             <option value="space">Nodebase Space</option>
                             <option value="node">Node Infrastructure</option>
                         </select>

@@ -60,7 +60,7 @@ export default async function CustomerSupportPage() {
                 Quick Start Guides
               </h3>
               <ul className="space-y-2 text-sm text-zinc-400">
-                <li className="hover:text-blue-400 cursor-pointer">Getting started with Kaisa AI</li>
+                <li className="hover:text-blue-400 cursor-pointer">Getting started with kaisa AI</li>
                 <li className="hover:text-blue-400 cursor-pointer">Deploying your first Space Cloud site</li>
                 <li className="hover:text-blue-400 cursor-pointer">Managing billing and invoices</li>
               </ul>

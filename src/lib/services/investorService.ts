@@ -62,7 +62,7 @@ const MOCK_DOCS: InvestorDocument[] = [
       <h3>3. OBLIGATIONS OF THE PLATFORM</h3>
       <ul>
         <li><strong>Hosting & Maintenance:</strong> The Platform shall house the Nodes in its Tier-3 Data Center facility (Okhla, Delhi) and provide power, cooling, and network connectivity.</li>
-        <li><strong>Utilization:</strong> The Platform is authorized to lease the compute power to third-party clients (Kaisa AI, Space Cloud, etc.).</li>
+        <li><strong>Utilization:</strong> The Platform is authorized to lease the compute power to third-party clients (kaisa AI, Space Cloud, etc.).</li>
       </ul>
 
       <h3>4. REVENUE SHARING</h3>

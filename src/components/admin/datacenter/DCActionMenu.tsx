@@ -153,7 +153,7 @@ export function DCActionMenu({ dcId, dcName, currentConfig, currentCapacity }: D
 
             <div className="p-6 space-y-4">
               <div className="p-3 bg-purple-900/10 border border-purple-900/30 rounded text-xs text-purple-300 leading-relaxed">
-                By connecting this hardware, you enable <strong>Nodebase Space</strong> to deploy Kaisa AI agents directly to this datacenter's local infrastructure. Ensure the <strong>Node Agent</strong> is installed on the gateway server.
+                By connecting this hardware, you enable <strong>Nodebase Space</strong> to deploy kaisa AI agents directly to this datacenter's local infrastructure. Ensure the <strong>Node Agent</strong> is installed on the gateway server.
               </div>
 
               <div className="grid grid-cols-2 gap-4">

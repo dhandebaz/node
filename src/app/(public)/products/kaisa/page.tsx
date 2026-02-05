@@ -221,7 +221,7 @@ export default function KaisaPage() {
             
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a href="#configurator" className="px-8 py-4 bg-brand-saffron text-white rounded-full font-medium hover:bg-brand-saffron/90 transition-all shadow-lg shadow-brand-saffron/20 flex items-center gap-2">
-                Configure Kaisa
+                Configure kaisa
                 <ArrowRight className="w-4 h-4" />
               </a>
             </motion.div>
@@ -286,7 +286,7 @@ export default function KaisaPage() {
                   {/* Kaisa Employee Types */}
                   <div className="space-y-4 pt-6 border-t border-dashed border-white/10">
                     <label className="font-medium text-white/70 flex items-center gap-2 mb-4">
-                       <Users className="w-4 h-4" /> Kaisa Employee Types
+                       <Users className="w-4 h-4" /> kaisa Employee Types
                     </label>
                     <div className="grid grid-cols-1 gap-3">
                         {/* Frontdesk */}
@@ -577,7 +577,7 @@ export default function KaisaPage() {
               <div className="glass-card rounded-3xl overflow-hidden">
                   <div className="grid grid-cols-3 bg-white/5 p-5 font-bold text-sm md:text-base border-b border-white/10 text-white">
                       <div className="pl-4">Feature</div>
-                      <div className="text-center text-brand-saffron">Kaisa AI</div>
+                      <div className="text-center text-brand-saffron">kaisa AI</div>
                       <div className="text-center text-white/50">Human Manager</div>
                   </div>
                   <div className="divide-y divide-white/10 text-white/80 text-sm">

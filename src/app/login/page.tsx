@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowRight, Smartphone, ShieldCheck, Cpu, Cloud, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { Loader2, ArrowRight, Smartphone, ShieldCheck, Cpu, Cloud, Sparkles, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { sendOtpAction, verifyOtpAction } from "@/app/actions/auth";
 
@@ -11,7 +12,7 @@ type Product = "kaisa" | "space" | "node";
 const PRODUCTS = [
   { 
     id: "kaisa", 
-    name: "Kaisa AI", 
+    name: "kaisa AI", 
     description: "Agentic Managers for Business",
     icon: Sparkles, 
     color: "from-blue-500 to-cyan-500",
@@ -49,6 +50,8 @@ export default function LoginPage() {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showAdminSelection, setShowAdminSelection] = useState(false);
+  const [adminRedirects, setAdminRedirects] = useState<{ admin: string, sandbox: string }>({ admin: "/admin", sandbox: "/dashboard" });
 
   const activeProduct = PRODUCTS.find(p => p.id === selectedProduct)!;
 
@@ -79,8 +82,18 @@ export default function LoginPage() {
     try {
       // Pass the selected product as preference
       const res = await verifyOtpAction(phone, otp, selectedProduct);
-      if (res.success && res.redirect) {
-        router.push(res.redirect);
+      
+      if (res.success) {
+        if (res.isSuperAdmin) {
+            // Show Admin Selection
+            setAdminRedirects({
+                admin: "/admin",
+                sandbox: res.redirect || "/dashboard"
+            });
+            setShowAdminSelection(true);
+        } else if (res.redirect) {
+            router.push(res.redirect);
+        }
       } else {
         setError(res.message || "Invalid OTP");
       }
@@ -91,8 +104,60 @@ export default function LoginPage() {
     }
   };
 
+  if (showAdminSelection) {
+    return (
+        <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Background Gradients */}
+            <div className={`absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 opacity-10 blur-[100px]`} />
+            <div className={`absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-tl from-indigo-500 to-purple-500 opacity-10 blur-[100px]`} />
+
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden text-center"
+            >
+                <div className="w-16 h-16 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto mb-6">
+                    <ShieldCheck className="w-8 h-8 text-indigo-400" />
+                </div>
+                
+                <h2 className="text-2xl font-bold text-white mb-2">Admin Access Detected</h2>
+                <p className="text-zinc-400 mb-8">
+                    Welcome back. You can access the master admin dashboard or browse the customer portal in sandbox mode.
+                </p>
+
+                <div className="space-y-3">
+                    <button
+                        onClick={() => router.push(adminRedirects.admin)}
+                        className="w-full py-3.5 px-4 bg-white text-black font-semibold rounded-xl hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 group"
+                    >
+                        Enter Admin Dashboard
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                    
+                    <button
+                        onClick={() => router.push(adminRedirects.sandbox)}
+                        className="w-full py-3.5 px-4 bg-zinc-800 text-white font-medium rounded-xl hover:bg-zinc-700 transition-colors flex items-center justify-center gap-2 border border-zinc-700"
+                    >
+                        <Sparkles className="w-4 h-4 text-zinc-400" />
+                        Enter Sandbox Mode
+                    </button>
+                </div>
+            </motion.div>
+        </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Back to Home Button */}
+      <Link 
+        href="/" 
+        className="absolute top-8 left-8 z-50 flex items-center gap-2 text-zinc-400 hover:text-white transition-colors group"
+      >
+        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+        <span className="text-sm font-medium">Back to Nodebase</span>
+      </Link>
+
       {/* Background Gradients */}
       <div className={`absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br ${activeProduct.color} opacity-10 blur-[100px] transition-all duration-1000`} />
       <div className={`absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-tl ${activeProduct.color} opacity-10 blur-[100px] transition-all duration-1000`} />

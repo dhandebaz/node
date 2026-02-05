@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Agents API - Kaisa AI Docs",
-  description: "API reference for Kaisa AI Agents.",
+  title: "Agents API - kaisa AI Docs",
+  description: "API reference for kaisa AI Agents.",
 };
 
 export default function Page() {

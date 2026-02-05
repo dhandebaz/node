@@ -36,11 +36,11 @@ export async function getKaisaDashboardData() {
   const user = await getCurrentUser();
   if (!user.roles.isKaisaUser) throw new Error("Access Denied: Not a Kaisa user");
 
-  const [tasks, activity, credits, stats] = await Promise.all([
+  const [tasks, activity, credits, config] = await Promise.all([
     kaisaService.getUserTasks(user.identity.id),
     kaisaService.getUserActivityLog(user.identity.id),
     kaisaService.getCreditUsage(user.identity.id),
-    kaisaService.getStats() // Global stats for context if needed
+    kaisaService.getConfig()
   ]);
 
   return {
@@ -48,7 +48,8 @@ export async function getKaisaDashboardData() {
     profile: user.products.kaisa,
     tasks,
     activity,
-    credits
+    credits,
+    integrations: config.integrations
   };
 }
 

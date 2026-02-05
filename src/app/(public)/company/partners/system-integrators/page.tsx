@@ -30,7 +30,7 @@ export default function SystemIntegratorsPage() {
               <p className="text-lg text-white/70 mb-8 leading-relaxed">
                 As a System Integrator, you are the trusted advisor to your clients. By partnering with Nodebase, 
                 you can offer them the only sovereign cloud stack in India that is fully compliant with the DPDP Act 2023.
-                Unlock new revenue streams by deploying Kaisa AI agents and managing private cloud infrastructure.
+                Unlock new revenue streams by deploying kaisa AI agents and managing private cloud infrastructure.
               </p>
               
               <ul className="space-y-4">
@@ -38,7 +38,7 @@ export default function SystemIntegratorsPage() {
                   "Recurring revenue share on all managed compute",
                   "Priority access to H100 GPU clusters",
                   "Dedicated solution architect support",
-                  "White-label Kaisa AI capabilities"
+                  "White-label kaisa AI capabilities"
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle2 className="w-6 h-6 text-white shrink-0" />
@@ -60,7 +60,7 @@ export default function SystemIntegratorsPage() {
                 <Trophy className="w-8 h-8 text-brand-saffron mb-4" />
                 <h3 className="text-xl font-bold mb-2">Implementation</h3>
                 <p className="text-white/60">
-                  Deploy and configure Kaisa AI agents for customer support, sales, and operations.
+                  Deploy and configure kaisa AI agents for customer support, sales, and operations.
                 </p>
               </div>
               <div className="glass-card p-6 rounded-2xl border-l-4 border-brand-green">

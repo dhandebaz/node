@@ -96,9 +96,9 @@ export const translations = {
     "products.kaisa.name": "kaisa AI",
     "products.space.name": "nodebase Space",
 
-    // Kaisa AI Product Page
-    "kaisa.hero.title": "Meet Kaisa. Your new digital manager.",
-    "kaisa.hero.desc": "Kaisa handles the screen work so you can run your business. The first AI agent built specifically for Indian small businesses.",
+    // kaisa AI Product Page
+    "kaisa.hero.title": "Meet kaisa. Your new digital manager.",
+    "kaisa.hero.desc": "kaisa handles the screen work so you can run your business. The first AI agent built specifically for Indian small businesses.",
     
     "kaisa.how.title": "How Kaisa Works",
     "kaisa.how.step1": "Assign a Task",
@@ -468,7 +468,7 @@ export const translations = {
     "products.kaisa.name": "कैसा एआई",
     "products.space.name": "स्पेस",
 
-    // Kaisa AI Product Page
+    // kaisa AI Product Page
     "kaisa.hero.title": "मिलिए कैसा से। आपकी नई डिजिटल मैनेजर।",
     "kaisa.hero.desc": "कैसा स्क्रीन का काम संभालती है ताकि आप अपना व्यवसाय चला सकें। भारतीय छोटे व्यवसायों के लिए बनाया गया पहला एआई एजेंट।",
     

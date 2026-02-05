@@ -39,7 +39,7 @@ export default function TechnologyPartnersPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">API Integrations</h3>
               <p className="text-white/60">
-                Connect your platform with Kaisa AI agents and Space infrastructure. 
+                Connect your platform with kaisa AI agents and Space infrastructure. 
                 Enable seamless workflows for mutual customers.
               </p>
             </div>

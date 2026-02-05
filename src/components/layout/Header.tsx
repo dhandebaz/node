@@ -22,18 +22,25 @@ import {
   Server
 } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
+import { User as UserType } from "@/types/user";
 
-export function Header() {
+interface HeaderProps {
+  user?: UserType | null;
+}
+
+export function Header({ user }: HeaderProps) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const { scrollY } = useScroll();
   const { t } = useLanguage();
   
   // Auth State
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Derive login state from props
+  const isLoggedIn = !!user;
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
@@ -55,15 +62,6 @@ export function Header() {
     { name: "Space", href: "/products/space", glow: true },
     { name: t("nav.node"), href: "/node" },
   ];
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setShowDropdown(false);
-  };
 
   // Node Dashboard Link logic
   const nodeDashboardLink = {
@@ -150,8 +148,12 @@ export function Header() {
                   className="flex items-center gap-3 p-1 pl-3 pr-2 rounded-full bg-white border border-gray-200 hover:border-gray-300 transition-all shadow-sm group"
                 >
                   <div className="flex flex-col items-end mr-1 hidden sm:flex">
-                    <span className="text-xs font-bold leading-none text-black">Hudavid</span>
-                    <span className="text-[10px] text-gray-500 leading-none mt-1">Pro Plan</span>
+                    <span className="text-xs font-bold leading-none text-black">
+                      {user?.identity.email?.split('@')[0] || user?.identity.phone || 'User'}
+                    </span>
+                    <span className="text-[10px] text-gray-500 leading-none mt-1 capitalize">
+                      {user?.roles.isKaisaUser ? "Manager" : "User"}
+                    </span>
                   </div>
                   <div className="w-8 h-8 rounded-full bg-brand-saffron/10 text-brand-saffron flex items-center justify-center border border-brand-saffron/20">
                     <User className="w-4 h-4" />
@@ -168,7 +170,7 @@ export function Header() {
                       transition={{ duration: 0.1 }}
                       className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-black/5 overflow-hidden p-2"
                     >
-                      {/* User Info Header */}
+                      {/* User Info Header - Hidden for now as we don't have balance data
                       <div className="p-3 bg-gray-50 rounded-xl mb-2">
                          <div className="flex items-center justify-between mb-2">
                            <span className="text-xs font-medium text-muted-foreground">Active Balance</span>
@@ -179,25 +181,26 @@ export function Header() {
                            <span className="text-xs text-muted-foreground">.00</span>
                          </div>
                       </div>
+                      */}
 
                       <div className="space-y-1">
-                        <Link href="/node/dashboard" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-gray-50 hover:text-foreground rounded-lg transition-colors">
+                        <Link href="/node/dashboard" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-gray-50 hover:text-black rounded-lg transition-colors">
                           <Server className="w-4 h-4" />
                           Node Dashboard
                         </Link>
-                        <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-gray-50 hover:text-foreground rounded-lg transition-colors">
+                        <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-gray-50 hover:text-black rounded-lg transition-colors">
                           <LayoutDashboard className="w-4 h-4" />
                           Switch to Dashboard
                         </Link>
-                        <Link href="/billing" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-gray-50 hover:text-foreground rounded-lg transition-colors">
+                        <Link href="/billing" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-gray-50 hover:text-black rounded-lg transition-colors">
                           <CreditCard className="w-4 h-4" />
                           Billing & Plans
                         </Link>
-                        <Link href="/dashboard/settings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-gray-50 hover:text-foreground rounded-lg transition-colors">
+                        <Link href="/dashboard/settings" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-gray-50 hover:text-black rounded-lg transition-colors">
                           <Settings className="w-4 h-4" />
                           Settings
                         </Link>
-                        <Link href="/dashboard/support" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-gray-50 hover:text-foreground rounded-lg transition-colors">
+                        <Link href="/dashboard/support" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-gray-50 hover:text-black rounded-lg transition-colors">
                           <LifeBuoy className="w-4 h-4" />
                           Support
                         </Link>

@@ -142,7 +142,7 @@ export function AdminControls({ user }: AdminControlsProps) {
                 className="flex-1 py-2 rounded border border-blue-900/50 text-blue-400 bg-blue-900/10 hover:bg-blue-900/20 text-sm font-medium flex items-center justify-center gap-2"
             >
                 <ShieldCheck className="w-4 h-4" />
-                {showVerificationReport ? "Hide AI Report" : "Kaisa AI Verification"}
+                {showVerificationReport ? "Hide AI Report" : "kaisa AI Verification"}
             </button>
           </div>
           
@@ -150,7 +150,7 @@ export function AdminControls({ user }: AdminControlsProps) {
              <div className="col-span-2 bg-blue-950/30 border border-blue-900/50 rounded p-4 mb-2">
                 <h4 className="text-sm font-bold text-blue-400 mb-3 flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4" />
-                    Kaisa AI Verification Report
+                    kaisa AI Verification Report
                 </h4>
                 
                 {(!user.status.kycDocuments || user.status.kycDocuments.length === 0) ? (

@@ -16,27 +16,44 @@ import {
 } from "lucide-react";
 import { UserProductProfiles, UserRoles } from "@/types/user";
 import { logoutAction } from "@/app/actions/auth";
+import { KaisaCreditUsage } from "@/types/kaisa";
 
 interface CustomerSidebarProps {
   roles: UserRoles;
   products: UserProductProfiles;
+  kaisaCredits?: KaisaCreditUsage | null;
 }
 
-export function CustomerSidebar({ roles, products }: CustomerSidebarProps) {
+export function CustomerSidebar({ roles, products, kaisaCredits }: CustomerSidebarProps) {
   const pathname = usePathname();
 
   const isActive = (path: string) => pathname.startsWith(path);
+  const isKaisaDashboard = pathname.startsWith("/dashboard/kaisa");
 
   return (
     <aside className="w-64 fixed inset-y-0 left-0 z-50 bg-black/80 backdrop-blur-xl border-r border-white/10 flex flex-col">
       {/* Brand */}
       <div className="h-16 flex items-center px-6 border-b border-white/5">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-brand-saffron to-brand-red rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">N</span>
-          </div>
-          <span className="text-white font-bold tracking-tight">Nodebase</span>
-        </Link>
+        {isKaisaDashboard && kaisaCredits ? (
+           <div className="flex flex-col w-full">
+             <div className="flex items-center justify-between w-full mb-1">
+                <span className="text-xs text-zinc-400 font-medium uppercase tracking-wider">Wage Balance</span>
+             </div>
+             <div className="flex items-center justify-between">
+                <span className="text-xl font-bold text-white">₹{kaisaCredits.balance}</span>
+                <button className="text-xs bg-brand-saffron/10 text-brand-saffron hover:bg-brand-saffron/20 px-2 py-1 rounded transition-colors font-medium">
+                  Top Up
+                </button>
+             </div>
+           </div>
+        ) : (
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-brand-saffron to-brand-red rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">N</span>
+            </div>
+            <span className="text-white font-bold tracking-tight">Nodebase</span>
+          </Link>
+        )}
       </div>
 
       {/* Navigation */}
