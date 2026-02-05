@@ -1,4 +1,7 @@
 
+import { KaisaRoleType } from "./kaisa";
+import { MoUStatus } from "./node";
+
 export type AccountStatus = "active" | "suspended" | "blocked";
 export type KYCStatus = "not_started" | "pending" | "verified" | "rejected";
 export type ProductType = "kaisa" | "space" | "node";
@@ -46,7 +49,7 @@ export interface UserMetadata {
 export interface KaisaProfile {
   businessType: string;
   activeModules: string[];
-  role: "manager" | "co-founder";
+  role: KaisaRoleType;
   status: "active" | "paused";
 }
 
@@ -58,7 +61,7 @@ export interface SpaceProfile {
 export interface NodeProfile {
   nodeUnits: number;
   dataCenterMapped?: string;
-  mouStatus: "signed" | "pending" | "not_signed";
+  mouStatus: MoUStatus;
 }
 
 export interface UserProductProfiles {

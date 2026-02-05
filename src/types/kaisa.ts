@@ -1,6 +1,6 @@
 
 export type KaisaBusinessType = "Doctor" | "Homestay" | "Retail" | "Other";
-export type KaisaRoleType = "manager" | "co-founder";
+export type KaisaRoleType = "owner" | "manager" | "co-founder";
 export type KaisaModuleType = "Frontdesk" | "Billing" | "Social Media" | "CRM" | "Inventory";
 
 export interface KaisaRoleConfig {

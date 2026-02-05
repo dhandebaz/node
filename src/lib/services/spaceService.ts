@@ -7,7 +7,8 @@ import {
   SpacePlanConfig,
   SpaceResourceLimits,
   SpaceProject,
-  SpaceDnsRecord
+  SpaceDnsRecord,
+  SpaceServiceStatus
 } from "@/types/space";
 import { settingsService } from "./settingsService";
 
@@ -76,7 +77,7 @@ let MOCK_SERVICES: SpaceServiceProfile[] = [
     id: "SVC-1003",
     userId: "USR-001",
     type: "Dedicated",
-    status: "maintenance",
+    status: "maintenance" as SpaceServiceStatus,
     planName: "Enterprise",
     dataCenterId: "DC-DEL-01",
     createdAt: "2023-11-25T14:00:00Z",

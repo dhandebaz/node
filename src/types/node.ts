@@ -1,6 +1,6 @@
 
 export type NodeStatus = "pending" | "deploying" | "active" | "paused" | "retired";
-export type MoUStatus = "draft" | "signed" | "active" | "terminated";
+export type MoUStatus = "draft" | "signed" | "active" | "terminated" | "pending" | "not_signed";
 
 export interface NodeIdentity {
   id: string; // Immutable, e.g., ND-DEL-101
