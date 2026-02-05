@@ -1,6 +1,6 @@
 
 export type SpacePlanType = "shared" | "dedicated" | "cdn";
-export type SpaceServiceStatus = "active" | "suspended" | "provisioning" | "terminated";
+export type SpaceServiceStatus = "active" | "suspended" | "provisioning" | "terminated" | "maintenance";
 export type SpaceHostingType = "Shared" | "Dedicated" | "CDN";
 
 export interface SpacePlanConfig {
