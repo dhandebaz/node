@@ -96,7 +96,7 @@ export const kaisaService = {
       }
     });
 
-    return true;
+    return stats;
   },
 
   async toggleModule(
