@@ -135,7 +135,18 @@ export default function LoginPage() {
 
     } catch (firebaseError: any) {
       console.error("Firebase OTP failed:", firebaseError);
-      setError(firebaseError.message || "Failed to send OTP. Please try again.");
+      
+      let errorMessage = firebaseError.message || "Failed to send OTP. Please try again.";
+      
+      if (firebaseError.code === 'auth/billing-not-enabled') {
+          errorMessage = "This project requires the 'Blaze' (Pay as you go) plan to use Phone Authentication. Please upgrade in Firebase Console.";
+      } else if (firebaseError.code === 'auth/quota-exceeded') {
+          errorMessage = "SMS quota exceeded for this project. Please upgrade to the Blaze plan.";
+      } else if (firebaseError.code === 'auth/invalid-phone-number') {
+          errorMessage = "Invalid phone number format. Please use correct format (e.g. +91...)";
+      }
+
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
