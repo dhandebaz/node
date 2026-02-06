@@ -212,6 +212,28 @@ export const nodeService = {
     return { success: true };
   },
 
+  async getAuditLogs(nodeId: string): Promise<NodeAuditLog[]> {
+    const { data, error } = await supabaseAdmin
+      .from("admin_audit_logs")
+      .select("*")
+      .eq("target_resource", "node")
+      .eq("target_id", nodeId)
+      .order("timestamp", { ascending: false });
+
+    if (error) return [];
+
+    return data.map((log: any) => ({
+      id: log.id,
+      targetNodeId: log.target_id,
+      adminId: log.admin_id,
+      actionType: log.action_type,
+      details: log.details,
+      previousValue: log.previous_value ? JSON.parse(log.previous_value) : undefined,
+      newValue: log.new_value ? JSON.parse(log.new_value) : undefined,
+      timestamp: log.timestamp
+    }));
+  },
+
   async logAction(log: Omit<NodeAuditLog, "id" | "timestamp">) {
     await supabaseAdmin.from("admin_audit_logs").insert({
       admin_id: log.adminId,

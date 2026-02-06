@@ -138,7 +138,7 @@ export default function NodeProfilePage() {
                {logs.length === 0 ? (
                  <div className="p-4 text-center text-zinc-500 text-sm">No recorded actions.</div>
                ) : (
-                 logs.map((log) => (
+                 logs.map((log: NodeAuditLog) => (
                    <div key={log.id} className="p-3 text-sm flex justify-between items-start hover:bg-zinc-900/50">
                      <div>
                        <span className="block text-zinc-300 font-medium capitalize mb-0.5">{log.actionType.replace(/_/g, " ")}</span>
