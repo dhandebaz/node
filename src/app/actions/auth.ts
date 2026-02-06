@@ -63,6 +63,11 @@ async function getOrCreateUser(phone: string) {
 
 export async function loginWithFirebaseToken(idToken: string, preferredProduct?: string) {
   try {
+    if (!firebaseAdmin.apps.length) {
+        console.error("Firebase Admin apps length is 0. Initialization failed.");
+        return { success: false, message: "Server Configuration Error: Firebase Admin not initialized." };
+    }
+
     // 1. Verify Token
     const decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
     const phone = decodedToken.phone_number;
@@ -89,9 +94,10 @@ export async function loginWithFirebaseToken(idToken: string, preferredProduct?:
 
     return { success: true, redirect: redirectPath, isSuperAdmin: user.role === "superadmin" || user.role === "admin" };
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Firebase Login Error:", error);
-    return { success: false, message: "Authentication failed." };
+    // Return specific error message for debugging
+    return { success: false, message: error.message || "Authentication failed." };
   }
 }
 
