@@ -3,10 +3,16 @@
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { getSession } from "@/lib/auth/session";
 import { revalidatePath } from "next/cache";
+import { kaisaService } from "@/lib/services/kaisaService";
+import { IntegrationConfigDetails, KaisaModuleType, KaisaBusinessType, KaisaRoleType } from "@/types/kaisa";
 
 // --- Types ---
-export type KaisaBusinessType = "Doctor" | "Homestay" | "Retail" | "Other";
-export type KaisaRoleType = "manager" | "co-founder";
+// KaisaBusinessType and KaisaRoleType are imported from types/kaisa now to avoid duplication/conflicts if they match
+// But since they were defined here before, let's keep the exports if other files rely on importing them from here.
+// However, good practice is to import from types file.
+// Let's check if we need to export them again.
+// The file kaisa.ts exported them.
+// Let's keep the re-export or definition.
 
 // --- Actions ---
 
@@ -120,5 +126,67 @@ export async function updateKaisaTaskStatus(taskId: string, status: string) {
 
   if (error) return { success: false, message: "Failed to update task" };
   revalidatePath("/dashboard/kaisa");
+  return { success: true };
+}
+
+export async function getIntegrationStatsAction(name: string) {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
+
+  const stats = await kaisaService.getIntegrationStats(name);
+  return { success: true, stats };
+}
+
+export async function setSystemStatusAction(status: "operational" | "paused") {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
+
+  await kaisaService.setSystemStatus(session.userId, status);
+  revalidatePath("/admin/dashboard/kaisa");
+  return { success: true };
+}
+
+export async function toggleIntegrationAction(name: string, enabled: boolean) {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
+
+  await kaisaService.toggleIntegration(session.userId, name, enabled);
+  revalidatePath("/admin/dashboard/kaisa");
+  return { success: true };
+}
+
+export async function updateIntegrationConfigAction(name: string, config: IntegrationConfigDetails) {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
+
+  await kaisaService.updateIntegrationConfig(session.userId, name, config);
+  revalidatePath("/admin/dashboard/kaisa");
+  return { success: true };
+}
+
+export async function toggleModuleAction(type: KaisaModuleType, enabledGlobal: boolean, enabledFor?: KaisaBusinessType[]) {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
+
+  await kaisaService.toggleModule(session.userId, type, enabledGlobal, enabledFor);
+  revalidatePath("/admin/dashboard/kaisa");
+  return { success: true };
+}
+
+export async function updateRoleConfigAction(type: KaisaRoleType, updates: { enabled?: boolean; inviteOnly?: boolean }) {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
+
+  await kaisaService.updateRoleConfig(session.userId, type, updates);
+  revalidatePath("/admin/dashboard/kaisa");
+  return { success: true };
+}
+
+export async function toggleUserKaisaStatusAction(userId: string, status: "active" | "paused") {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
+
+  await kaisaService.toggleUserKaisaStatus(session.userId, userId, status);
+  revalidatePath("/admin/dashboard/kaisa");
   return { success: true };
 }

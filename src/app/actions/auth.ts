@@ -1,6 +1,6 @@
 "use server";
 
-import { createSession } from "@/lib/auth/session";
+import { createSession, deleteSession } from "@/lib/auth/session";
 import { firebaseAdmin } from "@/lib/firebase/admin";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -101,6 +101,11 @@ export async function sendBackupOtp(phone: string) {
     console.error("Backup OTP Error:", error);
     return { success: false, message: "Failed to send backup OTP." };
   }
+}
+
+export async function adminLogoutAction() {
+  await deleteSession();
+  redirect("/login");
 }
 
 export async function logoutAction() {
