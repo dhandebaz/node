@@ -63,13 +63,19 @@ export const geminiService = {
       const jsonStr = text.replace(/```json\n?|\n?```/g, "").trim();
       
       return JSON.parse(jsonStr) as VerificationResult;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Gemini Verification Error:", error);
+      
+      const isConfigError = error.message?.includes("API key");
+      const reason = isConfigError 
+        ? "System Configuration Error: Gemini API Key missing or invalid." 
+        : "Verification process failed due to technical error.";
+
       return {
         isValid: false,
         documentType: "UNKNOWN",
         confidence: 0,
-        reason: "Verification process failed due to technical error",
+        reason,
       };
     }
   }

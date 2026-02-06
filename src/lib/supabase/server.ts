@@ -3,11 +3,15 @@ import { cookies } from 'next/headers';
 
 // Access environment variables securely
 const getSupabaseEnv = () => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceRoleKey) {
-    throw new Error('Supabase URL and Service Role Key are required');
+    const missing = [];
+    if (!url) missing.push("NEXT_PUBLIC_SUPABASE_URL");
+    if (!serviceRoleKey) missing.push("SUPABASE_SERVICE_ROLE_KEY");
+    
+    throw new Error(`Server Configuration Error: Missing Supabase env vars: ${missing.join(", ")}`);
   }
 
   return { url, serviceRoleKey };

@@ -1,5 +1,7 @@
 import * as admin from 'firebase-admin';
 
+let adminInitializationError: string | null = null;
+
 if (!admin.apps.length) {
   try {
     const projectId = process.env.FIREBASE_PROJECT_ID;
@@ -15,16 +17,25 @@ if (!admin.apps.length) {
         }),
       });
     } else {
-      console.warn("Firebase Admin: Missing environment variables (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY). Skipping initialization.");
+      const missing = [];
+      if (!projectId) missing.push("FIREBASE_PROJECT_ID");
+      if (!clientEmail) missing.push("FIREBASE_CLIENT_EMAIL");
+      if (!privateKey) missing.push("FIREBASE_PRIVATE_KEY");
+      
+      adminInitializationError = `Missing server env vars: ${missing.join(", ")}`;
+      console.warn(`Firebase Admin: ${adminInitializationError}`);
     }
-  } catch (error) {
+  } catch (error: any) {
+    adminInitializationError = error.message || "Initialization threw error";
     console.error("Firebase Admin Initialization Failed:", error);
   }
 }
 
 export const firebaseAdmin = admin;
+export { adminInitializationError };
+
 // Safe export: if initialization failed, accessing auth methods will throw runtime error instead of crash at startup
 export const firebaseAuth = admin.apps.length ? admin.auth() : {
-  verifyIdToken: async () => { throw new Error("Firebase Admin not initialized correctly"); },
-  getUser: async () => { throw new Error("Firebase Admin not initialized correctly"); },
+  verifyIdToken: async () => { throw new Error(adminInitializationError || "Firebase Admin not initialized correctly"); },
+  getUser: async () => { throw new Error(adminInitializationError || "Firebase Admin not initialized correctly"); },
 } as unknown as admin.auth.Auth;
