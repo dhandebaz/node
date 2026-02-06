@@ -66,7 +66,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     // Initialize Recaptcha
-    if (!recaptchaVerifierRef.current) {
+    if (!recaptchaVerifierRef.current && auth) {
         try {
             recaptchaVerifierRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
                 'size': 'invisible',
@@ -77,6 +77,8 @@ export default function LoginPage() {
         } catch (e) {
             console.error("Recaptcha Init Error:", e);
         }
+    } else if (!auth) {
+        console.warn("Firebase Auth not initialized. Login may fail.");
     }
     
     return () => {

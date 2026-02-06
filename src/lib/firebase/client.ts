@@ -19,18 +19,31 @@ let analytics: Analytics | undefined;
 
 // Only execute on the client side
 if (typeof window !== "undefined") {
-  // Guard against duplicate initialization
-  app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-  
-  // Initialize Auth
-  auth = getAuth(app);
-  
-  // Initialize Analytics conditionally
-  isSupported().then((supported) => {
-    if (supported && app) {
-      analytics = getAnalytics(app);
+  try {
+    // Check for required keys before initializing
+    if (firebaseConfig.apiKey && firebaseConfig.authDomain) {
+        // Guard against duplicate initialization
+        app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+        
+        // Initialize Auth
+        auth = getAuth(app);
+        
+        // Initialize Analytics conditionally
+        isSupported().then((supported) => {
+            if (supported && app) {
+                try {
+                    analytics = getAnalytics(app);
+                } catch (e) {
+                    console.warn("Firebase Analytics init failed:", e);
+                }
+            }
+        }).catch(e => console.warn("Firebase Analytics check failed:", e));
+    } else {
+        console.warn("Firebase Client: Missing required environment variables (API Key, Auth Domain). Skipping initialization.");
     }
-  });
+  } catch (e) {
+      console.error("Firebase Client Initialization Failed:", e);
+  }
 } else {
     // Server-side: export undefined or safe mocks if strictly necessary.
     // However, since we are using these in Client Components (useEffect), 
