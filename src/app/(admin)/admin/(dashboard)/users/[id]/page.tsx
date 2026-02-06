@@ -7,7 +7,7 @@ import { getUserDetailData } from "@/app/actions/admin-data";
 import { AdminControls } from "@/components/admin/user/AdminControls";
 import { KaisaStatusControl } from "@/components/admin/user/KaisaStatusControl";
 import { SpaceServiceControl } from "@/components/admin/space/SpaceServiceControl";
-import { User, KaisaProfile, SpaceProfile, NodeProfile } from "@/types/user";
+import { User, KaisaProfile, SpaceProfile, NodeProfile, AuditLog } from "@/types/user";
 import { ArrowLeft, User as UserIcon, Calendar, Phone, Mail, Box, Server, Cpu, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { NodeStatus } from "@/types/node";
@@ -207,7 +207,7 @@ export default function UserProfilePage() {
                {auditLogs.length === 0 ? (
                  <div className="p-4 text-center text-zinc-500 text-sm">No recorded actions.</div>
                ) : (
-                 auditLogs.map((log) => (
+                 auditLogs.map((log: AuditLog) => (
                    <div key={log.id} className="p-3 text-sm flex justify-between items-start hover:bg-zinc-900/50">
                      <div>
                        <span className="block text-zinc-300 font-medium capitalize mb-0.5">{log.actionType.replace("_", " ")}</span>

@@ -7,6 +7,7 @@ import { DCControls } from "@/components/admin/datacenter/DCControls";
 import { ArrowLeft, MapPin, Calendar, Server, Activity, Cpu, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { getDatacenterDetailData } from "@/app/actions/admin-data";
+import { DCAuditLog } from "@/types/datacenter";
 
 export default function DataCenterProfilePage() {
   const params = useParams();
@@ -118,7 +119,7 @@ export default function DataCenterProfilePage() {
                {logs.length === 0 ? (
                  <div className="p-4 text-center text-zinc-500 text-sm">No recorded actions.</div>
                ) : (
-                 logs.map((log) => (
+                 logs.map((log: DCAuditLog) => (
                    <div key={log.id} className="p-3 text-sm flex justify-between items-start hover:bg-zinc-900/50">
                      <div>
                        <span className="block text-zinc-300 font-medium capitalize mb-0.5">{log.actionType.replace("_", " ")}</span>

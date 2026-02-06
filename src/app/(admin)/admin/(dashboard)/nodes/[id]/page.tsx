@@ -6,7 +6,7 @@ import { useParams, notFound } from "next/navigation";
 import { NodeControls } from "@/components/admin/node/NodeControls";
 import { ArrowLeft, Server, Calendar, User, FileText, Activity, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { NodeStatus } from "@/types/node";
+import { NodeStatus, NodeAuditLog } from "@/types/node";
 import { getNodeDetailData } from "@/app/actions/admin-data";
 
 export default function NodeProfilePage() {
