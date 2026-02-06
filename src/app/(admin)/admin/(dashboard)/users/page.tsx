@@ -1,24 +1,45 @@
 
-import { userService } from "@/lib/services/userService";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { getUsersPageData } from "@/app/actions/admin-data";
 import { UserFilters } from "@/components/admin/UserFilters";
 import { AccountStatus, KYCStatus, ProductType } from "@/types/user";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Loader2 } from "lucide-react";
 import Link from "next/link";
 
-export default async function AdminUsersPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const params = await searchParams;
-  const filters = {
-    search: typeof params.search === "string" ? params.search : undefined,
-    product: typeof params.product === "string" ? (params.product as ProductType) : undefined,
-    kycStatus: typeof params.kycStatus === "string" ? (params.kycStatus as KYCStatus) : undefined,
-    accountStatus: typeof params.accountStatus === "string" ? (params.accountStatus as AccountStatus) : undefined,
-  };
+export default function AdminUsersPage() {
+  const searchParams = useSearchParams();
+  const [users, setUsers] = useState<Awaited<ReturnType<typeof getUsersPageData>>>([]);
+  const [loading, setLoading] = useState(true);
 
-  const users = await userService.getUsers(filters);
+  const search = searchParams.get("search") || undefined;
+  const product = searchParams.get("product") as ProductType || undefined;
+  const kycStatus = searchParams.get("kycStatus") as KYCStatus || undefined;
+  const accountStatus = searchParams.get("accountStatus") as AccountStatus || undefined;
+
+  useEffect(() => {
+    setLoading(true);
+    const filters = {
+      search,
+      product,
+      kycStatus,
+      accountStatus,
+    };
+    getUsersPageData(filters).then((data) => {
+      setUsers(data);
+      setLoading(false);
+    });
+  }, [search, product, kycStatus, accountStatus]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

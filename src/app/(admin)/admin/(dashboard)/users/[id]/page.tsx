@@ -1,30 +1,46 @@
 
-import { userService } from "@/lib/services/userService";
-import { nodeService } from "@/lib/services/nodeService";
-import { getUserSpaceServicesAction } from "@/app/actions/space";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, notFound } from "next/navigation";
+import { getUserDetailData } from "@/app/actions/admin-data";
 import { AdminControls } from "@/components/admin/user/AdminControls";
 import { KaisaStatusControl } from "@/components/admin/user/KaisaStatusControl";
 import { SpaceServiceControl } from "@/components/admin/space/SpaceServiceControl";
 import { User, KaisaProfile, SpaceProfile, NodeProfile } from "@/types/user";
-import { ArrowLeft, User as UserIcon, Calendar, Phone, Mail, Box, Server, Cpu } from "lucide-react";
+import { ArrowLeft, User as UserIcon, Calendar, Phone, Mail, Box, Server, Cpu, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { NodeStatus } from "@/types/node";
 
-export default async function UserProfilePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const user = await userService.getUserById(id);
-  const auditLogs = await userService.getAuditLogs(id);
-  const nodes = await nodeService.getByUserId(id);
-  const spaceServices = await getUserSpaceServicesAction(id);
+export default function UserProfilePage() {
+  const params = useParams();
+  const id = params?.id as string;
+  
+  const [data, setData] = useState<Awaited<ReturnType<typeof getUserDetailData>> | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!user) {
-    notFound();
+  useEffect(() => {
+    if (!id) return;
+    
+    getUserDetailData(id).then((res) => {
+      setData(res);
+      setLoading(false);
+    });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
+      </div>
+    );
   }
+
+  if (!data || !data.user) {
+    return notFound();
+  }
+
+  const { user, auditLogs, nodes, spaceServices } = data;
 
   return (
     <div className="space-y-6">

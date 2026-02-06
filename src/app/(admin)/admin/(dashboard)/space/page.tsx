@@ -1,4 +1,8 @@
 
+"use client";
+
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { 
   getSpaceStatsAction, 
   getSpaceConfigAction, 
@@ -10,13 +14,36 @@ import { SpacePlanGovernance } from "@/components/admin/space/SpacePlanGovernanc
 import { SpaceUserList } from "@/components/admin/space/SpaceUserList";
 import { SpaceAuditLogView } from "@/components/admin/space/SpaceAuditLog";
 
-export default async function SpaceAdminPage() {
-  const [stats, config, services, logs] = await Promise.all([
-    getSpaceStatsAction(),
-    getSpaceConfigAction(),
-    getAllSpaceServicesAction(),
-    getSpaceAuditLogsAction()
-  ]);
+export default function SpaceAdminPage() {
+  const [data, setData] = useState<{
+    stats: Awaited<ReturnType<typeof getSpaceStatsAction>>;
+    config: Awaited<ReturnType<typeof getSpaceConfigAction>>;
+    services: Awaited<ReturnType<typeof getAllSpaceServicesAction>>;
+    logs: Awaited<ReturnType<typeof getSpaceAuditLogsAction>>;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      getSpaceStatsAction(),
+      getSpaceConfigAction(),
+      getAllSpaceServicesAction(),
+      getSpaceAuditLogsAction()
+    ]).then(([stats, config, services, logs]) => {
+      setData({ stats, config, services, logs });
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading || !data) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  const { stats, config, services, logs } = data;
 
   return (
     <div className="p-6 space-y-8 max-w-[1600px] mx-auto">

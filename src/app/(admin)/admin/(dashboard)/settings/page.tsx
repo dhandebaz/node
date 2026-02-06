@@ -1,4 +1,8 @@
 
+"use client";
+
+import { useEffect, useState } from "react";
+import { Loader2, Settings } from "lucide-react";
 import { getAppSettingsAction, getSettingsAuditLogsAction } from "@/app/actions/settings";
 import { AuthSettingsPanel } from "@/components/admin/settings/AuthSettings";
 import { IntegrationSettingsPanel } from "@/components/admin/settings/IntegrationSettings";
@@ -8,15 +12,33 @@ import { NotificationSettingsPanel } from "@/components/admin/settings/Notificat
 import { SecuritySettingsPanel } from "@/components/admin/settings/SecuritySettings";
 import { ApiSettingsPanel } from "@/components/admin/settings/ApiSettings";
 import { SettingsAuditLogView } from "@/components/admin/settings/SettingsAuditLog";
-import { Settings } from "lucide-react";
 
-export const metadata = {
-  title: "App Settings | Nodebase Admin",
-};
+export default function AppSettingsPage() {
+  const [data, setData] = useState<{
+    settings: Awaited<ReturnType<typeof getAppSettingsAction>>;
+    logs: Awaited<ReturnType<typeof getSettingsAuditLogsAction>>;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export default async function AppSettingsPage() {
-  const settings = await getAppSettingsAction();
-  const logs = await getSettingsAuditLogsAction();
+  useEffect(() => {
+    Promise.all([
+      getAppSettingsAction(),
+      getSettingsAuditLogsAction()
+    ]).then(([settings, logs]) => {
+      setData({ settings, logs });
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading || !data) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  const { settings, logs } = data;
 
   return (
     <div className="space-y-6">

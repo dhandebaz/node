@@ -1,29 +1,30 @@
-import { Users, Server, Zap, AlertTriangle, Activity } from "lucide-react";
-import { supabaseAdmin } from "@/lib/supabase/server";
+"use client";
+
+import { Users, Server, Zap, AlertTriangle, Activity, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getAdminDashboardStats } from "@/app/actions/admin-data";
 
-export const revalidate = 0; // Ensure fresh data
+export default function AdminDashboardPage() {
+  const [data, setData] = useState<Awaited<ReturnType<typeof getAdminDashboardStats>> | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export default async function AdminDashboardPage() {
-  // Fetch Stats in parallel
-  const [
-    { count: userCount },
-    { count: nodeCount },
-    { count: activeNodeCount },
-    { data: dcs },
-    { data: recentLogs }
-  ] = await Promise.all([
-    supabaseAdmin.from("users").select("*", { count: "exact", head: true }),
-    supabaseAdmin.from("nodes").select("*", { count: "exact", head: true }),
-    supabaseAdmin.from("nodes").select("*", { count: "exact", head: true }).eq("status", "active"),
-    supabaseAdmin.from("datacenters").select("total_capacity, active_nodes"),
-    supabaseAdmin.from("admin_audit_logs").select("*").order("timestamp", { ascending: false }).limit(5)
-  ]);
+  useEffect(() => {
+    getAdminDashboardStats().then((res) => {
+      setData(res);
+      setLoading(false);
+    });
+  }, []);
 
-  // Calculate Capacity
-  const totalCapacity = dcs?.reduce((acc, dc) => acc + dc.total_capacity, 0) || 0;
-  const totalActiveNodes = dcs?.reduce((acc, dc) => acc + dc.active_nodes, 0) || 0;
-  const capacityUsage = totalCapacity > 0 ? Math.round((totalActiveNodes / totalCapacity) * 100) : 0;
+  if (loading || !data) {
+    return (
+        <div className="flex items-center justify-center h-96">
+            <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
+        </div>
+    );
+  }
+
+  const { userCount, activeNodeCount, nodeCount, capacityUsage, totalActiveNodes, totalCapacity, recentLogs } = data;
 
   return (
     <div className="space-y-8">

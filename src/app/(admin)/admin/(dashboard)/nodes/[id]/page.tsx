@@ -1,29 +1,43 @@
 
-import { nodeService } from "@/lib/services/nodeService";
-import { dcService } from "@/lib/services/datacenterService";
-import { userService } from "@/lib/services/userService";
-import { NodeControls } from "@/components/admin/node/NodeControls";
-import { ArrowLeft, Server, Calendar, User, FileText, Activity } from "lucide-react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { NodeStatus, MoUStatus } from "@/types/node";
+"use client";
 
-export default async function NodeProfilePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const node = await nodeService.getById(id);
+import { useEffect, useState } from "react";
+import { useParams, notFound } from "next/navigation";
+import { NodeControls } from "@/components/admin/node/NodeControls";
+import { ArrowLeft, Server, Calendar, User, FileText, Activity, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { NodeStatus } from "@/types/node";
+import { getNodeDetailData } from "@/app/actions/admin-data";
+
+export default function NodeProfilePage() {
+  const params = useParams();
+  const id = params?.id as string;
   
-  if (!node) {
-    notFound();
+  const [data, setData] = useState<Awaited<ReturnType<typeof getNodeDetailData>> | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    
+    getNodeDetailData(id).then((res) => {
+      setData(res);
+      setLoading(false);
+    });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
+      </div>
+    );
   }
 
-  const dc = await dcService.getById(node.infrastructure.dcId);
-  const user = await userService.getUserById(node.participant.userId);
-  const logs = await nodeService.getAuditLogs(id);
+  if (!data || !data.node) {
+    return notFound();
+  }
 
+  const { node, dc, user, logs } = data;
   const participantName = user ? (user.identity.email || user.identity.phone) : node.participant.userId;
 
   return (

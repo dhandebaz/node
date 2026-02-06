@@ -1,4 +1,6 @@
 
+"use client";
+
 import { SpaceStats } from "@/types/space";
 import { Server, Users, Activity, Globe } from "lucide-react";
 

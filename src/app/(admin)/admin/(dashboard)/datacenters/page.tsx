@@ -1,11 +1,29 @@
+"use client";
 
-import { dcService } from "@/lib/services/datacenterService";
-import { Server, MapPin } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Loader2, Server, MapPin } from "lucide-react";
 import Link from "next/link";
+import { getDatacentersPageData } from "@/app/actions/admin-data";
 import { DCActionMenu } from "@/components/admin/datacenter/DCActionMenu";
 
-export default async function DataCentersPage() {
-  const centers = await dcService.getAll();
+export default function DataCentersPage() {
+  const [centers, setCenters] = useState<Awaited<ReturnType<typeof getDatacentersPageData>> | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getDatacentersPageData().then((res) => {
+      setCenters(res);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading || !centers) {
+    return (
+        <div className="flex items-center justify-center h-96">
+            <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
+        </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

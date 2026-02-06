@@ -1,30 +1,42 @@
+"use client";
 
-import { nodeService } from "@/lib/services/nodeService";
-import { dcService } from "@/lib/services/datacenterService";
-import { userService } from "@/lib/services/userService";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Loader2, Server, FileText, CheckCircle, AlertCircle, Clock, PauseCircle, XCircle } from "lucide-react";
+import Link from "next/link";
+import { getNodesPageData } from "@/app/actions/admin-data";
 import { NodeFilters } from "@/components/admin/node/NodeFilters";
 import { NodeStatus, MoUStatus } from "@/types/node";
-import Link from "next/link";
-import { Server, FileText, CheckCircle, AlertCircle, Clock, PauseCircle, XCircle } from "lucide-react";
 
-export default async function NodesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const params = await searchParams;
+export default function NodesPage() {
+  const searchParams = useSearchParams();
+  const [data, setData] = useState<Awaited<ReturnType<typeof getNodesPageData>> | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const filters = {
-    dcId: typeof params.dcId === "string" ? params.dcId : undefined,
-    status: typeof params.status === "string" ? (params.status as NodeStatus) : undefined,
-    mouStatus: typeof params.mouStatus === "string" ? (params.mouStatus as MoUStatus) : undefined,
-    userId: typeof params.userId === "string" ? params.userId : undefined,
+    dcId: searchParams.get("dcId") || undefined,
+    status: (searchParams.get("status") as NodeStatus) || undefined,
+    mouStatus: (searchParams.get("mouStatus") as MoUStatus) || undefined,
+    userId: searchParams.get("userId") || undefined,
   };
 
-  const nodes = await nodeService.getAll(filters);
-  const dcs = await dcService.getAll();
-  const users = await userService.getUsers();
+  useEffect(() => {
+    setLoading(true);
+    getNodesPageData(filters).then((res) => {
+      setData(res);
+      setLoading(false);
+    });
+  }, [searchParams]);
 
-  // Create lookups
+  if (loading || !data) {
+     return (
+        <div className="flex items-center justify-center h-96">
+            <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
+        </div>
+    );
+  }
+
+  const { nodes, dcs, users } = data;
   const dcMap = new Map(dcs.map(dc => [dc.id, dc]));
   const userMap = new Map(users.map(u => [u.identity.id, u]));
 
@@ -36,7 +48,7 @@ export default async function NodesPage({
           <p className="text-zinc-400">Contractual participation and infrastructure allocation.</p>
         </div>
         <Link 
-            href="/admin/nodes/create" // We might need a create page, or just use a modal. For now, button implies intent.
+            href="/admin/nodes/create" 
             className="bg-white text-black px-4 py-2 rounded text-sm font-medium hover:bg-zinc-200 transition-colors"
         >
             Create New Node
@@ -60,10 +72,6 @@ export default async function NodesPage({
           <tbody className="divide-y divide-zinc-800 bg-black">
             {nodes.map((node) => {
               const dc = dcMap.get(node.infrastructure.dcId);
-              // In a real app, we'd probably store name in Node or fetch it. Here we lookup.
-              // Participant name derivation: User ID (linked to Centralized Userbase) -> Participant name (derived)
-              // Since we don't have Name in UserIdentity yet (only phone/email), we'll use ID/Phone.
-              // Checking User type: UserIdentity has { id, phone, email }.
               const user = userMap.get(node.participant.userId);
               const participantName = user ? (user.identity.email || user.identity.phone) : node.participant.userId;
 

@@ -1,22 +1,42 @@
 
-import { dcService } from "@/lib/services/datacenterService";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, notFound } from "next/navigation";
 import { DCControls } from "@/components/admin/datacenter/DCControls";
-import { ArrowLeft, MapPin, Calendar, Server, Activity, Cpu } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Server, Activity, Cpu, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { getDatacenterDetailData } from "@/app/actions/admin-data";
 
-export default async function DataCenterProfilePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const dc = await dcService.getById(id);
-  const logs = await dcService.getAuditLogs(id);
+export default function DataCenterProfilePage() {
+  const params = useParams();
+  const id = params?.id as string;
+  
+  const [data, setData] = useState<Awaited<ReturnType<typeof getDatacenterDetailData>> | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!dc) {
-    notFound();
+  useEffect(() => {
+    if (!id) return;
+    
+    getDatacenterDetailData(id).then((res) => {
+      setData(res);
+      setLoading(false);
+    });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
+      </div>
+    );
   }
+
+  if (!data || !data.dc) {
+    return notFound();
+  }
+
+  const { dc, logs } = data;
 
   return (
     <div className="space-y-6">

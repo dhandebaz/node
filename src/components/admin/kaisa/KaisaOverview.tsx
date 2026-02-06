@@ -1,4 +1,6 @@
 
+"use client";
+
 import { KaisaStats } from "@/types/kaisa";
 import { Users, UserCheck, UserMinus, Briefcase, Crown } from "lucide-react";
 

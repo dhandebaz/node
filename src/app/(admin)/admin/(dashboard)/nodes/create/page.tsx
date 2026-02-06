@@ -1,27 +1,35 @@
 
-import { userService } from "@/lib/services/userService";
-import { dcService } from "@/lib/services/datacenterService";
+"use client";
+
+import { useEffect, useState } from "react";
 import CreateNodeForm from "@/components/admin/node/CreateNodeForm";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { getCreateNodePageData } from "@/app/actions/admin-data";
 
-export default async function CreateNodePage() {
-  const users = await userService.getUsers();
-  const dcs = await dcService.getAll();
+export default function CreateNodePage() {
+  const [data, setData] = useState<Awaited<ReturnType<typeof getCreateNodePageData>> | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const formattedUsers = users.map(u => ({
-    id: u.identity.id,
-    name: u.identity.email || u.identity.phone || u.identity.id
-  }));
+  useEffect(() => {
+    getCreateNodePageData().then((res) => {
+      setData(res);
+      setLoading(false);
+    });
+  }, []);
 
-  const formattedDCs = dcs.map(dc => ({
-    id: dc.id,
-    name: dc.name,
-    available: dc.capacity.total - dc.capacity.active
-  }));
+  if (loading || !data) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
+      </div>
+    );
+  }
+
+  const { users, dcs } = data;
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <Link 
           href="/admin/nodes" 
@@ -30,12 +38,14 @@ export default async function CreateNodePage() {
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-white">Create New Node</h1>
-          <p className="text-zinc-400">Allocate new infrastructure participation.</p>
+          <h1 className="text-2xl font-bold text-white">Allocate New Node</h1>
+          <p className="text-zinc-400 text-sm">Provision a new physical node to a participant</p>
         </div>
       </div>
 
-      <CreateNodeForm users={formattedUsers} dcs={formattedDCs} />
+      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
+        <CreateNodeForm users={users} dcs={dcs} />
+      </div>
     </div>
   );
 }
