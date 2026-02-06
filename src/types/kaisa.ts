@@ -70,7 +70,7 @@ export interface KaisaAdminAuditLog {
 
 // Customer Dashboard Types
 
-export type KaisaTaskStatus = "pending" | "in_progress" | "completed" | "scheduled" | "failed";
+export type KaisaTaskStatus = "pending" | "in_progress" | "completed" | "scheduled" | "failed" | "queued";
 export type KaisaTaskPriority = "low" | "medium" | "high";
 
 export interface KaisaTask {
