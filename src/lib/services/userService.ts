@@ -6,13 +6,13 @@ import {
   KYCStatus,
   KYCDocument
 } from "@/types/user";
-import { supabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 // Service Methods
 
 export const userService = {
   async getUsers(filters?: UserFilterOptions): Promise<User[]> {
-    let query = supabaseAdmin.from("users").select("*, kaisa_accounts(*), profiles(*)");
+    let query = getSupabaseAdmin().from("users").select("*, kaisa_accounts(*), profiles(*)");
 
     if (filters?.search) {
        // Simple search on phone or ID
@@ -93,7 +93,7 @@ export const userService = {
     userId: string,
     status: "active" | "paused"
   ): Promise<boolean> {
-    const { error } = await supabaseAdmin
+    const { error } = await getSupabaseAdmin()
       .from("kaisa_accounts")
       .update({ status })
       .eq("user_id", userId);

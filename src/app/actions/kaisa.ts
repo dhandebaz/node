@@ -1,6 +1,6 @@
 "use server";
 
-import { supabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { getSession } from "@/lib/auth/session";
 import { revalidatePath } from "next/cache";
 import { kaisaService } from "@/lib/services/kaisaService";
@@ -82,7 +82,7 @@ export async function getKaisaTasks() {
   const session = await getSession();
   if (!session?.userId) return [];
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await getSupabaseAdmin()
     .from("kaisa_tasks")
     .select("*")
     .eq("user_id", session.userId)
@@ -96,7 +96,7 @@ export async function createKaisaTask(intent: string) {
   const session = await getSession();
   if (!session?.userId) return { success: false, message: "Unauthorized" };
 
-  const { error } = await supabaseAdmin
+  const { error } = await getSupabaseAdmin()
     .from("kaisa_tasks")
     .insert({
       user_id: session.userId,

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { Database, MapPin, CheckCircle, Server, Shield } from "lucide-react";
 import { COMPANY_CONFIG } from "@/lib/config/company";

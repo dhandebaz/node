@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getSpaceDashboardData } from "@/app/actions/customer";
 import { Cpu, HardDrive, Zap, Network } from "lucide-react";
 

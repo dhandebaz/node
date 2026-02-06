@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getSpaceDashboardData, getSpaceProjectDetails } from "@/app/actions/customer";
 import { 

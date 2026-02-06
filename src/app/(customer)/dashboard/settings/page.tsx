@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { User, Bell, Shield, Smartphone, Monitor } from "lucide-react";
 import { getCustomerProfile } from "@/app/actions/customer";
 

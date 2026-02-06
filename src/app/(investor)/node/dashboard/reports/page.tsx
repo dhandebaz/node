@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getInvestorReports } from "@/app/actions/investor";
 import { FileText, Download, AlertTriangle } from "lucide-react";

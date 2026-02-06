@@ -1,5 +1,8 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
+
 import { Users, Server, Zap, AlertTriangle, Activity, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";

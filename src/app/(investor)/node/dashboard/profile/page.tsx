@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getInvestorProfile } from "@/app/actions/investor";
 import { User, Mail, Phone, ShieldCheck, Calendar, Lock } from "lucide-react";

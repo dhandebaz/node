@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Mail, MessageSquare, FileText, Phone } from "lucide-react";
 import { getCustomerTickets } from "@/app/actions/customer";
 import { SupportTicketList } from "@/components/customer/SupportTicketList";

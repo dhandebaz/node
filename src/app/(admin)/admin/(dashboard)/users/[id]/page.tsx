@@ -1,6 +1,9 @@
 
 "use client";
 
+export const dynamic = 'force-dynamic';
+
+
 import { useEffect, useState } from "react";
 import { useParams, notFound } from "next/navigation";
 import { getUserDetailData } from "@/app/actions/admin-data";

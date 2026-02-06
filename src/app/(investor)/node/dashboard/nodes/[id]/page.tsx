@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getInvestorNodeDetail } from "@/app/actions/investor";
 import { notFound } from "next/navigation";

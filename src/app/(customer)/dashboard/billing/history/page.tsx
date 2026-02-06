@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getBillingHistory } from "@/app/actions/billing";
 import { Download, Search, Filter } from "lucide-react";

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { ShieldAlert } from "lucide-react";
 
 export default function AuditLogsPage() {

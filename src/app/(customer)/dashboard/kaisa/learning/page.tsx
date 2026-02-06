@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getLearningDataAction } from "@/app/actions/kaisa-learning";
 import { FeedbackForm } from "@/components/kaisa/learning/FeedbackForm";

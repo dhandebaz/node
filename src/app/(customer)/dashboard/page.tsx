@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getCustomerProfile } from "@/app/actions/customer";
 import { redirect } from "next/navigation";

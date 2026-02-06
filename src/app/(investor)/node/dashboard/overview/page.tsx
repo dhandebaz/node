@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getInvestorStats, getInvestorProfile } from "@/app/actions/investor";
 import { InvestorStats } from "@/components/investor/dashboard/InvestorStats";

@@ -1,6 +1,9 @@
 
 "use client";
 
+export const dynamic = 'force-dynamic';
+
+
 import { useEffect, useState } from "react";
 import { Loader2, Settings } from "lucide-react";
 import { getAppSettingsAction, getSettingsAuditLogsAction } from "@/app/actions/settings";

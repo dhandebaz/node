@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getInvestorDocuments } from "@/app/actions/investor";
 import { FileCheck, Download, Eye } from "lucide-react";

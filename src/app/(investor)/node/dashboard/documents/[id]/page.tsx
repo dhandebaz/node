@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getInvestorDocument } from "@/app/actions/investor";
 import { ArrowLeft, Calendar, FileText, GitCommit, Download } from "lucide-react";

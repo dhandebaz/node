@@ -1,10 +1,10 @@
 
 import { DataCenter, DCAuditLog, DCStatus } from "@/types/datacenter";
-import { supabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export const dcService = {
   async getAll(): Promise<DataCenter[]> {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await getSupabaseAdmin()
       .from("datacenters")
       .select("*")
       .order("active_nodes", { ascending: false });
@@ -18,7 +18,7 @@ export const dcService = {
   },
 
   async getById(id: string): Promise<DataCenter | null> {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await getSupabaseAdmin()
       .from("datacenters")
       .select("*")
       .eq("id", id)
@@ -44,7 +44,7 @@ export const dcService = {
       };
     }
 
-    const { error } = await supabaseAdmin
+    const { error } = await getSupabaseAdmin()
       .from("datacenters")
       .update({ total_capacity: newTotal })
       .eq("id", dcId);
@@ -73,7 +73,7 @@ export const dcService = {
       return { success: false, error: "Data center capacity exhausted" };
     }
 
-    const { error } = await supabaseAdmin
+    const { error } = await getSupabaseAdmin()
       .from("datacenters")
       .update({ active_nodes: dc.capacity.active + 1 })
       .eq("id", dcId);
@@ -100,7 +100,7 @@ export const dcService = {
       return { success: false, error: "No active nodes to release" };
     }
 
-    const { error } = await supabaseAdmin
+    const { error } = await getSupabaseAdmin()
       .from("datacenters")
       .update({ active_nodes: dc.capacity.active - 1 })
       .eq("id", dcId);
@@ -156,10 +156,10 @@ export const dcService = {
     // For now, let's just append via array_append if supabase supports it or fetch-update.
     
     // Easier to just update via SQL append if possible, but standard is read-update.
-    const { data: currentDc } = await supabaseAdmin.from("datacenters").select("admin_notes").eq("id", dcId).single();
+    const { data: currentDc } = await getSupabaseAdmin().from("datacenters").select("admin_notes").eq("id", dcId).single();
     const currentNotes = currentDc?.admin_notes || [];
     
-    const { error } = await supabaseAdmin
+    const { error } = await getSupabaseAdmin()
       .from("datacenters")
       .update({ admin_notes: [...currentNotes, note] })
       .eq("id", dcId);
@@ -195,7 +195,7 @@ export const dcService = {
   },
 
   async getAuditLogs(dcId: string): Promise<DCAuditLog[]> {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await getSupabaseAdmin()
       .from("admin_audit_logs")
       .select("*")
       .eq("target_id", dcId)
@@ -217,7 +217,7 @@ export const dcService = {
   },
 
   async logAction(log: Omit<DCAuditLog, "id" | "timestamp">) {
-    await supabaseAdmin.from("admin_audit_logs").insert({
+    await getSupabaseAdmin().from("admin_audit_logs").insert({
       admin_id: log.adminId,
       target_resource: "datacenter",
       target_id: log.targetDcId,

@@ -2,7 +2,7 @@
 
 import { createSession, deleteSession } from "@/lib/auth/session";
 import { firebaseAdmin } from "@/lib/firebase/admin";
-import { supabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 const SUPER_ADMIN_PHONE = process.env.SUPER_ADMIN_PHONE || "9910778576";
@@ -97,7 +97,7 @@ export async function loginWithFirebaseToken(idToken: string, preferredProduct?:
 export async function sendBackupOtp(phone: string) {
   try {
     const formattedPhone = normalizePhone(phone);
-    const { error } = await supabaseAdmin.auth.signInWithOtp({
+    const { error } = await getSupabaseAdmin().auth.signInWithOtp({
       phone: formattedPhone,
     });
 

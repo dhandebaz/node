@@ -11,7 +11,7 @@ import {
   KaisaCreditUsage,
   IntegrationConfigDetails
 } from "@/types/kaisa";
-import { supabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { userService } from "./userService";
 
 // Initial Config (Read-only default for now)

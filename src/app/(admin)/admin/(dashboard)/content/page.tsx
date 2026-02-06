@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { FileText, Edit } from "lucide-react";
 
 export default function ContentManagementPage() {

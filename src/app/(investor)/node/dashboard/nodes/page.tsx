@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getInvestorNodes } from "@/app/actions/investor";
 import { NodeList } from "@/components/investor/nodes/NodeList";

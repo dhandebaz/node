@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 
 import { getSupportTickets } from "@/app/actions/investor";
 import { HelpCircle } from "lucide-react";
