@@ -222,7 +222,8 @@ export const kaisaService = {
 
   // Customer Dashboard Methods
   async getUserTasks(userId: string): Promise<KaisaTask[]> {
-    const { data, error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
       .from("kaisa_tasks")
       .select("*")
       .eq("user_id", userId)

@@ -1,11 +1,12 @@
 
 import { Node, NodeAuditLog, NodeFilterOptions, NodeStatus, MoUStatus } from "@/types/node";
 import { dcService } from "./datacenterService";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
 
 export const nodeService = {
   async getAll(filters?: NodeFilterOptions): Promise<Node[]> {
-    let query = getSupabaseAdmin().from("nodes").select("*");
+    const supabase = await getSupabaseServer();
+    let query = supabase.from("nodes").select("*");
 
     if (filters) {
       if (filters.dcId) {
@@ -33,7 +34,8 @@ export const nodeService = {
   },
 
   async getById(id: string): Promise<Node | null> {
-    const { data, error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
       .from("nodes")
       .select("*")
       .eq("id", id)
@@ -74,7 +76,8 @@ export const nodeService = {
     }
 
     // Insert new node
-    const { data: newNodeData, error } = await getSupabaseAdmin()
+    const supabase = await getSupabaseServer();
+    const { data: newNodeData, error } = await supabase
       .from("nodes")
       .insert({
         user_id: data.userId,

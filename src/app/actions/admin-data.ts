@@ -1,6 +1,6 @@
 "use server";
 
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
 import { kaisaService } from "@/lib/services/kaisaService";
 import { userService } from "@/lib/services/userService";
 import { dcService } from "@/lib/services/datacenterService";
@@ -9,6 +9,7 @@ import { spaceService } from "@/lib/services/spaceService";
 
 // Dashboard Overview
 export async function getAdminDashboardStats() {
+    const supabase = await getSupabaseServer();
     const [
         { count: userCount },
         { count: nodeCount },
@@ -16,11 +17,11 @@ export async function getAdminDashboardStats() {
         { data: dcs },
         { data: recentLogs }
       ] = await Promise.all([
-        getSupabaseAdmin().from("users").select("*", { count: "exact", head: true }),
-        getSupabaseAdmin().from("nodes").select("*", { count: "exact", head: true }),
-        getSupabaseAdmin().from("nodes").select("*", { count: "exact", head: true }).eq("status", "active"),
-        getSupabaseAdmin().from("datacenters").select("total_capacity, active_nodes"),
-        getSupabaseAdmin().from("admin_audit_logs").select("*").order("timestamp", { ascending: false }).limit(5)
+        supabase.from("users").select("*", { count: "exact", head: true }),
+        supabase.from("nodes").select("*", { count: "exact", head: true }),
+        supabase.from("nodes").select("*", { count: "exact", head: true }).eq("status", "active"),
+        supabase.from("datacenters").select("total_capacity, active_nodes"),
+        supabase.from("admin_audit_logs").select("*").order("timestamp", { ascending: false }).limit(5)
       ]);
     
       const totalCapacity = dcs?.reduce((acc, dc) => acc + dc.total_capacity, 0) || 0;

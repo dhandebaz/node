@@ -46,7 +46,7 @@ export async function createKaisaAccount(businessType: KaisaBusinessType, role: 
       { user_id: session.userId, intent: "Configuring initial modules", status: "queued" }
     ];
 
-    const { error: taskError } = await supabaseAdmin
+    const { error: taskError } = await supabase
       .from("kaisa_tasks")
       .insert(starterTasks);
 
@@ -68,7 +68,8 @@ export async function getKaisaAccount() {
   const session = await getSession();
   if (!session?.userId) return null;
 
-  const { data, error } = await supabaseAdmin
+  const supabase = await getSupabaseServer();
+  const { data, error } = await supabase
     .from("kaisa_accounts")
     .select("*")
     .eq("user_id", session.userId)
@@ -96,7 +97,8 @@ export async function createKaisaTask(intent: string) {
   const session = await getSession();
   if (!session?.userId) return { success: false, message: "Unauthorized" };
 
-  const { error } = await getSupabaseAdmin()
+  const supabase = await getSupabaseServer();
+  const { error } = await supabase
     .from("kaisa_tasks")
     .insert({
       user_id: session.userId,

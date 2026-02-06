@@ -1,10 +1,11 @@
 
 import { DataCenter, DCAuditLog, DCStatus } from "@/types/datacenter";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
 
 export const dcService = {
   async getAll(): Promise<DataCenter[]> {
-    const { data, error } = await getSupabaseAdmin()
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
       .from("datacenters")
       .select("*")
       .order("active_nodes", { ascending: false });
@@ -18,7 +19,8 @@ export const dcService = {
   },
 
   async getById(id: string): Promise<DataCenter | null> {
-    const { data, error } = await getSupabaseAdmin()
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
       .from("datacenters")
       .select("*")
       .eq("id", id)
@@ -73,7 +75,8 @@ export const dcService = {
       return { success: false, error: "Data center capacity exhausted" };
     }
 
-    const { error } = await getSupabaseAdmin()
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
       .from("datacenters")
       .update({ active_nodes: dc.capacity.active + 1 })
       .eq("id", dcId);

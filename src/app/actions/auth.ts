@@ -2,7 +2,7 @@
 
 import { createSession, deleteSession } from "@/lib/auth/session";
 import { firebaseAdmin } from "@/lib/firebase/admin";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 const SUPER_ADMIN_PHONE = process.env.SUPER_ADMIN_PHONE || "9910778576";
@@ -19,8 +19,9 @@ function normalizePhone(phone: string): string {
 }
 
 async function getOrCreateUser(phone: string) {
+  const supabase = await getSupabaseServer();
   // 1. Check if user exists in Supabase public.users
-  const { data: existingUser, error: fetchError } = await supabaseAdmin
+  const { data: existingUser, error: fetchError } = await supabase
     .from("users")
     .select("*")
     .eq("phone", phone)
@@ -97,7 +98,8 @@ export async function loginWithFirebaseToken(idToken: string, preferredProduct?:
 export async function sendBackupOtp(phone: string) {
   try {
     const formattedPhone = normalizePhone(phone);
-    const { error } = await getSupabaseAdmin().auth.signInWithOtp({
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase.auth.signInWithOtp({
       phone: formattedPhone,
     });
 
