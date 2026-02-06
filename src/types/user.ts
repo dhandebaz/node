@@ -70,8 +70,13 @@ export interface UserProductProfiles {
   node?: NodeProfile;
 }
 
+export interface UserProfile {
+  fullName: string | null;
+}
+
 export interface User {
   identity: UserIdentity;
+  profile: UserProfile | null;
   status: UserStatus;
   roles: UserRoles;
   metadata: UserMetadata;

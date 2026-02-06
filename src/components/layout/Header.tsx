@@ -149,7 +149,7 @@ export function Header({ user }: HeaderProps) {
                 >
                   <div className="flex flex-col items-end mr-1 hidden sm:flex">
                     <span className="text-xs font-bold leading-none text-black">
-                      {user?.identity.email?.split('@')[0] || user?.identity.phone || 'User'}
+                      {user?.profile?.fullName || user?.identity.email?.split('@')[0] || user?.identity.phone || 'User'}
                     </span>
                     <span className="text-[10px] text-gray-500 leading-none mt-1 capitalize">
                       {user?.roles.isKaisaUser ? "Manager" : "User"}

@@ -47,6 +47,16 @@ async function getOrCreateUser(phone: string) {
     throw new Error("Failed to create user record.");
   }
 
+  // Create empty profile
+  const { error: profileError } = await supabaseAdmin
+    .from("profiles")
+    .insert([{ user_id: newUser.id, full_name: null }]);
+
+  if (profileError) {
+    console.error("Error creating profile:", profileError);
+    // Non-fatal but should be logged. In strict mode, we might want to revert user creation.
+  }
+
   return newUser;
 }
 

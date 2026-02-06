@@ -27,7 +27,7 @@ export const investorService = {
 
     return {
       userId: user.identity.id,
-      legalName: user.profile?.fullName || "Investor",
+      legalName: user.profile?.fullName ?? "Investor",
       email: user.identity.email || "",
       phone: user.identity.phone,
       kycStatus,

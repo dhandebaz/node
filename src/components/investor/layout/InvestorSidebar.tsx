@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/actions/auth";
+import { User as UserType } from "@/types/user";
 import { 
   LayoutDashboard, 
   Server, 
@@ -25,7 +26,11 @@ const NAV_ITEMS = [
   { label: "Support", href: "/node/dashboard/support", icon: HelpCircle },
 ];
 
-export function InvestorSidebar() {
+interface InvestorSidebarProps {
+  user?: UserType | null;
+}
+
+export function InvestorSidebar({ user }: InvestorSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -70,7 +75,9 @@ export function InvestorSidebar() {
              <User className="w-4 h-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">Rahul Sharma</p>
+            <p className="text-sm font-medium text-white truncate">
+              {user?.profile?.fullName || user?.identity.phone || "Investor"}
+            </p>
             <p className="text-xs text-zinc-500 truncate">Node Investor</p>
           </div>
         </div>

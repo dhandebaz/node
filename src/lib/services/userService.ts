@@ -12,7 +12,7 @@ import { supabaseAdmin } from "@/lib/supabase/server";
 
 export const userService = {
   async getUsers(filters?: UserFilterOptions): Promise<User[]> {
-    let query = supabaseAdmin.from("users").select("*");
+    let query = supabaseAdmin.from("users").select("*, kaisa_accounts(*), profiles(*)");
 
     if (filters?.search) {
        // Simple search on phone or ID
@@ -35,7 +35,7 @@ export const userService = {
   async getUserById(id: string): Promise<User | null> {
     const { data: dbUser, error } = await supabaseAdmin
       .from("users")
-      .select("*, kaisa_accounts(*)")
+      .select("*, kaisa_accounts(*), profiles(*)")
       .eq("id", id)
       .single();
 
@@ -120,6 +120,13 @@ export const userService = {
 function mapDbUserToAppUser(dbUser: any): User {
   const kaisaAccount = dbUser.kaisa_accounts?.[0] || dbUser.kaisa_accounts; // Handle array or object
   const isKaisaUser = !!kaisaAccount;
+  
+  // Map Profile
+  // Supabase might return array or single object depending on relationship definition
+  const rawProfile = Array.isArray(dbUser.profiles) ? dbUser.profiles[0] : dbUser.profiles;
+  const profile = rawProfile ? {
+    fullName: rawProfile.full_name || null
+  } : null;
 
   // Map Supabase DB user to App User type
   return {
@@ -129,6 +136,7 @@ function mapDbUserToAppUser(dbUser: any): User {
       email: "", // Not in schema
       createdAt: dbUser.created_at,
     },
+    profile,
     status: {
       account: "active", // Default
       kyc: "pending",   // Default
