@@ -12,8 +12,14 @@ export function ResetLearningButton() {
     if (!confirm("Are you sure? This will delete ALL learned preferences, corrections, and patterns. This action cannot be undone.")) return;
     
     setLoading(true);
-    await resetLearningAction();
-    setLoading(false);
+    try {
+        await resetLearningAction();
+    } catch (error) {
+        console.error(error);
+        alert("Failed to reset learning");
+    } finally {
+        setLoading(false);
+    }
   }
 
   return (

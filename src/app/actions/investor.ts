@@ -57,17 +57,17 @@ export async function getSupportTickets() {
   return await investorService.getTickets(userId);
 }
 
-export async function createSupportTicketAction(formData: FormData) {
+export async function createSupportTicketAction(formData: FormData): Promise<void> {
   try {
     const userId = await getUserId();
     const category = formData.get("category") as any;
     const subject = formData.get("subject") as string;
+    const message = formData.get("message") as string;
     
-    await investorService.createTicket(userId, { category, subject });
+    await investorService.createTicket(userId, { category, subject, message });
     revalidatePath("/node/dashboard/support");
-    return { success: true };
   } catch (error) {
     console.error("Create ticket error:", error);
-    return { success: false, error: "Failed to create ticket" };
+    throw new Error("Failed to create ticket");
   }
 }

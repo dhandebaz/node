@@ -103,7 +103,7 @@ export async function getCustomerTickets() {
   return await supportService.getUserTickets(user.identity.id);
 }
 
-export async function createCustomerTicket(formData: FormData) {
+export async function createCustomerTicket(formData: FormData): Promise<void> {
     try {
         const user = await getCurrentUser();
         const subject = formData.get("subject") as string;
@@ -112,10 +112,10 @@ export async function createCustomerTicket(formData: FormData) {
         const priority = formData.get("priority") as "low" | "medium" | "high";
 
         if (!subject || !product || !message) {
-            return { success: false, error: "Missing required fields" };
+            throw new Error("Missing required fields");
         }
 
-        const ticket = await supportService.createTicket({
+        await supportService.createTicket({
             userId: user.identity.id,
             subject,
             product,
@@ -125,11 +125,9 @@ export async function createCustomerTicket(formData: FormData) {
 
         // Add initial message
         // In a real app, this would be part of createTicket or a separate call
-        // For now, we just return the ticket
-        return { success: true, ticket };
     } catch (error) {
         console.error("Create ticket error:", error);
-        return { success: false, error: "Failed to create ticket" };
+        throw new Error("Failed to create ticket");
     }
 }
 

@@ -103,12 +103,12 @@ export async function sendBackupOtp(phone: string) {
   }
 }
 
-export async function adminLogoutAction() {
+export async function adminLogoutAction(_formData: FormData): Promise<void> {
   await deleteSession();
   redirect("/login");
 }
 
-export async function logoutAction() {
+export async function logoutAction(_formData: FormData): Promise<void> {
   await import("@/lib/auth/session").then((mod) => mod.deleteSession());
   redirect("/");
 }

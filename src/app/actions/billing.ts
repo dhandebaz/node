@@ -42,19 +42,19 @@ export async function getAvailablePlans(product: 'kaisa' | 'space') {
     return billingService.getPlans(product);
 }
 
-export async function cancelSubscriptionAction(subscriptionId: string) {
+export async function cancelSubscriptionAction(subscriptionId: string): Promise<void> {
     const user = await getCurrentUser();
     await billingService.cancelSubscription(user.id, subscriptionId);
     revalidatePath("/dashboard/billing");
 }
 
-export async function resumeSubscriptionAction(subscriptionId: string) {
+export async function resumeSubscriptionAction(subscriptionId: string): Promise<void> {
     const user = await getCurrentUser();
     await billingService.resumeSubscription(user.id, subscriptionId);
     revalidatePath("/dashboard/billing");
 }
 
-export async function upgradeSubscriptionAction(subscriptionId: string, newPlanId: string) {
+export async function upgradeSubscriptionAction(subscriptionId: string, newPlanId: string): Promise<void> {
     const user = await getCurrentUser();
     await billingService.upgradeSubscription(user.id, subscriptionId, newPlanId);
     revalidatePath("/dashboard/billing");

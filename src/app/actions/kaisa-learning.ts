@@ -28,7 +28,7 @@ export async function getLearningDataAction() {
   return { memories, stats };
 }
 
-export async function addExplicitFeedbackAction(formData: FormData) {
+export async function addExplicitFeedbackAction(formData: FormData): Promise<void> {
   try {
     const userId = await getAuthenticatedUserId();
     const description = formData.get("description") as string;
@@ -36,7 +36,7 @@ export async function addExplicitFeedbackAction(formData: FormData) {
     const moduleId = formData.get("moduleId") as string;
 
     if (!description || !type) {
-      return { success: false, error: "Missing required fields" };
+      throw new Error("Missing required fields");
     }
 
     await kaisaMemoryService.addMemory({
@@ -49,57 +49,52 @@ export async function addExplicitFeedbackAction(formData: FormData) {
     });
 
     revalidatePath("/dashboard/kaisa/learning");
-    return { success: true };
   } catch (error) {
     console.error("Add feedback error:", error);
-    return { success: false, error: "Failed to add instruction" };
+    throw new Error("Failed to add instruction");
   }
 }
 
-export async function deleteMemoryAction(memoryId: string) {
+export async function deleteMemoryAction(memoryId: string): Promise<void> {
   try {
     await getAuthenticatedUserId(); // Ensure auth
     await kaisaMemoryService.deleteMemory(memoryId);
     revalidatePath("/dashboard/kaisa/learning");
-    return { success: true };
   } catch (error) {
     console.error("Delete memory error:", error);
-    return { success: false, error: "Failed to delete memory" };
+    throw new Error("Failed to delete memory");
   }
 }
 
-export async function confirmInferenceAction(memoryId: string) {
+export async function confirmInferenceAction(memoryId: string): Promise<void> {
   try {
     await getAuthenticatedUserId(); // Ensure auth
     await kaisaMemoryService.updateStatus(memoryId, "active");
     revalidatePath("/dashboard/kaisa/learning");
-    return { success: true };
   } catch (error) {
     console.error("Confirm inference error:", error);
-    return { success: false, error: "Failed to confirm memory" };
+    throw new Error("Failed to confirm memory");
   }
 }
 
-export async function rejectInferenceAction(memoryId: string) {
+export async function rejectInferenceAction(memoryId: string): Promise<void> {
   try {
     await getAuthenticatedUserId(); // Ensure auth
     await kaisaMemoryService.deleteMemory(memoryId); // Rejecting basically deletes the proposed memory
     revalidatePath("/dashboard/kaisa/learning");
-    return { success: true };
   } catch (error) {
     console.error("Reject inference error:", error);
-    return { success: false, error: "Failed to reject memory" };
+    throw new Error("Failed to reject memory");
   }
 }
 
-export async function resetLearningAction() {
+export async function resetLearningAction(): Promise<void> {
   try {
     const userId = await getAuthenticatedUserId();
     await kaisaMemoryService.resetLearning(userId);
     revalidatePath("/dashboard/kaisa/learning");
-    return { success: true };
   } catch (error) {
     console.error("Reset learning error:", error);
-    return { success: false, error: "Failed to reset learning" };
+    throw new Error("Failed to reset learning");
   }
 }
