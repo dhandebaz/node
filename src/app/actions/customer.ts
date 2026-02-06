@@ -52,7 +52,7 @@ export async function getKaisaDashboardData() {
   };
 }
 
-export async function toggleKaisaModuleAction(moduleName: string, enabled: boolean) {
+export async function toggleKaisaModuleAction(moduleName: string, enabled: boolean): Promise<void> {
     const user = await getCurrentUser();
     // In a real app, validate if module is allowed for business type
     // Mock update:
@@ -63,7 +63,6 @@ export async function toggleKaisaModuleAction(moduleName: string, enabled: boole
     } else {
         user.products.kaisa!.activeModules = user.products.kaisa!.activeModules.filter(m => m !== moduleName);
     }
-    return { success: true };
 }
 
 // --- Space Actions ---
@@ -131,7 +130,7 @@ export async function createCustomerTicket(formData: FormData): Promise<void> {
     }
 }
 
-export async function createTicketAction(subject: string, product: "kaisa" | "space" | "general", message: string) {
+export async function createTicketAction(subject: string, product: "kaisa" | "space" | "general", message: string): Promise<void> {
   const user = await getCurrentUser();
   
   const ticket = await supportService.createTicket({
@@ -149,6 +148,4 @@ export async function createTicketAction(subject: string, product: "kaisa" | "sp
     message,
     timestamp: new Date().toISOString()
   });
-
-  return { success: true, ticketId: ticket.id };
 }

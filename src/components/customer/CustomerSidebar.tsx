@@ -206,15 +206,13 @@ export function CustomerSidebar({ roles, products, kaisaCredits }: CustomerSideb
 
       {/* Footer */}
       <div className="p-4 border-t border-white/5">
-        <form action={logoutAction}>
-            <button 
-                type="submit"
-                className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-lg text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-            >
-                <LogOut className="w-4 h-4" />
-                <span className="text-sm">Sign Out</span>
-            </button>
-        </form>
+        <button 
+            onClick={() => logoutAction()}
+            className="flex items-center gap-3 px-3 py-2 w-full text-left rounded-lg text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+        >
+            <LogOut className="w-4 h-4" />
+            <span className="text-sm">Sign Out</span>
+        </button>
       </div>
     </aside>
   );

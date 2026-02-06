@@ -24,74 +24,63 @@ export async function getSettingsAuditLogsAction() {
 }
 
 // Auth
-export async function updateAuthSettingsAction(updates: Partial<AuthSettings>) {
+export async function updateAuthSettingsAction(updates: Partial<AuthSettings>): Promise<void> {
   await settingsService.updateAuthSettings(ADMIN_ID, updates);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
 // Integrations
-export async function toggleIntegrationAction(id: string, enabled: boolean) {
+export async function toggleIntegrationAction(id: string, enabled: boolean): Promise<void> {
   await settingsService.toggleIntegration(ADMIN_ID, id, enabled);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
-export async function updateIntegrationAction(id: string, updates: Partial<IntegrationConfig>) {
+export async function updateIntegrationAction(id: string, updates: Partial<IntegrationConfig>): Promise<void> {
   await settingsService.updateIntegration(ADMIN_ID, id, updates);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
 // API
-export async function updateApiSettingsAction(updates: Partial<ApiSettings>) {
+export async function updateApiSettingsAction(updates: Partial<ApiSettings>): Promise<void> {
   await settingsService.updateApi(ADMIN_ID, updates);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
-export async function rotateApiKeysAction() {
+export async function rotateApiKeysAction(): Promise<void> {
   await settingsService.rotateApiKeys(ADMIN_ID);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
 // Features
-export async function toggleFeatureAction(id: string, enabled: boolean) {
+export async function toggleFeatureAction(id: string, enabled: boolean): Promise<void> {
   await settingsService.toggleFeature(ADMIN_ID, id, enabled);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
 // Platform
-export async function updatePlatformAction(updates: Partial<PlatformSettings>) {
+export async function updatePlatformAction(updates: Partial<PlatformSettings>): Promise<void> {
   await settingsService.updatePlatform(ADMIN_ID, updates);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
-export async function updateSignupAction(product: keyof PlatformSettings["signupEnabled"], enabled: boolean) {
+export async function updateSignupAction(product: keyof PlatformSettings["signupEnabled"], enabled: boolean): Promise<void> {
   await settingsService.updatePlatformSignups(ADMIN_ID, product, enabled);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
 // Notifications
-export async function updateNotificationsAction(updates: Partial<NotificationSettings>) {
+export async function updateNotificationsAction(updates: Partial<NotificationSettings>): Promise<void> {
   await settingsService.updateNotifications(ADMIN_ID, updates);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
 // Security
-export async function updateSecurityAction(updates: Partial<SecuritySettings>) {
+export async function updateSecurityAction(updates: Partial<SecuritySettings>): Promise<void> {
   await settingsService.updateSecurity(ADMIN_ID, updates);
   revalidatePath("/admin/settings");
-  return { success: true };
 }
 
-export async function forceLogoutAllAction() {
+export async function forceLogoutAllAction(): Promise<void> {
   await settingsService.forceLogoutAll(ADMIN_ID);
   revalidatePath("/admin/settings");
-  return { success: true };
 }

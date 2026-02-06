@@ -207,15 +207,13 @@ export function Header({ user }: HeaderProps) {
                         
                         <div className="h-px bg-gray-100 my-1"></div>
                         
-                        <form action={logoutAction} className="w-full">
-                          <button 
-                            type="submit"
-                            className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          >
-                            <LogOut className="w-4 h-4" />
-                            Logout
-                          </button>
-                        </form>
+                        <button 
+                          onClick={() => logoutAction()}
+                          className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Logout
+                        </button>
                       </div>
                     </motion.div>
                   )}
