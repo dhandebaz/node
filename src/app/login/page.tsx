@@ -60,29 +60,46 @@ export default function LoginPage() {
   // Auth State
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
+  const recaptchaContainerRef = useRef<HTMLDivElement>(null);
 
   const activeProduct = PRODUCTS.find(p => p.id === selectedProduct)!;
 
-  useEffect(() => {
-    // Initialize Recaptcha
-    if (!recaptchaVerifierRef.current && auth) {
-        try {
-            recaptchaVerifierRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                'size': 'invisible',
-                'callback': () => {
-                    // reCAPTCHA solved
-                }
-            });
-        } catch (e) {
-            console.error("Recaptcha Init Error:", e);
-        }
-    } else if (!auth) {
-        console.warn("Firebase Auth not initialized. Login may fail.");
+  const initRecaptcha = () => {
+    if (!auth) {
+      console.error("Firebase Auth not initialized. Cannot init Recaptcha.");
+      return null;
     }
+    if (recaptchaVerifierRef.current) return recaptchaVerifierRef.current;
+    if (!recaptchaContainerRef.current) {
+        console.error("Recaptcha container not found.");
+        return null;
+    }
+
+    try {
+        const verifier = new RecaptchaVerifier(auth, recaptchaContainerRef.current, {
+            'size': 'invisible',
+            'callback': () => {
+                // reCAPTCHA solved
+            }
+        });
+        recaptchaVerifierRef.current = verifier;
+        return verifier;
+    } catch (e) {
+        console.error("Recaptcha Init Error:", e);
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    const verifier = initRecaptcha();
     
     return () => {
         if (recaptchaVerifierRef.current) {
-            recaptchaVerifierRef.current.clear();
+            try {
+                recaptchaVerifierRef.current.clear();
+            } catch (e) {
+                console.error("Error clearing recaptcha:", e);
+            }
             recaptchaVerifierRef.current = null;
         }
     };
@@ -94,10 +111,20 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // 1. Try Firebase (Primary)
-      if (!recaptchaVerifierRef.current) throw new Error("Recaptcha not initialized");
+      // Ensure Recaptcha is initialized
+      let appVerifier = recaptchaVerifierRef.current;
+      if (!appVerifier) {
+          appVerifier = initRecaptcha();
+      }
+
+      // 1. Check if we have a valid verifier
+      if (!appVerifier) {
+          if (!auth) {
+              throw new Error("Firebase Authentication is not available. Please check system configuration.");
+          }
+          throw new Error("Recaptcha could not be initialized. Please refresh and try again.");
+      }
       
-      const appVerifier = recaptchaVerifierRef.current;
       // Ensure phone format is E.164
       const formattedPhone = phone.startsWith("+") ? phone : `+91${phone.replace(/^0+/, "")}`;
       
@@ -199,7 +226,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
       {/* Invisible Recaptcha Container */}
-      <div id="recaptcha-container"></div>
+      <div ref={recaptchaContainerRef} id="recaptcha-container"></div>
 
       {/* Back to Home Button */}
       <Link 
