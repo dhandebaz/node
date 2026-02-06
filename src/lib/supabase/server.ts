@@ -4,19 +4,24 @@ import { cookies } from 'next/headers';
 // Access environment variables securely
 const getSupabaseEnv = () => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  // Prefer Service Role Key for Admin access, fallback to Anon Key (limited permissions)
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // Prefer Service Role Key for Admin access (standard or custom), fallback to Anon Key
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 
+                         process.env.nodebase_SUPABASE_SERVICE_ROLE_KEY || 
+                         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !serviceRoleKey) {
     const missing = [];
     if (!url) missing.push("NEXT_PUBLIC_SUPABASE_URL");
-    if (!serviceRoleKey) missing.push("SUPABASE_SERVICE_ROLE_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY)");
+    if (!serviceRoleKey) missing.push("SUPABASE_SERVICE_ROLE_KEY");
     
     throw new Error(`Server Configuration Error: Missing Supabase env vars: ${missing.join(", ")}`);
   }
 
   // Warn if running with Anon Key on server (likely insufficient for admin tasks)
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  const isAnon = serviceRoleKey === process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const isServiceRole = serviceRoleKey === process.env.SUPABASE_SERVICE_ROLE_KEY || serviceRoleKey === process.env.nodebase_SUPABASE_SERVICE_ROLE_KEY;
+
+  if (isAnon && !isServiceRole) {
     console.warn("Supabase Server Client: Running with ANON KEY. Admin privileges (RLS bypass) are DISABLED. Some server actions may fail.");
   }
 

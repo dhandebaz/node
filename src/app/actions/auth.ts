@@ -45,7 +45,8 @@ async function getOrCreateUser(phone: string) {
 
   if (createError) {
     console.error("Error creating user:", createError);
-    throw new Error("Failed to create user record.");
+    // Include details for debugging (RLS, schema, etc.)
+    throw new Error(`Failed to create user record: ${createError.message}. Details: ${createError.details || 'None'} (Hint: Check database permissions/RLS)`);
   }
 
   // Create empty profile
@@ -55,7 +56,7 @@ async function getOrCreateUser(phone: string) {
 
   if (profileError) {
     console.error("Error creating profile:", profileError);
-    // Non-fatal but should be logged. In strict mode, we might want to revert user creation.
+    // Non-fatal but should be logged.
   }
 
   return newUser;
