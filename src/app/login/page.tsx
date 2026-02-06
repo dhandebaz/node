@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Loader2, ArrowRight, Smartphone, ShieldCheck, Cpu, Cloud, Sparkles, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { loginWithFirebaseToken } from "@/app/actions/auth";
-import { auth } from "@/lib/firebase/client";
+import { auth, initializationError } from "@/lib/firebase/client";
 import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
 
 export const dynamic = 'force-dynamic';
@@ -66,7 +66,7 @@ export default function LoginPage() {
 
   const initRecaptcha = () => {
     if (!auth) {
-      console.error("Firebase Auth not initialized. Cannot init Recaptcha.");
+      console.error("Firebase Auth not initialized. Cannot init Recaptcha.", initializationError);
       return null;
     }
     if (recaptchaVerifierRef.current) return recaptchaVerifierRef.current;
@@ -120,7 +120,7 @@ export default function LoginPage() {
       // 1. Check if we have a valid verifier
       if (!appVerifier) {
           if (!auth) {
-              throw new Error("Firebase Authentication is not available. Please check system configuration.");
+              throw new Error(initializationError || "Firebase Authentication is not available. Please check system configuration.");
           }
           throw new Error("Recaptcha could not be initialized. Please refresh and try again.");
       }

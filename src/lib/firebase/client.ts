@@ -16,6 +16,7 @@ const firebaseConfig = {
 let app: FirebaseApp | undefined;
 let auth: Auth;
 let analytics: Analytics | undefined;
+let initializationError: string | null = null;
 
 // Only execute on the client side
 if (typeof window !== "undefined") {
@@ -39,9 +40,11 @@ if (typeof window !== "undefined") {
             }
         }).catch(e => console.warn("Firebase Analytics check failed:", e));
     } else {
-        console.warn("Firebase Client: Missing required environment variables (API Key, Auth Domain). Skipping initialization.");
+        initializationError = "Missing Firebase Configuration. Please check environment variables (API Key, Auth Domain).";
+        console.warn("Firebase Client:", initializationError);
     }
-  } catch (e) {
+  } catch (e: any) {
+      initializationError = e.message || "Firebase Initialization Failed";
       console.error("Firebase Client Initialization Failed:", e);
   }
 } else {
@@ -55,4 +58,4 @@ if (typeof window !== "undefined") {
     auth = undefined as unknown as Auth;
 }
 
-export { app, auth, analytics };
+export { app, auth, analytics, initializationError };
