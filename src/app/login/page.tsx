@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, ArrowRight, Smartphone, ShieldCheck, Cpu, Cloud, Sparkles, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { loginWithFirebaseToken, sendBackupOtp, verifyBackupOtp } from "@/app/actions/auth";
+import { loginWithFirebaseToken } from "@/app/actions/auth";
 import { auth } from "@/lib/firebase/client";
 import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
 
@@ -59,7 +59,6 @@ export default function LoginPage() {
   
   // Auth State
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  const [usingBackup, setUsingBackup] = useState(false);
   const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
 
   const activeProduct = PRODUCTS.find(p => p.id === selectedProduct)!;
@@ -93,7 +92,6 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    setUsingBackup(false);
 
     try {
       // 1. Try Firebase (Primary)
@@ -109,22 +107,8 @@ export default function LoginPage() {
       setStep("otp");
 
     } catch (firebaseError: any) {
-      console.warn("Firebase OTP failed, switching to Backup:", firebaseError);
-      
-      // 2. Fallback to Supabase (Backup)
-      try {
-        setUsingBackup(true);
-        const res = await sendBackupOtp(phone);
-        
-        if (res.success) {
-            setStep("otp");
-        } else {
-            setError(res.message || "Failed to send OTP via backup provider.");
-        }
-      } catch (backupError) {
-        console.error("Backup OTP failed:", backupError);
-        setError("Failed to send OTP. Please try again.");
-      }
+      console.error("Firebase OTP failed:", firebaseError);
+      setError(firebaseError.message || "Failed to send OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -136,23 +120,16 @@ export default function LoginPage() {
     setError("");
 
     try {
-      let res;
-
-      if (usingBackup) {
-        // Verify via Backup (Server Action)
-        res = await verifyBackupOtp(phone, otp, selectedProduct);
-      } else {
-        // Verify via Firebase
-        if (!confirmationResult) {
-            throw new Error("No verification session found.");
-        }
-        
-        const credential = await confirmationResult.confirm(otp);
-        const idToken = await credential.user.getIdToken();
-        
-        // Exchange Token for Session (Server Action)
-        res = await loginWithFirebaseToken(idToken, selectedProduct);
+      // Verify via Firebase
+      if (!confirmationResult) {
+          throw new Error("No verification session found.");
       }
+      
+      const credential = await confirmationResult.confirm(otp);
+      const idToken = await credential.user.getIdToken();
+      
+      // Exchange Token for Session (Server Action)
+      const res = await loginWithFirebaseToken(idToken, selectedProduct);
       
       if (res.success) {
         if (res.isSuperAdmin) {

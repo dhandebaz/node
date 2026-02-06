@@ -95,26 +95,6 @@ export async function loginWithFirebaseToken(idToken: string, preferredProduct?:
   }
 }
 
-export async function sendBackupOtp(phone: string) {
-  try {
-    const formattedPhone = normalizePhone(phone);
-    const supabase = await getSupabaseServer();
-    const { error } = await supabase.auth.signInWithOtp({
-      phone: formattedPhone,
-    });
-
-    if (error) {
-        console.error("Supabase OTP Send Error:", error);
-        return { success: false, message: error.message };
-    }
-
-    return { success: true, message: "OTP sent via backup provider." };
-  } catch (error) {
-    console.error("Backup OTP Error:", error);
-    return { success: false, message: "Failed to send backup OTP." };
-  }
-}
-
 export async function adminLogoutAction(): Promise<void> {
   await deleteSession();
   redirect("/login");
@@ -123,46 +103,4 @@ export async function adminLogoutAction(): Promise<void> {
 export async function logoutAction(): Promise<void> {
   await import("@/lib/auth/session").then((mod) => mod.deleteSession());
   redirect("/");
-}
-
-export async function verifyBackupOtp(phone: string, token: string, preferredProduct?: string) {
-  try {
-    const formattedPhone = normalizePhone(phone);
-    
-    // 1. Verify with Supabase Auth
-    const supabase = await getSupabaseServer();
-    const { data, error } = await supabase.auth.verifyOtp({
-      phone: formattedPhone,
-      token,
-      type: 'sms',
-    });
-
-    if (error || !data.user) {
-       return { success: false, message: "Invalid OTP." };
-    }
-
-    // 2. Sync User
-    // Use the phone from the verified user or the input phone (should be same)
-    const verifiedPhone = data.user.phone || formattedPhone;
-    const user = await getOrCreateUser(verifiedPhone);
-
-    // 3. Create Session
-    await createSession(user.id, user.role);
-
-     // 4. Determine Redirect (Same logic)
-    let redirectPath = "/dashboard";
-    if (user.role === "superadmin" || user.role === "admin") {
-         redirectPath = "/admin";
-    }
-
-    if (preferredProduct === "kaisa") redirectPath = "/dashboard/kaisa";
-    else if (preferredProduct === "space") redirectPath = "/dashboard/space";
-    else if (preferredProduct === "node") redirectPath = "/node/dashboard";
-
-    return { success: true, redirect: redirectPath, isSuperAdmin: user.role === "superadmin" || user.role === "admin" };
-
-  } catch (error) {
-    console.error("Backup Verification Error:", error);
-    return { success: false, message: "Verification failed." };
-  }
 }
