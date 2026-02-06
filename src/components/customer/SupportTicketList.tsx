@@ -13,16 +13,15 @@ export function SupportTicketList({ tickets }: { tickets: SupportTicket[] }) {
 
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true);
-    try {
-        await createCustomerTicket(formData);
+    const result = await createCustomerTicket(formData);
+    
+    if (result.success) {
         setIsModalOpen(false);
         router.refresh();
-    } catch (error) {
-        console.error(error);
-        alert("Failed to create ticket");
-    } finally {
-        setIsSubmitting(false);
+    } else {
+        alert(result.error || "Failed to create ticket");
     }
+    setIsSubmitting(false);
   }
 
   return (

@@ -133,7 +133,7 @@ export function IntegrationSettingsPanel({ integrations }: { integrations: Integ
                 placeholder={`const firebaseConfig = { \n  apiKey: "...", \n  ... \n};`}
                 onChange={(e) => {
                    const txt = e.target.value;
-                   const updates: any = {};
+                   const updates: Record<string, string> = {};
                    const match = (key: string) => {
                       // Match both key: "value" and key: 'value'
                       const regex = new RegExp(`${key}:\\s*["']([^"']+)["']`);

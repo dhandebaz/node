@@ -104,28 +104,33 @@ export async function getCustomerTickets() {
 }
 
 export async function createCustomerTicket(formData: FormData) {
-    const user = await getCurrentUser();
-    const subject = formData.get("subject") as string;
-    const product = formData.get("product") as "kaisa" | "space" | "node";
-    const message = formData.get("message") as string;
-    const priority = formData.get("priority") as "low" | "medium" | "high";
+    try {
+        const user = await getCurrentUser();
+        const subject = formData.get("subject") as string;
+        const product = formData.get("product") as "kaisa" | "space" | "node";
+        const message = formData.get("message") as string;
+        const priority = formData.get("priority") as "low" | "medium" | "high";
 
-    if (!subject || !product || !message) {
-        throw new Error("Missing required fields");
+        if (!subject || !product || !message) {
+            return { success: false, error: "Missing required fields" };
+        }
+
+        const ticket = await supportService.createTicket({
+            userId: user.identity.id,
+            subject,
+            product,
+            priority: priority || "medium",
+            status: "open"
+        });
+
+        // Add initial message
+        // In a real app, this would be part of createTicket or a separate call
+        // For now, we just return the ticket
+        return { success: true, ticket };
+    } catch (error) {
+        console.error("Create ticket error:", error);
+        return { success: false, error: "Failed to create ticket" };
     }
-
-    const ticket = await supportService.createTicket({
-        userId: user.identity.id,
-        subject,
-        product,
-        priority: priority || "medium",
-        status: "open"
-    });
-
-    // Add initial message
-    // In a real app, this would be part of createTicket or a separate call
-    // For now, we just return the ticket
-    return ticket;
 }
 
 export async function createTicketAction(subject: string, product: "kaisa" | "space" | "general", message: string) {

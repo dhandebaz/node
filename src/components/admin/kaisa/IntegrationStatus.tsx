@@ -91,7 +91,7 @@ function IntegrationEditForm({ integration, onClose }: { integration: KaisaInteg
     // Fetch stats for specific integrations
     useEffect(() => {
         if (integration.name === "Listings") {
-            getIntegrationStatsAction("Listings").then(res => setStats(res.stats));
+            getIntegrationStatsAction("Listings").then(res => setStats(res.stats ?? null));
         }
     }, [integration.name]);
 

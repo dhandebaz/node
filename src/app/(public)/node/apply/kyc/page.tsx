@@ -68,7 +68,7 @@ export default function ApplyKYCPage() {
       const userId = "USR-001"; 
 
       const result = await verifyAndUploadDocumentAction(userId, formData, type);
-      setUploadResult(result);
+      setUploadResult(result ?? null);
 
     } catch (err) {
       console.error(err);

@@ -11,9 +11,14 @@ export function FeedbackForm() {
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
-    await addExplicitFeedbackAction(formData);
+    const result = await addExplicitFeedbackAction(formData);
     setLoading(false);
-    setIsOpen(false);
+    
+    if (result.success) {
+      setIsOpen(false);
+    } else {
+      alert(result.error || "Failed to add instruction");
+    }
   }
 
   if (!isOpen) {

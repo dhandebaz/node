@@ -131,10 +131,10 @@ export async function updateKaisaTaskStatus(taskId: string, status: string) {
 
 export async function getIntegrationStatsAction(name: string) {
   const session = await getSession();
-  if (!session?.userId) return { success: false, message: "Unauthorized" };
+  if (!session?.userId) return { success: false, message: "Unauthorized", stats: null };
 
   const stats = await kaisaService.getIntegrationStats(name);
-  return { success: true, stats };
+  return { success: true, stats: stats ?? null };
 }
 
 export async function setSystemStatusAction(status: "operational" | "paused") {
