@@ -3,7 +3,8 @@ import {
   UserFilterOptions, 
   AuditLog, 
   AccountStatus, 
-  KYCStatus
+  KYCStatus,
+  KYCDocument
 } from "@/types/user";
 import { supabaseAdmin } from "@/lib/supabase/server";
 
@@ -65,6 +66,12 @@ export const userService = {
      console.log(`[Mock Update] KYC for ${userId} -> ${status}`);
      await this.logAction(adminId, userId, "kyc_decision", `Changed KYC to ${status}`);
      return true;
+  },
+
+  async addKYCDocument(userId: string, document: KYCDocument): Promise<boolean> {
+    console.log(`[Mock KYC Upload] User ${userId} added ${document.type} document`);
+    // In a real app, save to DB
+    return true;
   },
 
   async addNote(adminId: string, userId: string, note: string): Promise<boolean> {
