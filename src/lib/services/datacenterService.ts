@@ -104,7 +104,8 @@ export const dcService = {
       return { success: false, error: "No active nodes to release" };
     }
 
-    const { error } = await getSupabaseAdmin()
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
       .from("datacenters")
       .update({ active_nodes: dc.capacity.active - 1 })
       .eq("id", dcId);
@@ -131,7 +132,8 @@ export const dcService = {
     const dc = await this.getById(dcId);
     if (!dc) return false;
 
-    const { error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
       .from("datacenters")
       .update({ status })
       .eq("id", dcId);
@@ -160,10 +162,11 @@ export const dcService = {
     // For now, let's just append via array_append if supabase supports it or fetch-update.
     
     // Easier to just update via SQL append if possible, but standard is read-update.
-    const { data: currentDc } = await getSupabaseAdmin().from("datacenters").select("admin_notes").eq("id", dcId).single();
+    const supabase = await getSupabaseServer();
+    const { data: currentDc } = await supabase.from("datacenters").select("admin_notes").eq("id", dcId).single();
     const currentNotes = currentDc?.admin_notes || [];
     
-    const { error } = await getSupabaseAdmin()
+    const { error } = await supabase
       .from("datacenters")
       .update({ admin_notes: [...currentNotes, note] })
       .eq("id", dcId);
@@ -199,7 +202,8 @@ export const dcService = {
   },
 
   async getAuditLogs(dcId: string): Promise<DCAuditLog[]> {
-    const { data, error } = await getSupabaseAdmin()
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
       .from("admin_audit_logs")
       .select("*")
       .eq("target_id", dcId)
@@ -221,7 +225,8 @@ export const dcService = {
   },
 
   async logAction(log: Omit<DCAuditLog, "id" | "timestamp">) {
-    await getSupabaseAdmin().from("admin_audit_logs").insert({
+    const supabase = await getSupabaseServer();
+    await supabase.from("admin_audit_logs").insert({
       admin_id: log.adminId,
       target_resource: "datacenter",
       target_id: log.targetDcId,

@@ -84,7 +84,8 @@ export async function getKaisaTasks() {
   const session = await getSession();
   if (!session?.userId) return [];
 
-  const { data, error } = await getSupabaseAdmin()
+  const supabase = await getSupabaseServer();
+  const { data, error } = await supabase
     .from("kaisa_tasks")
     .select("*")
     .eq("user_id", session.userId)

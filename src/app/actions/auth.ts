@@ -49,7 +49,7 @@ async function getOrCreateUser(phone: string) {
   }
 
   // Create empty profile
-  const { error: profileError } = await supabaseAdmin
+  const { error: profileError } = await supabase
     .from("profiles")
     .insert([{ user_id: newUser.id, full_name: null }]);
 
