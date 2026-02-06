@@ -9,6 +9,8 @@ import { loginWithFirebaseToken, sendBackupOtp, verifyBackupOtp } from "@/app/ac
 import { auth } from "@/lib/firebase/client";
 import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
 
+export const dynamic = 'force-dynamic';
+
 type Product = "kaisa" | "space" | "node";
 
 const PRODUCTS = [
