@@ -6,13 +6,15 @@ import { useRouter } from "next/navigation";
 import { createNodeAction } from "@/app/actions/node";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { User } from "@/types/user";
+import { DataCenter } from "@/types/datacenter";
 
 export default function CreateNodeForm({ 
   users, 
   dcs 
 }: { 
-  users: { id: string; name: string }[], 
-  dcs: { id: string; name: string; available: number }[] 
+  users: User[], 
+  dcs: DataCenter[] 
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -67,7 +69,9 @@ export default function CreateNodeForm({
         >
           <option value="">Select User</option>
           {users.map(u => (
-            <option key={u.id} value={u.id}>{u.name} ({u.id})</option>
+            <option key={u.identity.id} value={u.identity.id}>
+              {u.identity.phone || u.identity.email || u.identity.id} ({u.identity.id})
+            </option>
           ))}
         </select>
       </div>
@@ -81,11 +85,14 @@ export default function CreateNodeForm({
           disabled={isLoading}
         >
           <option value="">Select Data Center</option>
-          {dcs.map(dc => (
-            <option key={dc.id} value={dc.id} disabled={dc.available <= 0}>
-              {dc.name} ({dc.available} slots available)
-            </option>
-          ))}
+          {dcs.map(dc => {
+            const available = dc.capacity.total - dc.capacity.active;
+            return (
+              <option key={dc.id} value={dc.id} disabled={available <= 0}>
+                {dc.name} ({available} slots available)
+              </option>
+            );
+          })}
         </select>
       </div>
 
