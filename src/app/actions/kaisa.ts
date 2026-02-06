@@ -1,6 +1,6 @@
 "use server";
 
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSession } from "@/lib/auth/session";
 import { revalidatePath } from "next/cache";
 import { kaisaService } from "@/lib/services/kaisaService";
@@ -22,7 +22,8 @@ export async function createKaisaAccount(businessType: KaisaBusinessType, role: 
 
   try {
     // 1. Create Account
-    const { error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
       .from("kaisa_accounts")
       .insert({
         user_id: session.userId,
@@ -120,7 +121,8 @@ export async function updateKaisaTaskStatus(taskId: string, status: string) {
       updateData.completed_at = new Date().toISOString();
   }
 
-  const { error } = await supabaseAdmin
+  const supabase = await getSupabaseServer();
+  const { error } = await supabase
     .from("kaisa_tasks")
     .update(updateData)
     .eq("id", taskId)

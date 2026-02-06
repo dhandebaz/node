@@ -46,7 +46,8 @@ export const dcService = {
       };
     }
 
-    const { error } = await getSupabaseAdmin()
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
       .from("datacenters")
       .update({ total_capacity: newTotal })
       .eq("id", dcId);

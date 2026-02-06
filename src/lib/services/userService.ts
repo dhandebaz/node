@@ -34,7 +34,8 @@ export const userService = {
   },
 
   async getUserById(id: string): Promise<User | null> {
-    const { data: dbUser, error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { data: dbUser, error } = await supabase
       .from("users")
       .select("*, kaisa_accounts(*), profiles(*)")
       .eq("id", id)

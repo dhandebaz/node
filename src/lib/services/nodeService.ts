@@ -47,7 +47,8 @@ export const nodeService = {
   },
 
   async getByUserId(userId: string): Promise<Node[]> {
-    const { data, error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
       .from("nodes")
       .select("*")
       .eq("user_id", userId)
@@ -141,7 +142,8 @@ export const nodeService = {
         updateData.hold_period_end = holdEnd.toISOString();
     }
 
-    const { error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
       .from("nodes")
       .update(updateData)
       .eq("id", nodeId);
@@ -168,7 +170,8 @@ export const nodeService = {
     const node = await this.getById(nodeId);
     if (!node) return { success: false, error: "Node not found" };
 
-    const { error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
       .from("nodes")
       .update({ mou_status: status })
       .eq("id", nodeId);
@@ -197,7 +200,8 @@ export const nodeService = {
 
     const newNotes = [...node.metadata.adminNotes, note];
 
-    const { error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
       .from("nodes")
       .update({ admin_notes: newNotes })
       .eq("id", nodeId);
@@ -216,7 +220,8 @@ export const nodeService = {
   },
 
   async getAuditLogs(nodeId: string): Promise<NodeAuditLog[]> {
-    const { data, error } = await supabaseAdmin
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
       .from("admin_audit_logs")
       .select("*")
       .eq("target_resource", "node")
@@ -238,7 +243,8 @@ export const nodeService = {
   },
 
   async logAction(log: Omit<NodeAuditLog, "id" | "timestamp">) {
-    await supabaseAdmin.from("admin_audit_logs").insert({
+    const supabase = await getSupabaseServer();
+    await supabase.from("admin_audit_logs").insert({
       admin_id: log.adminId,
       target_resource: "node",
       target_id: log.targetNodeId,

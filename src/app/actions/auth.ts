@@ -37,7 +37,7 @@ async function getOrCreateUser(phone: string) {
   const superAdminClean = SUPER_ADMIN_PHONE.replace(/\D/g, "");
   const role = cleanPhone.endsWith(superAdminClean.slice(-10)) ? "superadmin" : "customer";
 
-  const { data: newUser, error: createError } = await supabaseAdmin
+  const { data: newUser, error: createError } = await supabase
     .from("users")
     .insert([{ phone, role }])
     .select()
@@ -130,7 +130,8 @@ export async function verifyBackupOtp(phone: string, token: string, preferredPro
     const formattedPhone = normalizePhone(phone);
     
     // 1. Verify with Supabase Auth
-    const { data, error } = await supabaseAdmin.auth.verifyOtp({
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase.auth.verifyOtp({
       phone: formattedPhone,
       token,
       type: 'sms',
