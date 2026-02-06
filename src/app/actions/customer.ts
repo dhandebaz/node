@@ -12,10 +12,9 @@ import { User } from "@/types/user";
 async function getCurrentUser(): Promise<User> {
   const session = await getSession();
   
-  // For Development: If no session, default to USR-001 (The complex user)
-  const userId = session?.userId || "USR-001";
+  if (!session?.userId) throw new Error("Unauthorized");
   
-  const user = await userService.getUserById(userId);
+  const user = await userService.getUserById(session.userId);
   if (!user) throw new Error("User not found");
   return user;
 }

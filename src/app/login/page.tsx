@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, ArrowRight, Smartphone, ShieldCheck, Cpu, Cloud, Sparkles, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { sendOtpAction, verifyOtpAction } from "@/app/actions/auth";
+import { loginWithFirebaseToken, sendBackupOtp, verifyBackupOtp } from "@/app/actions/auth";
+import { auth } from "@/lib/firebase/client";
+import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
 
 type Product = "kaisa" | "space" | "node";
 
@@ -52,23 +54,73 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [showAdminSelection, setShowAdminSelection] = useState(false);
   const [adminRedirects, setAdminRedirects] = useState<{ admin: string, sandbox: string }>({ admin: "/admin", sandbox: "/dashboard" });
+  
+  // Auth State
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [usingBackup, setUsingBackup] = useState(false);
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
 
   const activeProduct = PRODUCTS.find(p => p.id === selectedProduct)!;
+
+  useEffect(() => {
+    // Initialize Recaptcha
+    if (!recaptchaVerifierRef.current) {
+        try {
+            recaptchaVerifierRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                'size': 'invisible',
+                'callback': () => {
+                    // reCAPTCHA solved
+                }
+            });
+        } catch (e) {
+            console.error("Recaptcha Init Error:", e);
+        }
+    }
+    
+    return () => {
+        if (recaptchaVerifierRef.current) {
+            recaptchaVerifierRef.current.clear();
+            recaptchaVerifierRef.current = null;
+        }
+    };
+  }, []);
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setUsingBackup(false);
 
     try {
-      const res = await sendOtpAction(phone);
-      if (res.success) {
-        setStep("otp");
-      } else {
-        setError(res.message || "Failed to send OTP");
+      // 1. Try Firebase (Primary)
+      if (!recaptchaVerifierRef.current) throw new Error("Recaptcha not initialized");
+      
+      const appVerifier = recaptchaVerifierRef.current;
+      // Ensure phone format is E.164
+      const formattedPhone = phone.startsWith("+") ? phone : `+91${phone.replace(/^0+/, "")}`;
+      
+      console.log("Sending OTP via Firebase to:", formattedPhone);
+      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+      setConfirmationResult(confirmation);
+      setStep("otp");
+
+    } catch (firebaseError: any) {
+      console.warn("Firebase OTP failed, switching to Backup:", firebaseError);
+      
+      // 2. Fallback to Supabase (Backup)
+      try {
+        setUsingBackup(true);
+        const res = await sendBackupOtp(phone);
+        
+        if (res.success) {
+            setStep("otp");
+        } else {
+            setError(res.message || "Failed to send OTP via backup provider.");
+        }
+      } catch (backupError) {
+        console.error("Backup OTP failed:", backupError);
+        setError("Failed to send OTP. Please try again.");
       }
-    } catch (err) {
-      setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -80,8 +132,23 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // Pass the selected product as preference
-      const res = await verifyOtpAction(phone, otp, selectedProduct);
+      let res;
+
+      if (usingBackup) {
+        // Verify via Backup (Server Action)
+        res = await verifyBackupOtp(phone, otp, selectedProduct);
+      } else {
+        // Verify via Firebase
+        if (!confirmationResult) {
+            throw new Error("No verification session found.");
+        }
+        
+        const credential = await confirmationResult.confirm(otp);
+        const idToken = await credential.user.getIdToken();
+        
+        // Exchange Token for Session (Server Action)
+        res = await loginWithFirebaseToken(idToken, selectedProduct);
+      }
       
       if (res.success) {
         if (res.isSuperAdmin) {
@@ -97,8 +164,9 @@ export default function LoginPage() {
       } else {
         setError(res.message || "Invalid OTP");
       }
-    } catch (err) {
-      setError("An error occurred. Please try again.");
+    } catch (err: any) {
+      console.error("Verification Error:", err);
+      setError("Invalid OTP or expired.");
     } finally {
       setIsLoading(false);
     }
@@ -149,6 +217,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Invisible Recaptcha Container */}
+      <div id="recaptcha-container"></div>
+
       {/* Back to Home Button */}
       <Link 
         href="/" 
@@ -306,16 +377,15 @@ export default function LoginPage() {
                             <input
                                 type="text"
                                 value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                className="w-full bg-black/50 border border-zinc-800 rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-all placeholder:text-zinc-600 tracking-widest"
-                                placeholder="• • • • • •"
-                                maxLength={6}
+                                onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                                className="w-full bg-black/50 border border-zinc-800 rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-all placeholder:text-zinc-600 tracking-widest text-lg"
+                                placeholder="000000"
                                 required
                                 autoFocus
                             />
                         </div>
                     </div>
-
+                    
                     {error && (
                         <motion.div 
                             initial={{ opacity: 0, height: 0 }}
@@ -329,22 +399,18 @@ export default function LoginPage() {
 
                     <button
                         type="submit"
-                        disabled={isLoading || otp.length < 4}
+                        disabled={isLoading || otp.length < 6}
                         className={`w-full font-medium py-3 rounded-lg transition-all flex items-center justify-center gap-2 ${
-                            isLoading || otp.length < 4
+                            isLoading || otp.length < 6
                                 ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
                                 : "bg-white text-black hover:bg-zinc-200"
                         }`}
                     >
-                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify & Login"}
+                        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Verify & Sign In <ArrowRight className="w-4 h-4" /></>}
                     </button>
                 </motion.form>
             )}
         </motion.div>
-        
-        <p className="text-center text-zinc-500 text-xs mt-8">
-            &copy; 2026 Nodebase Infrastructure. Secure Login.
-        </p>
       </div>
     </div>
   );

@@ -1,104 +1,59 @@
 
 import { Node, NodeAuditLog, NodeFilterOptions, NodeStatus, MoUStatus } from "@/types/node";
 import { dcService } from "./datacenterService";
-import { settingsService } from "./settingsService";
-
-// Mock Data
-let MOCK_NODES: Node[] = [
-  {
-    identity: {
-      id: "ND-DEL-101",
-      unitValue: 1000000,
-      createdAt: "2023-11-20T10:00:00Z",
-    },
-    participant: {
-      userId: "USR-001",
-    },
-    infrastructure: {
-      dcId: "DC-DEL-01",
-      pool: "Standard",
-    },
-    contract: {
-      mouStatus: "active",
-      mouRefId: "MOU-2023-001",
-      signedDate: "2023-11-25T00:00:00Z",
-    },
-    state: {
-      status: "active",
-      activationDate: "2023-12-01T00:00:00Z",
-      holdPeriodEnd: "2026-12-01T00:00:00Z", // 3 Year lock-in example
-    },
-    metadata: {
-      adminNotes: ["Initial batch deployment"],
-      tags: ["early-adopter", "delhi-batch-1"],
-    },
-  },
-  {
-    identity: {
-      id: "ND-DEL-102",
-      unitValue: 1000000,
-      createdAt: "2024-01-15T10:00:00Z",
-    },
-    participant: {
-      userId: "USR-002",
-    },
-    infrastructure: {
-      dcId: "DC-DEL-01",
-      pool: "High Performance",
-    },
-    contract: {
-      mouStatus: "signed",
-      mouRefId: "MOU-2024-045",
-      signedDate: "2024-01-20T00:00:00Z",
-    },
-    state: {
-      status: "deploying",
-    },
-    metadata: {
-      adminNotes: [],
-      tags: [],
-    },
-  }
-];
-
-let MOCK_LOGS: NodeAuditLog[] = [];
+import { supabaseAdmin } from "@/lib/supabase/server";
 
 export const nodeService = {
   async getAll(filters?: NodeFilterOptions): Promise<Node[]> {
-    const isProduction = await settingsService.isProductionMode();
-    let nodes = isProduction ? [] : [...MOCK_NODES];
+    let query = supabaseAdmin.from("nodes").select("*");
 
     if (filters) {
       if (filters.dcId) {
-        nodes = nodes.filter(n => n.infrastructure.dcId === filters.dcId);
+        query = query.eq("datacenter_id", filters.dcId);
       }
       if (filters.status) {
-        nodes = nodes.filter(n => n.state.status === filters.status);
+        query = query.eq("status", filters.status);
       }
       if (filters.mouStatus) {
-        nodes = nodes.filter(n => n.contract.mouStatus === filters.mouStatus);
+        query = query.eq("mou_status", filters.mouStatus);
       }
       if (filters.userId) {
-        nodes = nodes.filter(n => n.participant.userId === filters.userId);
+        query = query.eq("user_id", filters.userId);
       }
     }
 
-    // Sort by created date desc
-    return nodes.sort((a, b) => 
-      new Date(b.identity.createdAt).getTime() - new Date(a.identity.createdAt).getTime()
-    );
+    const { data, error } = await query.order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching nodes:", error);
+      return [];
+    }
+
+    return data.map(mapDbNodeToAppNode);
   },
 
   async getById(id: string): Promise<Node | null> {
-    const isProduction = await settingsService.isProductionMode();
-    if (isProduction) return null;
-    return MOCK_NODES.find(n => n.identity.id === id) || null;
+    const { data, error } = await supabaseAdmin
+      .from("nodes")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error || !data) return null;
+
+    return mapDbNodeToAppNode(data);
   },
 
   async getByUserId(userId: string): Promise<Node[]> {
-    const isProduction = await settingsService.isProductionMode();
-    if (isProduction) return [];
-    return MOCK_NODES.filter(n => n.participant.userId === userId);
+    const { data, error } = await supabaseAdmin
+      .from("nodes")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) return [];
+
+    return data.map(mapDbNodeToAppNode);
   },
 
   async createNode(
@@ -118,32 +73,25 @@ export const nodeService = {
       return { success: false, error: "Data Center has no available capacity" };
     }
 
-    const newNode: Node = {
-      identity: {
-        id: `ND-${data.dcId.split('-')[1]}-${Math.floor(Math.random() * 10000)}`,
-        unitValue: 1000000,
-        createdAt: new Date().toISOString(),
-      },
-      participant: {
-        userId: data.userId,
-      },
-      infrastructure: {
-        dcId: data.dcId,
+    // Insert new node
+    const { data: newNodeData, error } = await supabaseAdmin
+      .from("nodes")
+      .insert({
+        user_id: data.userId,
+        datacenter_id: data.dcId,
         pool: data.pool,
-      },
-      contract: {
-        mouStatus: "draft",
-      },
-      state: {
         status: "pending",
-      },
-      metadata: {
-        adminNotes: [],
-        tags: [],
-      },
-    };
+        mou_status: "draft",
+        unit_value: 1000000 // Default fixed value
+      })
+      .select()
+      .single();
 
-    MOCK_NODES.push(newNode);
+    if (error || !newNodeData) {
+      return { success: false, error: error?.message || "Failed to create node" };
+    }
+
+    const newNode = mapDbNodeToAppNode(newNodeData);
 
     await this.logAction({
       adminId,
@@ -161,7 +109,7 @@ export const nodeService = {
     nodeId: string,
     newStatus: NodeStatus
   ): Promise<{ success: boolean; error?: string }> {
-    const node = MOCK_NODES.find(n => n.identity.id === nodeId);
+    const node = await this.getById(nodeId);
     if (!node) return { success: false, error: "Node not found" };
 
     const oldStatus = node.state.status;
@@ -172,12 +120,6 @@ export const nodeService = {
     if (newStatus === "active" && oldStatus !== "active" && oldStatus !== "paused") {
       const res = await dcService.allocateNode(adminId, node.infrastructure.dcId);
       if (!res.success) return { success: false, error: `Capacity Error: ${res.error}` };
-      
-      node.state.activationDate = new Date().toISOString();
-      // Set hold period end to 3 years from now by default
-      const holdEnd = new Date();
-      holdEnd.setFullYear(holdEnd.getFullYear() + 3);
-      node.state.holdPeriodEnd = holdEnd.toISOString();
     }
 
     // Retirement: Decrement Active Count
@@ -186,9 +128,22 @@ export const nodeService = {
       if (!res.success) return { success: false, error: `Capacity Error: ${res.error}` };
     }
 
-    // Pausing/Resuming: No capacity change
-    
-    node.state.status = newStatus;
+    const updateData: any = { status: newStatus };
+
+    if (newStatus === "active" && oldStatus !== "active") {
+        updateData.activated_at = new Date().toISOString();
+        // Set hold period end to 3 years from now by default
+        const holdEnd = new Date();
+        holdEnd.setFullYear(holdEnd.getFullYear() + 3);
+        updateData.hold_period_end = holdEnd.toISOString();
+    }
+
+    const { error } = await supabaseAdmin
+      .from("nodes")
+      .update(updateData)
+      .eq("id", nodeId);
+
+    if (error) return { success: false, error: error.message };
 
     await this.logAction({
       adminId,
@@ -205,58 +160,98 @@ export const nodeService = {
   async updateMoUStatus(
     adminId: string,
     nodeId: string,
-    status: MoUStatus,
-    refId?: string
+    status: MoUStatus
   ): Promise<{ success: boolean; error?: string }> {
-    const node = MOCK_NODES.find(n => n.identity.id === nodeId);
+    const node = await this.getById(nodeId);
     if (!node) return { success: false, error: "Node not found" };
 
-    const oldStatus = node.contract.mouStatus;
-    node.contract.mouStatus = status;
-    if (refId) node.contract.mouRefId = refId;
-    if (status === "signed" || status === "active") {
-        if (!node.contract.signedDate) node.contract.signedDate = new Date().toISOString();
-    }
+    const { error } = await supabaseAdmin
+      .from("nodes")
+      .update({ mou_status: status })
+      .eq("id", nodeId);
+
+    if (error) return { success: false, error: error.message };
 
     await this.logAction({
       adminId,
       targetNodeId: nodeId,
       actionType: "update_contract",
-      details: `Updated MoU status to ${status}`,
-      previousValue: oldStatus,
+      details: `Updated MoU status from ${node.contract.mouStatus} to ${status}`,
+      previousValue: node.contract.mouStatus,
       newValue: status
     });
 
     return { success: true };
   },
 
-  async addNote(adminId: string, nodeId: string, note: string): Promise<boolean> {
-    const node = MOCK_NODES.find(n => n.identity.id === nodeId);
-    if (!node) return false;
+  async addNodeNote(
+    adminId: string,
+    nodeId: string,
+    note: string
+  ): Promise<{ success: boolean; error?: string }> {
+    const node = await this.getById(nodeId);
+    if (!node) return { success: false, error: "Node not found" };
 
-    node.metadata.adminNotes.push(note);
-    
+    const newNotes = [...node.metadata.adminNotes, note];
+
+    const { error } = await supabaseAdmin
+      .from("nodes")
+      .update({ admin_notes: newNotes })
+      .eq("id", nodeId);
+
+    if (error) return { success: false, error: error.message };
+
     await this.logAction({
       adminId,
       targetNodeId: nodeId,
       actionType: "add_note",
-      details: `Added note: ${note.substring(0, 50)}...`,
+      details: `Added admin note: ${note.substring(0, 50)}${note.length > 50 ? '...' : ''}`,
+      newValue: note
     });
 
-    return true;
-  },
-
-  async getAuditLogs(nodeId: string): Promise<NodeAuditLog[]> {
-    return MOCK_LOGS
-      .filter(l => l.targetNodeId === nodeId)
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    return { success: true };
   },
 
   async logAction(log: Omit<NodeAuditLog, "id" | "timestamp">) {
-    MOCK_LOGS.push({
-      ...log,
-      id: Math.random().toString(36).substring(7),
-      timestamp: new Date().toISOString(),
+    await supabaseAdmin.from("admin_audit_logs").insert({
+      admin_id: log.adminId,
+      target_resource: "node",
+      target_id: log.targetNodeId,
+      action_type: log.actionType,
+      details: log.details,
+      previous_value: log.previousValue ? JSON.stringify(log.previousValue) : null,
+      new_value: log.newValue ? JSON.stringify(log.newValue) : null
     });
   }
 };
+
+function mapDbNodeToAppNode(dbNode: any): Node {
+  return {
+    identity: {
+      id: dbNode.id,
+      unitValue: dbNode.unit_value,
+      createdAt: dbNode.created_at
+    },
+    participant: {
+      userId: dbNode.user_id
+    },
+    infrastructure: {
+      dcId: dbNode.datacenter_id,
+      pool: dbNode.pool
+    },
+    contract: {
+      mouStatus: dbNode.mou_status,
+      mouRefId: undefined, // Not in DB
+      signedDate: undefined // Not in DB
+    },
+    state: {
+      status: dbNode.status,
+      activationDate: dbNode.activated_at,
+      holdPeriodEnd: dbNode.hold_period_end
+    },
+    metadata: {
+      adminNotes: dbNode.admin_notes || [],
+      tags: [] // Not in DB yet
+    }
+  };
+}

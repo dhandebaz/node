@@ -102,8 +102,20 @@ export default async function NodesPage({
             })}
             {nodes.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-6 py-8 text-center text-zinc-500">
-                  No nodes found matching criteria.
+                <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Server className="w-8 h-8 text-zinc-700" />
+                    <p className="font-medium text-zinc-400">No Nodes Found</p>
+                    <p className="text-sm text-zinc-600 mb-4 max-w-sm">
+                      There are no participating nodes matching your criteria.
+                    </p>
+                    <Link 
+                        href="/admin/nodes/create" 
+                        className="bg-white text-black px-4 py-2 rounded text-sm font-medium hover:bg-zinc-200 transition-colors"
+                    >
+                        Create First Node
+                    </Link>
+                  </div>
                 </td>
               </tr>
             )}

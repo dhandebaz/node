@@ -1,156 +1,150 @@
 "use server";
 
-import { createSession, deleteSession } from "@/lib/auth/session";
-import { generateAndSendOTP, verifyOTP } from "@/lib/auth/otp";
+import { createSession } from "@/lib/auth/session";
+import { firebaseAdmin } from "@/lib/firebase/admin";
+import { supabaseAdmin } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { userService } from "@/lib/services/userService";
 
-// Super Admin Configuration (Should be in env vars)
 const SUPER_ADMIN_PHONE = process.env.SUPER_ADMIN_PHONE || "9910778576";
 
-export async function sendOtpAction(phone: string) {
-  // 1. Validate Phone Format (Basic)
-  const cleanPhone = phone.replace(/\D/g, "");
-  
-  // 2. Check if user exists (Admin or Customer)
-  const isSuperAdmin = cleanPhone === SUPER_ADMIN_PHONE;
-  const users = await userService.getUsers();
-  const user = users.find(u => u.identity.phone.replace(/\D/g, "") === cleanPhone);
-
-  if (!isSuperAdmin && !user) {
-    // Return success to prevent enumeration, but do nothing
-    return { success: true, message: "OTP sent if number is registered." };
-  }
-
-  // 3. Generate and Send OTP
-  const sent = await generateAndSendOTP(cleanPhone);
-  
-  if (!sent) {
-    return { success: false, message: "Failed to send OTP. Try again." };
-  }
-
-  return { success: true, message: "OTP sent successfully." };
+function normalizePhone(phone: string): string {
+  // Remove all non-digit characters
+  const cleaned = phone.replace(/\D/g, "");
+  // Ensure it has +91 or appropriate code if needed, but for comparison we often use the last 10 digits
+  // or full E.164. Firebase usually returns E.164 (+91...).
+  // We'll stick to E.164 format for storage if possible.
+  if (cleaned.length === 10) return `+91${cleaned}`;
+  if (cleaned.length > 10 && !phone.startsWith("+")) return `+${cleaned}`;
+  return phone.startsWith("+") ? phone : `+${cleaned}`;
 }
 
-export async function verifyOtpAction(phone: string, otp: string, preferredProduct?: "kaisa" | "space" | "node") {
-  // Normalize phone to last 10 digits for consistent matching
+async function getOrCreateUser(phone: string) {
+  // 1. Check if user exists in Supabase public.users
+  const { data: existingUser, error: fetchError } = await supabaseAdmin
+    .from("users")
+    .select("*")
+    .eq("phone", phone)
+    .single();
+
+  if (existingUser) {
+    return existingUser;
+  }
+
+  // 2. If not, create user
+  // Determine role
   const cleanPhone = phone.replace(/\D/g, "");
-  const last10Phone = cleanPhone.slice(-10);
-  const superAdminPhoneLast10 = SUPER_ADMIN_PHONE.replace(/\D/g, "").slice(-10);
-  const normalizedPreferredProduct = preferredProduct?.trim().toLowerCase();
+  const superAdminClean = SUPER_ADMIN_PHONE.replace(/\D/g, "");
+  const role = cleanPhone.endsWith(superAdminClean.slice(-10)) ? "superadmin" : "customer";
 
-  console.log(`[Auth] Verify OTP for ${cleanPhone} (Last 10: ${last10Phone}) with preferredProduct: ${preferredProduct} (Normalized: ${normalizedPreferredProduct})`);
+  const { data: newUser, error: createError } = await supabaseAdmin
+    .from("users")
+    .insert([{ phone, role }])
+    .select()
+    .single();
 
-  // 1. Verify OTP
-  // Pass the full clean phone to OTP service, let it handle its own normalization or matching
-  // Note: For dev backdoor to work with +91, we might need to handle it in verifyOTP or here.
-  // But if the user is succeeding, we assume OTP is valid.
-  const result = await verifyOTP(cleanPhone, otp);
-
-  if (!result.valid) {
-    return { success: false, message: "Invalid OTP or expired." };
+  if (createError) {
+    console.error("Error creating user:", createError);
+    throw new Error("Failed to create user record.");
   }
 
-  // 2. Identify User & Role
-  let userId = "";
-  let role = "user";
-  let redirectPath = "/dashboard";
+  return newUser;
+}
 
-  // Check if it matches Super Admin (comparing last 10 digits)
-  if (last10Phone === superAdminPhoneLast10) {
-    userId = "ADMIN-001";
-    role = "superadmin";
-    
-    // Allow Admin to access specific dashboards if requested via pill switcher
-    console.log(`[Auth] SuperAdmin Login. Preferred: ${normalizedPreferredProduct}`);
-    
-    if (normalizedPreferredProduct === "kaisa") {
-        redirectPath = "/dashboard/kaisa";
-    } else if (normalizedPreferredProduct === "space") {
-        redirectPath = "/dashboard/space";
-    } else if (normalizedPreferredProduct === "node") {
-        redirectPath = "/node/dashboard";
-    } else {
-        console.log(`[Auth] No preferred product matched. Defaulting to /admin`);
-        redirectPath = "/admin";
-    }
-  } else {
-    const users = await userService.getUsers();
-    // Match user by last 10 digits of phone
-    const user = users.find(u => u.identity.phone.replace(/\D/g, "").slice(-10) === last10Phone);
-    
-    if (!user) {
-      return { success: false, message: "Access Denied. User not found." };
-    }
-    userId = user.identity.id;
-    
-    // Smart Redirect Logic
-    if (normalizedPreferredProduct) {
-        // Try to respect preference first
-        if (normalizedPreferredProduct === "kaisa" && user.roles.isKaisaUser) {
-            redirectPath = "/dashboard/kaisa";
-        } else if (normalizedPreferredProduct === "space" && user.roles.isSpaceUser) {
-            redirectPath = "/dashboard/space";
-        } else if (normalizedPreferredProduct === "node" && user.roles.isNodeParticipant) {
-            redirectPath = "/node/dashboard";
-        } else {
-             // Fallback if preference is invalid/unauthorized
-             // Default logic: Multi-product -> Switcher, Single -> Direct
-             const products = [
-                user.roles.isKaisaUser ? "kaisa" : null,
-                user.roles.isSpaceUser ? "space" : null,
-                user.roles.isNodeParticipant ? "node" : null
-             ].filter(Boolean);
+export async function loginWithFirebaseToken(idToken: string, preferredProduct?: string) {
+  try {
+    // 1. Verify Token
+    const decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
+    const phone = decodedToken.phone_number;
 
-             if (products.length > 1) {
-                 redirectPath = "/dashboard";
-             } else if (user.roles.isKaisaUser) {
-                 redirectPath = "/dashboard/kaisa";
-             } else if (user.roles.isSpaceUser) {
-                 redirectPath = "/dashboard/space";
-             } else if (user.roles.isNodeParticipant) {
-                 redirectPath = "/node/dashboard";
-             }
-        }
-    } else {
-        // No preference provided (legacy behavior updated)
-        const products = [
-            user.roles.isKaisaUser,
-            user.roles.isSpaceUser,
-            user.roles.isNodeParticipant
-        ].filter(Boolean);
-
-        if (products.length > 1) {
-            redirectPath = "/dashboard";
-        } else if (user.roles.isKaisaUser) {
-            redirectPath = "/dashboard/kaisa";
-        } else if (user.roles.isSpaceUser) {
-            redirectPath = "/dashboard/space";
-        } else if (user.roles.isNodeParticipant) {
-            redirectPath = "/node/dashboard";
-        }
+    if (!phone) {
+      return { success: false, message: "No phone number found in token." };
     }
+
+    // 2. Sync User
+    const user = await getOrCreateUser(phone);
+
+    // 3. Create Session
+    await createSession(user.id, user.role);
+
+    // 4. Determine Redirect
+    let redirectPath = "/dashboard";
+    if (user.role === "superadmin" || user.role === "admin") {
+         redirectPath = "/admin"; // Default for admin
+    }
+
+    if (preferredProduct === "kaisa") redirectPath = "/dashboard/kaisa";
+    else if (preferredProduct === "space") redirectPath = "/dashboard/space";
+    else if (preferredProduct === "node") redirectPath = "/node/dashboard";
+
+    return { success: true, redirect: redirectPath, isSuperAdmin: user.role === "superadmin" || user.role === "admin" };
+
+  } catch (error) {
+    console.error("Firebase Login Error:", error);
+    return { success: false, message: "Authentication failed." };
   }
+}
 
-  console.log(`[Auth] Redirecting to: ${redirectPath}`);
+export async function sendBackupOtp(phone: string) {
+  try {
+    const formattedPhone = normalizePhone(phone);
+    const { error } = await supabaseAdmin.auth.signInWithOtp({
+      phone: formattedPhone,
+    });
 
-  // 3. Create Session
-  await createSession(userId, role);
+    if (error) {
+        console.error("Supabase OTP Send Error:", error);
+        return { success: false, message: error.message };
+    }
 
-  // 4. Return success with redirect path and super admin flag
-  return { 
-    success: true, 
-    redirect: redirectPath,
-    isSuperAdmin: role === "superadmin"
-  };
+    return { success: true, message: "OTP sent via backup provider." };
+  } catch (error) {
+    console.error("Backup OTP Error:", error);
+    return { success: false, message: "Failed to send backup OTP." };
+  }
 }
 
 export async function logoutAction() {
-  await deleteSession();
-  redirect("/login"); // Redirect to public login
+  await import("@/lib/auth/session").then((mod) => mod.deleteSession());
+  redirect("/");
 }
 
-export async function adminLogoutAction() {
-  await deleteSession();
-  redirect("/login");
+export async function verifyBackupOtp(phone: string, token: string, preferredProduct?: string) {
+  try {
+    const formattedPhone = normalizePhone(phone);
+    
+    // 1. Verify with Supabase Auth
+    const { data, error } = await supabaseAdmin.auth.verifyOtp({
+      phone: formattedPhone,
+      token,
+      type: 'sms',
+    });
+
+    if (error || !data.user) {
+       return { success: false, message: "Invalid OTP." };
+    }
+
+    // 2. Sync User
+    // Use the phone from the verified user or the input phone (should be same)
+    const verifiedPhone = data.user.phone || formattedPhone;
+    const user = await getOrCreateUser(verifiedPhone);
+
+    // 3. Create Session
+    await createSession(user.id, user.role);
+
+     // 4. Determine Redirect (Same logic)
+    let redirectPath = "/dashboard";
+    if (user.role === "superadmin" || user.role === "admin") {
+         redirectPath = "/admin";
+    }
+
+    if (preferredProduct === "kaisa") redirectPath = "/dashboard/kaisa";
+    else if (preferredProduct === "space") redirectPath = "/dashboard/space";
+    else if (preferredProduct === "node") redirectPath = "/node/dashboard";
+
+    return { success: true, redirect: redirectPath, isSuperAdmin: user.role === "superadmin" || user.role === "admin" };
+
+  } catch (error) {
+    console.error("Backup Verification Error:", error);
+    return { success: false, message: "Verification failed." };
+  }
 }

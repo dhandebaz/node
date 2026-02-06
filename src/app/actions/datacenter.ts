@@ -4,11 +4,18 @@
 import { dcService } from "@/lib/services/datacenterService";
 import { revalidatePath } from "next/cache";
 import { DCStatus } from "@/types/datacenter";
+import { getSession } from "@/lib/auth/session";
 
-const ADMIN_ID = "admin-123"; // TODO: Get from session
+async function getAdminId() {
+  const session = await getSession();
+  if (!session?.userId) throw new Error("Unauthorized");
+  // Ideally check role here too, but middleware protects admin routes
+  return session.userId;
+}
 
 export async function updateDCCapacityAction(dcId: string, newTotal: number) {
-  const result = await dcService.updateCapacity(ADMIN_ID, dcId, newTotal);
+  const adminId = await getAdminId();
+  const result = await dcService.updateCapacity(adminId, dcId, newTotal);
   if (result.success) {
     revalidatePath(`/admin/datacenters/${dcId}`);
     revalidatePath("/admin/datacenters");
@@ -17,7 +24,8 @@ export async function updateDCCapacityAction(dcId: string, newTotal: number) {
 }
 
 export async function updateDCStatusAction(dcId: string, status: DCStatus) {
-  const success = await dcService.updateStatus(ADMIN_ID, dcId, status);
+  const adminId = await getAdminId();
+  const success = await dcService.updateStatus(adminId, dcId, status);
   if (success) {
     revalidatePath(`/admin/datacenters/${dcId}`);
     revalidatePath("/admin/datacenters");
@@ -26,7 +34,8 @@ export async function updateDCStatusAction(dcId: string, status: DCStatus) {
 }
 
 export async function addDCNoteAction(dcId: string, note: string) {
-  const success = await dcService.addNote(ADMIN_ID, dcId, note);
+  const adminId = await getAdminId();
+  const success = await dcService.addNote(adminId, dcId, note);
   if (success) {
     revalidatePath(`/admin/datacenters/${dcId}`);
   }
@@ -34,7 +43,8 @@ export async function addDCNoteAction(dcId: string, note: string) {
 }
 
 export async function updateHardwareConfigAction(dcId: string, config: any) {
-  const result = await dcService.updateHardwareConfig(ADMIN_ID, dcId, config);
+  const adminId = await getAdminId();
+  const result = await dcService.updateHardwareConfig(adminId, dcId, config);
   if (result.success) {
     revalidatePath(`/admin/datacenters`);
     revalidatePath(`/admin/datacenters/${dcId}`);

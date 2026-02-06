@@ -7,42 +7,16 @@ import {
   AlertCircle
 } from "lucide-react";
 import { KaisaTask } from "@/types/kaisa";
+import { TaskCard } from "./TaskCard";
 
 export default async function KaisaTasksPage() {
   const data = await getKaisaDashboardData();
   const { tasks } = data;
 
   const inProgress = tasks.filter(t => t.status === "in_progress");
-  const pending = tasks.filter(t => t.status === "pending");
-  const scheduled = tasks.filter(t => t.status === "scheduled");
+  const queued = tasks.filter(t => t.status === "queued");
+  const scheduled = tasks.filter(t => t.status === "scheduled"); // Not used yet
   const completed = tasks.filter(t => t.status === "completed");
-
-  const TaskCard = ({ task }: { task: KaisaTask }) => (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors">
-      <div className="flex items-start justify-between mb-3">
-        <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wider ${
-          task.priority === "high" ? "bg-red-500/10 text-red-500" :
-          task.priority === "medium" ? "bg-amber-500/10 text-amber-500" :
-          "bg-blue-500/10 text-blue-500"
-        }`}>
-          {task.priority} Priority
-        </span>
-        <span className="text-xs text-zinc-500">{task.module}</span>
-      </div>
-      <h3 className="text-white font-medium mb-1">{task.title}</h3>
-      <p className="text-sm text-zinc-400 mb-4">{task.description}</p>
-      <div className="flex items-center gap-2 text-xs text-zinc-500 border-t border-zinc-800 pt-3">
-        <Clock className="w-3 h-3" />
-        <span>Created {new Date(task.createdAt).toLocaleDateString()}</span>
-        {task.scheduledFor && (
-            <span className="flex items-center gap-1 ml-auto text-blue-400">
-                <Calendar className="w-3 h-3" />
-                Due {new Date(task.scheduledFor).toLocaleDateString()}
-            </span>
-        )}
-      </div>
-    </div>
-  );
 
   return (
     <div className="space-y-8">
@@ -53,7 +27,7 @@ export default async function KaisaTasksPage() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         
-        {/* Column 1: In Progress & Pending */}
+        {/* Column 1: In Progress & Queued */}
         <div className="lg:col-span-2 space-y-8">
             <section>
                 <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
@@ -69,11 +43,11 @@ export default async function KaisaTasksPage() {
             <section>
                 <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-amber-500" />
-                    Pending Review
+                    Queued / Pending
                 </h2>
                 <div className="grid md:grid-cols-2 gap-4">
-                    {pending.map(task => <TaskCard key={task.id} task={task} />)}
-                    {pending.length === 0 && <p className="text-zinc-500 text-sm">No tasks pending review.</p>}
+                    {queued.map(task => <TaskCard key={task.id} task={task} />)}
+                    {queued.length === 0 && <p className="text-zinc-500 text-sm">No tasks queued.</p>}
                 </div>
             </section>
         </div>

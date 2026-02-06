@@ -1,59 +1,124 @@
-
 "use server";
 
-import { kaisaService } from "@/lib/services/kaisaService";
+import { supabaseAdmin } from "@/lib/supabase/server";
+import { getSession } from "@/lib/auth/session";
 import { revalidatePath } from "next/cache";
-import { KaisaModuleType, KaisaBusinessType, KaisaRoleType, IntegrationConfigDetails } from "@/types/kaisa";
 
-const ADMIN_ID = "admin-123";
+// --- Types ---
+export type KaisaBusinessType = "Doctor" | "Homestay" | "Retail" | "Other";
+export type KaisaRoleType = "manager" | "co-founder";
 
-export async function toggleModuleAction(
-  moduleType: KaisaModuleType, 
-  enabledGlobal: boolean,
-  enabledFor?: KaisaBusinessType[]
-) {
-  const success = await kaisaService.toggleModule(ADMIN_ID, moduleType, enabledGlobal, enabledFor);
-  if (success) revalidatePath("/admin/kaisa");
-  return { success };
-}
+// --- Actions ---
 
-export async function updateRoleConfigAction(
-  roleType: KaisaRoleType,
-  updates: { enabled?: boolean; inviteOnly?: boolean }
-) {
-  const success = await kaisaService.updateRoleConfig(ADMIN_ID, roleType, updates);
-  if (success) revalidatePath("/admin/kaisa");
-  return { success };
-}
+export async function createKaisaAccount(businessType: KaisaBusinessType, role: KaisaRoleType) {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
 
-export async function setSystemStatusAction(status: "operational" | "paused") {
-  const success = await kaisaService.setSystemStatus(ADMIN_ID, status);
-  if (success) revalidatePath("/admin/kaisa");
-  return { success };
-}
+  try {
+    // 1. Create Account
+    const { error } = await supabaseAdmin
+      .from("kaisa_accounts")
+      .insert({
+        user_id: session.userId,
+        business_type: businessType,
+        role: role,
+        status: "active"
+      });
 
-export async function toggleIntegrationAction(name: string, enabled: boolean) {
-  const success = await kaisaService.toggleIntegration(ADMIN_ID, name, enabled);
-  if (success) revalidatePath("/admin/kaisa");
-  return { success };
-}
+    if (error) {
+      if (error.code === '23505') { // Unique violation
+          return { success: false, message: "Account already exists" };
+      }
+      console.error("Create Kaisa Account Error:", error);
+      return { success: false, message: "Failed to create account" };
+    }
 
-export async function updateIntegrationConfigAction(name: string, config: IntegrationConfigDetails) {
-  const success = await kaisaService.updateIntegrationConfig(ADMIN_ID, name, config);
-  if (success) revalidatePath("/admin/kaisa");
-  return { success };
-}
+    // 2. Create Starter Tasks
+    const starterTasks = [
+      { user_id: session.userId, intent: "Understanding your business context", status: "queued" },
+      { user_id: session.userId, intent: "Setting up frontdesk workflow", status: "queued" },
+      { user_id: session.userId, intent: "Configuring initial modules", status: "queued" }
+    ];
 
-export async function getIntegrationStatsAction(name: string) {
-  const stats = await kaisaService.getIntegrationStats(name);
-  return { stats };
-}
+    const { error: taskError } = await supabaseAdmin
+      .from("kaisa_tasks")
+      .insert(starterTasks);
 
-export async function toggleUserKaisaStatusAction(userId: string, status: "active" | "paused") {
-  const success = await kaisaService.toggleUserKaisaStatus(ADMIN_ID, userId, status);
-  if (success) {
-    revalidatePath("/admin/kaisa");
-    revalidatePath(`/admin/users/${userId}`);
+    if (taskError) {
+       console.error("Create Starter Tasks Error:", taskError);
+       // We don't fail the whole request if tasks fail, but it's not ideal.
+    }
+
+    revalidatePath("/dashboard");
+    return { success: true };
+
+  } catch (error) {
+    console.error("System Error:", error);
+    return { success: false, message: "Internal System Error" };
   }
-  return { success };
+}
+
+export async function getKaisaAccount() {
+  const session = await getSession();
+  if (!session?.userId) return null;
+
+  const { data, error } = await supabaseAdmin
+    .from("kaisa_accounts")
+    .select("*")
+    .eq("user_id", session.userId)
+    .single();
+
+  if (error) return null;
+  return data;
+}
+
+export async function getKaisaTasks() {
+  const session = await getSession();
+  if (!session?.userId) return [];
+
+  const { data, error } = await supabaseAdmin
+    .from("kaisa_tasks")
+    .select("*")
+    .eq("user_id", session.userId)
+    .order("created_at", { ascending: false });
+
+  if (error) return [];
+  return data;
+}
+
+export async function createKaisaTask(intent: string) {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
+
+  const { error } = await supabaseAdmin
+    .from("kaisa_tasks")
+    .insert({
+      user_id: session.userId,
+      intent,
+      status: "queued"
+    });
+
+  if (error) return { success: false, message: "Failed to create task" };
+  revalidatePath("/dashboard/kaisa");
+  return { success: true };
+}
+
+export async function updateKaisaTaskStatus(taskId: string, status: string) {
+  const session = await getSession();
+  if (!session?.userId) return { success: false, message: "Unauthorized" };
+
+  const updateData: any = { status };
+  if (status === 'completed') {
+      updateData.completed_at = new Date().toISOString();
+  }
+
+  const { error } = await supabaseAdmin
+    .from("kaisa_tasks")
+    .update(updateData)
+    .eq("id", taskId)
+    .eq("user_id", session.userId); // Security check
+
+  if (error) return { success: false, message: "Failed to update task" };
+  revalidatePath("/dashboard/kaisa");
+  return { success: true };
 }

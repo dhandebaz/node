@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "nodebase | India's AI & Digital Infrastructure",
   description: "Institutional digital infrastructure for the next generation of AI and technology. kaisa AI, Nodebase Space, and dedicated nodes.",
+  appleWebApp: {
+    title: "nodebase",
+  },
 };
 
 export default async function RootLayout({

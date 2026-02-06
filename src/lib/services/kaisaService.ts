@@ -11,9 +11,10 @@ import {
   KaisaCreditUsage,
   IntegrationConfigDetails
 } from "@/types/kaisa";
-import { userService } from "./userService"; // Reusing mock user store
+import { supabaseAdmin } from "@/lib/supabase/server";
+import { userService } from "./userService";
 
-// Initial Mock Config
+// Initial Config (Read-only default for now)
 let GLOBAL_CONFIG: KaisaGlobalConfig = {
   systemStatus: "operational",
   roles: [
@@ -34,8 +35,8 @@ let GLOBAL_CONFIG: KaisaGlobalConfig = {
       status: "active", 
       enabledGlobal: true,
       config: {
-        googleClientId: "mock-client-id",
-        googleClientSecret: "mock-secret"
+        googleClientId: "",
+        googleClientSecret: ""
       }
     },
     { 
@@ -67,8 +68,6 @@ let GLOBAL_CONFIG: KaisaGlobalConfig = {
   ],
 };
 
-let AUDIT_LOGS: KaisaAdminAuditLog[] = [];
-
 export const kaisaService = {
   async getConfig(): Promise<KaisaGlobalConfig> {
     return { ...GLOBAL_CONFIG };
@@ -81,7 +80,7 @@ export const kaisaService = {
     const stats: KaisaStats = {
       totalUsers: kaisaUsers.length,
       activeUsers: kaisaUsers.filter(u => u.status.account === "active").length,
-      pausedUsers: kaisaUsers.filter(u => u.status.account === "suspended").length, // Mapping suspended to paused context
+      pausedUsers: kaisaUsers.filter(u => u.status.account === "suspended").length, 
       byType: { Doctor: 0, Homestay: 0, Retail: 0, Other: 0 },
       byRole: { owner: 0, manager: 0, "co-founder": 0 },
     };
@@ -106,10 +105,10 @@ export const kaisaService = {
     enabledGlobal: boolean,
     enabledFor?: KaisaBusinessType[]
   ): Promise<boolean> {
+    // In-memory update only
     const mod = GLOBAL_CONFIG.modules.find(m => m.type === moduleType);
     if (!mod) return false;
 
-    const oldState = JSON.stringify(mod);
     mod.enabledGlobal = enabledGlobal;
     if (enabledFor) mod.enabledFor = enabledFor;
 
@@ -117,7 +116,7 @@ export const kaisaService = {
       adminId,
       actionType: "module_toggle",
       scope: "global",
-      details: `Updated ${moduleType}: Global=${enabledGlobal}, Types=${enabledFor ? enabledFor.join(',') : 'unchanged'}`,
+      details: `Updated ${moduleType}: Global=${enabledGlobal}`,
     });
 
     return true;
@@ -138,7 +137,7 @@ export const kaisaService = {
       adminId,
       actionType: "role_update",
       scope: "global",
-      details: `Updated role ${roleType}: ${JSON.stringify(updates)}`,
+      details: `Updated role ${roleType}`,
     });
 
     return true;
@@ -174,20 +173,8 @@ export const kaisaService = {
   },
 
   async getIntegrationStats(name: string): Promise<Record<string, number>> {
-    const users = await userService.getUsers();
-    const stats: Record<string, number> = {};
-
-    if (name === "Listings") {
-      // Count users with "Bookings" module active as a proxy for active iCal users
-      // In a real DB, this would count actual Listing records or generated iCal links
-      const activeIcalUsers = users.filter(u => 
-        u.products.kaisa?.status === "active" && 
-        u.products.kaisa?.activeModules?.includes("Bookings")
-      ).length;
-      stats["active_icals"] = activeIcalUsers;
-    }
-
-    return stats;
+    // Placeholder stats
+    return {};
   },
 
   async updateIntegrationConfig(
@@ -230,94 +217,52 @@ export const kaisaService = {
   },
 
   async getAuditLogs(): Promise<KaisaAdminAuditLog[]> {
-    return [...AUDIT_LOGS].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    return [];
   },
 
   // Customer Dashboard Methods
   async getUserTasks(userId: string): Promise<KaisaTask[]> {
-    // Mock data based on userId
-    return [
-      {
-        id: "TSK-001",
-        userId,
-        title: "Confirm Booking #442",
-        description: "Guest requesting early check-in. Validating availability.",
-        status: "in_progress",
-        priority: "high",
-        module: "Frontdesk",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: "TSK-002",
-        userId,
-        title: "Monthly Revenue Report",
-        description: "Generating financial summary for January.",
-        status: "completed",
-        priority: "medium",
-        module: "Billing",
-        completedAt: new Date(Date.now() - 86400000).toISOString(),
-        createdAt: new Date(Date.now() - 90000000).toISOString(),
-      },
-      {
-        id: "TSK-003",
-        userId,
-        title: "Post Weekend Special",
-        description: "Drafting social media post for upcoming long weekend.",
-        status: "scheduled",
-        priority: "low",
-        module: "Social Media",
-        scheduledFor: new Date(Date.now() + 86400000).toISOString(),
-        createdAt: new Date().toISOString(),
-      }
-    ];
+    const { data, error } = await supabaseAdmin
+      .from("kaisa_tasks")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching tasks:", error);
+      return [];
+    }
+
+    return data.map((t: any) => ({
+      id: t.id,
+      userId: t.user_id,
+      title: t.intent,
+      description: "Task generated from intent",
+      status: t.status,
+      priority: "medium",
+      module: "Frontdesk",
+      createdAt: t.created_at,
+      completedAt: t.completed_at
+    }));
   },
 
   async getUserActivityLog(userId: string): Promise<KaisaUserActivity[]> {
-    return [
-      {
-        id: "ACT-001",
-        userId,
-        type: "system_action",
-        description: "Sent booking confirmation email to guest",
-        module: "Frontdesk",
-        timestamp: new Date().toISOString(),
-      },
-      {
-        id: "ACT-002",
-        userId,
-        type: "user_command",
-        description: "User approved 'Weekend Special' draft",
-        module: "Social Media",
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-      },
-      {
-        id: "ACT-003",
-        userId,
-        type: "alert",
-        description: "Low inventory alert: Towels",
-        module: "Inventory",
-        timestamp: new Date(Date.now() - 7200000).toISOString(),
-      }
-    ];
+    // TODO: Implement kaisa_activity_log table
+    return [];
   },
 
   async getCreditUsage(userId: string): Promise<KaisaCreditUsage> {
+    // TODO: Implement kaisa_credits table
     return {
-      balance: 450,
-      monthlyLimit: 1000,
-      usedThisMonth: 550,
-      history: [
-        { date: "2024-02-14", amount: 15, description: "Daily Ops" },
-        { date: "2024-02-13", amount: 22, description: "Report Generation" },
-      ]
+      balance: 0,
+      monthlyLimit: 0,
+      usedThisMonth: 0,
+      history: []
     };
   },
 
   async logAction(log: Omit<KaisaAdminAuditLog, "id" | "timestamp">) {
-    AUDIT_LOGS.push({
-      ...log,
-      id: Math.random().toString(36).substring(7),
-      timestamp: new Date().toISOString(),
-    });
+    // TODO: Implement audit_logs table
+    console.log("[Kaisa Audit]", log);
   }
 };

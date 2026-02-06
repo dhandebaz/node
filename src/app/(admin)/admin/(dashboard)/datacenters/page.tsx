@@ -86,8 +86,20 @@ export default async function DataCentersPage() {
             ))}
             {centers.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-6 py-8 text-center text-zinc-500">
-                  No data centers found.
+                <td colSpan={7} className="px-6 py-12 text-center text-zinc-500">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Server className="w-8 h-8 text-zinc-700" />
+                    <p className="font-medium text-zinc-400">No Data Centers Found</p>
+                    <p className="text-sm text-zinc-600 mb-4 max-w-sm">
+                      Initialize your infrastructure by adding your first data center location.
+                    </p>
+                    <Link 
+                      href="/admin/datacenters/new" 
+                      className="bg-white text-black px-4 py-2 rounded-md text-sm font-medium hover:bg-zinc-200 transition-colors"
+                    >
+                      Add First Location
+                    </Link>
+                  </div>
                 </td>
               </tr>
             )}
