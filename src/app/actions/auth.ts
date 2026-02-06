@@ -1,7 +1,7 @@
 "use server";
 
 import { createSession, deleteSession } from "@/lib/auth/session";
-import { firebaseAdmin, adminInitializationError } from "@/lib/firebase/admin";
+import { firebaseAdmin, adminInitializationError, verifyIdToken } from "@/lib/firebase/admin";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -63,13 +63,8 @@ async function getOrCreateUser(phone: string) {
 
 export async function loginWithFirebaseToken(idToken: string, preferredProduct?: string) {
   try {
-    if (!firebaseAdmin.apps.length) {
-        console.error("Firebase Admin apps length is 0. Initialization failed.");
-        return { success: false, message: `Server Configuration Error: ${adminInitializationError || "Firebase Admin not initialized."}` };
-    }
-
-    // 1. Verify Token
-    const decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
+    // 1. Verify Token (using Admin SDK or Public Key fallback)
+    const decodedToken = await verifyIdToken(idToken);
     const phone = decodedToken.phone_number;
 
     if (!phone) {
