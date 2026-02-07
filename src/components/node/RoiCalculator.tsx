@@ -64,7 +64,7 @@ export function RoiCalculator() {
   const estimates = calculateEstimates();
 
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8">
+    <div className="glass-card rounded-2xl p-6 md:p-8 mx-auto tracking-wide">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-brand-saffron/10 rounded-lg text-brand-saffron">
           <Calculator className="w-5 h-5" />
@@ -76,7 +76,7 @@ export function RoiCalculator() {
         {/* Inputs */}
         <div className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Number of Node Units
             </label>
             <div className="flex items-center gap-4">
@@ -90,11 +90,11 @@ export function RoiCalculator() {
               />
               <span className="text-2xl font-bold text-white w-12 text-center">{numUnits}</span>
             </div>
-            <p className="text-xs text-white/40 mt-1">Total Participation: ₹{(numUnits * 10).toLocaleString()} Lakhs</p>
+            <p className="text-xs text-white mt-1">Total Participation: ₹{(numUnits * 10).toLocaleString()} Lakhs</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-white/70 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Utilization Scenario
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -106,7 +106,7 @@ export function RoiCalculator() {
                     "px-3 py-2 rounded-lg text-sm font-medium transition-all border",
                     utilization === key
                       ? "bg-brand-saffron text-black border-brand-saffron"
-                      : "bg-black text-white/60 border-white/10 hover:bg-white/10"
+                      : "bg-black text-white border-white/10 hover:bg-white/10"
                   )}
                 >
                   {scenarios[key].label}
@@ -116,15 +116,15 @@ export function RoiCalculator() {
           </div>
           
           <div className="p-4 bg-black/40 rounded-lg border border-white/5">
-             <h4 className="text-xs font-bold text-white/50 uppercase tracking-wider mb-2">Assumptions</h4>
-             <ul className="text-xs text-white/40 space-y-1">
+             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2">Assumptions</h4>
+             <ul className="text-xs text-white space-y-1">
                <li>• Facility: Okhla, Delhi (Phase 1)</li>
                <li>• Revenue sources: kaisa AI & Nodebase Space</li>
                <li>• Deductions: Power, Bandwidth, Colocation, Ops</li>
                <li>• Operational efficiency scales with unit count</li>
                <li>• Figures are pre-tax estimates</li>
              </ul>
-             <p className="text-[10px] text-white/30 mt-3 italic">
+             <p className="text-[10px] text-white mt-3 italic">
                *Early Nodes participate in the initial infrastructure phase before geographic distribution. 
                Estimates reflect single-site operational efficiency.
              </p>
@@ -134,24 +134,24 @@ export function RoiCalculator() {
         {/* Outputs */}
         <div className="bg-black rounded-xl border border-white/10 p-6 flex flex-col justify-center">
           <div className="mb-6">
-            <h4 className="text-sm font-medium text-white/50 mb-1">Est. Quarterly Net Revenue</h4>
-            <div className="text-2xl md:text-3xl font-bold text-brand-saffron">
+            <h4 className="text-sm font-medium text-white mb-1">Est. Quarterly Net Revenue</h4>
+            <div className="text-2xl md:text-3xl font-bold text-white">
               {estimates.range}
             </div>
-            <p className="text-xs text-white/30 mt-1">Range based on ±10% variance</p>
+            <p className="text-xs text-white mt-1">Range based on ±10% variance</p>
           </div>
 
           <div>
-            <h4 className="text-sm font-medium text-white/50 mb-1">Est. Break-even Timeline</h4>
+            <h4 className="text-sm font-medium text-white mb-1">Est. Break-even Timeline</h4>
             <div className="text-2xl md:text-3xl font-bold text-white">
               {estimates.breakEven}
             </div>
-            <p className="text-xs text-white/30 mt-1">Dependent on consistent utilization</p>
+            <p className="text-xs text-white mt-1">Dependent on consistent utilization</p>
           </div>
 
           <div className="mt-6 pt-4 border-t border-white/10 flex gap-2">
-             <AlertCircle className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
-             <p className="text-[10px] text-white/30 leading-relaxed">
+             <AlertCircle className="w-4 h-4 text-white shrink-0 mt-0.5" />
+             <p className="text-[10px] text-white leading-relaxed">
                <strong>Disclaimer:</strong> Actual outcomes depend on real customer usage, pricing, and operational conditions. 
                These figures are estimates only and do not constitute a guarantee of performance or return.
              </p>

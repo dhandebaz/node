@@ -31,7 +31,7 @@ export function FeedbackForm() {
         <div className="p-1 rounded-full bg-zinc-800 group-hover:bg-zinc-700">
           <Plus className="w-4 h-4" />
         </div>
-        <span className="font-medium">Teach Kaisa something new</span>
+        <span className="font-medium">Teach your AI Employee something new</span>
       </button>
     );
   }
@@ -40,7 +40,7 @@ export function FeedbackForm() {
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 animate-in fade-in slide-in-from-top-2">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-white flex items-center gap-2">
-          <MessageSquare className="w-4 h-4 text-blue-400" />
+          <MessageSquare className="w-4 h-4 text-brand-cyan" />
           Add New Instruction
         </h3>
         <button 
@@ -53,12 +53,12 @@ export function FeedbackForm() {
       
       <form action={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-xs font-medium text-zinc-400 mb-1.5">What should Kaisa know?</label>
+          <label className="block text-xs font-medium text-zinc-400 mb-1.5">What should your AI Employee know?</label>
           <textarea 
             name="description"
             required
             placeholder="e.g., 'Always ask before refunding transactions over $50' or 'I prefer email summaries on Fridays'"
-            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 min-h-[100px]"
+            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-brand-cyan/20 focus:border-brand-cyan/50 min-h-[100px]"
           />
         </div>
 

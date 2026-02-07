@@ -28,7 +28,7 @@ export function KaisaUserList({ users }: { users: User[] }) {
 
   return (
     <div className="space-y-4">
-        <h3 className="font-bold text-white text-lg">Active kaisa Users</h3>
+        <h3 className="font-bold text-white text-lg">Active Nodebase Core Users</h3>
         
         {/* Filters */}
         <div className="flex gap-4 bg-zinc-900/50 p-4 border border-zinc-800 rounded-lg">
@@ -93,9 +93,9 @@ export function KaisaUserList({ users }: { users: User[] }) {
                                         {user.status.account === "active" ? "ACC: OK" : "ACC: SUS"}
                                     </span>
                                     
-                                    {/* Kaisa Status */}
+                                    {/* Core Status */}
                                     <span className={`px-2 py-0.5 rounded text-xs border uppercase tracking-wider font-bold ${
-                                        user.products.kaisa?.status === "active" ? "bg-green-900/30 text-green-400 border-green-900" : "bg-amber-900/30 text-amber-400 border-amber-900"
+                                        user.products.kaisa?.status === "active" ? "bg-brand-cyan/20 text-brand-cyan border-brand-cyan/50" : "bg-amber-900/30 text-amber-400 border-amber-900"
                                     }`}>
                                         {user.products.kaisa?.status || "active"}
                                     </span>

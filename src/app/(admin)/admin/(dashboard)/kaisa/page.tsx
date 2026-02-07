@@ -39,7 +39,7 @@ export default function KaisaAdminPage() {
     <div className="space-y-8 pb-12">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">kaisa AI Governance</h1>
+          <h1 className="text-2xl font-bold text-white">Nodebase Core Governance</h1>
           <p className="text-zinc-400">Agentic manager configuration and access control.</p>
         </div>
       </div>

@@ -30,7 +30,7 @@ export function MemoryList({ memories }: { memories: KaisaMemory[] }) {
   });
 
   async function handleDelete(id: string) {
-    if(!confirm("Are you sure you want to delete this memory? Kaisa will stop using this rule immediately.")) return;
+    if(!confirm("Are you sure you want to delete this memory? Your AI Employee will stop using this rule immediately.")) return;
     setDeletingId(id);
     await deleteMemoryAction(id);
     setDeletingId(null);

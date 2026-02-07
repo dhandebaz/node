@@ -1,113 +1,109 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-saffron: #FF9933;
-  --color-brand-green: #138808;
-  --color-brand-blue: #FFFFFF;
-  --color-brand-red: #FF3333;
+  /* Editorial Palette */
+  --color-brand-red: #D6001C; /* Bold, confident editorial red */
+  --color-brand-deep-red: #D6001C; /* Alias for consistency */
+  --color-brand-white: #FFFFFF;
+  --color-brand-offwhite: #F4F4F5; /* Zinc 100 */
+  --color-brand-bone: #F4F4F5;
+  --color-brand-black: #000000;
+
+  /* Semantic Mapping */
+  --color-background: var(--color-brand-red);
+  --color-foreground: var(--color-brand-white);
   
-  /* Brand Gray Scale */
-  --color-brand-gray-50: #F9FAFB;
-  --color-brand-gray-100: #F3F4F6;
-  --color-brand-gray-200: #E5E7EB;
-  --color-brand-gray-300: #D1D5DB;
-  --color-brand-gray-400: #9CA3AF;
-  --color-brand-gray-500: #6B7280;
-  --color-brand-gray-600: #4B5563;
-  --color-brand-gray-700: #374151;
-  --color-brand-gray-800: #1F2937;
-  --color-brand-gray-900: #111827;
+  --color-primary: var(--color-brand-white);
+  --color-secondary: var(--color-brand-offwhite);
   
-  /* Semantic names */
-  --color-background: #000000;
-  --color-foreground: #FFFFFF;
-  --color-muted: #262626;
-  --color-muted-foreground: #A3A3A3;
-  --color-border: #404040;
+  --color-muted: rgba(255, 255, 255, 0.6);
+  --color-muted-foreground: rgba(255, 255, 255, 0.6);
   
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-border: rgba(255, 255, 255, 0.2);
+  
+  --font-sans: var(--font-alfa-slab-one);
+  --font-mono: var(--font-alfa-slab-one);
+}
+
+@layer base {
+  html, body {
+    font-family: var(--font-alfa-slab-one), system-ui, sans-serif !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.02em !important;
+  }
+  
+  /* Force all elements to use the font per user request */
+  *, ::before, ::after {
+    font-family: var(--font-alfa-slab-one), system-ui, sans-serif !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 @layer utilities {
-  .glass {
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  }
-
-  .glass-dark {
-    background: rgba(17, 24, 39, 0.90);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-  }
-  
-  .glass-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Custom Scrollbar Utility */
+  /* Minimal scrollbar for editorial feel */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
+    width: 0px;
     background: transparent;
   }
   
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+  /* Hide scrollbar but allow scrolling */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Editorial Typography Utilities */
+  .text-display-huge {
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    font-weight: 400;
   }
   
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+  .text-display-large {
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+  }
+
+  .text-editorial-body {
+    font-size: 1.125rem;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+  }
+
+  .glass-card {
+    @apply bg-brand-bone/5 backdrop-blur-md border border-brand-bone/10 shadow-sm;
   }
 }
 
-/* Global Scrollbar Styles */
+/* Global Scrollbar Overrides - Minimal/Hidden */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #09090b; /* Zinc-950 equivalent */
-  border-left: 1px solid #27272a; /* Zinc-800 equivalent */
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #27272a; /* Zinc-800 */
-  border: 2px solid #09090b; /* Creates padding effect */
-  border-radius: 99px;
-  transition: background 0.2s ease;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46; /* Zinc-700 */
-}
-
-::-webkit-scrollbar-corner {
-  background: #09090b;
-}
-
-:root {
-  --background: #000000;
-  --foreground: #FFFFFF;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
-  -webkit-font-smoothing: antialiased;
+  background: rgba(255, 255, 255, 0.4);
 }

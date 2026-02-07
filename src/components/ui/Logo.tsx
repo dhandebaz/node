@@ -8,19 +8,22 @@ interface LogoProps {
 
 export function Logo({ className }: LogoProps) {
   return (
-    <div className={cn("flex items-center gap-3 select-none", className)}>
-      <div className="relative flex items-center justify-center w-10 h-10">
-        <div
-          className={cn(
-            "absolute inset-0 rounded-xl bg-black flex items-center justify-center text-white font-bold text-lg shadow-lg"
-          )}
+    <div className={cn("relative select-none flex items-center justify-center", className)}>
+      <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
+        <text 
+          x="50" 
+          y="55" 
+          dominantBaseline="central" 
+          textAnchor="middle" 
+          fill="white" 
+          stroke="black" 
+          strokeWidth="3" 
+          style={{ fontFamily: 'var(--font-alfa-slab-one), system-ui, sans-serif' }}
+          className="text-[80px]"
         >
-          <span className="transition-opacity opacity-100">n</span>
-        </div>
-        
-        {/* Decorative elements for static logo */}
-        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-brand-saffron rounded-full border-2 border-white animate-pulse"></div>
-      </div>
+          nb
+        </text>
+      </svg>
     </div>
   );
 }

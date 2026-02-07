@@ -36,7 +36,7 @@ export function EmergencyControls({ status }: { status: "operational" | "paused"
            <p className="text-sm text-zinc-400 mt-1">
                {status === "operational" 
                    ? "System is running normally." 
-                   : "SYSTEM IS GLOBALLY PAUSED. kaisa AI is unavailable to all users."}
+                   : "SYSTEM IS GLOBALLY PAUSED. Nodebase Core is unavailable to all users."}
            </p>
         </div>
         

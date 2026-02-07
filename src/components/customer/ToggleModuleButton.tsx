@@ -21,8 +21,8 @@ export function ToggleModuleButton({ name, isActive }: { name: string, isActive:
     <button
       onClick={handleToggle}
       disabled={loading}
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black ${
-        isActive ? "bg-blue-600" : "bg-zinc-700"
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-cyan focus:ring-offset-2 focus:ring-offset-black ${
+        isActive ? "bg-brand-cyan" : "bg-zinc-700"
       }`}
     >
       <span

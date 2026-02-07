@@ -1,135 +1,139 @@
-export const dynamic = 'force-dynamic';
+"use client";
 
-
-import { getKaisaDashboardData } from "@/app/actions/customer";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useDashboardStore } from "@/store/useDashboardStore";
 import { 
   CreditCard, 
   QrCode, 
   Settings, 
-  Shield, 
   Zap,
-  IndianRupee
+  Save,
+  Loader2
 } from "lucide-react";
+import { useState } from "react";
 
-export default async function KaisaSettingsPage() {
-  const data = await getKaisaDashboardData();
-  const { profile, credits } = data;
+export default function KaisaSettingsPage() {
+  const { host } = useAuthStore();
+  const { walletBalance } = useDashboardStore();
+  const [saving, setSaving] = useState(false);
 
-  if (!profile) return <div>Loading...</div>;
+  if (!host) {
+     return (
+        <div className="flex items-center justify-center h-[50vh]">
+           <Loader2 className="w-8 h-8 animate-spin text-gray-300" />
+        </div>
+     );
+  }
+
+  const handleSave = () => {
+    setSaving(true);
+    // Mock save
+    setTimeout(() => setSaving(false), 1500);
+  };
 
   return (
-    <div className="space-y-8 max-w-5xl">
+    <div className="space-y-8 max-w-4xl mx-auto p-4 md:p-8">
       <div>
-        <h1 className="text-2xl font-bold text-white mb-2">Settings</h1>
-        <p className="text-zinc-400">Manage your plan, billing, and payment collection preferences.</p>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Account Settings</h1>
+        <p className="text-gray-500">Manage your profile, billing, and preferences.</p>
       </div>
 
       <div className="grid gap-6">
+        {/* Profile Card */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+           <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
+             <div className="w-16 h-16 rounded-full bg-[var(--color-brand-red)] text-white flex items-center justify-center text-2xl font-bold">
+               {host.name.charAt(0)}
+             </div>
+             <div>
+               <h2 className="text-xl font-bold text-gray-900">{host.name}</h2>
+               <p className="text-gray-500">{host.email}</p>
+             </div>
+           </div>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Business Name</label>
+                <input 
+                  type="text" 
+                  defaultValue={host.businessName || "My Homestay"}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-red)]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone</label>
+                <input 
+                  type="text" 
+                  defaultValue="+91 98765 43210"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-red)]"
+                />
+              </div>
+           </div>
+        </div>
+
         {/* Plan Details */}
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-brand-saffron/10 rounded-lg text-brand-saffron">
+            <div className="p-2 bg-yellow-100 rounded-lg text-yellow-700">
               <Zap className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Plan Details</h2>
-              <p className="text-sm text-zinc-500">Your current subscription tier</p>
+              <h2 className="text-lg font-bold text-gray-900">Subscription Plan</h2>
+              <p className="text-sm text-gray-500">Your current Nodebase plan</p>
             </div>
           </div>
           
-          <div className="bg-black/40 rounded-lg p-4 border border-zinc-800 flex items-center justify-between">
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 flex items-center justify-between">
             <div>
-              <div className="text-sm text-zinc-400 mb-1">Current Plan</div>
-              <div className="text-xl font-bold text-white capitalize">{profile.role} Plan</div>
+              <div className="text-sm text-gray-500 mb-1">Current Plan</div>
+              <div className="text-xl font-bold text-gray-900 capitalize">Pro Manager</div>
             </div>
-            <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-              profile.status === "active" ? "bg-green-500/10 text-green-500" : "bg-amber-500/10 text-amber-500"
-            }`}>
-              {profile.status.toUpperCase()}
+            <div className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-green-100 text-green-700">
+              Active
             </div>
           </div>
         </div>
 
-        {/* Kaisa Billing (Payment Details) */}
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+        {/* Payment Collection */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
-              <CreditCard className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-white">Billing & Payments</h2>
-              <p className="text-sm text-zinc-500">Payment method for Kaisa AI services</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-black/40 rounded-lg border border-zinc-800">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-6 bg-zinc-700 rounded flex items-center justify-center text-[10px] font-bold text-zinc-300">
-                        VISA
-                    </div>
-                    <div>
-                        <div className="text-white font-medium">•••• •••• •••• 4242</div>
-                        <div className="text-xs text-zinc-500">Expires 12/28</div>
-                    </div>
-                </div>
-                <button className="text-sm text-blue-400 hover:text-blue-300">Edit</button>
-            </div>
-            
-            <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-400">Wage Balance</span>
-                <span className="text-white font-mono">₹{credits.balance}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Payment Collection (UPI/QR) */}
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-green-500/10 rounded-lg text-green-400">
+            <div className="p-2 bg-blue-100 rounded-lg text-blue-700">
               <QrCode className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Payment Collection</h2>
-              <p className="text-sm text-zinc-500">Receive payments from your customers via UPI</p>
+              <h2 className="text-lg font-bold text-gray-900">Payout Settings</h2>
+              <p className="text-sm text-gray-500">How you receive money from guests</p>
             </div>
           </div>
 
           <div className="space-y-6">
             <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Your UPI ID (VPA)</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Your UPI ID (VPA)</label>
                 <div className="flex gap-2">
                     <input 
                         type="text" 
                         defaultValue="business@upi"
-                        className="flex-1 bg-black/40 border border-zinc-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-saffron transition-colors"
+                        className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-red)]"
                         placeholder="e.g. name@okhdfcbank"
                     />
-                    <button className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors text-sm font-medium">
+                    <button className="px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-lg transition-colors text-sm font-medium">
                         Verify
                     </button>
                 </div>
-                <p className="text-xs text-zinc-500 mt-2">Kaisa will share this UPI ID with your customers for direct payments.</p>
-            </div>
-
-            <div className="p-4 bg-black/40 rounded-lg border border-zinc-800 flex items-start gap-4">
-                <div className="w-24 h-24 bg-white p-2 rounded flex items-center justify-center">
-                    <QrCode className="w-full h-full text-black" />
-                </div>
-                <div>
-                    <h3 className="text-white font-medium mb-1">Generated QR Code</h3>
-                    <p className="text-sm text-zinc-400 mb-3">This QR code is generated based on your UPI ID.</p>
-                    <div className="flex gap-3">
-                        <button className="text-xs text-brand-saffron hover:text-brand-saffron/80 flex items-center gap-1">
-                            Download
-                        </button>
-                        <button className="text-xs text-zinc-400 hover:text-white">
-                            Regenerate
-                        </button>
-                    </div>
-                </div>
+                <p className="text-xs text-gray-500 mt-2">Kaisa will share this UPI ID with your guests for direct payments.</p>
             </div>
           </div>
+        </div>
+
+        <div className="flex justify-end pt-4">
+           <button 
+             onClick={handleSave}
+             disabled={saving}
+             className="flex items-center gap-2 bg-[var(--color-brand-red)] text-white px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition-colors disabled:opacity-50"
+           >
+             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+             Save Changes
+           </button>
         </div>
       </div>
     </div>

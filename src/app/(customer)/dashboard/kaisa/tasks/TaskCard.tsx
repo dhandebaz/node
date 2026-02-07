@@ -21,25 +21,25 @@ export function TaskCard({ task }: { task: KaisaTask }) {
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition-colors">
+    <div className="glass-card border border-[var(--color-brand-node-line)] rounded-xl p-5 hover:border-[var(--color-brand-accent)] transition-colors">
       <div className="flex items-start justify-between mb-3">
         <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wider ${
           task.priority === "high" ? "bg-red-500/10 text-red-500" :
           task.priority === "medium" ? "bg-amber-500/10 text-amber-500" :
-          "bg-blue-500/10 text-blue-500"
+          "bg-[var(--color-brand-node-dot)] text-[var(--color-brand-muted)]"
         }`}>
           {task.priority} Priority
         </span>
-        <span className="text-xs text-zinc-500">{task.module}</span>
+        <span className="text-xs text-[var(--color-brand-muted)]">{task.module}</span>
       </div>
-      <h3 className="text-white font-medium mb-1">{task.title}</h3>
-      <p className="text-sm text-zinc-400 mb-4">{task.description}</p>
+      <h3 className="text-[var(--color-brand-headline)] font-medium mb-1">{task.title}</h3>
+      <p className="text-sm text-[var(--color-brand-muted)] mb-4">{task.description}</p>
       
-      <div className="flex items-center gap-2 text-xs text-zinc-500 border-t border-zinc-800 pt-3 mb-3">
+      <div className="flex items-center gap-2 text-xs text-[var(--color-brand-muted)] border-t border-[var(--color-brand-node-line)] pt-3 mb-3">
         <Clock className="w-3 h-3" />
         <span>Created {new Date(task.createdAt).toLocaleDateString()}</span>
         {task.scheduledFor && (
-            <span className="flex items-center gap-1 ml-auto text-blue-400">
+            <span className="flex items-center gap-1 ml-auto text-[var(--color-brand-accent)]">
                 <Calendar className="w-3 h-3" />
                 Due {new Date(task.scheduledFor).toLocaleDateString()}
             </span>
@@ -51,7 +51,7 @@ export function TaskCard({ task }: { task: KaisaTask }) {
           <button 
             onClick={() => handleStatusUpdate("in_progress")}
             disabled={loading}
-            className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+            className="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand-accent)] hover:bg-[var(--color-brand-accent)]/80 text-[var(--color-brand-deep-red)] text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
           >
             <Play className="w-3 h-3" />
             Start Task
@@ -61,7 +61,7 @@ export function TaskCard({ task }: { task: KaisaTask }) {
           <button 
             onClick={() => handleStatusUpdate("completed")}
             disabled={loading}
-            className="flex items-center gap-1 px-3 py-1.5 bg-green-600 hover:bg-green-500 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+            className="flex items-center gap-1 px-3 py-1.5 bg-[var(--color-brand-body)] hover:bg-[var(--color-brand-body)]/80 text-[var(--color-brand-deep-red)] text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
           >
             <CheckCircle className="w-3 h-3" />
             Mark Complete

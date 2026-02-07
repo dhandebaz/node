@@ -13,7 +13,7 @@ export default async function AdminDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-200 font-sans flex">
+    <div className="min-h-screen bg-[var(--color-brand-red)] text-white font-sans flex selection:bg-white selection:text-[var(--color-brand-red)]">
       <AdminSidebar />
       <main className="flex-1 p-8">
         {children}

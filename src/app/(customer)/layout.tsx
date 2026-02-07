@@ -23,7 +23,7 @@ export default async function CustomerLayout({
     }
 
     return (
-      <div className="min-h-screen bg-black text-white selection:bg-brand-saffron/30">
+      <div className="min-h-screen bg-[var(--color-brand-red)] text-white selection:bg-white selection:text-[var(--color-brand-red)]">
         <CustomerSidebar 
             roles={profile.roles} 
             products={profile.products} 

@@ -2,7 +2,23 @@
 
 import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { NetworkBackground } from "@/components/ui/NetworkBackground";
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.6 }
+};
+
+const stagger = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
 
 export default function FAQPage() {
   const faqs = [
@@ -37,42 +53,90 @@ export default function FAQPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white py-20">
-      <div className="container mx-auto px-6 max-w-3xl">
-        <h1 className="text-4xl font-bold mb-12">Frequently Asked Questions</h1>
-        
-        <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <FAQItem key={i} question={faq.q} answer={faq.a} />
-          ))}
-        </div>
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
+      <div className="fixed inset-0 opacity-30 pointer-events-none">
+        <NetworkBackground />
       </div>
+      
+      {/* Header Section */}
+      <section className="min-h-[50vh] flex flex-col justify-end px-6 pt-32 pb-12 border-b border-brand-bone/10 relative z-10">
+        <div className="max-w-7xl mx-auto w-full">
+           <motion.div 
+            initial="initial"
+            animate="animate"
+            variants={stagger}
+          >
+            <motion.div variants={fadeInUp}>
+              <Link 
+                href="/node"
+                className="inline-block border border-brand-bone/20 px-4 py-1.5 mb-12 text-sm font-bold uppercase tracking-widest bg-brand-bone/5 text-brand-bone/60 hover:bg-brand-bone/10 transition-colors"
+              >
+                ← Back to Node
+              </Link>
+            </motion.div>
+            
+            <motion.h1 variants={fadeInUp} className="text-5xl md:text-8xl font-bold uppercase leading-[0.85] tracking-tighter mb-8 text-brand-bone">
+              Frequently<br />
+              Asked<br />
+              Questions
+            </motion.h1>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ List */}
+      <section className="min-h-screen px-6 py-24 relative z-10">
+        <div className="max-w-7xl mx-auto w-full">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="border-t border-brand-bone/20"
+          >
+            {faqs.map((faq, i) => (
+              <FAQItem key={i} question={faq.q} answer={faq.a} index={i} />
+            ))}
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }
 
-function FAQItem({ question, answer }: { question: string; answer: string }) {
+function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border border-white/10 rounded-xl bg-white/5 overflow-hidden transition-colors hover:bg-white/10">
+    <div className="border-b border-brand-bone/20">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full p-6 text-left"
+        className="flex items-start justify-between w-full py-8 text-left group hover:opacity-70 transition-opacity"
       >
-        <span className="font-medium text-lg text-white">{question}</span>
-        {isOpen ? <Minus className="w-5 h-5 text-brand-saffron" /> : <Plus className="w-5 h-5 text-white/50" />}
+        <div className="flex items-start gap-8">
+            <span className="text-sm font-bold uppercase tracking-widest opacity-60 mt-2 w-8 text-brand-bone">
+                {index + 1 < 10 ? `0${index + 1}` : index + 1}
+            </span>
+            <span className="text-2xl md:text-4xl font-bold uppercase tracking-tight leading-none max-w-3xl text-brand-bone">
+                {question}
+            </span>
+        </div>
+        {isOpen ? <Minus className="w-6 h-6 mt-2 text-brand-bone" /> : <Plus className="w-6 h-6 mt-2 text-brand-bone" />}
       </button>
+      
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <motion.div 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="p-6 pt-0 text-white/70 leading-relaxed border-t border-white/5 mt-2">
-              {answer}
+            <div className="pl-16 md:pl-16 pb-12 max-w-3xl">
+              <p className="text-xl text-brand-bone/80 leading-relaxed font-light">
+                {answer}
+              </p>
             </div>
           </motion.div>
         )}

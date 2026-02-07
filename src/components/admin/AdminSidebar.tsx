@@ -2,44 +2,35 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  Users, 
-  Server, 
-  Bot, 
-  Cloud, 
-  Database, 
-  FileText, 
-  Settings, 
-  ShieldAlert,
-  LogOut
-} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { adminLogoutAction } from "@/app/actions/auth";
 
 const navItems = [
-  { name: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Users", href: "/admin/users", icon: Users },
-  { name: "Data Centers", href: "/admin/datacenters", icon: Server },
-  { name: "kaisa AI", href: "/admin/kaisa", icon: Bot },
-  { name: "Space", href: "/admin/space", icon: Cloud },
-  { name: "Nodes", href: "/admin/nodes", icon: Database },
-  { name: "Content", href: "/admin/content", icon: FileText },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
-  { name: "Audit Logs", href: "/admin/logs", icon: ShieldAlert },
+  { name: "Overview", href: "/admin/dashboard" },
+  { name: "Users", href: "/admin/users" },
+  { name: "Data Centers", href: "/admin/datacenters" },
+  { name: "Nodebase Core", href: "/admin/kaisa" },
+  { name: "Space", href: "/admin/space" },
+  { name: "Nodes", href: "/admin/nodes" },
+  { name: "Content", href: "/admin/content" },
+  { name: "Settings", href: "/admin/settings" },
+  { name: "Audit Logs", href: "/admin/logs" },
 ];
 
 export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col h-screen sticky top-0 shrink-0">
-      <div className="p-4 border-b border-zinc-800">
-        <h1 className="text-xl font-bold text-white tracking-tight">NODEBASE <span className="text-xs font-mono text-zinc-500 block">CONTROL PLANE</span></h1>
+    <div className="w-64 bg-[var(--color-brand-red)] border-r border-white/20 flex flex-col h-screen sticky top-0 shrink-0">
+      <div className="h-20 flex items-center px-6 border-b border-white/20">
+        <div>
+           <h1 className="text-xl font-bold uppercase tracking-tighter text-white">Nodebase</h1>
+           <span className="text-xs font-bold uppercase tracking-widest text-white/50 block mt-1">Control Plane</span>
+        </div>
       </div>
       
-      <nav className="flex-1 overflow-y-auto py-4">
-        <ul className="space-y-1 px-2">
+      <nav className="flex-1 overflow-y-auto py-6 custom-scrollbar">
+        <ul className="space-y-1 px-6">
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
             return (
@@ -47,13 +38,12 @@ export function AdminSidebar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                    "block py-2 text-sm font-bold uppercase tracking-wider transition-opacity",
                     isActive 
-                      ? "bg-zinc-800 text-white" 
-                      : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                      ? "opacity-100 pl-3 border-l-2 border-white" 
+                      : "opacity-60 hover:opacity-100 pl-3 border-l-2 border-transparent"
                   )}
                 >
-                  <item.icon className="w-4 h-4" />
                   {item.name}
                 </Link>
               </li>
@@ -62,12 +52,11 @@ export function AdminSidebar() {
         </ul>
       </nav>
 
-      <div className="p-4 border-t border-zinc-800">
+      <div className="p-6 border-t border-white/20">
         <button 
           onClick={() => adminLogoutAction()}
-          className="flex items-center gap-3 px-3 py-2 w-full text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-900/10 rounded-md transition-colors text-left"
+          className="block w-full text-left text-sm font-bold uppercase tracking-wider opacity-60 hover:opacity-100 transition-opacity"
         >
-          <LogOut className="w-4 h-4" />
           Logout
         </button>
       </div>

@@ -37,8 +37,8 @@ export function InvestorSidebar({ user }: InvestorSidebarProps) {
     <aside className="w-64 h-screen bg-zinc-950 border-r border-zinc-800 flex flex-col fixed left-0 top-0 z-50">
       <div className="p-6 border-b border-zinc-800">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-            <span className="text-black font-bold text-xl">N</span>
+          <div className="w-8 h-8 relative">
+            <img src="/logo.svg" alt="Nodebase" className="w-full h-full object-contain brightness-0 invert" />
           </div>
           <div>
             <h1 className="text-white font-bold text-lg leading-none">Nodebase</h1>

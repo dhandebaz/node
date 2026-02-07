@@ -7,12 +7,12 @@ import {
   Zap, 
   Globe, 
   Server as ServerIcon, 
-  Lock, 
   ArrowRight,
   HardDrive
 } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
 export default function InfrastructurePage() {
   const { t } = useLanguage();
@@ -32,12 +32,13 @@ export default function InfrastructurePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-[1px]"></div>
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden">
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-20">
+        <NetworkBackground />
+      </div>
+
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_var(--color-brand-green)_0%,_transparent_15%)] opacity-20"></div>
-        
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden z-10 border-b border-brand-bone/20">
         <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             initial="initial"
@@ -45,136 +46,153 @@ export default function InfrastructurePage() {
             variants={stagger}
             className="max-w-4xl mx-auto text-center"
           >
-            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-dark text-brand-green text-sm font-medium mb-8 border border-brand-green/20">
+            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-bone/10 text-brand-bone text-sm font-bold mb-8 border border-brand-bone/20 uppercase tracking-wider backdrop-blur-sm">
               <HardDrive className="w-4 h-4" />
               <span>Physical Backbone</span>
             </motion.div>
             
             <motion.h1 
               variants={fadeInUp}
-              className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-8 leading-tight"
+              className="text-display-huge font-bold uppercase tracking-tighter text-brand-bone mb-8 leading-[0.85]"
             >
               {t("infra.hero.title")}
             </motion.h1>
             
             <motion.p 
               variants={fadeInUp}
-              className="text-xl md:text-2xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed"
+              className="text-xl md:text-2xl text-brand-bone/70 mb-12 max-w-2xl mx-auto leading-relaxed"
             >
               {t("infra.hero.desc")}
             </motion.p>
             
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="px-8 py-4 bg-brand-green text-white rounded-full font-medium hover:bg-brand-green/90 transition-all shadow-lg shadow-brand-green/20 flex items-center gap-2">
+              <Link href="/login" className="px-8 py-4 bg-brand-bone text-brand-deep-red rounded-full font-bold uppercase tracking-wider hover:bg-white transition-all shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2">
                 {t("infra.cta")}
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Hardware Specs */}
-      <section className="py-24 relative z-10">
+      <section className="py-24 relative z-10 border-b border-brand-bone/20 bg-brand-deep-red/90 backdrop-blur-sm">
         <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+          <motion.div 
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={stagger}
+            className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto"
+          >
             
             {/* H100 Clusters */}
-            <div className="glass-card p-8 rounded-2xl hover:bg-white/10 transition-all group">
-              <div className="w-12 h-12 glass-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Zap className="w-6 h-6 text-brand-green" />
+            <motion.div variants={fadeInUp} className="bg-brand-bone/5 p-8 rounded-2xl border border-brand-bone/10 hover:bg-brand-bone/10 transition-all group backdrop-blur-sm">
+              <div className="w-12 h-12 bg-brand-bone/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-brand-bone/20">
+                <Zap className="w-6 h-6 text-brand-bone" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-white">{t("infra.features.h100.title")}</h3>
-              <p className="text-white/70 leading-relaxed">
+              <h3 className="text-xl font-bold mb-3 text-brand-bone uppercase tracking-wide">{t("infra.features.h100.title")}</h3>
+              <p className="text-brand-bone/70 leading-relaxed">
                 {t("infra.features.h100.desc")}
               </p>
-            </div>
+            </motion.div>
 
             {/* Sovereign Data */}
-            <div className="glass-card p-8 rounded-2xl hover:bg-white/10 transition-all group">
-              <div className="w-12 h-12 glass-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Shield className="w-6 h-6 text-brand-green" />
+            <motion.div variants={fadeInUp} className="bg-brand-bone/5 p-8 rounded-2xl border border-brand-bone/10 hover:bg-brand-bone/10 transition-all group backdrop-blur-sm">
+              <div className="w-12 h-12 bg-brand-bone/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-brand-bone/20">
+                <Shield className="w-6 h-6 text-brand-bone" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-white">{t("infra.features.sovereign.title")}</h3>
-              <p className="text-white/70 leading-relaxed">
+              <h3 className="text-xl font-bold mb-3 text-brand-bone uppercase tracking-wide">{t("infra.features.sovereign.title")}</h3>
+              <p className="text-brand-bone/70 leading-relaxed">
                 {t("infra.features.sovereign.desc")}
               </p>
-            </div>
+            </motion.div>
 
             {/* Colocation */}
-            <div className="glass-card p-8 rounded-2xl hover:bg-white/10 transition-all group">
-              <div className="w-12 h-12 glass-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <ServerIcon className="w-6 h-6 text-brand-green" />
+            <motion.div variants={fadeInUp} className="bg-brand-bone/5 p-8 rounded-2xl border border-brand-bone/10 hover:bg-brand-bone/10 transition-all group backdrop-blur-sm">
+              <div className="w-12 h-12 bg-brand-bone/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-brand-bone/20">
+                <ServerIcon className="w-6 h-6 text-brand-bone" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-white">{t("infra.features.colo.title")}</h3>
-              <p className="text-white/70 leading-relaxed">
+              <h3 className="text-xl font-bold mb-3 text-brand-bone uppercase tracking-wide">{t("infra.features.colo.title")}</h3>
+              <p className="text-brand-bone/70 leading-relaxed">
                 {t("infra.features.colo.desc")}
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Map Concept / Presence */}
-      <section className="py-24 glass-dark text-white overflow-hidden relative border-y border-white/10">
-        <div className="absolute inset-0 bg-brand-green/10 opacity-20"></div>
+      <section className="py-24 relative z-10 border-b border-brand-bone/20">
         <div className="container mx-auto px-6 relative z-10 text-center">
-          <div className="max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 text-brand-green font-medium mb-8">
+          <motion.div 
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={stagger}
+            className="max-w-4xl mx-auto"
+          >
+            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 text-brand-bone font-bold mb-8 uppercase tracking-widest opacity-60">
               <Globe className="w-5 h-5" />
               <span>Strategic Location</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-12">Centralized Power in Delhi</h2>
+            </motion.div>
+            <motion.h2 variants={fadeInUp} className="text-display-large font-bold mb-12 uppercase tracking-tighter">Centralized Power in Delhi</motion.h2>
             
-            <div className="flex justify-center">
-              <div className="p-8 glass-card rounded-2xl hover:bg-white/10 transition-colors max-w-md w-full">
+            <motion.div variants={fadeInUp} className="flex justify-center">
+              <div className="p-8 bg-brand-bone/5 border border-brand-bone/10 rounded-2xl hover:bg-brand-bone/10 transition-colors max-w-md w-full backdrop-blur-sm">
                 <div className="flex items-center justify-between mb-6">
                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 rounded-full bg-brand-green animate-pulse"></div>
-                      <h3 className="font-bold text-2xl">Okhla, Delhi</h3>
+                      <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                      <h3 className="font-bold text-2xl uppercase tracking-tight">Okhla, Delhi</h3>
                    </div>
-                   <span className="px-3 py-1 rounded-full bg-brand-green/20 text-brand-green text-xs font-bold border border-brand-green/20">
+                   <span className="px-3 py-1 rounded-full bg-brand-bone/10 text-brand-bone text-xs font-bold border border-brand-bone/20 uppercase tracking-wider">
                      HQ & Datacenter
                    </span>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-6 text-left border-t border-white/10 pt-6">
+                <div className="grid grid-cols-2 gap-6 text-left border-t border-brand-bone/10 pt-6">
                   <div>
-                     <p className="text-sm text-white/50 mb-1">Total Capacity</p>
-                     <p className="text-2xl font-bold text-white">{COMPANY_CONFIG.datacenters[0].capacity.total} Nodes</p>
+                     <p className="text-sm text-brand-bone/50 mb-1 uppercase tracking-wider font-bold">Total Capacity</p>
+                     <p className="text-2xl font-bold text-brand-bone">{COMPANY_CONFIG.datacenters[0].capacity.total} Nodes</p>
                   </div>
                   <div>
-                     <p className="text-sm text-white/50 mb-1">Active Nodes</p>
-                     <p className="text-2xl font-bold text-brand-saffron">{COMPANY_CONFIG.datacenters[0].capacity.active} Online</p>
+                     <p className="text-sm text-brand-bone/50 mb-1 uppercase tracking-wider font-bold">Active Nodes</p>
+                     <p className="text-2xl font-bold text-brand-bone">{COMPANY_CONFIG.datacenters[0].capacity.active} Online</p>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Security Badge */}
       <section className="py-24 relative z-10">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto glass-card rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center gap-12">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="max-w-4xl mx-auto bg-brand-bone/5 border border-brand-bone/10 rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center gap-12 backdrop-blur-sm"
+          >
             <div className="flex-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-green text-xs font-bold border border-brand-green/20 mb-6 uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-bone/10 text-brand-bone text-xs font-bold border border-brand-bone/20 mb-6 uppercase tracking-wider">
                 DPDP Act 2023 Compliant
               </div>
-              <h2 className="text-3xl font-bold mb-6 text-white">Sovereignty is not a feature. It's our foundation.</h2>
-              <p className="text-white/80 mb-8">
+              <h2 className="text-3xl font-bold mb-6 text-brand-bone uppercase tracking-tight">Sovereignty is not a feature.<br/>It's our foundation.</h2>
+              <p className="text-brand-bone/80 mb-8 text-lg">
                 We guarantee that your data, metadata, and derived insights never leave Indian soil. Physical and logical separation ensures complete control.
               </p>
-              <button className="px-8 py-4 bg-brand-green text-white rounded-full font-medium hover:bg-brand-green/90 transition-all flex items-center gap-2 shadow-lg shadow-brand-green/20">
+              <Link href="/login" className="px-8 py-4 bg-brand-bone text-brand-deep-red rounded-full font-bold uppercase tracking-wider hover:bg-white transition-all flex items-center gap-2 shadow-lg hover:shadow-xl w-fit">
                 {t("infra.cta")}
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
             <div className="flex-shrink-0">
-               <Shield className="w-48 h-48 text-brand-green/20" />
+               <Shield className="w-48 h-48 text-brand-bone/10" />
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

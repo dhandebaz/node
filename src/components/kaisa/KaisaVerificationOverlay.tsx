@@ -66,18 +66,18 @@ export function KaisaVerificationOverlay({ isVisible, onComplete, documentType }
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
       <div className="w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden shadow-2xl relative">
         {/* Animated Scanner Bar */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent animate-scan" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-brand-accent)] to-transparent animate-scan" />
 
         <div className="p-6 md:p-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-cyan-900/20 rounded-lg animate-pulse">
-                <Brain className="w-6 h-6 text-cyan-400" />
+              <div className="p-2 bg-[var(--color-brand-accent)]/10 rounded-lg animate-pulse">
+                <Brain className="w-6 h-6 text-[var(--color-brand-accent)]" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white tracking-wide">KAISA AI</h3>
-                <p className="text-xs text-cyan-400 font-mono">VISION ENGINE ACTIVE</p>
+                <h3 className="text-xl font-bold text-[var(--color-brand-headline)] tracking-wide">NODEBASE CORE</h3>
+                <p className="text-xs text-[var(--color-brand-accent)] font-mono">VISION ENGINE ACTIVE</p>
               </div>
             </div>
             <div className="text-right">

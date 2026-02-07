@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, MapPin, MessageSquare, Phone } from "lucide-react";
+import { Mail, MapPin, MessageSquare } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
 export default function ContactPage() {
   const { t } = useLanguage();
@@ -14,12 +15,9 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-[1px]"></div>
-      {/* Ambient Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-green/20 rounded-full blur-3xl opacity-30"></div>
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
+      <div className="fixed inset-0 opacity-30 pointer-events-none">
+        <NetworkBackground />
       </div>
 
       <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10">
@@ -30,8 +28,11 @@ export default function ContactPage() {
             variants={fadeInUp}
             className="max-w-3xl mx-auto"
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">{t("contact.title")}</h1>
-            <p className="text-xl text-white/80 leading-relaxed">
+            <div className="inline-block border border-brand-bone/20 px-4 py-1.5 mb-8 text-xs font-mono font-bold uppercase tracking-widest bg-brand-bone/5 text-brand-bone/60">
+              Contact
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-6 text-brand-bone leading-[0.9]">{t("contact.title")}</h1>
+            <p className="text-xl text-brand-bone/80 leading-relaxed font-light">
               {t("contact.desc")}
             </p>
           </motion.div>
@@ -43,48 +44,66 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
             
             {/* Sales & Partnerships */}
-            <div className="glass-card p-10 rounded-3xl hover:bg-white/10 transition-colors group">
-              <div className="w-12 h-12 glass-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <MessageSquare className="w-6 h-6 text-white" />
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="p-10 rounded-3xl border border-brand-bone/10 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors group"
+            >
+              <div className="w-12 h-12 bg-brand-bone/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <MessageSquare className="w-6 h-6 text-brand-bone" />
               </div>
-              <h2 className="text-2xl font-bold mb-2 text-white">{t("contact.sales")}</h2>
-              <p className="text-white/70 mb-8">For enterprise inquiries and custom solutions.</p>
-              <a href="mailto:sales@nodebase.in" className="text-lg font-medium text-white hover:text-white/80 hover:underline">
+              <h2 className="text-2xl font-bold uppercase tracking-tight mb-2 text-brand-bone">{t("contact.sales")}</h2>
+              <p className="text-brand-bone/70 mb-8">For enterprise inquiries and custom solutions.</p>
+              <a href="mailto:sales@nodebase.in" className="text-lg font-medium text-brand-bone border-b border-brand-bone/20 hover:border-brand-bone transition-colors pb-1">
                 sales@nodebase.in
               </a>
-            </div>
+            </motion.div>
 
             {/* Support */}
-            <div className="glass-card p-10 rounded-3xl hover:bg-white/10 transition-colors group">
-              <div className="w-12 h-12 glass-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Mail className="w-6 h-6 text-brand-green" />
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="p-10 rounded-3xl border border-brand-bone/10 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors group"
+            >
+              <div className="w-12 h-12 bg-brand-bone/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Mail className="w-6 h-6 text-brand-bone" />
               </div>
-              <h2 className="text-2xl font-bold mb-2 text-white">{t("contact.support")}</h2>
-              <p className="text-white/70 mb-8">Technical assistance for kaisa AI and nodebase Space.</p>
-              <a href="mailto:support@nodebase.in" className="text-lg font-medium text-brand-green hover:text-brand-green/80 hover:underline">
+              <h2 className="text-2xl font-bold uppercase tracking-tight mb-2 text-brand-bone">{t("contact.support")}</h2>
+              <p className="text-brand-bone/70 mb-8">Technical assistance for kaisa AI and nodebase Space.</p>
+              <a href="mailto:support@nodebase.in" className="text-lg font-medium text-brand-bone border-b border-brand-bone/20 hover:border-brand-bone transition-colors pb-1">
                 support@nodebase.in
               </a>
-            </div>
+            </motion.div>
 
           </div>
 
           {/* Locations */}
-          <div className="mt-24 max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold mb-12 text-center text-white">{t("contact.locations")}</h2>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="mt-24 max-w-3xl mx-auto"
+          >
+            <h2 className="text-2xl font-bold uppercase tracking-tight mb-12 text-center text-brand-bone">{t("contact.locations")}</h2>
             <div className="flex justify-center">
-              <div className="flex gap-6 items-start p-8 glass-card rounded-2xl hover:bg-white/10 transition-colors w-full max-w-lg">
-                <div className="flex-shrink-0 w-12 h-12 glass-dark rounded-full flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-brand-saffron" />
+              <div className="flex gap-6 items-start p-8 rounded-2xl border border-brand-bone/10 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors w-full max-w-lg">
+                <div className="flex-shrink-0 w-12 h-12 bg-brand-bone/10 rounded-full flex items-center justify-center">
+                  <MapPin className="w-6 h-6 text-brand-bone" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl mb-3 text-white">{t("contact.hq_title")}</h3>
-                  <p className="text-white/70 leading-relaxed whitespace-pre-line text-lg">
+                  <h3 className="font-bold text-xl uppercase tracking-tight mb-3 text-brand-bone">{t("contact.hq_title")}</h3>
+                  <p className="text-brand-bone/70 leading-relaxed whitespace-pre-line text-lg">
                     {t("contact.hq_desc")}
                   </p>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

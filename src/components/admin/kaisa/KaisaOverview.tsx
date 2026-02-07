@@ -10,7 +10,7 @@ export function KaisaOverview({ stats }: { stats: KaisaStats }) {
       
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-blue-900/30 rounded text-blue-400">
+          <div className="p-2 bg-brand-silver/10 rounded text-brand-silver">
             <Users className="w-4 h-4" />
           </div>
           <span className="text-zinc-400 text-sm font-medium">Total Users</span>
@@ -20,7 +20,7 @@ export function KaisaOverview({ stats }: { stats: KaisaStats }) {
 
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-green-900/30 rounded text-green-400">
+          <div className="p-2 bg-brand-cyan/10 rounded text-brand-cyan">
             <UserCheck className="w-4 h-4" />
           </div>
           <span className="text-zinc-400 text-sm font-medium">Active</span>
@@ -31,7 +31,7 @@ export function KaisaOverview({ stats }: { stats: KaisaStats }) {
 
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-purple-900/30 rounded text-purple-400">
+          <div className="p-2 bg-brand-bone/10 rounded text-brand-bone">
             <Briefcase className="w-4 h-4" />
           </div>
           <span className="text-zinc-400 text-sm font-medium">Top Segment</span>
@@ -43,7 +43,7 @@ export function KaisaOverview({ stats }: { stats: KaisaStats }) {
 
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-amber-900/30 rounded text-amber-400">
+          <div className="p-2 bg-zinc-800 rounded text-zinc-400">
             <Crown className="w-4 h-4" />
           </div>
           <span className="text-zinc-400 text-sm font-medium">Role Split</span>

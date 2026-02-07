@@ -1,3 +1,4 @@
+
 import { NodeNav } from "@/components/node/NodeNav";
 import { FoundersNote } from "@/components/node/FoundersNote";
 
@@ -7,7 +8,7 @@ export default function NodeLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white selection:bg-brand-saffron/30">
+    <div className="flex flex-col min-h-screen bg-[--color-brand-red] text-white selection:bg-white selection:text-[--color-brand-red]">
       <NodeNav />
       <div className="flex-1">
         {children}

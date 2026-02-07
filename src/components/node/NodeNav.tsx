@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -9,17 +10,16 @@ export function NodeNav() {
 
   const links = [
     { name: "Overview", href: "/node" },
-    { name: "How it Works", href: "/node/how-it-works" },
-    { name: "Infrastructure", href: "/node/infrastructure" },
     { name: "Nodes", href: "/node/nodes" },
+    { name: "How it Works", href: "/node/how-it-works" },
     { name: "Risk", href: "/node/risk" },
     { name: "FAQ", href: "/node/faq" },
   ];
 
   return (
-    <div className="w-full border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-16 z-40">
-      <div className="container mx-auto px-6 overflow-x-auto">
-        <nav className="flex items-center gap-6 md:gap-8 h-12 min-w-max">
+    <div className="w-full border-b border-white/20 bg-[var(--color-brand-red)] sticky top-[64px] z-40 backdrop-blur-xl supports-[backdrop-filter]:bg-[var(--color-brand-red)]/95">
+      <div className="max-w-7xl mx-auto px-6 overflow-x-auto no-scrollbar">
+        <nav className="flex items-center gap-8 h-12 min-w-max">
           {links.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -27,16 +27,13 @@ export function NodeNav() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "text-sm font-medium transition-colors relative h-full flex items-center",
+                  "text-xs font-bold uppercase tracking-widest transition-colors relative h-full flex items-center",
                   isActive
-                    ? "text-brand-saffron"
-                    : "text-white/60 hover:text-white"
+                    ? "text-white opacity-100"
+                    : "text-white opacity-50 hover:opacity-100"
                 )}
               >
                 {link.name}
-                {isActive && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-saffron shadow-[0_0_10px_rgba(255,153,51,0.5)]" />
-                )}
               </Link>
             );
           })}

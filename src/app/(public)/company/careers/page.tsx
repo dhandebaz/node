@@ -1,79 +1,118 @@
 "use client";
 
-import { PageHeader } from "@/components/ui/PageHeader";
+import { motion } from "framer-motion";
 import { Briefcase, Code2, Server, BrainCircuit, ArrowRight } from "lucide-react";
+import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
 export default function CareersPage() {
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
+  };
+
+  const stagger = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
   return (
-    <div className="bg-black min-h-screen text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-[1px]"></div>
-      {/* Ambient Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-brand-saffron/20 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-white/20 rounded-full blur-3xl opacity-30"></div>
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
+      <div className="fixed inset-0 opacity-30 pointer-events-none">
+        <NetworkBackground />
       </div>
 
-      <PageHeader 
-        title="Join the Mission" 
-        description="We are looking for engineers, researchers, and builders who want to shape India's digital future."
-        tag="Careers"
-      >
-         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--color-brand-saffron)_0%,_transparent_20%)] opacity-20"></div>
-      </PageHeader>
+      <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10">
+        <div className="container mx-auto px-6 text-center">
+          <motion.div 
+            initial="initial"
+            animate="animate"
+            variants={stagger}
+            className="max-w-4xl mx-auto"
+          >
+            <motion.div variants={fadeInUp} className="inline-block border border-brand-bone/20 px-4 py-1.5 mb-8 text-xs font-mono font-bold uppercase tracking-widest bg-brand-bone/5 text-brand-bone/60">
+              Careers
+            </motion.div>
+            
+            <motion.h1 
+              variants={fadeInUp}
+              className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-8 text-brand-bone leading-[0.85]"
+            >
+              Join the<br/>Mission
+            </motion.h1>
+            
+            <motion.p 
+              variants={fadeInUp}
+              className="text-xl md:text-2xl text-brand-bone/80 mb-12 max-w-2xl mx-auto leading-relaxed font-light"
+            >
+              We are looking for engineers, researchers, and builders who want to shape India's digital future.
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
 
       <section className="py-24 relative z-10">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto space-y-8">
+          <motion.div 
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            variants={stagger}
+            className="max-w-4xl mx-auto space-y-8"
+          >
             
-            <div className="glass-card p-8 rounded-2xl border-l-4 border-white hover:bg-white/5 transition-colors group cursor-pointer">
+            <motion.div variants={fadeInUp} className="p-8 rounded-2xl border-l-4 border-l-brand-bone border-y border-r border-brand-bone/10 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors group cursor-pointer">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-white transition-colors">Senior Frontend Engineer</h3>
-                  <p className="text-white/60 text-sm mt-1">Engineering • Delhi • Remote Hybrid</p>
+                  <h3 className="text-xl font-bold uppercase tracking-tight text-brand-bone group-hover:text-brand-bone transition-colors">Senior Frontend Engineer</h3>
+                  <p className="text-brand-bone/60 text-sm mt-1">Engineering • Delhi • Remote Hybrid</p>
                 </div>
-                <Code2 className="w-6 h-6 text-white opacity-50 group-hover:opacity-100 transition-opacity" />
+                <Code2 className="w-6 h-6 text-brand-bone opacity-50 group-hover:opacity-100 transition-opacity" />
               </div>
-              <p className="text-white/70 mb-6">
+              <p className="text-brand-bone/70 mb-6 leading-relaxed">
                 Build the next generation of cloud interfaces. Work with React, Next.js, and WebGL to create immersive, high-performance dashboards for our users.
               </p>
-              <div className="flex items-center gap-2 text-sm font-medium text-white">
+              <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-bone">
                 Apply Now <ArrowRight className="w-4 h-4" />
               </div>
-            </div>
+            </motion.div>
 
-            <div className="glass-card p-8 rounded-2xl border-l-4 border-brand-saffron hover:bg-white/5 transition-colors group cursor-pointer">
+            <motion.div variants={fadeInUp} className="p-8 rounded-2xl border-l-4 border-l-brand-bone border-y border-r border-brand-bone/10 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors group cursor-pointer">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-white transition-colors">AI Research Scientist</h3>
-                  <p className="text-white/60 text-sm mt-1">Research • Delhi • On-site</p>
+                  <h3 className="text-xl font-bold uppercase tracking-tight text-brand-bone group-hover:text-brand-bone transition-colors">AI Research Scientist</h3>
+                  <p className="text-brand-bone/60 text-sm mt-1">Research • Delhi • On-site</p>
                 </div>
-                <BrainCircuit className="w-6 h-6 text-white opacity-50 group-hover:opacity-100 transition-opacity" />
+                <BrainCircuit className="w-6 h-6 text-brand-bone opacity-50 group-hover:opacity-100 transition-opacity" />
               </div>
-              <p className="text-white/70 mb-6">
+              <p className="text-brand-bone/70 mb-6 leading-relaxed">
                 Advance the state of Indic LLMs. Work on fine-tuning, tokenization strategies for Indian languages, and optimizing inference on H100 clusters.
               </p>
-              <div className="flex items-center gap-2 text-sm font-medium text-white">
+              <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-bone">
                 Apply Now <ArrowRight className="w-4 h-4" />
               </div>
-            </div>
+            </motion.div>
 
-            <div className="glass-card p-8 rounded-2xl border-l-4 border-brand-green hover:bg-white/5 transition-colors group cursor-pointer">
+            <motion.div variants={fadeInUp} className="p-8 rounded-2xl border-l-4 border-l-brand-bone border-y border-r border-brand-bone/10 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors group cursor-pointer">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-white transition-colors">Infrastructure Operations Lead</h3>
-                  <p className="text-white/60 text-sm mt-1">Ops • Delhi • On-site</p>
+                  <h3 className="text-xl font-bold uppercase tracking-tight text-brand-bone group-hover:text-brand-bone transition-colors">Infrastructure Operations Lead</h3>
+                  <p className="text-brand-bone/60 text-sm mt-1">Ops • Delhi • On-site</p>
                 </div>
-                <Server className="w-6 h-6 text-white opacity-50 group-hover:opacity-100 transition-opacity" />
+                <Server className="w-6 h-6 text-brand-bone opacity-50 group-hover:opacity-100 transition-opacity" />
               </div>
-              <p className="text-white/70 mb-6">
+              <p className="text-brand-bone/70 mb-6 leading-relaxed">
                 Manage our physical data center footprint. Oversee server deployment, network architecture, and ensure 99.99% uptime for our sovereign cloud.
               </p>
-              <div className="flex items-center gap-2 text-sm font-medium text-white">
+              <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-bone">
                 Apply Now <ArrowRight className="w-4 h-4" />
               </div>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

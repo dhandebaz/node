@@ -34,44 +34,44 @@ export default async function CustomerDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Welcome back</h1>
-        <p className="text-zinc-400">Select a workspace to continue.</p>
+        <h1 className="text-3xl font-bold text-[var(--color-brand-headline)] mb-2">Welcome back</h1>
+        <p className="text-[var(--color-brand-muted)]">Select a workspace to continue.</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Kaisa Card */}
-        <Link href="/dashboard/kaisa" className="group relative overflow-hidden bg-zinc-900 border border-zinc-800 rounded-2xl p-8 hover:border-blue-500/50 transition-all">
+        {/* Nodebase Core Card */}
+        <Link href="/dashboard/kaisa" className="group relative overflow-hidden bg-[rgba(22,7,10,0.6)] border border-[var(--color-brand-node-line)] rounded-2xl p-8 hover:border-[var(--color-brand-accent)] transition-all">
           <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Box className="w-32 h-32 text-blue-500" />
+            <Box className="w-32 h-32 text-[var(--color-brand-accent)]" />
           </div>
           <div className="relative z-10">
-            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 text-blue-400">
+            <div className="w-12 h-12 bg-[var(--color-brand-accent)]/10 rounded-xl flex items-center justify-center mb-6 text-[var(--color-brand-accent)]">
               <Box className="w-6 h-6" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">kaisa AI</h2>
-            <p className="text-zinc-400 mb-6">
+            <h2 className="text-2xl font-bold text-[var(--color-brand-headline)] mb-2">Nodebase Core</h2>
+            <p className="text-[var(--color-brand-muted)] mb-6">
               Manage your AI workforce, view tasks, and configure modules for your business.
             </p>
-            <div className="flex items-center text-blue-400 font-medium group-hover:gap-2 transition-all">
+            <div className="flex items-center text-[var(--color-brand-accent)] font-medium group-hover:gap-2 transition-all">
               Launch Dashboard <ArrowRight className="w-4 h-4 ml-2" />
             </div>
           </div>
         </Link>
 
-        {/* Space Card */}
-        <Link href="/dashboard/space" className="group relative overflow-hidden bg-zinc-900 border border-zinc-800 rounded-2xl p-8 hover:border-purple-500/50 transition-all">
+        {/* Infrastructure Card */}
+        <Link href="/dashboard/space" className="group relative overflow-hidden bg-[rgba(22,7,10,0.6)] border border-[var(--color-brand-node-line)] rounded-2xl p-8 hover:border-[var(--color-brand-muted)] transition-all">
           <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Server className="w-32 h-32 text-purple-500" />
+            <Server className="w-32 h-32 text-[var(--color-brand-muted)]" />
           </div>
           <div className="relative z-10">
-            <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-6 text-purple-400">
+            <div className="w-12 h-12 bg-[var(--color-brand-muted)]/10 rounded-xl flex items-center justify-center mb-6 text-[var(--color-brand-muted)]">
               <Server className="w-6 h-6" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Nodebase Space</h2>
-            <p className="text-zinc-400 mb-6">
-              Access your hosting infrastructure, manage domains, and monitor resources.
+            <h2 className="text-2xl font-bold text-[var(--color-brand-headline)] mb-2">Infrastructure</h2>
+            <p className="text-[var(--color-brand-muted)] mb-6">
+              Access your sovereign cloud infrastructure, manage domains, and monitor resources.
             </p>
-            <div className="flex items-center text-purple-400 font-medium group-hover:gap-2 transition-all">
+            <div className="flex items-center text-[var(--color-brand-muted)] font-medium group-hover:gap-2 transition-all">
               Launch Dashboard <ArrowRight className="w-4 h-4 ml-2" />
             </div>
           </div>

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Upload, FileText, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { Upload, FileText, CheckCircle, AlertCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { verifyAndUploadDocumentAction } from "@/app/actions/kyc";
 import { KYCDocument } from "@/types/user";
@@ -34,9 +34,6 @@ export default function ApplyKYCPage() {
             setError(uploadResult.error || "Upload failed");
         }
         
-        // Small delay to let the user see the "Verified" state in the overlay if we wanted,
-        // but the overlay already handles the "Verified" text at the end.
-        // We close it now.
         setShowOverlay(false);
         setProcessingType(null);
         setUploadResult(null);
@@ -92,39 +89,42 @@ export default function ApplyKYCPage() {
   };
 
   const renderUploadBox = (type: "PAN" | "AADHAAR", doc: KYCDocument | null) => (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-        <h3 className="font-bold text-white mb-4 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-zinc-400" />
-            {type === "PAN" ? "PAN Card" : "Aadhaar Card / Address Proof"}
+    <div className="border border-white/20 p-8">
+        <h3 className="text-xl font-bold uppercase tracking-tight mb-6 flex items-center gap-3">
+            <FileText className="w-5 h-5" />
+            {type === "PAN" ? "PAN Card" : "Aadhaar / Address"}
         </h3>
         
         {doc ? (
-            <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                doc.verified ? "border-green-900/50 bg-green-900/10" : "border-yellow-900/50 bg-yellow-900/10"
+            <div className={`p-6 border ${
+                doc.verified ? "border-white bg-white/10" : "border-white/50 bg-transparent"
             }`}>
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                    doc.verified ? "bg-green-900/20 text-green-400" : "bg-yellow-900/20 text-yellow-400"
-                }`}>
-                    {doc.verified ? <CheckCircle className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
+                <div className="flex items-center gap-4 mb-4">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${
+                        doc.verified ? "border-white bg-white text-[--color-brand-red]" : "border-white/50 text-white"
+                    }`}>
+                        {doc.verified ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+                    </div>
+                    <p className="font-bold uppercase tracking-wider text-sm">
+                        {doc.verified ? "Verified" : "Pending Review"}
+                    </p>
                 </div>
-                <p className={`text-sm font-medium mb-1 ${doc.verified ? "text-green-200" : "text-yellow-200"}`}>
-                    {doc.verified ? "Verified Successfully" : "Verification Pending/Review Needed"}
-                </p>
+                
                 {doc.verificationDetails?.name && (
-                    <p className="text-xs text-zinc-400 mt-2">
+                    <p className="text-sm opacity-60 mb-4 font-mono">
                         Detected: {doc.verificationDetails.name}
                     </p>
                 )}
                 <button 
                     type="button"
                     onClick={() => type === "PAN" ? setPanDoc(null) : setAadhaarDoc(null)}
-                    className="text-xs text-zinc-500 hover:text-white mt-4 underline"
+                    className="text-xs font-bold uppercase tracking-widest border-b border-white hover:opacity-70 transition-opacity"
                 >
-                    Upload Different File
+                    Replace File
                 </button>
             </div>
         ) : (
-            <div className="relative border-2 border-dashed border-zinc-700 rounded-lg p-8 text-center hover:bg-zinc-950 transition-colors cursor-pointer group">
+            <div className="relative border border-dashed border-white/30 p-8 text-center hover:bg-white hover:text-[--color-brand-red] transition-all cursor-pointer group">
                 <input 
                     type="file" 
                     accept="image/*,application/pdf"
@@ -132,76 +132,91 @@ export default function ApplyKYCPage() {
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     disabled={showOverlay}
                 />
-                <div className="w-12 h-12 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-zinc-700 transition-colors">
-                    <Upload className="w-6 h-6 text-zinc-400 group-hover:text-white" />
+                <div className="w-12 h-12 border border-current rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <Upload className="w-5 h-5" />
                 </div>
-                <p className="text-sm text-zinc-300 font-medium mb-1">
-                    Click to upload or drag and drop
+                <p className="font-bold uppercase tracking-widest text-sm mb-2">
+                    Upload Document
                 </p>
-                <p className="text-xs text-zinc-500">JPG, PNG or PDF (Max 5MB)</p>
+                <p className="text-xs opacity-60 group-hover:opacity-80">JPG, PNG or PDF (Max 5MB)</p>
             </div>
         )}
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-black text-white pt-24 pb-12">
+    <div className="bg-[--color-brand-red] text-white selection:bg-white selection:text-[--color-brand-red]">
       <KaisaVerificationOverlay 
         isVisible={showOverlay} 
         onComplete={() => setAnimationFinished(true)}
         documentType={processingType || "PAN"}
       />
       
-      <div className="max-w-2xl mx-auto px-6">
-        <Link href="/node/apply/details" className="inline-flex items-center gap-2 text-zinc-500 hover:text-white mb-8 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back
-        </Link>
+      {/* Header Section */}
+      <section className="min-h-[40vh] flex flex-col justify-end px-6 pt-32 pb-12 border-b border-white/20">
+        <div className="max-w-7xl mx-auto w-full">
+          <Link href="/node/apply/details" className="inline-block border border-white px-4 py-1.5 mb-12 text-sm font-bold uppercase tracking-widest hover:bg-white hover:text-[--color-brand-red] transition-colors">
+              ← Back
+          </Link>
 
-        <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-                <span className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold">2</span>
-                <span className="text-zinc-500 font-medium">KYC Documents</span>
-            </div>
-            <h1 className="text-3xl font-bold">Identity Verification</h1>
-            <p className="text-zinc-400 mt-2">
-                We use AI to instantly verify your identity documents. Please upload clear photos.
-            </p>
+          <div className="flex items-center gap-4 mb-8">
+            <span className="flex items-center justify-center w-8 h-8 rounded-full border border-white font-bold text-sm">
+              2
+            </span>
+            <span className="text-sm font-bold uppercase tracking-widest opacity-60">
+              KYC Documents
+            </span>
+          </div>
+
+          <h1 className="text-display-large uppercase leading-[0.85] tracking-tighter mb-8">
+             Identity<br />
+             Verification
+          </h1>
+          
+          <p className="text-editorial-body max-w-2xl">
+              We use AI to instantly verify your identity documents. Please upload clear photos.
+          </p>
         </div>
+      </section>
 
-        {error && (
-            <div className="mb-6 p-4 bg-red-900/20 border border-red-900/50 rounded-lg text-red-200 text-sm flex items-center gap-2">
-                <AlertCircle className="w-4 h-4" />
-                {error}
-            </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-8">
-            {renderUploadBox("PAN", panDoc)}
-            {renderUploadBox("AADHAAR", aadhaarDoc)}
-
-            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 text-sm text-zinc-400">
-                <div className="flex gap-3">
-                    <input type="checkbox" required className="mt-1 w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-white focus:ring-offset-0" />
-                    <label>
-                        I certify that the information provided is accurate and I agree to the 
-                        <Link href="/legal/privacy" className="text-white hover:underline mx-1">Privacy Policy</Link>
-                        and
-                        <Link href="/legal/terms" className="text-white hover:underline mx-1">Terms of Service</Link>.
-                    </label>
+      {/* Upload Section */}
+      <section className="min-h-screen px-6 py-24">
+        <div className="max-w-7xl mx-auto w-full">
+            {error && (
+                <div className="mb-12 p-4 border border-white bg-white text-[--color-brand-red] text-sm font-bold flex items-center gap-4">
+                    <AlertCircle className="w-5 h-5" />
+                    {error}
                 </div>
-            </div>
+            )}
 
-            <div className="pt-2">
+            <form onSubmit={handleSubmit} className="max-w-4xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+                    {renderUploadBox("PAN", panDoc)}
+                    {renderUploadBox("AADHAAR", aadhaarDoc)}
+                </div>
+
+                <div className="mb-12 p-6 border border-white/20">
+                    <div className="flex gap-4 items-start">
+                        <input type="checkbox" required className="mt-1 w-5 h-5 border-2 border-white bg-transparent appearance-none checked:bg-white checked:after:content-['✓'] checked:after:text-[--color-brand-red] checked:after:block checked:after:text-center checked:after:text-sm checked:after:font-bold cursor-pointer" />
+                        <label className="text-lg opacity-80 leading-relaxed">
+                            I certify that the information provided is accurate and I agree to the 
+                            <Link href="/legal/privacy" className="border-b border-white mx-2 hover:opacity-70">Privacy Policy</Link>
+                            and
+                            <Link href="/legal/terms" className="border-b border-white mx-2 hover:opacity-70">Terms of Service</Link>.
+                        </label>
+                    </div>
+                </div>
+
                 <button 
                     type="submit" 
                     disabled={loading || !panDoc || !aadhaarDoc}
-                    className="w-full py-4 bg-white text-black font-bold text-lg rounded-lg hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="group flex items-center gap-4 text-4xl font-bold uppercase tracking-tighter hover:gap-8 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {loading ? "Submitting Application..." : "Submit Application"}
+                    {loading ? "Submitting..." : <>Submit Application <ArrowRight className="w-8 h-8" /></>}
                 </button>
-            </div>
-        </form>
-      </div>
+            </form>
+        </div>
+      </section>
     </div>
   );
 }

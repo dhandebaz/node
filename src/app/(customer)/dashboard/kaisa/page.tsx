@@ -1,172 +1,265 @@
-export const dynamic = 'force-dynamic';
+"use client";
 
-
-import { getKaisaDashboardData } from "@/app/actions/customer";
+import { useEffect, useState } from "react";
+import { useDashboardStore } from "@/store/useDashboardStore";
+import { useAuthStore } from "@/store/useAuthStore";
 import { 
-  Briefcase, 
-  CreditCard, 
-  CheckCircle, 
-  AlertCircle,
-  Zap,
-  Settings,
-  Plus,
-  ArrowRight,
-  ExternalLink,
-  Wallet
+  Calendar as CalendarIcon, 
+  MessageSquare, 
+  ChevronDown, 
+  Loader2,
+  TrendingUp,
+  Users,
+  AlertCircle
 } from "lucide-react";
-import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { format } from "date-fns";
 
-export default async function KaisaDashboardPage() {
-  const data = await getKaisaDashboardData();
-  const { identity, profile, credits, tasks, integrations } = data;
+export default function KaisaDashboardPage() {
+  const { 
+    listings, 
+    bookings, 
+    messages, 
+    walletBalance, 
+    isLoading, 
+    error,
+    selectedListingId,
+    fetchDashboardData,
+    setSelectedListingId,
+    fetchCalendar
+  } = useDashboardStore();
 
-  if (!profile) return <div>Loading...</div>;
+  const { host } = useAuthStore();
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
+
+  useEffect(() => {
+    if (selectedListingId) {
+      // Fetch calendar for current month when listing changes
+      fetchCalendar(selectedListingId, {
+        start: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).toISOString(),
+        end: new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).toISOString(),
+      });
+    }
+  }, [selectedListingId, currentMonth, fetchCalendar]);
+
+  const selectedListing = listings.find(l => l.id === selectedListingId);
+
+  // Calendar Logic
+  const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+  const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+
+  const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+
+  if (isLoading && !selectedListing) {
+    return (
+      <div className="h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-[60vh] flex items-center justify-center text-red-500 gap-2">
+        <AlertCircle className="w-6 h-6" />
+        <span>{error}</span>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white mb-1">
-            Dashboard
-          </h1>
-          <p className="text-zinc-400">
-            Overview for <span className="text-white font-medium">{profile.businessType}</span> business
-          </p>
-        </div>
-        <Link href="/dashboard/kaisa/settings" className="p-2 hover:bg-zinc-900 rounded-full transition-colors">
-            <Settings className="w-5 h-5 text-zinc-400" />
-        </Link>
-      </div>
-
-      {/* Stats & Balance */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Balance Card */}
-        <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 rounded-2xl p-6 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-saffron/5 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity group-hover:opacity-75" />
-          
-          <div className="flex items-center justify-between mb-4">
-             <div className="flex items-center gap-3">
-                <div className="p-2 bg-zinc-800 rounded-lg text-brand-saffron">
-                  <Wallet className="w-5 h-5" />
-                </div>
-                <h3 className="font-medium text-zinc-200">Wage Balance</h3>
-             </div>
-             <button className="text-xs bg-white text-black hover:bg-zinc-200 px-3 py-1.5 rounded-lg transition-colors font-medium">
-                Top Up
-             </button>
-          </div>
-          
-          <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold text-white">₹{credits.balance}</span>
-            <span className="text-sm text-zinc-500 font-medium">available</span>
-          </div>
-          
-          <div className="mt-4 flex items-center gap-2 text-xs text-zinc-500">
-            <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-               <div 
-                 className="bg-brand-saffron h-full rounded-full" 
-                 style={{ width: `${(credits.balance / credits.monthlyLimit) * 100}%` }}
-               />
-            </div>
-            <span>{Math.round((credits.balance / credits.monthlyLimit) * 100)}%</span>
-          </div>
-        </div>
-
-        {/* Business Status Card */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-           <div className="flex items-center justify-between mb-4">
-             <div className="flex items-center gap-3">
-                <div className="p-2 bg-zinc-800 rounded-lg text-blue-400">
-                  <Briefcase className="w-5 h-5" />
-                </div>
-                <h3 className="font-medium text-zinc-200">Status</h3>
-             </div>
-             <div className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wide ${
-                profile.status === "active" ? "bg-green-500/10 text-green-500" : "bg-amber-500/10 text-amber-500"
-             }`}>
-                {profile.status}
-             </div>
-          </div>
-          
-          <div className="space-y-3">
-             <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-400">Plan</span>
-                <span className="text-white capitalize">{profile.role}</span>
-             </div>
-             <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-400">Active Modules</span>
-                <span className="text-white">{profile.activeModules.length}</span>
-             </div>
-             <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-400">Pending Actions</span>
-                <span className="text-white">{tasks.filter(t => t.status === "in_progress").length}</span>
-             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Integrations Section */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-white">Connected Apps</h2>
-            <Link href="/dashboard/kaisa/modules" className="text-xs text-zinc-400 hover:text-white flex items-center gap-1">
-                Manage <ArrowRight className="w-3 h-3" />
-            </Link>
-        </div>
+    <div className="space-y-6 max-w-[1600px] mx-auto p-4 md:p-8">
+      {/* Top Bar: Selector & Stats */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {integrations.filter(i => i.enabledGlobal).map((integration) => (
-                <div key={integration.name} className="bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition-colors rounded-xl p-4 flex flex-col justify-between h-32">
-                    <div className="flex items-start justify-between">
-                        <div className="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center text-lg font-bold text-zinc-400">
-                            {integration.name[0]}
-                        </div>
-                        {/* Mock Status Logic: 'Messaging' is connected, others not */}
-                        {integration.name === "Messaging" ? (
-                             <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-                        ) : (
-                             <div className="w-2 h-2 rounded-full bg-zinc-700" />
-                        )}
-                    </div>
-                    <div>
-                        <h3 className="text-white font-medium text-sm">{integration.name}</h3>
-                        {integration.name === "Messaging" ? (
-                             <span className="text-[10px] text-green-500 flex items-center gap-1 mt-1">
-                                Connected
-                             </span>
-                        ) : (
-                             <button className="text-[10px] text-blue-400 hover:text-blue-300 flex items-center gap-1 mt-1">
-                                Login <ExternalLink className="w-2 h-2" />
-                             </button>
-                        )}
-                    </div>
-                </div>
-            ))}
-             <button className="bg-zinc-900/30 border border-zinc-800 border-dashed hover:border-zinc-700 hover:bg-zinc-900/50 transition-all rounded-xl p-4 flex flex-col items-center justify-center h-32 gap-2 group">
-                <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center group-hover:bg-zinc-700 transition-colors">
-                    <Plus className="w-4 h-4 text-zinc-400" />
-                </div>
-                <span className="text-xs text-zinc-500 font-medium">Add App</span>
-             </button>
+        {/* Listing Selector */}
+        <div className="relative group">
+          <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">
+            Selected Property
+          </label>
+          <div className="relative">
+            <select 
+              value={selectedListingId || ""}
+              onChange={(e) => setSelectedListingId(e.target.value)}
+              className="appearance-none w-full md:w-80 bg-white border border-gray-200 text-gray-900 text-lg font-medium rounded-xl px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-red)] focus:border-transparent cursor-pointer shadow-sm hover:border-gray-300 transition-colors"
+            >
+              {listings.map(l => (
+                <option key={l.id} value={l.id}>{l.title}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-5 h-5" />
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white border border-gray-100 p-4 rounded-xl shadow-sm min-w-[160px]">
+            <div className="flex items-center gap-2 text-gray-500 mb-1">
+              <Users className="w-4 h-4" />
+              <span className="text-xs font-semibold uppercase tracking-wider">Occupancy</span>
+            </div>
+            <div className="text-2xl font-bold text-gray-900">85%</div>
+            <div className="text-xs text-green-600 font-medium">+12% vs last month</div>
+          </div>
+          <div className="bg-white border border-gray-100 p-4 rounded-xl shadow-sm min-w-[160px]">
+            <div className="flex items-center gap-2 text-gray-500 mb-1">
+              <TrendingUp className="w-4 h-4" />
+              <span className="text-xs font-semibold uppercase tracking-wider">Est. Revenue</span>
+            </div>
+            <div className="text-2xl font-bold text-gray-900">₹{walletBalance.toLocaleString()}</div>
+            <div className="text-xs text-gray-400 font-medium">This month</div>
+          </div>
         </div>
       </div>
-      
-      {/* Quick Settings Banner */}
-      <Link href="/dashboard/kaisa/settings" className="block bg-gradient-to-r from-zinc-900 to-black border border-zinc-800 rounded-xl p-4 hover:border-zinc-700 transition-colors">
-        <div className="flex items-center justify-between">
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        
+        {/* Calendar View (Main) */}
+        <div className="xl:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[600px]">
+          <div className="p-4 md:p-6 border-b border-gray-100 flex items-center justify-between">
+            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <CalendarIcon className="w-5 h-5 text-[var(--color-brand-red)]" />
+              Availability & Bookings
+            </h2>
             <div className="flex items-center gap-4">
-                <div className="p-3 bg-zinc-800 rounded-full">
-                    <Settings className="w-5 h-5 text-zinc-400" />
-                </div>
-                <div>
-                    <h3 className="text-white font-medium">Settings & Billing</h3>
-                    <p className="text-sm text-zinc-500">Manage plan, cards, and payment QR codes</p>
-                </div>
+               <span className="text-lg font-medium text-gray-700">
+                  {currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
+               </span>
+               <div className="flex gap-1">
+                 <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
+                   <ChevronDown className="w-5 h-5 rotate-90" />
+                 </button>
+                 <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600">
+                   <ChevronDown className="w-5 h-5 -rotate-90" />
+                 </button>
+               </div>
             </div>
-            <ArrowRight className="w-5 h-5 text-zinc-500" />
+          </div>
+
+          <div className="flex-1 p-6 overflow-y-auto">
+             <div className="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden border border-gray-200">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  <div key={day} className="bg-gray-50 p-3 text-center text-xs font-bold uppercase text-gray-500">
+                    {day}
+                  </div>
+                ))}
+                
+                {Array.from({ length: firstDay }).map((_, i) => (
+                  <div key={`empty-${i}`} className="bg-white min-h-[100px]" />
+                ))}
+
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const day = i + 1;
+                  const dateObj = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                  
+                  // Find bookings for this day
+                  const daysBookings = bookings.filter(b => {
+                     const start = new Date(b.startDate);
+                     const end = new Date(b.endDate);
+                     return dateObj >= start && dateObj <= end;
+                  });
+
+                  return (
+                    <div key={day} className="bg-white min-h-[100px] p-2 hover:bg-gray-50 transition-colors border-t border-gray-100 relative">
+                      <span className={cn(
+                        "text-sm font-medium block mb-1",
+                        dateObj.toDateString() === new Date().toDateString() ? "text-[var(--color-brand-red)] bg-red-50 w-6 h-6 flex items-center justify-center rounded-full" : "text-gray-700"
+                      )}>
+                        {day}
+                      </span>
+                      <div className="space-y-1">
+                        {daysBookings.map(b => (
+                          <div 
+                            key={b.id} 
+                            className={cn(
+                              "text-[10px] px-1.5 py-1 rounded font-medium truncate border",
+                              b.status === 'confirmed' ? "bg-green-50 text-green-700 border-green-100" :
+                              b.status === 'blocked' ? "bg-gray-100 text-gray-500 border-gray-200" :
+                              "bg-blue-50 text-blue-700 border-blue-100"
+                            )}
+                          >
+                            {b.guestName}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+             </div>
+          </div>
         </div>
-      </Link>
+
+        {/* Messages & Actions (Side) */}
+        <div className="space-y-6">
+          
+          {/* Messages */}
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden h-[400px] flex flex-col">
+             <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-[var(--color-brand-red)]" />
+                  Recent Messages
+                </h2>
+                <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                  {messages.filter(m => !m.read).length} New
+                </span>
+             </div>
+             <div className="flex-1 overflow-y-auto">
+                {messages.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-gray-400 p-8 text-center">
+                    <MessageSquare className="w-8 h-8 mb-2 opacity-20" />
+                    <p className="text-sm">No new messages</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-gray-100">
+                    {messages.map(m => (
+                      <div key={m.id} className="p-4 hover:bg-gray-50 transition-colors cursor-pointer group">
+                        <div className="flex justify-between items-start mb-1">
+                           <span className="font-bold text-sm text-gray-900 group-hover:text-[var(--color-brand-red)] transition-colors">
+                             {m.guestName}
+                           </span>
+                           <span className="text-[10px] text-gray-400">
+                             {format(new Date(m.timestamp), 'MMM d, h:mm a')}
+                           </span>
+                        </div>
+                        <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+                          {m.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+             </div>
+             <div className="p-3 border-t border-gray-100 bg-gray-50 text-center">
+                <button className="text-xs font-bold text-[var(--color-brand-red)] hover:underline">
+                  View All Messages
+                </button>
+             </div>
+          </div>
+
+          {/* Sync Status */}
+          <div className="bg-[var(--color-brand-dark-bg)] text-white rounded-2xl p-6 relative overflow-hidden">
+             <div className="relative z-10">
+               <h3 className="font-bold text-lg mb-2">Calendar Sync Active</h3>
+               <p className="text-sm text-white/70 mb-4">
+                 Your calendar is automatically syncing with Airbnb, Booking.com, and VRBO every 5 minutes.
+               </p>
+               <div className="flex gap-2">
+                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse mt-1.5" />
+                 <span className="text-xs font-mono text-green-400">LAST SYNC: JUST NOW</span>
+               </div>
+             </div>
+             {/* Decor */}
+             <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-brand-red)] opacity-10 blur-[60px] rounded-full translate-x-1/2 -translate-y-1/2" />
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }
