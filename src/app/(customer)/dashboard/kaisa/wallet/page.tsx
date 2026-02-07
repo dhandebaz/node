@@ -91,10 +91,10 @@ export default function WalletPage() {
               {transactions.map((tx) => (
                 <tr key={tx.id} className="hover:bg-gray-50 transition-colors">
                   <td className="py-4 px-6 text-sm text-gray-600 whitespace-nowrap">
-                    {format(new Date(tx.date), 'MMM d, yyyy')}
+                    {format(new Date(tx.timestamp), 'MMM d, yyyy')}
                   </td>
                   <td className="py-4 px-6 text-sm text-gray-900 font-medium">
-                    {tx.description}
+                    {tx.reason}
                   </td>
                   <td className="py-4 px-6">
                     <span className={cn(

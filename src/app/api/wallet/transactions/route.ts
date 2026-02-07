@@ -1,24 +1,34 @@
 import { NextResponse } from 'next/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
 
 export async function GET() {
-  await new Promise((resolve) => setTimeout(resolve, 400));
+  const supabase = await getSupabaseServer();
 
-  return NextResponse.json([
-    {
-      id: 'tx-1',
-      hostId: 'host-123',
-      type: 'debit',
-      amount: 50,
-      reason: 'AI Agent Usage',
-      timestamp: new Date(Date.now() - 86400000).toISOString(),
-    },
-    {
-      id: 'tx-2',
-      hostId: 'host-123',
-      type: 'credit',
-      amount: 1000,
-      reason: 'Wallet Top-up',
-      timestamp: new Date(Date.now() - 172800000).toISOString(),
-    },
-  ]);
+  // Get current user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const { data: transactions, error } = await supabase
+    .from('wallet_transactions')
+    .select('*')
+    .eq('host_id', user.id)
+    .order('timestamp', { ascending: false });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  const formattedTransactions = transactions.map((t: any) => ({
+    id: t.id,
+    hostId: t.host_id,
+    type: t.type,
+    amount: t.amount,
+    reason: t.reason,
+    timestamp: t.timestamp,
+  }));
+
+  return NextResponse.json(formattedTransactions);
 }

@@ -5,6 +5,7 @@ export interface Host {
   address: string;
   kycStatus: 'pending' | 'verified' | 'rejected' | 'none';
   walletBalance: number;
+  businessName?: string;
 }
 
 export interface Listing {

@@ -1,30 +1,54 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+export async function GET(request: NextRequest) {
+  const supabase = await getSupabaseServer();
+
+  // Get current user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const searchParams = request.nextUrl.searchParams;
   const listingId = searchParams.get('listingId');
+  const start = searchParams.get('start');
+  const end = searchParams.get('end');
 
-  await new Promise((resolve) => setTimeout(resolve, 600));
+  let query = supabase
+    .from('bookings')
+    .select('*, guests(name), listings!inner(host_id)')
+    .eq('listings.host_id', user.id);
 
-  // Return different bookings based on listingId if needed, or generic mocks
-  return NextResponse.json([
-    {
-      id: 'booking-1',
-      listingId: listingId || 'listing-1',
-      guestId: 'guest-1',
-      startDate: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString(),
-      endDate: new Date(new Date().setDate(new Date().getDate() + 5)).toISOString(),
-      status: 'confirmed',
-      source: 'airbnb',
-    },
-    {
-      id: 'booking-2',
-      listingId: listingId || 'listing-1',
-      guestId: 'guest-2',
-      startDate: new Date(new Date().setDate(new Date().getDate() + 10)).toISOString(),
-      endDate: new Date(new Date().setDate(new Date().getDate() + 12)).toISOString(),
-      status: 'pending',
-      source: 'nodebase',
-    },
-  ]);
+  if (listingId) {
+    query = query.eq('listing_id', listingId);
+  }
+
+  if (start) {
+    query = query.gte('end_date', start);
+  }
+
+  if (end) {
+    query = query.lte('start_date', end);
+  }
+
+  const { data: bookings, error } = await query;
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  const formattedBookings = bookings.map((b: any) => ({
+    id: b.id,
+    listingId: b.listing_id,
+    guestId: b.guest_id,
+    guestName: b.guests?.name || 'Unknown Guest',
+    startDate: b.start_date,
+    endDate: b.end_date,
+    status: b.status,
+    source: b.source,
+  }));
+
+  return NextResponse.json(formattedBookings);
 }
