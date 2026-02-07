@@ -43,9 +43,9 @@ export default function AdminDashboardPage() {
         <StatCard title="Recent Actions" value={recentLogs?.length || 0} change="Last 24h" icon={Activity} />
       </div>
 
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 overflow-x-auto">
         <h2 className="text-lg font-semibold text-white mb-4">Recent Activity</h2>
-        <div className="space-y-0">
+        <div className="space-y-0 min-w-[600px]">
           {(!recentLogs || recentLogs.length === 0) ? (
              <div className="text-zinc-500 text-sm py-4">No recent activity recorded.</div>
           ) : (
