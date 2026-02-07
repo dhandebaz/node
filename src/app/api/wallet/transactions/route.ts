@@ -28,6 +28,7 @@ export async function GET() {
     amount: t.amount,
     reason: t.reason,
     timestamp: t.timestamp,
+    status: t.status || 'completed',
   }));
 
   return NextResponse.json(formattedTransactions);

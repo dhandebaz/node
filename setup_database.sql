@@ -114,6 +114,7 @@ CREATE TABLE IF NOT EXISTS public.wallet_transactions (
   type TEXT NOT NULL, -- debit / credit
   amount NUMERIC NOT NULL,
   reason TEXT,
+  status TEXT DEFAULT 'completed', -- completed / pending / failed
   timestamp TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

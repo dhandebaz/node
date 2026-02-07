@@ -59,4 +59,5 @@ export interface WalletTransaction {
   amount: number;
   reason: string;
   timestamp: string;
+  status: 'completed' | 'pending' | 'failed';
 }
