@@ -16,8 +16,8 @@ export function CustomerSidebar({ roles, products, kaisaCredits }: CustomerSideb
   const pathname = usePathname();
 
   const isActive = (path: string) => {
-    if (path === '/customer/dashboard' && pathname === '/customer/dashboard') return true;
-    if (path !== '/customer/dashboard' && pathname.startsWith(path)) return true;
+    if (path === '/dashboard' && pathname === '/dashboard') return true;
+    if (path !== '/dashboard' && pathname.startsWith(path)) return true;
     return false;
   };
 
@@ -64,10 +64,10 @@ export function CustomerSidebar({ roles, products, kaisaCredits }: CustomerSideb
               Operations
             </div>
             <div className="space-y-1">
-              <NavItem href="/customer/dashboard/kaisa" label="Overview" exact />
-              <NavItem href="/customer/dashboard/kaisa/tasks" label="Tasks" />
-              <NavItem href="/customer/dashboard/kaisa/modules" label="Modules" />
-              <NavItem href="/customer/dashboard/kaisa/activity" label="Activity" />
+              <NavItem href="/dashboard/kaisa" label="Overview" exact />
+              <NavItem href="/dashboard/kaisa/tasks" label="Tasks" />
+              <NavItem href="/dashboard/kaisa/modules" label="Modules" />
+              <NavItem href="/dashboard/kaisa/activity" label="Activity" />
             </div>
           </div>
         )}
@@ -79,9 +79,9 @@ export function CustomerSidebar({ roles, products, kaisaCredits }: CustomerSideb
               Infrastructure
             </div>
             <div className="space-y-1">
-              <NavItem href="/customer/dashboard/space" label="Overview" exact />
-              <NavItem href="/customer/dashboard/space/websites" label="Websites" />
-              <NavItem href="/customer/dashboard/space/resources" label="Resources" />
+              <NavItem href="/dashboard/space" label="Overview" exact />
+              <NavItem href="/dashboard/space/websites" label="Websites" />
+              <NavItem href="/dashboard/space/resources" label="Resources" />
             </div>
           </div>
         )}
@@ -92,9 +92,10 @@ export function CustomerSidebar({ roles, products, kaisaCredits }: CustomerSideb
             System
           </div>
           <div className="space-y-1">
-            <NavItem href="/customer/dashboard/billing" label="Billing" />
-            <NavItem href="/customer/dashboard/support" label="Support" />
-            <NavItem href="/customer/dashboard/settings" label="Settings" />
+            <NavItem href="/dashboard/integrations" label="Integrations" />
+            <NavItem href="/dashboard/billing" label="Billing" />
+            <NavItem href="/dashboard/support" label="Support" />
+            <NavItem href="/dashboard/settings" label="Settings" />
           </div>
         </div>
       </nav>

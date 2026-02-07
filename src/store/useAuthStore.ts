@@ -11,7 +11,7 @@ interface AuthState {
   error: string | null;
   confirmationResult: ConfirmationResult | null;
   
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>; // @deprecated - Moved to Integrations
   sendOTP: (phone: string) => Promise<void>;
   verifyOTP: (otp: string) => Promise<void>;
   logout: () => void;
@@ -25,13 +25,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   confirmationResult: null,
 
   loginWithGoogle: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      const { host } = await authApi.loginWithGoogle();
-      set({ host, isLoading: false });
-    } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
-    }
+    // Deprecated for Auth. Moved to Integrations.
+    // This method is left here temporarily to avoid breaking types until full migration.
+    console.warn("Google Login is no longer supported for authentication. Use Phone OTP.");
+    set({ error: "Google Login is no longer supported. Please use Phone OTP.", isLoading: false });
   },
 
   sendOTP: async (phone: string) => {

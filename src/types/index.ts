@@ -61,3 +61,14 @@ export interface WalletTransaction {
   timestamp: string;
   status: 'completed' | 'pending' | 'failed';
 }
+
+export interface Integration {
+  id: string;
+  userId: string;
+  provider: 'google' | 'airbnb' | 'booking' | 'instagram' | 'whatsapp';
+  status: 'connected' | 'expired' | 'error';
+  lastSync?: string;
+  expiresAt?: string;
+  errorCode?: string;
+  metadata?: Record<string, any>;
+}

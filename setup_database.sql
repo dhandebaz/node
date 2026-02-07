@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS public.users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   phone TEXT UNIQUE NOT NULL,
   role TEXT DEFAULT 'customer',
+  onboarding_status TEXT DEFAULT 'pending', -- pending, completed
+  kyc_status TEXT DEFAULT 'none', -- none, pending, verified, rejected
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -57,7 +59,25 @@ CREATE TABLE IF NOT EXISTS public.kaisa_accounts (
   CONSTRAINT kaisa_user_unique UNIQUE (user_id)
 );
 
--- 6. Create Listings Table
+-- 6. Create Integrations Table (NEW)
+CREATE TABLE IF NOT EXISTS public.integrations (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
+  provider TEXT NOT NULL, -- google, airbnb, booking, instagram, whatsapp
+  status TEXT DEFAULT 'connected', -- connected, expired, error
+  access_token TEXT, -- Encrypted in application layer before storage if needed, or RLS protected
+  refresh_token TEXT,
+  scopes TEXT[],
+  last_sync TIMESTAMP WITH TIME ZONE,
+  expires_at TIMESTAMP WITH TIME ZONE,
+  error_code TEXT,
+  metadata JSONB DEFAULT '{}'::jsonb, -- Flexible storage for provider-specific details
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  CONSTRAINT integration_user_provider_unique UNIQUE (user_id, provider)
+);
+
+-- 7. Create Listings Table
 CREATE TABLE IF NOT EXISTS public.listings (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   host_id UUID REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
@@ -118,61 +138,42 @@ CREATE TABLE IF NOT EXISTS public.wallet_transactions (
   timestamp TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 11. Create Admin Audit Logs Table
+-- 12. Create Admin Audit Logs Table (renumbered)
 CREATE TABLE IF NOT EXISTS public.admin_audit_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   admin_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
   target_user_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
-  action TEXT NOT NULL,
+  action_type TEXT NOT NULL,
   details TEXT,
   timestamp TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- Enable Row Level Security (RLS) on all tables
+-- 13. Enable Row Level Security (RLS)
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.datacenters ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.nodes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.kaisa_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.integrations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.listings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.guests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.wallet_transactions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.admin_audit_logs ENABLE ROW LEVEL SECURITY;
 
--- Create Policies
--- Allow Service Role (Server) full access to everything (This is default usually, but good to be explicit if using custom claims)
--- Note: Service Role bypasses RLS automatically in Supabase Client if using Service Role Key.
--- But we need policies for public/anon access if any.
+-- 14. Create Policies (Basic)
+-- Users can read/update their own data
+CREATE POLICY "Users can view own data" ON public.users FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can update own data" ON public.users FOR UPDATE USING (auth.uid() = id);
 
--- Public Read Policies (for client-side fetching if needed)
-DROP POLICY IF EXISTS "Enable read access for all users" ON public.users;
-CREATE POLICY "Enable read access for all users" ON public.users FOR SELECT USING (true);
+-- Integrations policies
+CREATE POLICY "Users can view own integrations" ON public.integrations FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert own integrations" ON public.integrations FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can update own integrations" ON public.integrations FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own integrations" ON public.integrations FOR DELETE USING (auth.uid() = user_id);
 
-DROP POLICY IF EXISTS "Enable read access for all users" ON public.profiles;
-CREATE POLICY "Enable read access for all users" ON public.profiles FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Enable read access for all users" ON public.datacenters;
-CREATE POLICY "Enable read access for all users" ON public.datacenters FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Enable read access for all users" ON public.nodes;
-CREATE POLICY "Enable read access for all users" ON public.nodes FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Enable read access for all users" ON public.listings;
-CREATE POLICY "Enable read access for all users" ON public.listings FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Enable read access for all users" ON public.guests;
-CREATE POLICY "Enable read access for all users" ON public.guests FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Enable read access for all users" ON public.bookings;
-CREATE POLICY "Enable read access for all users" ON public.bookings FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Enable read access for all users" ON public.messages;
-CREATE POLICY "Enable read access for all users" ON public.messages FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Enable read access for all users" ON public.wallet_transactions;
-CREATE POLICY "Enable read access for all users" ON public.wallet_transactions FOR SELECT USING (true);
+-- Listings policies
+CREATE POLICY "Users can view own listings" ON public.listings FOR SELECT USING (auth.uid() = host_id);
 
 -- Insert Policies (Allow server to insert)
 -- Since we are using Service Role Key on server, these are strictly not needed for server actions,

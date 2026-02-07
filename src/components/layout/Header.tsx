@@ -40,7 +40,7 @@ export function Header({ user }: HeaderProps) {
   const userMenuItems = [
     { name: "Dashboard", href: "/dashboard/kaisa", icon: LayoutDashboard },
     { name: "Wallet & Usage", href: "/dashboard/kaisa/wallet", icon: CreditCard },
-    { name: "Integrations", href: "/dashboard/kaisa/integrations", icon: Plug },
+    { name: "Integrations", href: "/dashboard/integrations", icon: Plug },
     { name: "Settings", href: "/dashboard/kaisa/settings", icon: Settings },
   ];
 

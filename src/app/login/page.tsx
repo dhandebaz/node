@@ -10,7 +10,7 @@ import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { loginWithGoogle, sendOTP, verifyOTP, isLoading, error, host, confirmationResult } = useAuthStore();
+  const { sendOTP, verifyOTP, isLoading, error, host, confirmationResult } = useAuthStore();
   const [showSuccess, setShowSuccess] = useState(false);
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
@@ -24,10 +24,6 @@ export default function LoginPage() {
       }, 1500);
     }
   }, [host, isLoading, router]);
-
-  const handleGoogleLogin = async () => {
-    await loginWithGoogle();
-  };
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,97 +86,91 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Google Login - Secondary Option */}
-            <button
-              onClick={handleGoogleLogin}
-              disabled={isLoading}
-              className="w-full flex items-center justify-center gap-3 bg-brand-bone text-brand-deep-red hover:bg-white font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden uppercase tracking-wider text-sm"
-            >
-              {isLoading && !confirmationResult ? (
-                <Loader2 className="w-5 h-5 animate-spin text-brand-deep-red" />
-              ) : (
-                <>
-                  <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
-                  <span>Continue with Google</span>
-                </>
-              )}
-            </button>
-
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-brand-bone/10"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-transparent text-brand-bone/40 uppercase tracking-widest text-xs">or sign in with phone</span>
-              </div>
-            </div>
-            
-            {/* Recaptcha Container - Must persist across steps */}
-            <div id="recaptcha-container"></div>
-
-            {/* Phone OTP Login - Primary Option */}
             {step === 'phone' ? (
               <form onSubmit={handleSendOTP} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-brand-bone/60 mb-2">Phone Number</label>
+                  <label className="block text-brand-bone/60 text-xs font-bold uppercase tracking-wider mb-2">
+                    Mobile Number
+                  </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-bone/40 font-medium">+91</span>
-                    <input 
-                      type="tel" 
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-bone/40 font-medium select-none">
+                      +91
+                    </span>
+                    <input
+                      type="tel"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                      disabled={isLoading}
-                      className="w-full pl-12 pr-4 py-3 bg-brand-bone/5 border border-brand-bone/10 rounded-xl focus:ring-2 focus:ring-brand-bone/20 focus:border-brand-bone/30 outline-none transition-all font-medium text-brand-bone placeholder:text-brand-bone/20"
-                      placeholder="99999 99999"
-                      maxLength={10}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        if (val.length <= 10) setPhone(val);
+                      }}
+                      placeholder="98765 43210"
+                      className="w-full bg-brand-bone/5 border border-brand-bone/10 rounded-xl px-4 pl-12 py-3 text-brand-bone placeholder:text-brand-bone/20 focus:outline-none focus:border-brand-bone/40 transition-colors font-mono tracking-wider"
                       required
                     />
                   </div>
                 </div>
 
-                <button 
+                <button
                   type="submit"
                   disabled={isLoading || phone.length < 10}
-                  className="w-full bg-brand-bone/10 text-brand-bone border border-brand-bone/20 font-bold py-3 px-4 rounded-xl hover:bg-brand-bone hover:text-brand-deep-red transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 uppercase tracking-wider text-sm"
+                  className="w-full bg-brand-bone text-brand-deep-red hover:bg-white font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden uppercase tracking-wider text-sm flex items-center justify-center gap-2"
                 >
-                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send OTP"}
+                  {isLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      Send OTP
+                      <ArrowLeft className="w-4 h-4 rotate-180 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
                 </button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOTP} className="space-y-4">
-                 <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-brand-bone/60">Enter OTP</label>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-brand-bone/60 text-xs font-bold uppercase tracking-wider">
+                      Enter OTP
+                    </label>
                     <button 
-                      type="button" 
+                      type="button"
                       onClick={() => setStep('phone')}
-                      className="text-xs text-brand-bone/60 hover:text-brand-bone hover:underline uppercase tracking-wider"
+                      className="text-xs text-brand-bone/40 hover:text-brand-bone transition-colors"
                     >
                       Change Number
                     </button>
                   </div>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    disabled={isLoading}
-                    className="w-full px-4 py-3 bg-brand-bone/5 border border-brand-bone/10 rounded-xl focus:ring-2 focus:ring-brand-bone/20 focus:border-brand-bone/30 outline-none transition-all text-center text-2xl tracking-[0.5em] font-mono text-brand-bone placeholder:text-brand-bone/20"
-                    placeholder="000000"
-                    maxLength={6}
-                    required
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '');
+                      if (val.length <= 6) setOtp(val);
+                    }}
+                    placeholder="• • • • • •"
+                    className="w-full bg-brand-bone/5 border border-brand-bone/10 rounded-xl px-4 py-3 text-center text-2xl tracking-[0.5em] text-brand-bone placeholder:text-brand-bone/20 focus:outline-none focus:border-brand-bone/40 transition-colors font-mono"
                     autoFocus
                   />
                 </div>
-                <button 
+
+                <button
                   type="submit"
                   disabled={isLoading || otp.length < 6}
-                  className="w-full bg-brand-bone/10 text-brand-bone border border-brand-bone/20 font-bold py-3 px-4 rounded-xl hover:bg-brand-bone hover:text-brand-deep-red transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 uppercase tracking-wider text-sm"
+                  className="w-full bg-brand-bone text-brand-deep-red hover:bg-white font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden uppercase tracking-wider text-sm flex items-center justify-center gap-2"
                 >
-                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify & Login"}
+                  {isLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      Verify & Login
+                      <ArrowLeft className="w-4 h-4 rotate-180 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
                 </button>
               </form>
             )}
 
+            <div id="recaptcha-container"></div>
           </div>
 
           <div className="mt-8 text-center text-[10px] uppercase tracking-widest text-brand-bone/30">

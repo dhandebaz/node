@@ -31,6 +31,7 @@ export interface KYCDocument {
 export interface UserStatus {
   account: AccountStatus;
   kyc: KYCStatus;
+  onboarding: "pending" | "completed";
   kycDocuments?: KYCDocument[];
 }
 
