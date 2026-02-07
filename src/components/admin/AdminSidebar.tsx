@@ -7,12 +7,13 @@ import { adminLogoutAction } from "@/app/actions/auth";
 import { 
   LayoutDashboard, 
   Users, 
-  Server, 
   Cpu, 
-  Database, 
+  DollarSign,
+  Wallet,
+  Plug,
   FileText, 
   Settings, 
-  Activity,
+  ShieldCheck,
   LogOut,
   Menu,
   X
@@ -21,15 +22,15 @@ import { useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 
 const navItems = [
-  { name: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Users", href: "/admin/users", icon: Users },
-  { name: "Data Centers", href: "/admin/datacenters", icon: Server },
-  { name: "Nodebase Core", href: "/admin/kaisa", icon: Cpu },
-  { name: "Space", href: "/admin/space", icon: Database },
-  { name: "Nodes", href: "/admin/nodes", icon: Server },
-  { name: "Content", href: "/admin/content", icon: FileText },
+  { name: "Overview", href: "/admin/overview", icon: LayoutDashboard },
+  { name: "AI Managers", href: "/admin/ai-managers", icon: Cpu },
+  { name: "AI Rules", href: "/admin/ai-rules", icon: ShieldCheck },
+  { name: "Pricing & Costs", href: "/admin/pricing", icon: DollarSign },
+  { name: "Customers", href: "/admin/customers", icon: Users },
+  { name: "Usage & Wallets", href: "/admin/usage", icon: Wallet },
+  { name: "Integrations Health", href: "/admin/integrations", icon: Plug },
+  { name: "System Logs", href: "/admin/logs", icon: FileText },
   { name: "Settings", href: "/admin/settings", icon: Settings },
-  { name: "Audit Logs", href: "/admin/logs", icon: Activity },
 ];
 
 export function AdminSidebar() {

@@ -29,9 +29,9 @@ export function MobileBottomNav() {
     },
     {
       name: "Wallet",
-      href: "/dashboard/kaisa/wallet",
+      href: "/dashboard/billing",
       icon: CreditCard,
-      isActive: (path: string) => path.startsWith("/dashboard/kaisa/wallet"),
+      isActive: (path: string) => path.startsWith("/dashboard/billing"),
     },
     {
       name: "More",

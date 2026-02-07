@@ -20,7 +20,7 @@ export default function GlobalError({
 }) {
   return (
     <html lang="en">
-      <body className={`${alfaSlabOne.variable} font-sans antialiased min-h-screen flex flex-col items-center justify-center text-center p-6 bg-[#D6001C] text-white`}>
+      <body className={`${alfaSlabOne.className} ${alfaSlabOne.variable} antialiased min-h-screen flex flex-col items-center justify-center text-center p-6 bg-[#D6001C] text-white`}>
         <div className="max-w-md w-full relative z-10">
           <div className="w-24 h-24 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/20 backdrop-blur-sm">
             <AlertTriangle className="w-12 h-12 text-white" />

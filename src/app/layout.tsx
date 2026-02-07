@@ -30,7 +30,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${alfaSlabOne.variable} font-sans antialiased min-h-screen flex flex-col`}
+        className={`${alfaSlabOne.className} ${alfaSlabOne.variable} antialiased min-h-screen flex flex-col`}
       >
         <Providers>
           <FirebaseAnalytics 

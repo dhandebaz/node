@@ -11,7 +11,9 @@ import {
   Building,
   Plug,
   ShieldCheck,
-  LayoutGrid
+  LayoutGrid,
+  SlidersHorizontal,
+  Activity
 } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -31,6 +33,8 @@ export default function MorePage() {
       section: "Business",
       items: [
         { icon: LayoutGrid, label: "Listings", href: "/dashboard/kaisa/listings" }, 
+        { icon: SlidersHorizontal, label: "AI Settings", href: "/dashboard/ai-settings" },
+        { icon: Activity, label: "AI Activity", href: "/dashboard/ai-activity" },
         { icon: Plug, label: "Integrations", href: "/dashboard/integrations" },
         { icon: CreditCard, label: "Billing & Invoices", href: "/dashboard/billing" },
       ]

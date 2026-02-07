@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/Logo";
 import { useAuthStore } from "@/store/useAuthStore";
 import { User } from "@/types/user";
-import { Menu, X, User as UserIcon, LogOut, LayoutDashboard, CreditCard, Settings, Plug, ChevronDown } from "lucide-react";
+import { Menu, X, User as UserIcon, LogOut, LayoutDashboard, CreditCard, Settings, Plug } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface HeaderProps {
@@ -37,6 +37,14 @@ export function Header({ user }: HeaderProps) {
     { name: "Node", href: "/node" },
   ];
 
+  const employeesMenuItems = [
+    { name: "Overview", href: "/employees" },
+    { name: "Host AI", href: "/employees/host-ai" },
+    { name: "Nurse AI", href: "/employees/nurse-ai" },
+    { name: "Dukan AI", href: "/employees/dukan-ai" },
+    { name: "Thrift AI", href: "/employees/thrift-ai" },
+  ];
+
   const userMenuItems = [
     { name: "Dashboard", href: "/dashboard/kaisa", icon: LayoutDashboard },
     { name: "Wallet & Usage", href: "/dashboard/kaisa/wallet", icon: CreditCard },
@@ -62,7 +70,7 @@ export function Header({ user }: HeaderProps) {
               className={cn(
                 "text-sm font-medium tracking-wide transition-opacity duration-200 text-white",
                 pathname.startsWith(item.href)
-                  ? "opacity-100 border-b border-white" 
+                  ? "opacity-100 border-b border-white"
                   : "opacity-70 hover:opacity-100"
               )}
             >
@@ -147,6 +155,27 @@ export function Header({ user }: HeaderProps) {
         </div>
       </div>
 
+      {pathname.startsWith("/employees") && (
+        <div className="w-full border-t border-white/10 bg-[var(--color-brand-red)]">
+          <div className="max-w-7xl mx-auto px-6 overflow-x-auto no-scrollbar">
+            <nav className="flex items-center gap-8 h-12 min-w-max">
+              {employeesMenuItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-xs font-bold uppercase tracking-widest transition-colors relative h-full flex items-center",
+                    pathname === item.href ? "text-white opacity-100" : "text-white opacity-50 hover:opacity-100"
+                  )}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
@@ -157,6 +186,20 @@ export function Header({ user }: HeaderProps) {
             className="md:hidden bg-[var(--color-brand-red)] border-b border-white/10 overflow-hidden"
           >
              <nav className="flex flex-col p-6 gap-4">
+              <div className="text-xs font-bold uppercase tracking-widest text-white/60">
+                AI Employees
+              </div>
+              {employeesMenuItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-lg font-medium text-white/90 hover:text-white"
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <div className="border-t border-white/10 my-2" />
               {navItems.map((item) => (
                 <Link
                   key={item.href}
