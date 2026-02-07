@@ -24,6 +24,7 @@ export interface Booking {
   id: string;
   listingId: string;
   guestId: string;
+  guestName?: string; // Optional guest name for UI display
   startDate: string; // ISO Date string
   endDate: string; // ISO Date string
   status: 'pending' | 'confirmed' | 'blocked' | 'cancelled';
@@ -41,6 +42,7 @@ export interface Guest {
 export interface Message {
   id: string;
   guestId: string;
+  guestName?: string; // Optional guest name for UI display
   listingId: string;
   channel: 'airbnb' | 'booking' | 'whatsapp' | 'sms';
   direction: 'inbound' | 'outbound';
