@@ -143,6 +143,7 @@ function mapDbUserToAppUser(dbUser: any): User {
     status: {
       account: "active", // Default
       kyc: "pending",   // Default
+      onboarding: dbUser.onboarding_status === 'completed' ? 'completed' : 'pending',
     },
     roles: {
       isKaisaUser: isKaisaUser,
