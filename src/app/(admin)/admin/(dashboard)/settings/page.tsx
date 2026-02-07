@@ -10,7 +10,6 @@ import { getAppSettingsAction, getSettingsAuditLogsAction } from "@/app/actions/
 import { AuthSettingsPanel } from "@/components/admin/settings/AuthSettings";
 import { IntegrationSettingsPanel } from "@/components/admin/settings/IntegrationSettings";
 import { FeatureFlagSettings } from "@/components/admin/settings/FeatureFlagSettings";
-import { EnvironmentSettingsPanel } from "@/components/admin/settings/EnvironmentSettings";
 import { NotificationSettingsPanel } from "@/components/admin/settings/NotificationSettings";
 import { SecuritySettingsPanel } from "@/components/admin/settings/SecuritySettings";
 import { ApiSettingsPanel } from "@/components/admin/settings/ApiSettings";
@@ -59,7 +58,7 @@ export default function AppSettingsPage() {
         {/* Left Column */}
         <div className="space-y-6">
           <AuthSettingsPanel settings={settings.auth} />
-          <EnvironmentSettingsPanel settings={settings.platform} />
+          {/* Removed EnvironmentSettingsPanel as it contained mock switches */}
           <SecuritySettingsPanel settings={settings.security} />
         </div>
 
