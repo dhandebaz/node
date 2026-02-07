@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const body = await request.json();
     const { status } = body || {};
@@ -10,10 +10,11 @@ export async function POST(request: Request, { params }: { params: { id: string 
     }
 
     const supabase = await getSupabaseServer();
+    const { id } = await params;
     const { error } = await supabase
       .from("kaisa_accounts")
       .update({ status })
-      .eq("user_id", params.id);
+      .eq("user_id", id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

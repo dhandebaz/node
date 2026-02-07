@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const body = await request.json();
     const { amount, reason } = body || {};
@@ -10,10 +10,11 @@ export async function POST(request: Request, { params }: { params: { id: string 
     }
 
     const supabase = await getSupabaseServer();
+    const { id } = await params;
     const { data: account, error: accountError } = await supabase
       .from("kaisa_accounts")
       .select("wallet_balance")
-      .eq("user_id", params.id)
+      .eq("user_id", id)
       .single();
 
     if (accountError || !account) {
@@ -27,14 +28,14 @@ export async function POST(request: Request, { params }: { params: { id: string 
     const { error: updateError } = await supabase
       .from("kaisa_accounts")
       .update({ wallet_balance: nextBalance })
-      .eq("user_id", params.id);
+      .eq("user_id", id);
 
     if (updateError) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
 
     const { error: transactionError } = await supabase.from("wallet_transactions").insert({
-      host_id: params.id,
+      host_id: id,
       type,
       amount: Math.abs(amount),
       reason: reason || "Admin adjustment",
