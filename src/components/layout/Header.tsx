@@ -6,16 +6,30 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/Logo";
 import { useAuthStore } from "@/store/useAuthStore";
+import { User } from "@/types/user";
 import { Menu, X, User as UserIcon, LogOut, LayoutDashboard, CreditCard, Settings, Plug, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export function Header() {
+interface HeaderProps {
+  user?: User | null;
+}
+
+export function Header({ user }: HeaderProps) {
   const pathname = usePathname();
   const { host, logout } = useAuthStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const isLoggedIn = !!host;
+  // Derive display user from either client store (host) or server prop (user)
+  const displayUser = host ? {
+    name: host.name,
+    email: host.email
+  } : user ? {
+    name: user.profile?.fullName || "User",
+    email: user.identity.email
+  } : null;
+
+  const isLoggedIn = !!displayUser;
 
   const navItems = [
     { name: "AI Employees", href: "/employees" },
@@ -89,8 +103,8 @@ export function Header() {
                     onMouseLeave={() => setUserMenuOpen(false)}
                   >
                     <div className="px-4 py-3 border-b border-gray-100 mb-1">
-                      <p className="text-sm font-bold text-gray-900">{host?.name}</p>
-                      <p className="text-xs text-gray-500 truncate">{host?.email}</p>
+                      <p className="text-sm font-bold text-gray-900">{displayUser?.name}</p>
+                      <p className="text-xs text-gray-500 truncate">{displayUser?.email}</p>
                     </div>
                     
                     {userMenuItems.map((item) => (
