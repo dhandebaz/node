@@ -48,6 +48,7 @@ export interface Message {
   direction: 'inbound' | 'outbound';
   content: string;
   timestamp: string; // ISO Date string
+  read: boolean;
 }
 
 export interface WalletTransaction {
