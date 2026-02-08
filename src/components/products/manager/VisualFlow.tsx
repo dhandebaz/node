@@ -7,7 +7,7 @@ import { paymentsApi } from "@/lib/api/payments";
 import { listingsApi } from "@/lib/api/listings";
 import { guestsApi } from "@/lib/api/guests";
 import { Message, Booking } from "@/types";
-import { Loader2, CheckCircle, AlertCircle, MessageSquare, CreditCard, Calendar, UserCheck } from "lucide-react";
+import { Loader2, CheckCircle, AlertCircle, MessageSquare, CreditCard, Calendar, UserCheck, BrainCircuit as BrainCircuitIcon } from "lucide-react";
 
 export function VisualFlow() {
   const [step, setStep] = useState(0);
