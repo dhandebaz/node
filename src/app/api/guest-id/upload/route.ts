@@ -31,13 +31,15 @@ export async function GET(request: NextRequest) {
       .eq("id", record.booking_id)
       .maybeSingle();
 
+    const listing = Array.isArray(booking?.listings) ? booking?.listings?.[0] : booking?.listings;
+
     return NextResponse.json({
       id: record.id,
       bookingId: record.booking_id,
       guestName: record.guest_name,
       idType: record.id_type,
       status: record.status,
-      listingName: booking?.listings?.name || booking?.listings?.title || "Property",
+      listingName: listing?.name || listing?.title || "Property",
       checkIn: booking?.start_date,
       checkOut: booking?.end_date
     });
