@@ -63,11 +63,14 @@ export async function GET() {
     .select("id, guest_contact, guests(name, phone, email), listings!inner(host_id)")
     .eq("listings.host_id", user.id);
 
-  const normalizedBookings = (bookingRows || []).map((booking: any) => ({
-    id: booking.id,
-    guestName: booking.guests?.name || "",
-    guestPhone: booking.guest_contact || booking.guests?.phone || booking.guests?.email || ""
-  }));
+  const normalizedBookings = (bookingRows || []).map((booking: any) => {
+    const guest = Array.isArray(booking.guests) ? booking.guests[0] : booking.guests;
+    return {
+      id: booking.id,
+      guestName: guest?.name || "",
+      guestPhone: booking.guest_contact || guest?.phone || guest?.email || ""
+    };
+  });
 
   const withBooking = conversations.map((conversation) => {
     const match = normalizedBookings.find(

@@ -39,17 +39,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const formattedBookings = bookings.map((b: any) => ({
-    id: b.id,
-    listingId: b.listing_id,
-    guestId: b.guest_id,
-    guestName: b.guests?.name || 'Unknown Guest',
-    startDate: b.start_date,
-    endDate: b.end_date,
-    status: b.status,
-    idStatus: b.id_status || 'not_requested',
-    source: b.source,
-  }));
+  const formattedBookings = bookings.map((b: any) => {
+    const guest = Array.isArray(b.guests) ? b.guests[0] : b.guests;
+    return {
+      id: b.id,
+      listingId: b.listing_id,
+      guestId: b.guest_id,
+      guestName: guest?.name || 'Unknown Guest',
+      startDate: b.start_date,
+      endDate: b.end_date,
+      status: b.status,
+      idStatus: b.id_status || 'not_requested',
+      source: b.source,
+    };
+  });
 
   return NextResponse.json(formattedBookings);
 }

@@ -35,17 +35,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const formattedMessages = messages.map((m: any) => ({
-    id: m.id,
-    guestId: m.guest_id,
-    guestName: m.guests?.name || 'Unknown Guest',
-    listingId: m.listing_id,
-    channel: m.channel,
-    direction: m.direction,
-    content: m.content,
-    timestamp: m.timestamp,
-    read: m.is_read,
-  }));
+  const formattedMessages = messages.map((m: any) => {
+    const guest = Array.isArray(m.guests) ? m.guests[0] : m.guests;
+    return {
+      id: m.id,
+      guestId: m.guest_id,
+      guestName: guest?.name || 'Unknown Guest',
+      listingId: m.listing_id,
+      channel: m.channel,
+      direction: m.direction,
+      content: m.content,
+      timestamp: m.timestamp,
+      read: m.is_read,
+    };
+  });
 
   return NextResponse.json(formattedMessages);
 }

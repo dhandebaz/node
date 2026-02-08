@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = await getSupabaseServer();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -40,7 +40,8 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
       .update({ id_status: "approved" })
       .eq("id", guestId.booking_id);
 
-    const guestIdValue = guestId.bookings?.guest_id;
+    const booking = Array.isArray(guestId.bookings) ? guestId.bookings[0] : guestId.bookings;
+    const guestIdValue = booking?.guest_id;
     if (guestIdValue) {
       await supabase
         .from("guests")

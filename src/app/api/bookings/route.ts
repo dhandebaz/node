@@ -19,20 +19,23 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const formatted = (bookings || []).map((b: any) => ({
-      id: b.id,
-      listing_id: b.listing_id,
-      guest_name: b.guests?.name || "Guest",
-      guest_contact: b.guest_contact || b.guests?.phone || b.guests?.email || null,
-      check_in: b.start_date,
-      check_out: b.end_date,
-      amount: Number(b.amount || 0),
-      status: b.status,
-      id_status: b.id_status,
-      payment_id: b.payment_id || null,
-      created_at: b.created_at,
-      source: b.source || "direct"
-    }));
+    const formatted = (bookings || []).map((b: any) => {
+      const guest = Array.isArray(b.guests) ? b.guests[0] : b.guests;
+      return {
+        id: b.id,
+        listing_id: b.listing_id,
+        guest_name: guest?.name || "Guest",
+        guest_contact: b.guest_contact || guest?.phone || guest?.email || null,
+        check_in: b.start_date,
+        check_out: b.end_date,
+        amount: Number(b.amount || 0),
+        status: b.status,
+        id_status: b.id_status,
+        payment_id: b.payment_id || null,
+        created_at: b.created_at,
+        source: b.source || "direct"
+      };
+    });
 
     return NextResponse.json(formatted);
   } catch (error: any) {

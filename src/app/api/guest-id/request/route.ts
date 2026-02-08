@@ -42,7 +42,8 @@ export async function POST(request: NextRequest) {
     }
 
     const uploadToken = randomUUID();
-    const guestName = booking.guests?.name || "Guest";
+    const guest = Array.isArray(booking.guests) ? booking.guests[0] : booking.guests;
+    const guestName = guest?.name || "Guest";
     const { data: existing } = await supabase
       .from("guest_ids")
       .select("id")
