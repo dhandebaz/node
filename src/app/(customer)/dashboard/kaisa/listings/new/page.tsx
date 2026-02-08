@@ -48,17 +48,16 @@ export default function AddListingPage() {
       setMessage("Property name and city are required.");
       return;
     }
+    const integrations: ListingIntegration[] = platforms.map((platform) => ({
+      listingId,
+      platform,
+      externalIcalUrl: externalIcalUrls[platform] || null,
+      lastSyncedAt: null,
+      status: externalIcalUrls[platform] ? "connected" : "not_connected"
+    }));
     try {
       setSaving(true);
       setMessage(null);
-      const integrations: ListingIntegration[] = platforms.map((platform) => ({
-        listingId,
-        platform,
-        externalIcalUrl: externalIcalUrls[platform] || null,
-        lastSyncedAt: null,
-        status: externalIcalUrls[platform] ? "connected" : "not_connected"
-      }));
-
       const payload = {
         listing: {
           id: listingId,
