@@ -40,10 +40,7 @@ apiClient.interceptors.response.use(
         if (!token) {
           throw new SessionExpiredError();
         }
-        config.headers = {
-          ...config.headers,
-          Authorization: `Bearer ${token}`
-        };
+        config.headers['Authorization'] = `Bearer ${token}`;
         return apiClient(config);
       } catch {
         return Promise.reject(new SessionExpiredError());
