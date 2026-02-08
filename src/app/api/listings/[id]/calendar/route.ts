@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSession } from "@/lib/auth/session";
 
@@ -9,13 +9,13 @@ const getBaseUrl = (request: Request) => {
   return `${protocol}://${host}`;
 };
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
   if (!session?.userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const listingId = params.id;
+  const { id: listingId } = await params;
   const supabase = await getSupabaseServer();
 
   const { data: listing, error } = await supabase

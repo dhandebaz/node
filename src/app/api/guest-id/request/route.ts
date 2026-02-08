@@ -93,10 +93,22 @@ export async function POST(request: NextRequest) {
 
     const baseUrl = getBaseUrl(request);
     const uploadUrl = `${baseUrl}/guest-id/${uploadToken}`;
+    const idLabel = idType === "aadhaar"
+      ? "Aadhaar"
+      : idType === "passport"
+        ? "Passport"
+        : idType === "driving_license"
+          ? "Driving License"
+          : idType === "voter_id"
+            ? "Voter ID"
+            : "government ID";
+    const message = body?.message?.toString().trim()
+      || `Hi ${guestName}, to complete check-in compliance, please upload your ${idLabel} here: ${uploadUrl}. Thank you.`;
 
     return NextResponse.json({
       bookingId,
-      uploadUrl
+      uploadUrl,
+      message
     });
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || "Failed to request ID" }, { status: 500 });

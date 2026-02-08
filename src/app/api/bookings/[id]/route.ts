@@ -12,7 +12,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     const { id } = await params;
     const { data: booking, error } = await supabase
       .from("bookings")
-      .select("id, listing_id, guest_id, start_date, end_date, status, source, amount, guest_contact, payment_id, created_at, guests(name, phone, email), listings!inner(host_id)")
+      .select("id, listing_id, guest_id, start_date, end_date, status, id_status, source, amount, guest_contact, payment_id, created_at, guests(name, phone, email), listings!inner(host_id)")
       .eq("id", id)
       .eq("listings.host_id", user.id)
       .maybeSingle();
@@ -41,6 +41,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
         check_out: booking.end_date,
         amount: Number(booking.amount || 0),
         status: booking.status,
+        id_status: booking.id_status,
         payment_id: booking.payment_id || null,
         created_at: booking.created_at,
         source: booking.source || "direct"

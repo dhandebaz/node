@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchWithAuth } from "@/lib/api/fetcher";
 import { paymentsApi } from "@/lib/api/payments";
 import { BookingRecord, PaymentRecord } from "@/types";
-import { Calendar, ExternalLink, Loader2, Plus, X } from "lucide-react";
+import { Calendar, ExternalLink, Loader2, Plus, X, ShieldCheck, ShieldAlert, Shield } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -42,6 +42,18 @@ export default function BookingsPage() {
   const [paymentMessage, setPaymentMessage] = useState("");
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [idRecord, setIdRecord] = useState<any | null>(null);
+  const [idLoading, setIdLoading] = useState(false);
+  const [requestingId, setRequestingId] = useState(false);
+  const [idMessage, setIdMessage] = useState<string | null>(null);
+  const [idRequestMessage, setIdRequestMessage] = useState<string | null>(null);
+  const [showIdModal, setShowIdModal] = useState(false);
+  const [idType, setIdType] = useState<"aadhaar" | "passport" | "driving_license" | "voter_id" | "any">("aadhaar");
+  const [idNote, setIdNote] = useState("");
+  const [idUploadUrl, setIdUploadUrl] = useState<string | null>(null);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [blurred, setBlurred] = useState(true);
 
   const loadBookings = async () => {
     try {
@@ -68,6 +80,18 @@ export default function BookingsPage() {
       setDetailLoading(true);
       const data = await fetchWithAuth<BookingDetail>(`/api/bookings/${id}`);
       setDetail(data);
+      setIdRecord(null);
+      setIdUploadUrl(null);
+      setBlurred(true);
+      setIdMessage(null);
+      setIdRequestMessage(null);
+      setRejectReason("");
+      if (data?.booking?.id) {
+        setIdLoading(true);
+        const idData = await fetchWithAuth(`/api/guest-id/${data.booking.id}`).catch(() => null);
+        setIdRecord(idData);
+        setIdLoading(false);
+      }
     } catch {
       setDetail(null);
     } finally {
@@ -164,6 +188,75 @@ export default function BookingsPage() {
     await loadDetail(detail.booking.id);
   };
 
+  const idStatusLabel = (status?: string | null) => {
+    if (!status || status === "not_requested") return "Not requested";
+    if (status === "requested") return "Requested";
+    if (status === "submitted") return "Submitted";
+    if (status === "approved") return "Approved";
+    if (status === "rejected") return "Rejected";
+    return status;
+  };
+
+  const idStatusIcon = (status?: string | null) => {
+    if (status === "approved") return ShieldCheck;
+    if (status === "rejected") return ShieldAlert;
+    if (status === "submitted") return Shield;
+    return Shield;
+  };
+
+  const requestGuestId = async () => {
+    if (!detail?.booking?.id) return;
+    try {
+      setRequestingId(true);
+      setIdMessage(null);
+      const response = await fetchWithAuth<{ bookingId: string; uploadUrl: string; message: string }>("/api/guest-id/request", {
+        method: "POST",
+        body: JSON.stringify({
+          bookingId: detail.booking.id,
+          idType,
+          message: idNote.trim() || null
+        })
+      });
+      setIdUploadUrl(response.uploadUrl);
+      setIdRequestMessage(response.message);
+      setIdMessage("Upload link generated. Share with the guest.");
+      await loadBookings();
+      await loadDetail(detail.booking.id);
+    } catch (error: any) {
+      setIdMessage(error?.message || "Failed to request ID.");
+    } finally {
+      setRequestingId(false);
+    }
+  };
+
+  const approveGuestId = async () => {
+    if (!idRecord?.id || !detail?.booking?.id) return;
+    try {
+      setReviewLoading(true);
+      await fetchWithAuth(`/api/guest-id/approve/${idRecord.id}`, { method: "POST" });
+      await loadBookings();
+      await loadDetail(detail.booking.id);
+    } finally {
+      setReviewLoading(false);
+    }
+  };
+
+  const rejectGuestId = async () => {
+    if (!idRecord?.id || !detail?.booking?.id) return;
+    try {
+      setReviewLoading(true);
+      await fetchWithAuth(`/api/guest-id/reject/${idRecord.id}`, {
+        method: "POST",
+        body: JSON.stringify({ reason: rejectReason.trim() || "Please upload a clearer ID image." })
+      });
+      setRejectReason("");
+      await loadBookings();
+      await loadDetail(detail.booking.id);
+    } finally {
+      setReviewLoading(false);
+    }
+  };
+
   const formatDate = (value: string) => format(parseISO(value), "d MMM yyyy");
 
   return (
@@ -235,6 +328,9 @@ export default function BookingsPage() {
                       <div className="text-sm font-semibold text-white">₹{Number(booking.amount || 0).toLocaleString("en-IN")}</div>
                       <div className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${statusMeta.badge}`}>
                         {statusMeta.label}
+                      </div>
+                      <div className="text-[10px] text-white/50 uppercase tracking-wider">
+                        ID {idStatusLabel(booking.id_status)}
                       </div>
                       <div className="text-[10px] text-white/40 uppercase tracking-wider">{booking.source || "direct"}</div>
                     </div>
@@ -315,6 +411,91 @@ export default function BookingsPage() {
                 >
                   Cancel booking
                 </button>
+              </div>
+
+              <div className="bg-white/5 border border-white/10 rounded-lg p-3 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-white/40">ID Verification</div>
+                    <div className="text-sm text-white">
+                      {idStatusLabel((detail.booking as any).id_status)}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowIdModal(true)}
+                    className="text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 text-white/80 hover:border-white/50"
+                  >
+                    Request ID
+                  </button>
+                </div>
+
+                {idLoading && (
+                  <div className="text-xs text-white/50 flex items-center gap-2">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    Loading ID...
+                  </div>
+                )}
+
+                {idRecord && (
+                  <div className="space-y-2">
+                    <div className="text-xs text-white/50">Type: {idRecord.id_type}</div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="relative border border-white/10 rounded-lg overflow-hidden">
+                        <img
+                          src={`/api/guest-id/${idRecord.id}/image?side=front`}
+                          alt="Front ID"
+                          className={cn("w-full h-40 object-cover", blurred && "blur-sm")}
+                        />
+                      </div>
+                      <div className="relative border border-white/10 rounded-lg overflow-hidden">
+                        {idRecord.back_image_path ? (
+                          <img
+                            src={`/api/guest-id/${idRecord.id}/image?side=back`}
+                            alt="Back ID"
+                            className={cn("w-full h-40 object-cover", blurred && "blur-sm")}
+                          />
+                        ) : (
+                          <div className="min-h-[160px] bg-black/20 flex items-center justify-center text-xs text-white/40">
+                            Back image not provided
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={() => setBlurred((b) => !b)}
+                        className="text-xs px-3 py-1.5 rounded-full border border-white/20 text-white/80"
+                      >
+                        {blurred ? "View ID" : "Hide ID"}
+                      </button>
+                      <button
+                        onClick={approveGuestId}
+                        disabled={reviewLoading}
+                        className="text-xs px-3 py-1.5 rounded-full bg-white text-black font-semibold disabled:opacity-60"
+                      >
+                        {reviewLoading ? "Approving..." : "Approve"}
+                      </button>
+                      <div className="flex items-center gap-2">
+                        <input
+                          value={rejectReason}
+                          onChange={(e) => setRejectReason(e.target.value)}
+                          className="text-xs bg-white/5 border border-white/10 rounded px-2 py-1 text-white"
+                          placeholder="Reason for rejection"
+                        />
+                        <button
+                          onClick={rejectGuestId}
+                          disabled={reviewLoading}
+                          className="text-xs px-3 py-1.5 rounded-full border border-red-400/30 text-red-300 disabled:opacity-60"
+                        >
+                          {reviewLoading ? "Rejecting..." : "Reject"}
+                        </button>
+                      </div>
+                      {idRecord.rejection_reason && (
+                        <div className="text-[10px] text-white/40">Last rejection: {idRecord.rejection_reason}</div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -468,6 +649,70 @@ export default function BookingsPage() {
                   className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg text-xs font-semibold disabled:opacity-60"
                 >
                   {paymentLoading ? "Generating..." : paymentLink ? "Generate again" : "Generate payment link"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showIdModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden">
+            <div className="p-4 border-b border-white/10 flex items-center justify-between">
+              <div className="text-sm font-semibold text-white">Request ID</div>
+              <button onClick={() => setShowIdModal(false)} className="p-2 hover:bg-white/5 rounded-full text-white/60">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-4 space-y-3">
+              <div>
+                <div className="text-xs text-white/40 mb-1">ID Type</div>
+                <select
+                  value={idType}
+                  onChange={(e) => setIdType(e.target.value as any)}
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                >
+                  <option value="aadhaar">Aadhaar</option>
+                  <option value="passport">Passport</option>
+                  <option value="driving_license">Driving License</option>
+                  <option value="voter_id">Voter ID</option>
+                  <option value="any">Any Govt ID</option>
+                </select>
+              </div>
+              <div>
+                <div className="text-xs text-white/40 mb-1">Message (optional)</div>
+                <textarea
+                  value={idNote}
+                  onChange={(e) => setIdNote(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
+                  placeholder="Hi! Please upload a government-issued ID to complete check-in compliance."
+                />
+              </div>
+              {idUploadUrl && (
+                <div className="text-xs text-white/60 break-all">
+                  Upload link: {idUploadUrl}
+                </div>
+              )}
+              {idRequestMessage && (
+                <div className="text-xs text-white/60 break-all">
+                  Message: {idRequestMessage}
+                </div>
+              )}
+              {idMessage && <div className="text-xs text-white/60">{idMessage}</div>}
+            </div>
+            <div className="p-4 border-t border-white/10 flex items-center justify-between">
+              <div className="text-[10px] text-white/40">Nodebase will store IDs securely.</div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setShowIdModal(false)} className="px-3 py-1.5 text-xs text-white/60 hover:text-white">
+                  Close
+                </button>
+                <button
+                  onClick={requestGuestId}
+                  disabled={requestingId}
+                  className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg text-xs font-semibold disabled:opacity-60"
+                >
+                  {requestingId ? "Generating..." : "Generate link"}
                 </button>
               </div>
             </div>

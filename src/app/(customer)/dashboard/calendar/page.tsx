@@ -317,6 +317,11 @@ export default function CalendarPage() {
                   )}>
                     {format(day, 'd')}
                   </span>
+                  <div className="absolute top-1 right-1 flex gap-1">
+                    {dayBookings.some(b => (b as any).idStatus && (b as any).idStatus !== "approved") && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400" title="ID pending" />
+                    )}
+                  </div>
                   <div className="flex flex-col gap-1">
                     {dayBookings.map(b => (
                       <div key={b.id} className={cn(

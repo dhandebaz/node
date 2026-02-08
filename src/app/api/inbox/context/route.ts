@@ -86,8 +86,41 @@ export async function GET(request: NextRequest) {
     }
 
     const conversationId = request.nextUrl.searchParams.get("conversationId");
+    const bookingIdParam = request.nextUrl.searchParams.get("bookingId");
     if (!conversationId) {
       return NextResponse.json({ error: "Missing conversationId" }, { status: 400 });
+    }
+
+    if (bookingIdParam || conversationId.startsWith("booking-")) {
+      const bookingId = bookingIdParam || conversationId.replace("booking-", "");
+      const { data: booking, error: bookingError } = await supabase
+        .from("bookings")
+        .select("id, id_status, start_date, end_date, guests(name), listings(name)")
+        .eq("id", bookingId)
+        .maybeSingle();
+
+      if (bookingError || !booking) {
+        return NextResponse.json(null);
+      }
+
+      const idStatus = booking.id_status || "not_requested";
+      const fields = [
+        { label: "Listing", value: booking.listings?.name || "Property" },
+        { label: "Dates", value: `${new Date(booking.start_date).toLocaleDateString("en-IN")} → ${new Date(booking.end_date).toLocaleDateString("en-IN")}` },
+        { label: "ID Status", value: idStatus.replace("_", " "), tone: idStatus === "approved" ? "good" : idStatus === "rejected" ? "bad" : "warn" }
+      ];
+
+      return NextResponse.json({
+        role: "Host AI",
+        managerName: "Host AI",
+        status: "active",
+        updatedAt: new Date().toISOString(),
+        fields,
+        quickActions: [
+          { id: "send-payment", label: "Send payment link", variant: "primary", action: "send_payment_link" },
+          { id: "request-id", label: "Request ID", variant: "secondary", action: "request_id" }
+        ]
+      });
     }
 
     return NextResponse.json(contextMap[conversationId] || null);

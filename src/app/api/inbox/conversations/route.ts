@@ -58,8 +58,31 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { data: bookingRows } = await supabase
+    .from("bookings")
+    .select("id, guest_contact, guests(name, phone, email), listings!inner(host_id)")
+    .eq("listings.host_id", user.id);
+
+  const normalizedBookings = (bookingRows || []).map((booking: any) => ({
+    id: booking.id,
+    guestName: booking.guests?.name || "",
+    guestPhone: booking.guest_contact || booking.guests?.phone || booking.guests?.email || ""
+  }));
+
+  const withBooking = conversations.map((conversation) => {
+    const match = normalizedBookings.find(
+      (booking) =>
+        (conversation.customerPhone && booking.guestPhone && booking.guestPhone.includes(conversation.customerPhone)) ||
+        (conversation.customerName && booking.guestName && booking.guestName === conversation.customerName)
+    );
+    return {
+      ...conversation,
+      bookingId: match?.id || null
+    };
+  });
+
   return NextResponse.json({
-    conversations,
+    conversations: withBooking,
     meta: {
       walletStatus: "healthy",
       integrationStatus: "connected",

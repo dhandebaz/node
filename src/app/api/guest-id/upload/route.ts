@@ -1,26 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { randomUUID } from "crypto";
-import { promises as fs } from "fs";
-import path from "path";
-
-const resolveUploadsDir = () => path.join(process.cwd(), "tmp", "guest-ids");
-
-const ensureUploadsDir = async () => {
-  const dir = resolveUploadsDir();
-  await fs.mkdir(dir, { recursive: true });
-  return dir;
-};
-
-const saveFile = async (file: File, prefix: string) => {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const ext = file.type?.split("/")[1] || "jpg";
-  const filename = `${prefix}-${randomUUID()}.${ext}`;
-  const dir = await ensureUploadsDir();
-  const filePath = path.join(dir, filename);
-  await fs.writeFile(filePath, buffer);
-  return filePath;
-};
+import { saveEncryptedImage } from "@/lib/guestIdStorage";
 
 export async function GET(request: NextRequest) {
   try {
@@ -91,8 +72,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Link expired" }, { status: 404 });
     }
 
-    const frontPath = await saveFile(frontImage, `${record.id}-front`);
-    const backPath = backImage instanceof File ? await saveFile(backImage, `${record.id}-back`) : null;
+    const frontBuffer = Buffer.from(await frontImage.arrayBuffer());
+    const frontPath = await saveEncryptedImage(frontBuffer, frontImage.type, `${record.id}-front.enc`);
+    const backPath = backImage instanceof File
+      ? await saveEncryptedImage(Buffer.from(await backImage.arrayBuffer()), backImage.type, `${record.id}-back.enc`)
+      : null;
 
     const { error: updateError } = await supabase
       .from("guest_ids")

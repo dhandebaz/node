@@ -47,6 +47,7 @@ export async function GET(request: NextRequest) {
     startDate: b.start_date,
     endDate: b.end_date,
     status: b.status,
+    idStatus: b.id_status || 'not_requested',
     source: b.source,
   }));
 

@@ -11,7 +11,7 @@ export async function GET(_request: NextRequest) {
 
     const { data: bookings, error } = await supabase
       .from("bookings")
-      .select("id, listing_id, guest_id, start_date, end_date, status, source, amount, guest_contact, payment_id, created_at, guests(name, phone, email), listings!inner(host_id)")
+      .select("id, listing_id, guest_id, start_date, end_date, status, id_status, source, amount, guest_contact, payment_id, created_at, guests(name, phone, email), listings!inner(host_id)")
       .eq("listings.host_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -28,6 +28,7 @@ export async function GET(_request: NextRequest) {
       check_out: b.end_date,
       amount: Number(b.amount || 0),
       status: b.status,
+      id_status: b.id_status,
       payment_id: b.payment_id || null,
       created_at: b.created_at,
       source: b.source || "direct"

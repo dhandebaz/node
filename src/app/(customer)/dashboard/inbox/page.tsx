@@ -38,6 +38,7 @@ type Conversation = {
   unreadCount: number;
   manager: { slug: string; name: string };
   status: "draft" | "payment_pending" | "paid" | "scheduled" | "open";
+  bookingId?: string | null;
 };
 
 type ConversationMessage = {
@@ -141,6 +142,7 @@ export default function InboxPage() {
   const [sending, setSending] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [listings, setListings] = useState<ListingSummary[]>([]);
+  const [bookingOptions, setBookingOptions] = useState<Array<{ id: string; label: string }>>([]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentForm, setPaymentForm] = useState({
     listingId: "",
@@ -157,6 +159,13 @@ export default function InboxPage() {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentSent, setPaymentSent] = useState(false);
+  const [showIdModal, setShowIdModal] = useState(false);
+  const [idType, setIdType] = useState<"aadhaar" | "passport" | "driving_license" | "voter_id" | "any">("aadhaar");
+  const [idNote, setIdNote] = useState("");
+  const [idUploadUrl, setIdUploadUrl] = useState<string | null>(null);
+  const [idRequestMessage, setIdRequestMessage] = useState<string | null>(null);
+  const [idRequesting, setIdRequesting] = useState(false);
+  const [idBookingId, setIdBookingId] = useState<string>("");
 
   const loadListings = async () => {
     try {
@@ -167,6 +176,22 @@ export default function InboxPage() {
       }
     } catch {
       setListings([]);
+    }
+  };
+
+  const loadBookingOptions = async () => {
+    try {
+      const data = await fetchWithAuth<any[]>("/api/bookings");
+      const options = (data || []).map((booking) => ({
+        id: booking.id,
+        label: `${booking.guest_name} · ${booking.check_in?.slice(0, 10)} → ${booking.check_out?.slice(0, 10)}`
+      }));
+      setBookingOptions(options);
+      if (!idBookingId && options.length) {
+        setIdBookingId(options[0].id);
+      }
+    } catch {
+      setBookingOptions([]);
     }
   };
 
@@ -213,7 +238,11 @@ export default function InboxPage() {
     try {
       setLoadingContext(true);
       setContextError(null);
-      const data = await fetchWithAuth<ConversationContext>(`/api/inbox/context?conversationId=${conversationId}`);
+      const bookingId = conversations.find((conv) => conv.id === conversationId)?.bookingId;
+      const url = bookingId
+        ? `/api/inbox/context?conversationId=${conversationId}&bookingId=${bookingId}`
+        : `/api/inbox/context?conversationId=${conversationId}`;
+      const data = await fetchWithAuth<ConversationContext>(url);
       setContext(data);
     } catch (error: any) {
       if (error instanceof SessionExpiredError) {
@@ -253,6 +282,7 @@ export default function InboxPage() {
   useEffect(() => {
     loadConversations();
     loadListings();
+    loadBookingOptions();
   }, []);
 
   useEffect(() => {
@@ -331,6 +361,11 @@ export default function InboxPage() {
       openPaymentModal();
       return;
     }
+    if (action.action === "request_id") {
+      setIdBookingId(selectedConversation.bookingId || idBookingId);
+      setShowIdModal(true);
+      return;
+    }
     try {
       setSending(true);
       const data = await fetchWithAuth<{ message: ConversationMessage }>("/api/inbox/send", {
@@ -350,6 +385,30 @@ export default function InboxPage() {
       }
     } finally {
       setSending(false);
+    }
+  };
+
+  const handleRequestId = async () => {
+    if (!selectedConversationId || !idBookingId) return;
+    try {
+      setIdRequesting(true);
+      const response = await fetchWithAuth<{ bookingId: string; uploadUrl: string; message: string }>("/api/guest-id/request", {
+        method: "POST",
+        body: JSON.stringify({
+          bookingId: idBookingId,
+          idType,
+          message: idNote.trim() || null
+        })
+      });
+      setIdUploadUrl(response.uploadUrl);
+      setIdRequestMessage(response.message);
+    } catch (error: any) {
+      if (error instanceof SessionExpiredError) {
+        setSessionExpired(true);
+        return;
+      }
+    } finally {
+      setIdRequesting(false);
     }
   };
 
@@ -1159,6 +1218,83 @@ export default function InboxPage() {
                   className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg text-xs font-semibold disabled:opacity-60"
                 >
                   {paymentLoading ? "Generating..." : paymentLink ? "Generate again" : "Generate payment link"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showIdModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden">
+            <div className="p-4 border-b border-white/10 flex items-center justify-between">
+              <div className="text-sm font-semibold text-white">Request ID</div>
+              <button onClick={() => setShowIdModal(false)} className="p-2 hover:bg-white/5 rounded-full text-white/60">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-4 space-y-3">
+              <div>
+                <div className="text-xs text-white/40 mb-1">Booking</div>
+                <select
+                  value={idBookingId}
+                  onChange={(e) => setIdBookingId(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                >
+                  {bookingOptions.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <div className="text-xs text-white/40 mb-1">ID Type</div>
+                <select
+                  value={idType}
+                  onChange={(e) => setIdType(e.target.value as any)}
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                >
+                  <option value="aadhaar">Aadhaar</option>
+                  <option value="passport">Passport</option>
+                  <option value="driving_license">Driving License</option>
+                  <option value="voter_id">Voter ID</option>
+                  <option value="any">Any Govt ID</option>
+                </select>
+              </div>
+              <div>
+                <div className="text-xs text-white/40 mb-1">Message (optional)</div>
+                <textarea
+                  value={idNote}
+                  onChange={(e) => setIdNote(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
+                  placeholder="Hi! Please upload a government-issued ID to complete check-in compliance."
+                />
+              </div>
+              {idUploadUrl && (
+                <div className="text-xs text-white/60 break-all">
+                  Upload link: {idUploadUrl}
+                </div>
+              )}
+              {idRequestMessage && (
+                <div className="text-xs text-white/60 break-all">
+                  Message: {idRequestMessage}
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t border-white/10 flex items-center justify-between">
+              <div className="text-[10px] text-white/40">Nodebase will store IDs securely.</div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setShowIdModal(false)} className="px-3 py-1.5 text-xs text-white/60 hover:text-white">
+                  Close
+                </button>
+                <button
+                  onClick={handleRequestId}
+                  disabled={idRequesting}
+                  className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg text-xs font-semibold disabled:opacity-60"
+                >
+                  {idRequesting ? "Generating..." : "Generate link"}
                 </button>
               </div>
             </div>
