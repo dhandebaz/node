@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSession } from "@/lib/auth/session";
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
   if (!session?.userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -10,7 +10,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
   const body = await request.json();
   const integrations = Array.isArray(body?.integrations) ? body.integrations : [];
-  const listingId = params.id;
+  const { id: listingId } = await params;
 
   const supabase = await getSupabaseServer();
 
