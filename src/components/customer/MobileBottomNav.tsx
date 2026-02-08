@@ -42,7 +42,7 @@ export function MobileBottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#2A0A0A] border-t border-white/10 pb-safe">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-dashboard-surface)] border-t border-white/10 pb-safe">
       <div className="flex items-center justify-around h-16">
         {tabs.map((tab) => {
           const active = tab.isActive(pathname);

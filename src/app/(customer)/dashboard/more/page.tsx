@@ -13,7 +13,9 @@ import {
   ShieldCheck,
   LayoutGrid,
   SlidersHorizontal,
-  Activity
+  Activity,
+  Calendar,
+  BookOpen
 } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -25,14 +27,16 @@ export default function MorePage() {
     {
       section: "Account",
       items: [
-        { icon: User, label: "Profile", href: "/dashboard/settings" }, 
-        { icon: ShieldCheck, label: "KYC Status", href: "/node/apply/kyc" },
+        { icon: User, label: "Profile", href: "/dashboard/settings/profile" }, 
+        { icon: ShieldCheck, label: "KYC & Verification", href: "/dashboard/settings/profile" },
       ]
     },
     {
       section: "Business",
       items: [
         { icon: LayoutGrid, label: "Listings", href: "/dashboard/kaisa/listings" }, 
+        { icon: BookOpen, label: "Bookings", href: "/dashboard/bookings" },
+        { icon: Calendar, label: "Calendar", href: "/dashboard/calendar" },
         { icon: SlidersHorizontal, label: "AI Settings", href: "/dashboard/ai-settings" },
         { icon: Activity, label: "AI Activity", href: "/dashboard/ai-activity" },
         { icon: Plug, label: "Integrations", href: "/dashboard/integrations" },
@@ -51,7 +55,7 @@ export default function MorePage() {
     <div className="space-y-6 pb-24 md:pb-0">
       
       {/* User Header */}
-      <div className="flex items-center gap-4 p-4 bg-[#2A0A0A] border border-white/10 rounded-2xl">
+      <div className="flex items-center gap-4 p-4 dashboard-surface">
         <div className="w-16 h-16 rounded-full bg-[var(--color-brand-red)] border-2 border-white/10 flex items-center justify-center text-xl font-bold text-white shadow-lg">
            {host?.name ? host.name.charAt(0) : 'U'}
         </div>
@@ -70,7 +74,7 @@ export default function MorePage() {
             <h2 className="text-xs font-bold text-white/40 uppercase tracking-widest px-2 mb-2">
               {section.section}
             </h2>
-            <div className="bg-[#2A0A0A] border border-white/10 rounded-2xl overflow-hidden divide-y divide-white/5">
+            <div className="dashboard-surface overflow-hidden divide-y divide-white/10">
               {section.items.map((item) => (
                 <Link 
                   key={item.label}
@@ -94,7 +98,7 @@ export default function MorePage() {
         <div>
           <button 
             onClick={() => logoutAction()}
-            className="w-full flex items-center justify-between p-4 bg-[#2A0A0A] border border-red-500/20 rounded-2xl active:bg-red-500/10 transition-colors group"
+            className="w-full flex items-center justify-between p-4 dashboard-surface border border-red-500/20 active:bg-red-500/10 transition-colors group"
           >
             <div className="flex items-center gap-4">
               <div className="p-2 bg-red-500/10 rounded-lg text-red-500 group-hover:bg-red-500/20 transition-colors">

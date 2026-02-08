@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { fetchWithAuth } from "@/lib/api/fetcher";
+import { SessionExpiredCard } from "@/components/customer/SessionExpiredCard";
+import { SessionExpiredError } from "@/lib/api/errors";
 
 type ModeOption = {
   id: string;
@@ -55,21 +58,96 @@ export default function AiSettingsPage() {
   const [payload, setPayload] = useState<SettingsPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [localFallback, setLocalFallback] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+  const buildFallbackPayload = () => ({
+    settings: {
+      userId: "local",
+      aiManagerType: "host-ai",
+      mode: "assistive",
+      allowedActions: ["reply_to_guests", "send_pricing"],
+      escalationRules: ["payment_overdue", "discount_request"],
+      quietHours: {
+        timezone: "Asia/Kolkata",
+        businessHours: { start: "09:00", end: "20:00" },
+        quietHours: { start: "21:00", end: "08:00" },
+        days: ["Mon", "Tue", "Wed", "Thu", "Fri"]
+      },
+      lockedActions: []
+    },
+    modeOptions: [
+      {
+        id: "assistive",
+        name: "Assistive",
+        description: "AI drafts replies. You approve before anything is sent."
+      },
+      {
+        id: "semi_autonomous",
+        name: "Semi-Autonomous",
+        description: "AI replies to common queries and escalates edge cases."
+      },
+      {
+        id: "autonomous",
+        name: "Autonomous",
+        description: "AI replies and acts within defined limits. You are notified.",
+        warning: "Use only when you trust the rules. All actions are logged."
+      }
+    ],
+    actionOptions: [
+      {
+        id: "reply_to_guests",
+        label: "Reply to guests",
+        description: "Respond to routine guest questions.",
+        example: "If a guest asks about check-in, Host AI replies with the policy."
+      },
+      {
+        id: "send_pricing",
+        label: "Send pricing",
+        description: "Share nightly or package prices when asked.",
+        example: "If a guest asks about rates, Host AI sends the current price."
+      },
+      {
+        id: "send_payment_links",
+        label: "Send payment links",
+        description: "Issue payment links for confirmed bookings.",
+        example: "If a guest confirms dates, Host AI shares the payment link.",
+        dangerous: true
+      }
+    ],
+    escalationOptions: [
+      {
+        id: "payment_overdue",
+        label: "Payment not completed after 6 hours",
+        description: "Escalate if the payment link is ignored."
+      },
+      {
+        id: "discount_request",
+        label: "Guest asks for a discount",
+        description: "Escalate all discount negotiations."
+      }
+    ]
+  });
 
   const loadSettings = async () => {
     try {
       setLoading(true);
-      setError(null);
-      const response = await fetch("/api/ai/settings");
-      if (!response.ok) {
-        throw new Error("Unable to load AI settings.");
-      }
-      const data = await response.json();
+      const data = await fetchWithAuth<SettingsPayload>("/api/ai/settings");
       setPayload(data);
+      setLocalFallback(false);
     } catch (err: any) {
-      setError(err?.message || "Unable to load AI settings.");
+      if (err instanceof SessionExpiredError) {
+        setSessionExpired(true);
+        return;
+      }
+      const stored = typeof window !== "undefined" ? window.localStorage.getItem("ai_settings_payload") : null;
+      if (stored) {
+        setPayload(JSON.parse(stored));
+      } else {
+        setPayload(buildFallbackPayload());
+      }
+      setLocalFallback(true);
     } finally {
       setLoading(false);
     }
@@ -164,19 +242,25 @@ export default function AiSettingsPage() {
     try {
       setSaving(true);
       setSaveMessage(null);
-      const response = await fetch("/api/ai/settings/update", {
+      if (localFallback) {
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem("ai_settings_payload", JSON.stringify({ ...payload, settings }));
+        }
+        setSaveMessage("Saved locally. Applies once AI is active.");
+        return;
+      }
+      const data = await fetchWithAuth<{ settings: AISettings }>("/api/ai/settings/update", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ settings })
       });
-      if (!response.ok) {
-        throw new Error("Unable to save AI settings.");
-      }
-      const data = await response.json();
       setPayload((prev) => (prev ? { ...prev, settings: data.settings } : prev));
       setSaveMessage("Settings saved.");
     } catch (err: any) {
-      setSaveMessage(err?.message || "Save failed.");
+      if (err instanceof SessionExpiredError) {
+        setSessionExpired(true);
+        return;
+      }
+      setSaveMessage("Save failed.");
     } finally {
       setSaving(false);
     }
@@ -190,10 +274,14 @@ export default function AiSettingsPage() {
     );
   }
 
-  if (!payload || !settings || error) {
+  if (sessionExpired) {
+    return <SessionExpiredCard />;
+  }
+
+  if (!payload || !settings) {
     return (
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-zinc-300">
-        {error || "Unable to load AI settings."}
+      <div className="dashboard-surface p-6 text-zinc-300">
+        AI settings will appear once your AI Manager is active.
       </div>
     );
   }
@@ -205,13 +293,36 @@ export default function AiSettingsPage() {
         <p className="text-zinc-400">Control how your AI Manager behaves without touching prompts.</p>
       </div>
 
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-6">
+      <div className="dashboard-surface p-6">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-white/5 rounded-lg">
+            <ShieldCheck className="w-5 h-5 text-emerald-300" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-lg font-semibold text-white">Google Context</h2>
+            <p className="text-sm text-zinc-400">Your AI Manager uses Google data to:</p>
+            <ul className="text-sm text-zinc-300 space-y-1">
+              <li>understand guest conversations</li>
+              <li>track bookings and appointments</li>
+              <li>stay aligned with your business calendar</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {localFallback && (
+        <div className="dashboard-surface p-4 text-sm text-white/70">
+          Applies once AI is active. Your changes are saved locally for now.
+        </div>
+      )}
+
+      <div className="dashboard-surface p-6 space-y-6">
         <div className="flex items-start justify-between gap-6">
           <div>
             <h2 className="text-lg font-semibold text-white">AI Mode</h2>
             <p className="text-sm text-zinc-400">Choose how the AI should operate day to day.</p>
           </div>
-          <div className="inline-flex items-center gap-2 text-xs text-zinc-500 bg-zinc-950 border border-zinc-800 px-3 py-1 rounded-full">
+          <div className="inline-flex items-center gap-2 text-xs text-zinc-500 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
             <ShieldCheck className="w-4 h-4" />
             Admin safety limits always apply
           </div>
@@ -226,7 +337,7 @@ export default function AiSettingsPage() {
                 "text-left p-4 rounded-xl border transition-colors",
                 settings.mode === mode.id
                   ? "border-white bg-white/5"
-                  : "border-zinc-800 hover:border-zinc-600"
+                  : "border-white/10 hover:border-white/30"
               )}
             >
               <div className="text-sm font-semibold text-white">{mode.name}</div>
@@ -242,7 +353,7 @@ export default function AiSettingsPage() {
         </div>
       </div>
 
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-6">
+      <div className="dashboard-surface p-6 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-white">Action Permissions</h2>
           <p className="text-sm text-zinc-400">Toggle what the AI can do. Disabled actions will never run.</p>
@@ -257,7 +368,7 @@ export default function AiSettingsPage() {
                 key={action.id}
                 className={cn(
                   "p-4 rounded-xl border flex flex-col md:flex-row md:items-center md:justify-between gap-4",
-                  enabled ? "border-white/20 bg-white/5" : "border-zinc-800"
+                  enabled ? "border-white/20 bg-white/5" : "border-white/10"
                 )}
               >
                 <div>
@@ -288,7 +399,7 @@ export default function AiSettingsPage() {
         </div>
       </div>
 
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-6">
+      <div className="dashboard-surface p-6 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-white">Escalation Rules</h2>
           <p className="text-sm text-zinc-400">Select when the AI must stop and ask you.</p>
@@ -302,7 +413,7 @@ export default function AiSettingsPage() {
                 onClick={() => toggleEscalation(rule.id)}
                 className={cn(
                   "p-4 rounded-xl border text-left flex items-start justify-between gap-4",
-                  active ? "border-white/20 bg-white/5" : "border-zinc-800"
+                  active ? "border-white/20 bg-white/5" : "border-white/10"
                 )}
               >
                 <div>
@@ -316,53 +427,53 @@ export default function AiSettingsPage() {
         </div>
       </div>
 
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-6">
+      <div className="dashboard-surface p-6 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-white">Quiet Hours & Availability</h2>
           <p className="text-sm text-zinc-400">Prevent AI messages outside your business hours.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-950 space-y-3">
+          <div className="p-4 rounded-xl border border-white/10 bg-white/5 space-y-3">
             <div className="text-xs uppercase tracking-widest text-zinc-500">Business hours</div>
             <div className="flex items-center gap-2">
               <input
                 type="time"
                 value={settings.quietHours.businessHours.start}
                 onChange={(event) => updateBusinessHours({ start: event.target.value })}
-                className="w-full bg-black/40 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
               />
               <input
                 type="time"
                 value={settings.quietHours.businessHours.end}
                 onChange={(event) => updateBusinessHours({ end: event.target.value })}
-                className="w-full bg-black/40 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
               />
             </div>
           </div>
-          <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-950 space-y-3">
+          <div className="p-4 rounded-xl border border-white/10 bg-white/5 space-y-3">
             <div className="text-xs uppercase tracking-widest text-zinc-500">Quiet hours</div>
             <div className="flex items-center gap-2">
               <input
                 type="time"
                 value={settings.quietHours.quietHours.start}
                 onChange={(event) => updateQuietHoursRange({ start: event.target.value })}
-                className="w-full bg-black/40 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
               />
               <input
                 type="time"
                 value={settings.quietHours.quietHours.end}
                 onChange={(event) => updateQuietHoursRange({ end: event.target.value })}
-                className="w-full bg-black/40 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
               />
             </div>
           </div>
-          <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-950 space-y-3">
+          <div className="p-4 rounded-xl border border-white/10 bg-white/5 space-y-3">
             <div className="text-xs uppercase tracking-widest text-zinc-500">Timezone</div>
             <input
               type="text"
               value={settings.quietHours.timezone}
               readOnly
-              className="w-full bg-black/40 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-white/70 cursor-not-allowed"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white/70 cursor-not-allowed"
             />
             <div className="text-[11px] text-zinc-500">Emergency override can be enforced by admin.</div>
           </div>
@@ -385,7 +496,7 @@ export default function AiSettingsPage() {
         </div>
       </div>
 
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-6">
+      <div className="dashboard-surface p-6 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-white">AI Action Preview</h2>
           <p className="text-sm text-zinc-400">Examples of how enabled actions behave.</p>
@@ -395,7 +506,7 @@ export default function AiSettingsPage() {
         ) : (
           <div className="grid gap-4">
             {enabledActionOptions.map((action) => (
-              <div key={action.id} className="p-4 rounded-xl border border-zinc-800 bg-zinc-950">
+              <div key={action.id} className="p-4 rounded-xl border border-white/10 bg-white/5">
                 <div className="text-sm font-semibold text-white">{action.label}</div>
                 <div className="text-xs text-zinc-400 mt-2">{action.example}</div>
               </div>

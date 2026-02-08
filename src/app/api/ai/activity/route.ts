@@ -10,33 +10,40 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const now = Date.now();
-    const items = [
-      {
-        id: "act-1001",
-        timestamp: new Date(now - 1000 * 60 * 40).toISOString(),
-        action: "Sent payment link",
-        reason: "Booking confirmed and payment pending",
-        outcome: "sent",
+    const { data: bookingRows } = await supabase
+      .from("bookings")
+      .select("id, listings!inner(host_id)")
+      .eq("listings.host_id", user.id);
+
+    const bookingIds = (bookingRows || []).map((b: any) => b.id);
+
+    if (!bookingIds.length) {
+      return NextResponse.json({ items: [] });
+    }
+
+    const { data: payments, error: paymentsError } = await supabase
+      .from("payments")
+      .select("id, status, amount, created_at, paid_at, booking_id")
+      .in("booking_id", bookingIds)
+      .order("created_at", { ascending: false })
+      .limit(6);
+
+    if (paymentsError) {
+      return NextResponse.json({ error: paymentsError.message }, { status: 500 });
+    }
+
+    const items = (payments || []).map((payment: any) => {
+      const status = payment.status || "pending";
+      const timestamp = payment.paid_at || payment.created_at;
+      return {
+        id: `pay-${payment.id}`,
+        timestamp,
+        action: status === "paid" ? "Payment confirmed" : "Payment update",
+        reason: status === "paid" ? "Guest completed payment" : `Payment ${status}`,
+        outcome: status,
         manager: "Host AI"
-      },
-      {
-        id: "act-1002",
-        timestamp: new Date(now - 1000 * 60 * 120).toISOString(),
-        action: "Escalated discount request",
-        reason: "Discount negotiation is restricted",
-        outcome: "escalated",
-        manager: "Host AI"
-      },
-      {
-        id: "act-1003",
-        timestamp: new Date(now - 1000 * 60 * 220).toISOString(),
-        action: "Blocked appointment scheduling",
-        reason: "Daily scheduling limit reached",
-        outcome: "blocked",
-        manager: "Nurse AI"
-      }
-    ];
+      };
+    });
 
     return NextResponse.json({ items });
   } catch (error: any) {

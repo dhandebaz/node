@@ -9,10 +9,13 @@ import {
   ChevronLeft, 
   ChevronRight,
   MapPin,
-  Clock
+  Clock,
+  Plus,
+  X
 } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isWithinInterval, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
+import { paymentsApi } from "@/lib/api/payments";
 
 export default function CalendarPage() {
   const { 
@@ -27,23 +30,119 @@ export default function CalendarPage() {
 
   const [view, setView] = useState<'agenda' | 'month'>('agenda');
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentForm, setPaymentForm] = useState({
+    listingId: "",
+    guestName: "",
+    guestPhone: "",
+    guestEmail: "",
+    amount: "",
+    checkIn: "",
+    checkOut: "",
+    notes: ""
+  });
+  const [paymentLink, setPaymentLink] = useState<string | null>(null);
+  const [paymentMessage, setPaymentMessage] = useState("");
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [paymentSent, setPaymentSent] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
   useEffect(() => {
-    if (selectedListingId) {
+    if (selectedListingId && selectedListingId !== "all") {
       const start = startOfMonth(currentDate).toISOString();
       const end = endOfMonth(currentDate).toISOString();
       fetchCalendar(selectedListingId, { start, end });
+    } else if (selectedListingId === "all") {
+      const start = startOfMonth(currentDate).toISOString();
+      const end = endOfMonth(currentDate).toISOString();
+      fetchCalendar("all", { start, end });
     } else if (listings.length > 0) {
-      setSelectedListingId(listings[0].id);
+      setSelectedListingId(listings.length > 1 ? "all" : listings[0].id);
     }
   }, [selectedListingId, listings, currentDate, fetchCalendar, setSelectedListingId]);
 
   const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
   const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+
+  const statusDisplay = (status: string) => {
+    if (status === "confirmed" || status === "paid") {
+      return { label: "confirmed", text: "text-green-400", dot: "bg-green-500" };
+    }
+    if (status === "payment_pending" || status === "pending") {
+      return { label: "payment pending", text: "text-amber-300", dot: "bg-amber-400" };
+    }
+    if (status === "draft") {
+      return { label: "draft", text: "text-white/50", dot: "bg-white/30" };
+    }
+    if (status === "cancelled" || status === "refunded") {
+      return { label: status.replace("_", " "), text: "text-red-400", dot: "bg-red-500" };
+    }
+    if (status === "blocked") {
+      return { label: "blocked", text: "text-blue-300", dot: "bg-blue-400" };
+    }
+    return { label: status, text: "text-white/60", dot: "bg-white/40" };
+  };
+
+  const openPaymentModal = () => {
+    const listingId = selectedListingId === "all" ? listings[0]?.id || "" : selectedListingId || listings[0]?.id || "";
+    setPaymentForm({
+      listingId,
+      guestName: "",
+      guestPhone: "",
+      guestEmail: "",
+      amount: "",
+      checkIn: "",
+      checkOut: "",
+      notes: ""
+    });
+    setPaymentLink(null);
+    setPaymentMessage("");
+    setPaymentError(null);
+    setPaymentSent(false);
+    setShowPaymentModal(true);
+  };
+
+  const handleCreatePaymentLink = async () => {
+    if (!paymentForm.listingId || !paymentForm.guestName || !paymentForm.amount || !paymentForm.checkIn || !paymentForm.checkOut) {
+      setPaymentError("Fill all required fields.");
+      return;
+    }
+    try {
+      setPaymentLoading(true);
+      setPaymentError(null);
+      const effectiveListingId = paymentForm.listingId;
+      const payload = {
+        listingId: effectiveListingId,
+        guestName: paymentForm.guestName.trim(),
+        guestPhone: paymentForm.guestPhone.trim() || null,
+        guestEmail: paymentForm.guestEmail.trim() || null,
+        amount: Number(paymentForm.amount),
+        checkIn: paymentForm.checkIn,
+        checkOut: paymentForm.checkOut,
+        notes: paymentForm.notes.trim() || null
+      };
+      const data = await paymentsApi.createPaymentLink(payload);
+      const listingName = listings.find((l) => l.id === effectiveListingId)?.name || "your stay";
+      const message = `Booking for ${listingName} (${paymentForm.checkIn}–${paymentForm.checkOut}) is pending. Please pay ₹${Number(paymentForm.amount).toLocaleString("en-IN")} here: ${data.paymentLink}`;
+      setPaymentLink(data.paymentLink);
+      setPaymentMessage(message);
+      setPaymentSent(true);
+      const range = { start: startOfMonth(currentDate).toISOString(), end: endOfMonth(currentDate).toISOString() };
+      if (selectedListingId === "all") {
+        await fetchCalendar("all", range);
+      } else {
+        await fetchCalendar(effectiveListingId, range);
+      }
+    } catch {
+      setPaymentError("Failed to create payment link.");
+    } finally {
+      setPaymentLoading(false);
+    }
+  };
 
   // Calendar Grid Generation
   const monthStart = startOfMonth(currentDate);
@@ -57,7 +156,15 @@ export default function CalendarPage() {
       <div className="flex flex-col gap-4 sticky top-0 bg-[var(--color-brand-red)] z-30 pt-2 pb-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white uppercase tracking-tight">Calendar</h1>
-          <div className="flex bg-[#2A0A0A] p-1 rounded-lg border border-white/10">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={openPaymentModal}
+              className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-full border border-white/20 text-white/80 hover:border-white/50"
+            >
+              <Plus className="w-4 h-4" />
+              Create booking
+            </button>
+            <div className="flex bg-[var(--color-dashboard-surface)] p-1 rounded-lg border border-white/10">
             <button 
               onClick={() => setView('agenda')}
               className={cn(
@@ -77,6 +184,7 @@ export default function CalendarPage() {
               <CalendarIcon className="w-4 h-4" />
             </button>
           </div>
+          </div>
         </div>
 
         {/* Listing Selector */}
@@ -84,10 +192,13 @@ export default function CalendarPage() {
           <select 
             value={selectedListingId || ""}
             onChange={(e) => setSelectedListingId(e.target.value)}
-            className="w-full appearance-none bg-[#2A0A0A] border border-white/10 text-white rounded-xl px-4 py-3 pr-10 focus:outline-none focus:border-white/30 font-medium"
+            className="w-full appearance-none bg-[var(--color-dashboard-surface)] border border-white/10 text-white rounded-xl px-4 py-3 pr-10 focus:outline-none focus:border-white/30 font-medium"
           >
+            {listings.length > 1 && (
+              <option value="all">All properties</option>
+            )}
             {listings.map(l => (
-              <option key={l.id} value={l.id}>{l.title}</option>
+              <option key={l.id} value={l.id}>{l.name}</option>
             ))}
           </select>
           <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none w-5 h-5" />
@@ -100,15 +211,15 @@ export default function CalendarPage() {
           {isLoading && bookings.length === 0 ? (
             <div className="text-center py-10 text-white/40">Loading bookings...</div>
           ) : bookings.length === 0 ? (
-            <div className="text-center py-10 text-white/40 bg-white/5 rounded-2xl border border-white/5">
+            <div className="text-center py-10 text-white/40 dashboard-surface">
               <CalendarIcon className="w-10 h-10 mx-auto mb-3 opacity-20" />
-              <p>No bookings for this month</p>
+              <p>No bookings yet</p>
             </div>
           ) : (
             bookings
               .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
               .map(booking => (
-              <div key={booking.id} className="bg-white/5 border border-white/10 rounded-2xl p-4 active:scale-[0.98] transition-transform">
+              <div key={booking.id} className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl p-4 active:scale-[0.98] transition-transform">
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <h3 className="font-bold text-white text-lg">{booking.guestName || "Guest"}</h3>
@@ -117,8 +228,8 @@ export default function CalendarPage() {
                       <span>•</span>
                       <span className={cn(
                         "uppercase font-bold tracking-wider",
-                        booking.status === 'confirmed' ? "text-green-400" : "text-yellow-400"
-                      )}>{booking.status}</span>
+                        statusDisplay(booking.status).text
+                      )}>{statusDisplay(booking.status).label}</span>
                     </div>
                   </div>
                   <div className="text-right">
@@ -148,18 +259,25 @@ export default function CalendarPage() {
                 <div className="flex items-center justify-between">
                    <div className="flex items-center gap-2 text-xs text-white/40">
                      <MapPin className="w-3 h-3" />
-                     <span className="truncate max-w-[150px]">{listings.find(l => l.id === selectedListingId)?.title}</span>
+                    <span className="truncate max-w-[150px]">
+                      {selectedListingId === "all"
+                        ? listings.find(l => l.id === booking.listingId)?.name || "All properties"
+                        : listings.find(l => l.id === selectedListingId)?.name}
+                    </span>
                    </div>
-                   <button className="text-xs font-bold text-[var(--color-brand-red)] bg-white px-3 py-1.5 rounded-lg">
-                     Details
-                   </button>
+                  <a
+                    href={selectedListingId === "all" ? "/dashboard/kaisa/listings" : `/dashboard/kaisa/listings/${selectedListingId}`}
+                    className="text-xs font-bold text-[var(--color-brand-red)] bg-white px-3 py-1.5 rounded-lg"
+                  >
+                    View listing
+                  </a>
                 </div>
               </div>
             ))
           )}
         </div>
       ) : (
-        <div className="bg-[#2A0A0A] border border-white/10 rounded-2xl overflow-hidden">
+        <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl overflow-hidden">
           <div className="p-4 flex items-center justify-between border-b border-white/10">
             <button onClick={prevMonth} className="p-2 hover:bg-white/5 rounded-full text-white/60">
               <ChevronLeft className="w-5 h-5" />
@@ -203,13 +321,182 @@ export default function CalendarPage() {
                     {dayBookings.map(b => (
                       <div key={b.id} className={cn(
                         "h-1.5 rounded-full w-full",
-                        b.status === 'confirmed' ? "bg-green-500" : "bg-yellow-500"
+                        statusDisplay(b.status).dot
                       )} />
                     ))}
                   </div>
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl w-full max-w-2xl overflow-hidden">
+            <div className="p-4 border-b border-white/10 flex items-center justify-between">
+              <div className="text-sm font-semibold text-white">Create booking payment link</div>
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="p-2 hover:bg-white/5 rounded-full text-white/60"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">Property</label>
+                  <select
+                    value={paymentForm.listingId}
+                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, listingId: event.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                  >
+                    <option value="">Select property</option>
+                    {listings.map((listing) => (
+                      <option key={listing.id} value={listing.id}>
+                        {listing.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">Amount</label>
+                  <input
+                    type="number"
+                    value={paymentForm.amount}
+                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, amount: event.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    placeholder="Amount in INR"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">Guest name</label>
+                  <input
+                    type="text"
+                    value={paymentForm.guestName}
+                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, guestName: event.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    placeholder="Guest name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">Guest phone</label>
+                  <input
+                    type="tel"
+                    value={paymentForm.guestPhone}
+                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, guestPhone: event.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    placeholder="+91 90000 00000"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">Guest email</label>
+                  <input
+                    type="email"
+                    value={paymentForm.guestEmail}
+                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, guestEmail: event.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    placeholder="guest@email.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">Check-in</label>
+                  <input
+                    type="date"
+                    value={paymentForm.checkIn}
+                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, checkIn: event.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">Check-out</label>
+                  <input
+                    type="date"
+                    value={paymentForm.checkOut}
+                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, checkOut: event.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-white/60 mb-1">Notes (optional)</label>
+                <textarea
+                  value={paymentForm.notes}
+                  onChange={(event) => setPaymentForm((prev) => ({ ...prev, notes: event.target.value }))}
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
+                  placeholder="Add any notes for the guest"
+                />
+              </div>
+
+              {paymentLink && (
+                <div className="space-y-3 border border-white/10 rounded-xl p-4 bg-white/5">
+                  <div className="text-xs font-semibold text-white/70 uppercase tracking-wider">Payment link</div>
+                  <div className="text-sm text-white break-all">{paymentLink}</div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={async () => {
+                        if (!paymentLink) return;
+                        await navigator.clipboard.writeText(paymentLink);
+                        setPaymentSent(true);
+                      }}
+                      className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-white/80 px-3 py-1.5 rounded-full"
+                    >
+                      Copy link
+                    </button>
+                    {paymentMessage && (
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(paymentMessage)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-white/80 px-3 py-1.5 rounded-full"
+                      >
+                        WhatsApp
+                      </a>
+                    )}
+                    {paymentMessage && paymentForm.guestPhone && (
+                      <a
+                        href={`sms:${paymentForm.guestPhone}?body=${encodeURIComponent(paymentMessage)}`}
+                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-white/80 px-3 py-1.5 rounded-full"
+                      >
+                        SMS
+                      </a>
+                    )}
+                    {paymentMessage && paymentForm.guestEmail && (
+                      <a
+                        href={`mailto:${paymentForm.guestEmail}?subject=Booking%20payment&body=${encodeURIComponent(paymentMessage)}`}
+                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-white/80 px-3 py-1.5 rounded-full"
+                      >
+                        Email
+                      </a>
+                    )}
+                  </div>
+                  {paymentSent && (
+                    <div className="text-xs text-emerald-300">Payment link ready to share.</div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t border-white/10 flex items-center justify-between">
+              <div className="text-xs text-red-300">{paymentError}</div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowPaymentModal(false)}
+                  className="px-3 py-1.5 text-xs text-white/60 hover:text-white"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={handleCreatePaymentLink}
+                  disabled={paymentLoading}
+                  className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg text-xs font-semibold disabled:opacity-60"
+                >
+                  {paymentLoading ? "Generating..." : paymentLink ? "Generate again" : "Generate payment link"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

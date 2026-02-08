@@ -93,12 +93,14 @@ export function CustomerSidebar({ roles, products, kaisaCredits }: CustomerSideb
           </div>
           <div className="space-y-1">
             <NavItem href="/dashboard/inbox" label="Inbox" />
+            <NavItem href="/dashboard/bookings" label="Bookings" />
+            <NavItem href="/dashboard/calendar" label="Calendar" />
             <NavItem href="/dashboard/ai-settings" label="AI Settings" />
             <NavItem href="/dashboard/ai-activity" label="AI Activity" />
             <NavItem href="/dashboard/integrations" label="Integrations" />
             <NavItem href="/dashboard/billing" label="Billing" />
             <NavItem href="/dashboard/support" label="Support" />
-            <NavItem href="/dashboard/settings" label="Settings" />
+            <NavItem href="/dashboard/settings/profile" label="Settings" />
           </div>
         </div>
       </nav>

@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { AlertTriangle, CheckCircle2, Loader2, RefreshCw, XCircle } from "lucide-react";
+import { fetchWithAuth } from "@/lib/api/fetcher";
+import { SessionExpiredCard } from "@/components/customer/SessionExpiredCard";
+import { SessionExpiredError } from "@/lib/api/errors";
 
 type ActivityItem = {
   id: string;
@@ -16,19 +19,20 @@ export default function AiActivityPage() {
   const [items, setItems] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   const loadActivity = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("/api/ai/activity");
-      if (!response.ok) {
-        throw new Error("Unable to load AI activity.");
-      }
-      const data = await response.json();
+      const data = await fetchWithAuth<{ items: ActivityItem[] }>("/api/ai/activity");
       setItems(data.items || []);
     } catch (err: any) {
-      setError(err?.message || "Unable to load AI activity.");
+      if (err instanceof SessionExpiredError) {
+        setSessionExpired(true);
+        return;
+      }
+      setError("Activity will appear once AI is active.");
     } finally {
       setLoading(false);
     }
@@ -43,6 +47,10 @@ export default function AiActivityPage() {
     if (outcome === "blocked") return <XCircle className="w-4 h-4 text-red-400" />;
     return <AlertTriangle className="w-4 h-4 text-amber-400" />;
   };
+
+  if (sessionExpired) {
+    return <SessionExpiredCard />;
+  }
 
   return (
     <div className="space-y-8 pb-24 md:pb-0">
@@ -67,14 +75,21 @@ export default function AiActivityPage() {
       )}
 
       {!loading && error && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-zinc-300">
-          {error}
+        <div className="dashboard-surface p-6 text-zinc-300 space-y-3">
+          <div>{error}</div>
+          <button
+            onClick={loadActivity}
+            className="inline-flex items-center gap-2 text-xs text-white/70 border border-white/20 px-3 py-2 rounded-lg hover:border-white/40"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Retry
+          </button>
         </div>
       )}
 
       {!loading && !error && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-          <div className="divide-y divide-zinc-800">
+        <div className="dashboard-surface overflow-hidden">
+          <div className="divide-y divide-white/10">
             {items.length === 0 && (
               <div className="p-6 text-zinc-500 text-sm">No AI activity yet.</div>
             )}
@@ -91,10 +106,10 @@ export default function AiActivityPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3 text-xs">
-                  <span className="px-2 py-1 rounded-full border border-zinc-700 text-zinc-300 uppercase tracking-wider">
+                  <span className="px-2 py-1 rounded-full border border-white/20 text-zinc-300 uppercase tracking-wider">
                     {item.manager}
                   </span>
-                  <span className="px-2 py-1 rounded-full border border-zinc-700 text-zinc-300 uppercase tracking-wider">
+                  <span className="px-2 py-1 rounded-full border border-white/20 text-zinc-300 uppercase tracking-wider">
                     {item.outcome}
                   </span>
                 </div>

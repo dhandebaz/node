@@ -13,7 +13,7 @@ const conversations = [
     lastMessageAt: new Date(now - 1000 * 60 * 12).toISOString(),
     unreadCount: 2,
     manager: { slug: "host-ai", name: "Host AI" },
-    status: "pending"
+    status: "payment_pending"
   },
   {
     id: "conv-1002",

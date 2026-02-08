@@ -1,6 +1,21 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from "@supabase/ssr";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+let browserClient: ReturnType<typeof createBrowserClient> | null = null;
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+const getSupabaseEnv = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !anonKey) {
+    throw new Error("Missing Supabase browser env vars.");
+  }
+
+  return { url, anonKey };
+};
+
+export function getSupabaseBrowser() {
+  if (browserClient) return browserClient;
+  const { url, anonKey } = getSupabaseEnv();
+  browserClient = createBrowserClient(url, anonKey);
+  return browserClient;
+}

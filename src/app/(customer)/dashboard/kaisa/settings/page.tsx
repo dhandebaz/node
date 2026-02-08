@@ -10,12 +10,18 @@ import {
   Save,
   Loader2
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { paymentsApi } from "@/lib/api/payments";
 
 export default function KaisaSettingsPage() {
   const { host } = useAuthStore();
   const { walletBalance } = useDashboardStore();
   const [saving, setSaving] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState("not_set");
+  const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
+  const [setupLoading, setSetupLoading] = useState(false);
+  const searchParams = useSearchParams();
 
   if (!host) {
      return (
@@ -29,6 +35,64 @@ export default function KaisaSettingsPage() {
     setSaving(true);
     // Mock save
     setTimeout(() => setSaving(false), 1500);
+  };
+
+  const loadPaymentSetup = async () => {
+    try {
+      const data = await paymentsApi.getPaymentSetup();
+      setPaymentStatus(data.status || "not_set");
+      setOnboardingUrl(data.onboardingUrl || null);
+    } catch {
+      setPaymentStatus("not_set");
+      setOnboardingUrl(null);
+    }
+  };
+
+  useEffect(() => {
+    loadPaymentSetup();
+  }, []);
+
+  useEffect(() => {
+    if (searchParams.get("onboarding") === "complete") {
+      setSetupLoading(true);
+      paymentsApi.completePaymentSetup()
+        .then((data) => {
+          setPaymentStatus(data.status || "active");
+          setOnboardingUrl(data.onboardingUrl || null);
+        })
+        .finally(() => setSetupLoading(false));
+    }
+  }, [searchParams]);
+
+  const handleStartSetup = async () => {
+    try {
+      setSetupLoading(true);
+      const data = await paymentsApi.startPaymentSetup();
+      setPaymentStatus(data.status || "setup_in_progress");
+      setOnboardingUrl(data.onboardingUrl || null);
+      if (data.onboardingUrl) {
+        window.location.href = data.onboardingUrl;
+      }
+    } finally {
+      setSetupLoading(false);
+    }
+  };
+
+  const handleResumeSetup = () => {
+    if (onboardingUrl) {
+      window.location.href = onboardingUrl;
+    }
+  };
+
+  const handleCompleteSetup = async () => {
+    try {
+      setSetupLoading(true);
+      const data = await paymentsApi.completePaymentSetup();
+      setPaymentStatus(data.status || "active");
+      setOnboardingUrl(data.onboardingUrl || null);
+    } finally {
+      setSetupLoading(false);
+    }
   };
 
   return (
@@ -102,26 +166,64 @@ export default function KaisaSettingsPage() {
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900">Payout Settings</h2>
-              <p className="text-sm text-gray-500">How you receive money from guests</p>
+              <p className="text-sm text-gray-500">Connect Razorpay to receive guest payments</p>
             </div>
           </div>
 
           <div className="space-y-6">
-            <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Your UPI ID (VPA)</label>
-                <div className="flex gap-2">
-                    <input 
-                        type="text" 
-                        defaultValue="business@upi"
-                        className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-red)]"
-                        placeholder="e.g. name@okhdfcbank"
-                    />
-                    <button className="px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-lg transition-colors text-sm font-medium">
-                        Verify
-                    </button>
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+              <div>
+                <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">Payment status</div>
+                <div className="text-lg font-semibold text-gray-900 mt-1">
+                  {paymentStatus === "active"
+                    ? "Active"
+                    : paymentStatus === "setup_in_progress"
+                      ? "Setup in progress"
+                      : "Not set up"}
                 </div>
-                <p className="text-xs text-gray-500 mt-2">Kaisa will share this UPI ID with your guests for direct payments.</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Guests pay you directly through Razorpay. Nodebase never stores bank details.
+                </p>
+              </div>
+              {paymentStatus === "active" && (
+                <div className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-green-100 text-green-700">
+                  Active
+                </div>
+              )}
             </div>
+
+            {paymentStatus !== "active" && (
+              <div className="flex flex-wrap gap-3">
+                {paymentStatus === "not_set" && (
+                  <button
+                    onClick={handleStartSetup}
+                    disabled={setupLoading}
+                    className="px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-lg transition-colors text-sm font-medium disabled:opacity-60"
+                  >
+                    {setupLoading ? "Starting..." : "Set up payouts"}
+                  </button>
+                )}
+
+                {paymentStatus === "setup_in_progress" && (
+                  <>
+                    <button
+                      onClick={handleResumeSetup}
+                      disabled={!onboardingUrl || setupLoading}
+                      className="px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-lg transition-colors text-sm font-medium disabled:opacity-60"
+                    >
+                      {setupLoading ? "Opening..." : "Resume onboarding"}
+                    </button>
+                    <button
+                      onClick={handleCompleteSetup}
+                      disabled={setupLoading}
+                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg transition-colors text-sm font-medium disabled:opacity-60"
+                    >
+                      I've completed onboarding
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

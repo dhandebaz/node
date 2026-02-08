@@ -3,6 +3,7 @@ import { Listing, Booking, Message, WalletTransaction } from '@/types';
 import { listingsApi } from '@/lib/api/listings';
 import { messagesApi } from '@/lib/api/messages';
 import { paymentsApi } from '@/lib/api/payments';
+import { isSessionExpiredError } from '@/lib/api/errors';
 
 interface DashboardState {
   listings: Listing[];
@@ -12,11 +13,11 @@ interface DashboardState {
   transactions: WalletTransaction[];
   isLoading: boolean;
   error: string | null;
-  selectedListingId: string | null;
+  selectedListingId: string | "all" | null;
 
   fetchDashboardData: () => Promise<void>;
-  setSelectedListingId: (id: string) => void;
-  fetchCalendar: (listingId: string, range: { start: string; end: string }) => Promise<void>;
+  setSelectedListingId: (id: string | "all") => void;
+  fetchCalendar: (listingId: string | "all", range: { start: string; end: string }) => Promise<void>;
 }
 
 export const useDashboardStore = create<DashboardState>((set, get) => ({
@@ -39,27 +40,42 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         paymentsApi.getTransactions(),
       ]);
 
+      const defaultSelection = listings.length > 1 ? "all" : listings.length === 1 ? listings[0].id : null;
+
       set({
         listings,
         messages,
         walletBalance: wallet.balance,
         transactions,
         isLoading: false,
-        selectedListingId: listings.length > 0 ? listings[0].id : null,
+        selectedListingId: defaultSelection,
       });
     } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+      const message = isSessionExpiredError(error) ? "SESSION_EXPIRED" : (error as Error).message;
+      set({ error: message, isLoading: false });
     }
   },
 
-  setSelectedListingId: (id: string) => {
+  setSelectedListingId: (id: string | "all") => {
     set({ selectedListingId: id });
   },
 
-  fetchCalendar: async (listingId: string, range: { start: string; end: string }) => {
+  fetchCalendar: async (listingId: string | "all", range: { start: string; end: string }) => {
     // Don't set global loading here to avoid flickering the whole dashboard,
     // could add a specific loading state for calendar if needed.
     try {
+      if (listingId === "all") {
+        const currentListings = get().listings;
+        if (currentListings.length === 0) {
+          set({ bookings: [] });
+          return;
+        }
+        const bookingsByListing = await Promise.all(
+          currentListings.map((listing) => listingsApi.getCalendar(listing.id, range))
+        );
+        set({ bookings: bookingsByListing.flat() });
+        return;
+      }
       const bookings = await listingsApi.getCalendar(listingId, range);
       set({ bookings });
     } catch (error) {

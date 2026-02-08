@@ -10,7 +10,6 @@ import {
   Loader2,
   TrendingUp,
   Users,
-  AlertCircle,
   ArrowRight,
   LogIn,
   LogOut,
@@ -20,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { format, isSameDay, parseISO } from "date-fns";
 import Link from "next/link";
+import { SessionExpiredCard } from "@/components/customer/SessionExpiredCard";
 
 export default function KaisaDashboardPage() {
   const { 
@@ -43,16 +43,16 @@ export default function KaisaDashboardPage() {
   }, [fetchDashboardData]);
 
   useEffect(() => {
-    if (selectedListingId) {
-      // Fetch calendar for current month when listing changes
-      fetchCalendar(selectedListingId, {
-        start: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).toISOString(),
-        end: new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).toISOString(),
-      });
-    }
+    if (!selectedListingId) return;
+    fetchCalendar(selectedListingId, {
+      start: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).toISOString(),
+      end: new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).toISOString(),
+    });
   }, [selectedListingId, currentMonth, fetchCalendar]);
 
-  const selectedListing = listings.find(l => l.id === selectedListingId);
+  const selectedListing = selectedListingId === "all"
+    ? null
+    : listings.find(l => l.id === selectedListingId);
 
   // Calendar Logic
   const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
@@ -61,13 +61,32 @@ export default function KaisaDashboardPage() {
   const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
   const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
 
+  const bookingStatusStyle = (status: string) => {
+    if (status === "confirmed" || status === "paid") {
+      return "bg-green-500/10 text-green-400 border-green-500/20";
+    }
+    if (status === "payment_pending" || status === "pending") {
+      return "bg-amber-500/10 text-amber-300 border-amber-500/20";
+    }
+    if (status === "draft") {
+      return "bg-white/10 text-white/40 border-white/10";
+    }
+    if (status === "cancelled" || status === "refunded") {
+      return "bg-red-500/10 text-red-300 border-red-500/20";
+    }
+    if (status === "blocked") {
+      return "bg-blue-500/10 text-blue-400 border-blue-500/20";
+    }
+    return "bg-white/10 text-white/40 border-white/10";
+  };
+
   // --- Mobile Stats Calculation ---
   const today = new Date();
   const checkInsToday = bookings.filter(b => isSameDay(parseISO(b.startDate), today));
   const checkOutsToday = bookings.filter(b => isSameDay(parseISO(b.endDate), today));
   const unreadMessages = messages.filter(m => !m.read).length;
 
-  if (isLoading && !selectedListing) {
+  if (isLoading && !selectedListingId) {
     return (
       <div className="h-[60vh] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-white/40" />
@@ -75,11 +94,44 @@ export default function KaisaDashboardPage() {
     );
   }
 
-  if (error) {
+  if (error === "SESSION_EXPIRED") {
+    return <SessionExpiredCard />;
+  }
+
+  if (error || listings.length === 0) {
+    const aiManagerName = "Host AI";
+    const walletStatus = walletBalance > 0 ? "Active" : "Paused";
     return (
-      <div className="h-[60vh] flex items-center justify-center text-red-500 gap-2">
-        <AlertCircle className="w-6 h-6" />
-        <span>{error}</span>
+      <div className="space-y-6 pb-24 md:pb-0">
+        <div className="dashboard-surface p-6 space-y-4">
+          <div className="text-xs uppercase tracking-widest text-white/40">Status Overview</div>
+          <div className="text-lg font-semibold text-white">{aiManagerName}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+              <div className="text-xs text-white/50 uppercase tracking-wider">Wallet</div>
+              <div className="text-xl font-semibold text-white mt-2">{walletStatus}</div>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+              <div className="text-xs text-white/50 uppercase tracking-wider">Integrations</div>
+              <div className="text-xl font-semibold text-white mt-2">0 connected</div>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+              <div className="text-xs text-white/50 uppercase tracking-wider">AI Inbox</div>
+              <div className="text-xl font-semibold text-white mt-2">Waiting for setup</div>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/dashboard/kaisa/listings/new" className="px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold">
+              Add listing
+            </Link>
+            <Link href="/dashboard/integrations" className="px-4 py-2 rounded-lg border border-white/20 text-white text-sm font-semibold">
+              Connect integrations
+            </Link>
+          </div>
+          {error && (
+            <div className="text-xs text-white/40">Some data is still syncing. This overview is shown temporarily.</div>
+          )}
+        </div>
       </div>
     );
   }
@@ -104,7 +156,7 @@ export default function KaisaDashboardPage() {
       <div className="md:hidden space-y-4">
         
         {/* Today's Check-ins */}
-        <Link href="/dashboard/calendar" className="block bg-[#2A0A0A] border border-white/10 rounded-2xl p-5 active:scale-[0.98] transition-transform">
+        <Link href="/dashboard/calendar" className="block bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl p-5 active:scale-[0.98] transition-transform">
            <div className="flex justify-between items-start mb-2">
              <div className="p-2 bg-green-500/20 text-green-400 rounded-lg">
                <LogIn className="w-5 h-5" />
@@ -124,7 +176,7 @@ export default function KaisaDashboardPage() {
         </Link>
 
         {/* Today's Check-outs */}
-        <Link href="/dashboard/calendar" className="block bg-[#2A0A0A] border border-white/10 rounded-2xl p-5 active:scale-[0.98] transition-transform">
+        <Link href="/dashboard/calendar" className="block bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl p-5 active:scale-[0.98] transition-transform">
            <div className="flex justify-between items-start mb-2">
              <div className="p-2 bg-orange-500/20 text-orange-400 rounded-lg">
                <LogOut className="w-5 h-5" />
@@ -136,7 +188,7 @@ export default function KaisaDashboardPage() {
         </Link>
 
         {/* New Messages */}
-        <Link href="/dashboard/inbox" className="block bg-[#2A0A0A] border border-white/10 rounded-2xl p-5 active:scale-[0.98] transition-transform">
+        <Link href="/dashboard/inbox" className="block bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl p-5 active:scale-[0.98] transition-transform">
            <div className="flex justify-between items-start mb-2">
              <div className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
                <MessageSquare className="w-5 h-5" />
@@ -148,7 +200,7 @@ export default function KaisaDashboardPage() {
         </Link>
 
         {/* Wallet / Earnings */}
-        <Link href="/dashboard/kaisa/wallet" className="block bg-gradient-to-br from-[#2A0A0A] to-[#3A1010] border border-white/10 rounded-2xl p-5 active:scale-[0.98] transition-transform">
+        <Link href="/dashboard/billing" className="block bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl p-5 active:scale-[0.98] transition-transform">
            <div className="flex justify-between items-start mb-2">
              <div className="p-2 bg-white/10 text-white rounded-lg">
                <Wallet className="w-5 h-5" />
@@ -175,11 +227,14 @@ export default function KaisaDashboardPage() {
             <div className="relative">
               <select 
                 value={selectedListingId || ""}
-                onChange={(e) => setSelectedListingId(e.target.value)}
-                className="appearance-none w-full md:w-80 bg-[#2A0A0A] border border-white/10 text-white text-lg font-medium rounded-xl px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-red)] focus:border-transparent cursor-pointer shadow-sm hover:border-white/20 transition-colors"
+                onChange={(e) => setSelectedListingId(e.target.value as "all")}
+                className="appearance-none w-full md:w-80 bg-[var(--color-dashboard-surface)] border border-white/10 text-white text-lg font-medium rounded-xl px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-red)] focus:border-transparent cursor-pointer shadow-sm hover:border-white/20 transition-colors"
               >
+                {listings.length > 1 && (
+                  <option value="all">All properties</option>
+                )}
                 {listings.map(l => (
-                  <option key={l.id} value={l.id}>{l.title}</option>
+                  <option key={l.id} value={l.id}>{l.name}</option>
                 ))}
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none w-5 h-5" />
@@ -188,7 +243,7 @@ export default function KaisaDashboardPage() {
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[#2A0A0A] border border-white/10 p-4 rounded-xl shadow-sm min-w-[160px]">
+            <div className="bg-[var(--color-dashboard-surface)] border border-white/10 p-4 rounded-xl shadow-sm min-w-[160px]">
               <div className="flex items-center gap-2 text-white/50 mb-1">
                 <Users className="w-4 h-4" />
                 <span className="text-xs font-semibold uppercase tracking-wider">Occupancy</span>
@@ -196,7 +251,7 @@ export default function KaisaDashboardPage() {
               <div className="text-2xl font-bold text-white">85%</div>
               <div className="text-xs text-green-500 font-medium">+12% vs last month</div>
             </div>
-            <div className="bg-[#2A0A0A] border border-white/10 p-4 rounded-xl shadow-sm min-w-[160px]">
+            <div className="bg-[var(--color-dashboard-surface)] border border-white/10 p-4 rounded-xl shadow-sm min-w-[160px]">
               <div className="flex items-center gap-2 text-white/50 mb-1">
                 <TrendingUp className="w-4 h-4" />
                 <span className="text-xs font-semibold uppercase tracking-wider">Est. Revenue</span>
@@ -210,7 +265,7 @@ export default function KaisaDashboardPage() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           
           {/* Calendar View (Main) */}
-          <div className="xl:col-span-2 bg-[#2A0A0A] border border-white/10 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[600px]">
+          <div className="xl:col-span-2 bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[600px]">
             <div className="p-4 md:p-6 border-b border-white/10 flex items-center justify-between">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <CalendarIcon className="w-5 h-5 text-[var(--color-brand-red)]" />
@@ -240,7 +295,7 @@ export default function KaisaDashboardPage() {
                   ))}
                   
                   {Array.from({ length: firstDay }).map((_, i) => (
-                    <div key={`empty-${i}`} className="bg-[#2A0A0A] min-h-[100px]" />
+                    <div key={`empty-${i}`} className="bg-[var(--color-dashboard-surface)] min-h-[100px]" />
                   ))}
 
                   {Array.from({ length: daysInMonth }).map((_, i) => {
@@ -255,7 +310,7 @@ export default function KaisaDashboardPage() {
                     });
 
                     return (
-                      <div key={day} className="bg-[#2A0A0A] min-h-[100px] p-2 hover:bg-white/5 transition-colors border-t border-white/5 relative">
+                      <div key={day} className="bg-[var(--color-dashboard-surface)] min-h-[100px] p-2 hover:bg-white/5 transition-colors border-t border-white/5 relative">
                         <span className={cn(
                           "text-sm font-medium block mb-1",
                           dateObj.toDateString() === new Date().toDateString() ? "text-white bg-[var(--color-brand-red)] w-6 h-6 flex items-center justify-center rounded-full" : "text-white/60"
@@ -268,9 +323,7 @@ export default function KaisaDashboardPage() {
                               key={b.id} 
                               className={cn(
                                 "text-[10px] px-1.5 py-1 rounded font-medium truncate border",
-                                b.status === 'confirmed' ? "bg-green-500/10 text-green-400 border-green-500/20" :
-                                b.status === 'blocked' ? "bg-white/10 text-white/40 border-white/10" :
-                                "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                                bookingStatusStyle(b.status)
                               )}
                             >
                               {b.guestName}
@@ -288,7 +341,7 @@ export default function KaisaDashboardPage() {
           <div className="space-y-6">
             
             {/* Messages */}
-            <div className="bg-[#2A0A0A] border border-white/10 rounded-2xl shadow-sm overflow-hidden h-[400px] flex flex-col">
+            <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl shadow-sm overflow-hidden h-[400px] flex flex-col">
                <div className="p-4 border-b border-white/10 flex items-center justify-between">
                   <h2 className="text-lg font-bold text-white flex items-center gap-2">
                     <MessageSquare className="w-5 h-5 text-[var(--color-brand-red)]" />

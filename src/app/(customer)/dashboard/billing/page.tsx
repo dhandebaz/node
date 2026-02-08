@@ -3,7 +3,10 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowDownLeft, ArrowUpRight, Calendar, Download, Wallet } from "lucide-react";
+import { AlertTriangle, ArrowDownLeft, Calendar, Download, Wallet } from "lucide-react";
+import { fetchWithAuth } from "@/lib/api/fetcher";
+import { SessionExpiredCard } from "@/components/customer/SessionExpiredCard";
+import { SessionExpiredError } from "@/lib/api/errors";
 
 type BillingSummary = {
   aiManager: { name: string | null; slug: string | null } | null;
@@ -83,6 +86,7 @@ export default function BillingPage() {
   const [customAmount, setCustomAmount] = useState("");
   const [topUpError, setTopUpError] = useState<string | null>(null);
   const [topUpLoading, setTopUpLoading] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   const loadData = async () => {
     try {
@@ -92,22 +96,10 @@ export default function BillingPage() {
       setInvoicesError(null);
 
       const results = await Promise.allSettled([
-        fetch("/api/billing/summary").then(async (res) => {
-          if (!res.ok) throw new Error("Failed to load billing summary.");
-          return res.json();
-        }),
-        fetch("/api/wallet").then(async (res) => {
-          if (!res.ok) throw new Error("Failed to load wallet.");
-          return res.json();
-        }),
-        fetch("/api/wallet/transactions").then(async (res) => {
-          if (!res.ok) throw new Error("Failed to load wallet activity.");
-          return res.json();
-        }),
-        fetch("/api/invoices").then(async (res) => {
-          if (!res.ok) throw new Error("Failed to load invoices.");
-          return res.json();
-        })
+        fetchWithAuth<BillingSummary>("/api/billing/summary"),
+        fetchWithAuth<WalletSnapshot>("/api/wallet"),
+        fetchWithAuth<WalletTransaction[]>("/api/wallet/transactions"),
+        fetchWithAuth<InvoiceRecord[]>("/api/invoices")
       ]);
 
       const summaryResult = results[0];
@@ -116,7 +108,15 @@ export default function BillingPage() {
       const invoicesResult = results[3];
 
       if (summaryResult.status === "rejected" || walletResult.status === "rejected") {
-        throw new Error("Unable to load billing data.");
+        if (summaryResult.status === "rejected" && summaryResult.reason instanceof SessionExpiredError) {
+          setSessionExpired(true);
+          return;
+        }
+        if (walletResult.status === "rejected" && walletResult.reason instanceof SessionExpiredError) {
+          setSessionExpired(true);
+          return;
+        }
+        throw new Error("Connect your wallet to view billing.");
       }
 
       setSummary(summaryResult.value);
@@ -126,17 +126,29 @@ export default function BillingPage() {
         setTransactions(transactionsResult.value || []);
       } else {
         setTransactions([]);
-        setTransactionsError(transactionsResult.reason?.message || "Unable to load usage activity.");
+        if (transactionsResult.reason instanceof SessionExpiredError) {
+          setSessionExpired(true);
+          return;
+        }
+        setTransactionsError("Usage will appear once AI starts working.");
       }
 
       if (invoicesResult.status === "fulfilled") {
         setInvoices(invoicesResult.value || []);
       } else {
         setInvoices([]);
-        setInvoicesError(invoicesResult.reason?.message || "Unable to load invoices.");
+        if (invoicesResult.reason instanceof SessionExpiredError) {
+          setSessionExpired(true);
+          return;
+        }
+        setInvoicesError("Invoices will appear once billing is active.");
       }
     } catch (err: any) {
-      setError(err?.message || "Unable to load billing data.");
+      if (err instanceof SessionExpiredError) {
+        setSessionExpired(true);
+        return;
+      }
+      setError("Billing will appear once your account is active.");
     } finally {
       setLoading(false);
     }
@@ -169,25 +181,28 @@ export default function BillingPage() {
     try {
       setTopUpLoading(true);
       setTopUpError(null);
-      const response = await fetch("/api/wallet/topup", {
+      await fetchWithAuth<{ balance: number }>("/api/wallet/topup", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: Number(effectiveAmount) })
       });
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data?.error || "Top up failed.");
-      }
       setShowTopUp(false);
       setCustomAmount("");
       setSelectedPreset(presetAmounts[1]);
       await loadData();
     } catch (err: any) {
-      setTopUpError(err?.message || "Top up failed.");
+      if (err instanceof SessionExpiredError) {
+        setSessionExpired(true);
+        return;
+      }
+      setTopUpError("Top up failed.");
     } finally {
       setTopUpLoading(false);
     }
   };
+
+  if (sessionExpired) {
+    return <SessionExpiredCard />;
+  }
 
   if (loading) {
     return (
@@ -199,8 +214,8 @@ export default function BillingPage() {
 
   if (error || !summary || !wallet) {
     return (
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-zinc-300">
-        {error || "Unable to load billing details."}
+      <div className="dashboard-surface p-6 text-zinc-300">
+        {error || "Billing will appear once your account is active."}
       </div>
     );
   }
@@ -227,7 +242,7 @@ export default function BillingPage() {
       )}
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <section className="xl:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
+        <section className="xl:col-span-2 dashboard-surface p-6 space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="text-xs uppercase tracking-widest text-zinc-500">AI Manager hired</div>
@@ -255,7 +270,7 @@ export default function BillingPage() {
           </div>
         </section>
 
-        <section className="bg-gradient-to-br from-[#2A0A0A] to-[#3A1010] border border-white/10 rounded-2xl p-6 space-y-4">
+        <section className="dashboard-surface p-6 space-y-4">
           <div className="flex items-center gap-2 text-white/70">
             <Wallet className="w-5 h-5" />
             <span className="text-xs uppercase tracking-widest">Wallet balance</span>
@@ -286,7 +301,7 @@ export default function BillingPage() {
           <h2 className="text-lg font-semibold text-white">AI usage deductions</h2>
           <span className="text-xs text-zinc-500 uppercase tracking-widest">Most recent</span>
         </div>
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl divide-y divide-zinc-800">
+        <div className="dashboard-surface divide-y divide-white/10">
           {transactionsError && (
             <div className="p-6 text-sm text-zinc-500">{transactionsError}</div>
           )}
@@ -314,10 +329,10 @@ export default function BillingPage() {
           <span className="text-xs text-zinc-500 uppercase tracking-widest">Read-only</span>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl">
+        <div className="dashboard-surface">
           <div className="hidden md:block">
             <table className="w-full text-sm text-left">
-              <thead className="bg-zinc-950/50 text-zinc-400 border-b border-zinc-800">
+              <thead className="bg-white/5 text-zinc-400 border-b border-white/10">
                 <tr>
                   <th className="px-6 py-4 font-medium">Date</th>
                   <th className="px-6 py-4 font-medium">Description</th>
@@ -326,7 +341,7 @@ export default function BillingPage() {
                   <th className="px-6 py-4 font-medium text-right">Download</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800">
+              <tbody className="divide-y divide-white/10">
                 {invoices.map((inv) => (
                   <tr key={inv.id} className="hover:bg-zinc-800/40 transition-colors">
                     <td className="px-6 py-4 text-zinc-300">
@@ -373,7 +388,7 @@ export default function BillingPage() {
             </table>
           </div>
 
-          <div className="md:hidden divide-y divide-zinc-800">
+          <div className="md:hidden divide-y divide-white/10">
             {invoices.length === 0 && !invoicesError && (
               <div className="p-6 text-sm text-zinc-500">No invoices available.</div>
             )}
@@ -408,7 +423,7 @@ export default function BillingPage() {
 
       {showTopUp && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 px-4 py-6">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-lg p-6 space-y-6">
+          <div className="dashboard-surface w-full max-w-lg p-6 space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-white">Top up credits</h3>
               <p className="text-sm text-zinc-400">Credits are used only when AI works.</p>
@@ -424,7 +439,7 @@ export default function BillingPage() {
                       setSelectedPreset(amount);
                       setCustomAmount("");
                     }}
-                    className={`py-3 rounded-xl border text-sm font-semibold ${selectedPreset === amount ? "border-white text-white bg-white/10" : "border-zinc-700 text-zinc-300 hover:border-zinc-500"}`}
+                    className={`py-3 rounded-xl border text-sm font-semibold ${selectedPreset === amount ? "border-white text-white bg-white/10" : "border-white/20 text-zinc-300 hover:border-white/40"}`}
                   >
                     {formatCredits(amount)} credits
                   </button>
@@ -441,7 +456,7 @@ export default function BillingPage() {
                   setSelectedPreset(null);
                 }}
                 placeholder="Enter credits"
-                className="w-full bg-black/40 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/60"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/60"
               />
             </div>
 
@@ -457,7 +472,7 @@ export default function BillingPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowTopUp(false)}
-                className="flex-1 py-3 rounded-xl border border-zinc-700 text-sm text-zinc-300 hover:border-zinc-500"
+                className="flex-1 py-3 rounded-xl border border-white/20 text-sm text-zinc-300 hover:border-white/40"
               >
                 Cancel
               </button>

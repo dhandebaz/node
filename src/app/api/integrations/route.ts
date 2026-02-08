@@ -15,7 +15,7 @@ export async function GET() {
   // Fetch integrations
   const { data: integrations, error } = await supabase
     .from('integrations')
-    .select('id, user_id, provider, status, last_sync, expires_at, error_code, metadata, scopes') // Exclude tokens
+    .select('id, user_id, provider, status, last_sync, last_synced_at, expires_at, error_code, metadata, scopes, connected_email, connected_name') // Exclude tokens
     .eq('user_id', session.userId);
 
   if (error) {
@@ -29,10 +29,13 @@ export async function GET() {
     provider: i.provider,
     status: i.status,
     lastSync: i.last_sync,
+    lastSyncedAt: i.last_synced_at,
     expiresAt: i.expires_at,
     errorCode: i.error_code,
     metadata: i.metadata,
-    scopes: i.scopes
+    scopes: i.scopes,
+    connectedEmail: i.connected_email,
+    connectedName: i.connected_name
   }));
 
   return NextResponse.json(formattedIntegrations);
@@ -96,5 +99,4 @@ export async function POST(request: Request) {
     lastSync: data.last_sync
   });
 }
-
 

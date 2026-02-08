@@ -20,6 +20,7 @@
   --color-muted-foreground: rgba(255, 255, 255, 0.6);
   
   --color-border: rgba(255, 255, 255, 0.2);
+  --color-dashboard-surface: #2A0A0A;
   
   --font-sans: var(--font-alfa-slab-one);
   --font-mono: var(--font-alfa-slab-one);
@@ -86,6 +87,12 @@
 
   .glass-card {
     @apply bg-brand-bone/5 backdrop-blur-md border border-brand-bone/10 shadow-sm;
+  }
+
+  .dashboard-surface {
+    background-color: var(--color-dashboard-surface);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
   }
 }
 
