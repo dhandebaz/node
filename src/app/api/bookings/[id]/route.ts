@@ -31,12 +31,14 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       .eq("booking_id", booking.id)
       .maybeSingle();
 
+    const guest = Array.isArray(booking.guests) ? booking.guests[0] : booking.guests;
+
     return NextResponse.json({
       booking: {
         id: booking.id,
         listing_id: booking.listing_id,
-        guest_name: booking.guests?.name || "Guest",
-        guest_contact: booking.guest_contact || booking.guests?.phone || booking.guests?.email || null,
+        guest_name: guest?.name || "Guest",
+        guest_contact: booking.guest_contact || guest?.phone || guest?.email || null,
         check_in: booking.start_date,
         check_out: booking.end_date,
         amount: Number(booking.amount || 0),
