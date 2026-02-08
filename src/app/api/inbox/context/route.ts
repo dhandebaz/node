@@ -103,9 +103,10 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(null);
       }
 
+      const listing = Array.isArray(booking.listings) ? booking.listings[0] : booking.listings;
       const idStatus = booking.id_status || "not_requested";
       const fields = [
-        { label: "Listing", value: booking.listings?.name || "Property" },
+        { label: "Listing", value: listing?.name || "Property" },
         { label: "Dates", value: `${new Date(booking.start_date).toLocaleDateString("en-IN")} → ${new Date(booking.end_date).toLocaleDateString("en-IN")}` },
         { label: "ID Status", value: idStatus.replace("_", " "), tone: idStatus === "approved" ? "good" : idStatus === "rejected" ? "bad" : "warn" }
       ];
