@@ -216,7 +216,7 @@ export default function ListingDetailPage() {
         <div className="dashboard-surface p-6 space-y-6">
           <div className="text-sm font-semibold text-white">External calendar links</div>
           <div className="grid gap-4">
-            {(integrations.length ? integrations : (["airbnb", "booking", "mmt"] as ListingPlatform[])).map((platform) => {
+            {(["airbnb", "booking", "mmt"] as ListingPlatform[]).map((platform) => {
               const integration = integrations.find((item) => item.platform === platform);
               return (
                 <div key={platform} className="space-y-2">
