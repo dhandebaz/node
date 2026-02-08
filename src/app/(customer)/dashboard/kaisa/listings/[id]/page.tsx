@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { CheckCircle2, Link2, Calendar, MessageSquare, Copy } from "lucide-react";
-import { Listing, ListingIntegration, ListingCalendar, ListingPlatform } from "@/types";
+import { Listing, ListingIntegration, ListingCalendar, ListingPlatform, ListingIntegrationStatus } from "@/types";
 import { listingsApi } from "@/lib/api/listings";
 
 const platformLabels: Record<ListingPlatform, string> = {
@@ -89,9 +89,9 @@ export default function ListingDetailPage() {
     try {
       setSaving(true);
       setMessage(null);
-      const payload = integrations.map((integration) => ({
+      const payload: ListingIntegration[] = integrations.map((integration) => ({
         ...integration,
-        status: integration.externalIcalUrl ? "connected" : "not_connected"
+        status: (integration.externalIcalUrl ? "connected" : "not_connected") as ListingIntegrationStatus
       }));
       await listingsApi.updateIntegrations(listingId, payload);
       setMessage("Calendar links saved.");
