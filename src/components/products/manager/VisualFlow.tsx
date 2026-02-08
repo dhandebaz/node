@@ -38,7 +38,16 @@ export function VisualFlow() {
           result = await messagesApi.sendAiReply("demo-msg-id");
           break;
         case 2: // Payment Link
-          result = await paymentsApi.sendPaymentLink("demo-booking-id", 5000);
+          result = await paymentsApi.createPaymentLink({
+            listingId: "demo-listing",
+            guestName: "Demo Guest",
+            guestPhone: null,
+            guestEmail: null,
+            amount: 5000,
+            checkIn: new Date().toISOString().slice(0, 10),
+            checkOut: new Date(Date.now() + 86400000).toISOString().slice(0, 10),
+            notes: "Demo payment link"
+          });
           break;
         case 3: // Block Calendar
           result = await listingsApi.blockCalendar("demo-listing", { 
