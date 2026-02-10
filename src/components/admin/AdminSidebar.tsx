@@ -16,7 +16,11 @@ import {
   ShieldCheck,
   LogOut,
   Menu,
-  X
+  X,
+  ClipboardList,
+  AlertTriangle,
+  Flag,
+  Rocket
 } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/ui/Logo";
@@ -27,10 +31,15 @@ const navItems = [
   { name: "AI Rules", href: "/admin/ai-rules", icon: ShieldCheck },
   { name: "Pricing & Costs", href: "/admin/pricing", icon: DollarSign },
   { name: "Customers", href: "/admin/customers", icon: Users },
+  { name: "Growth & Referrals", href: "/admin/growth", icon: TrendingUp },
   { name: "Usage & Wallets", href: "/admin/usage", icon: Wallet },
   { name: "Integrations Health", href: "/admin/integrations", icon: Plug },
+  { name: "System Failures", href: "/admin/failures", icon: AlertTriangle },
+  { name: "Launch Control", href: "/admin/launch", icon: Rocket },
+  { name: "System Controls", href: "/admin/system", icon: Settings },
+  { name: "Feature Flags", href: "/admin/features", icon: Flag },
+  { name: "Audit Logs", href: "/admin/audit", icon: ClipboardList },
   { name: "System Logs", href: "/admin/logs", icon: FileText },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 export function AdminSidebar() {

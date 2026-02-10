@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseServer } from '@/lib/supabase/server';
+import { requireActiveTenant } from '@/lib/auth/tenant';
 
 export async function GET() {
   const supabase = await getSupabaseServer();
@@ -11,10 +12,12 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
+
   const { data: transactions, error } = await supabase
     .from('wallet_transactions')
     .select('*')
-    .eq('host_id', user.id)
+    .eq('tenant_id', tenantId)
     .order('timestamp', { ascending: false });
 
   if (error) {

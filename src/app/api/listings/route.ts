@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSession } from "@/lib/auth/session";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { SubscriptionService } from "@/lib/services/subscriptionService";
 
 const getBaseUrl = (request: Request) => {
   const headers = request.headers;
@@ -15,12 +17,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
+
   const supabase = await getSupabaseServer();
   
   const { data: listings, error } = await supabase
     .from("listings")
     .select("*")
-    .eq("host_id", session.userId);
+    .eq("tenant_id", tenantId);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -84,6 +88,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
+
+  const { allowed, limit, current } = await SubscriptionService.checkLimit(tenantId, 'listings');
+  if (!allowed) {
+    return NextResponse.json({ 
+      error: `Plan limit reached. Your current plan allows ${limit} listings. You have ${current}.` 
+    }, { status: 403 });
+  }
+
   const body = await request.json();
   const title = body?.title?.trim();
   const location = body?.location?.trim() || '';
@@ -97,6 +110,7 @@ export async function POST(request: Request) {
   const { data, error } = await supabase
     .from('listings')
     .insert({
+      tenant_id: tenantId,
       host_id: user.id,
       title,
       location,

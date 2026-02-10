@@ -49,6 +49,7 @@ export interface UserMetadata {
 
 export interface KaisaProfile {
   businessType: string;
+  tenantId?: string; // Added tenantId
   activeModules: string[];
   role: KaisaRoleType;
   status: "active" | "paused";
@@ -75,6 +76,8 @@ export interface UserProfile {
   fullName: string | null;
 }
 
+import { Tenant } from "./index";
+
 export interface User {
   identity: UserIdentity;
   profile: UserProfile | null;
@@ -82,6 +85,7 @@ export interface User {
   roles: UserRoles;
   metadata: UserMetadata;
   products: UserProductProfiles;
+  tenant?: Tenant; // Full tenant context
 }
 
 export interface AuditLog {

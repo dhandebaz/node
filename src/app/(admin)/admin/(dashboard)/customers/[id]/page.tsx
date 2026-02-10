@@ -31,6 +31,14 @@ type CustomerDetail = {
   };
   integrations: Array<{ id: string; provider: string; status: string; last_sync: string | null; expires_at: string | null; error_code: string | null }>;
   activityLogs: Array<{ id: string; severity: string; service: string; message: string; timestamp: string }>;
+  controls?: {
+    is_ai_enabled: boolean;
+    is_messaging_enabled: boolean;
+    is_bookings_enabled: boolean;
+    is_wallet_enabled: boolean;
+    early_access: boolean;
+  };
+  tenantId?: string;
 };
 
 async function fetchJson<T>(url: string): Promise<T> {
@@ -40,6 +48,108 @@ async function fetchJson<T>(url: string): Promise<T> {
     throw new Error(payload?.error || "Request failed");
   }
   return response.json();
+}
+
+function OverrideForm({ type, label, placeholder, onSuccess }: { type: string, label: string, placeholder: string, onSuccess: () => void }) {
+  const [id, setId] = useState("");
+  const [reason, setReason] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id || !reason) return;
+    
+    setLoading(true);
+    setMessage(null);
+    
+    try {
+      const response = await fetch("/api/admin/overrides", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, id, reason })
+      });
+      
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload?.error || "Action failed");
+      }
+      
+      setMessage({ text: "Success", type: "success" });
+      setId("");
+      setReason("");
+      onSuccess();
+    } catch (err: any) {
+      setMessage({ text: err.message, type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div>
+        <label className="text-xs text-zinc-500 block mb-1">{label}</label>
+        <input 
+          type="text" 
+          value={id} 
+          onChange={e => setId(e.target.value)} 
+          className="w-full bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-sm text-white focus:border-zinc-700 outline-none"
+          placeholder={placeholder}
+        />
+      </div>
+      <div>
+        <label className="text-xs text-zinc-500 block mb-1">Reason (Required)</label>
+        <input 
+          type="text" 
+          value={reason} 
+          onChange={e => setReason(e.target.value)} 
+          className="w-full bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-sm text-white focus:border-zinc-700 outline-none"
+          placeholder="Why are you overriding this?"
+        />
+      </div>
+      {message && (
+        <div className={`text-xs ${message.type === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>
+          {message.text}
+        </div>
+      )}
+      <button 
+        type="submit" 
+        disabled={loading || !id || !reason}
+        className="w-full py-2 bg-white text-black rounded text-xs font-bold hover:bg-zinc-200 disabled:opacity-50 transition-colors"
+      >
+        {loading ? "Processing..." : "Apply Override"}
+      </button>
+    </form>
+  );
+}
+
+export type TenantControlKey =
+  | 'is_ai_enabled'
+  | 'is_messaging_enabled'
+  | 'is_bookings_enabled'
+  | 'is_wallet_enabled'
+  | 'early_access';
+
+function ToggleSwitch({ label, checked, onChange, disabled }: { label: string, checked: boolean, onChange: () => void, disabled?: boolean }) {
+  return (
+    <div className="flex items-center justify-between p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
+      <span className="text-sm font-medium text-zinc-300">{label}</span>
+      <button
+        onClick={onChange}
+        disabled={disabled}
+        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+          checked ? "bg-emerald-500" : "bg-zinc-700"
+        } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+      >
+        <span
+          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+            checked ? "translate-x-6" : "translate-x-1"
+          }`}
+        />
+      </button>
+    </div>
+  );
 }
 
 export default function AdminCustomerDetailPage() {
@@ -115,6 +225,32 @@ export default function AdminCustomerDetailPage() {
     }
   };
 
+  const toggleControl = async (control: TenantControlKey, currentValue: boolean) => {
+    if (!data?.tenantId) return;
+    
+    // Prompt for reason
+    const reason = prompt("Why are you changing this control? (Required for audit log)");
+    if (!reason) return;
+
+    setUpdating(true);
+    try {
+      const response = await fetch(`/api/admin/tenants/${data.tenantId}/control`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ control, value: !currentValue, reason })
+      });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload?.error || "Failed to update control");
+      }
+      loadCustomer();
+    } catch (err: any) {
+      setError(err.message || "Failed to update");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const tabClass = (tab: string) =>
     `px-4 py-2 text-xs uppercase tracking-widest border-b-2 ${activeTab === tab ? "text-white border-white" : "text-zinc-500 border-transparent hover:text-zinc-300"}`;
 
@@ -153,8 +289,218 @@ export default function AdminCustomerDetailPage() {
         <button className={tabClass("ai")} onClick={() => setActiveTab("ai")}>AI Manager</button>
         <button className={tabClass("wallet")} onClick={() => setActiveTab("wallet")}>Wallet & Usage</button>
         <button className={tabClass("integrations")} onClick={() => setActiveTab("integrations")}>Integrations</button>
+        <button className={tabClass("controls")} onClick={() => setActiveTab("controls")}>Controls</button>
+        <button className={tabClass("overrides")} onClick={() => setActiveTab("overrides")}>Overrides</button>
         <button className={tabClass("activity")} onClick={() => setActiveTab("activity")}>Activity Logs</button>
       </div>
+
+      {activeTab === "overrides" && (
+        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-white">Manual Overrides</h3>
+            <p className="text-sm text-zinc-400">Emergency actions. Use with caution.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Booking Override */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 space-y-4">
+              <div>
+                <div className="text-sm font-medium text-white mb-1">Force Confirm Booking</div>
+                <p className="text-xs text-zinc-400">Manually mark a booking as confirmed.</p>
+              </div>
+              <OverrideForm 
+                type="booking_confirm" 
+                label="Booking ID" 
+                placeholder="e.g. bkg_123..." 
+                onSuccess={loadCustomer}
+              />
+            </div>
+
+            {/* KYC Override */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 space-y-4">
+              <div>
+                <div className="text-sm font-medium text-white mb-1">Force Verify ID</div>
+                <p className="text-xs text-zinc-400">Manually mark a booking's guest ID as verified.</p>
+              </div>
+              <OverrideForm 
+                type="kyc_approve" 
+                label="Booking ID" 
+                placeholder="e.g. bkg_123..." 
+                onSuccess={loadCustomer}
+              />
+            </div>
+
+            {/* Payment Override */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 space-y-4">
+              <div>
+                <div className="text-sm font-medium text-white mb-1">Mark Payment Paid</div>
+                <p className="text-xs text-zinc-400">Manually mark a payment transaction as completed.</p>
+              </div>
+              <OverrideForm 
+                type="payment_mark_paid" 
+                label="Payment ID" 
+                placeholder="e.g. pay_123..." 
+                onSuccess={loadCustomer}
+              />
+            </div>
+
+            {/* Wallet Reversal Override */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 space-y-4">
+              <div>
+                <div className="text-sm font-medium text-white mb-1">Reverse Wallet Debit</div>
+                <p className="text-xs text-zinc-400">Refund a debit transaction back to wallet.</p>
+              </div>
+              <OverrideForm 
+                type="wallet_reverse_debit" 
+                label="Transaction ID" 
+                placeholder="e.g. tx_123..." 
+                onSuccess={loadCustomer}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "controls" && (
+        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-white">Tenant Controls</h3>
+            <p className="text-sm text-zinc-400">Manage high-risk capabilities for this tenant.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* AI Control */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-medium text-white">AI Employees</div>
+                  <div className={`px-2 py-0.5 rounded text-xs ${data.controls?.is_ai_enabled ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"}`}>
+                    {data.controls?.is_ai_enabled ? "Enabled" : "Disabled"}
+                  </div>
+                </div>
+                <p className="text-xs text-zinc-400 mb-4">
+                  Controls whether AI employees can reply to messages and take actions.
+                </p>
+              </div>
+              <button
+                onClick={() => toggleControl("is_ai_enabled", !!data.controls?.is_ai_enabled)}
+                disabled={updating}
+                className={`w-full py-2 rounded-md text-xs font-semibold transition-colors ${
+                  data.controls?.is_ai_enabled
+                    ? "bg-red-900/30 text-red-400 hover:bg-red-900/50 border border-red-900/50"
+                    : "bg-emerald-900/30 text-emerald-400 hover:bg-emerald-900/50 border border-emerald-900/50"
+                }`}
+              >
+                {data.controls?.is_ai_enabled ? "Pause AI" : "Resume AI"}
+              </button>
+            </div>
+
+            {/* Messaging Control */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-medium text-white">Messaging</div>
+                  <div className={`px-2 py-0.5 rounded text-xs ${data.controls?.is_messaging_enabled ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"}`}>
+                    {data.controls?.is_messaging_enabled ? "Enabled" : "Disabled"}
+                  </div>
+                </div>
+                <p className="text-xs text-zinc-400 mb-4">
+                  Controls outbound messages (manual & AI). Inbound messages are still received.
+                </p>
+              </div>
+              <button
+                onClick={() => toggleControl("is_messaging_enabled", !!data.controls?.is_messaging_enabled)}
+                disabled={updating}
+                className={`w-full py-2 rounded-md text-xs font-semibold transition-colors ${
+                  data.controls?.is_messaging_enabled
+                    ? "bg-red-900/30 text-red-400 hover:bg-red-900/50 border border-red-900/50"
+                    : "bg-emerald-900/30 text-emerald-400 hover:bg-emerald-900/50 border border-emerald-900/50"
+                }`}
+              >
+                {data.controls?.is_messaging_enabled ? "Pause Messaging" : "Resume Messaging"}
+              </button>
+            </div>
+
+            {/* Bookings Control */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-medium text-white">Bookings</div>
+                  <div className={`px-2 py-0.5 rounded text-xs ${data.controls?.is_bookings_enabled ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"}`}>
+                    {data.controls?.is_bookings_enabled ? "Enabled" : "Disabled"}
+                  </div>
+                </div>
+                <p className="text-xs text-zinc-400 mb-4">
+                  Controls whether new bookings can be created via any channel.
+                </p>
+              </div>
+              <button
+                onClick={() => toggleControl("is_bookings_enabled", !!data.controls?.is_bookings_enabled)}
+                disabled={updating}
+                className={`w-full py-2 rounded-md text-xs font-semibold transition-colors ${
+                  data.controls?.is_bookings_enabled
+                    ? "bg-red-900/30 text-red-400 hover:bg-red-900/50 border border-red-900/50"
+                    : "bg-emerald-900/30 text-emerald-400 hover:bg-emerald-900/50 border border-emerald-900/50"
+                }`}
+              >
+                {data.controls?.is_bookings_enabled ? "Freeze Bookings" : "Unfreeze Bookings"}
+              </button>
+            </div>
+
+            {/* Wallet Control */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-medium text-white">Wallet</div>
+                  <div className={`px-2 py-0.5 rounded text-xs ${data.controls?.is_wallet_enabled ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"}`}>
+                    {data.controls?.is_wallet_enabled ? "Enabled" : "Disabled"}
+                  </div>
+                </div>
+                <p className="text-xs text-zinc-400 mb-4">
+                  Controls wallet usage. If disabled, paid features will fail gracefully.
+                </p>
+              </div>
+              <button
+                onClick={() => toggleControl("is_wallet_enabled", !!data.controls?.is_wallet_enabled)}
+                disabled={updating}
+                className={`w-full py-2 rounded-md text-xs font-semibold transition-colors ${
+                  data.controls?.is_wallet_enabled
+                    ? "bg-red-900/30 text-red-400 hover:bg-red-900/50 border border-red-900/50"
+                    : "bg-emerald-900/30 text-emerald-400 hover:bg-emerald-900/50 border border-emerald-900/50"
+                }`}
+              >
+                {data.controls?.is_wallet_enabled ? "Freeze Wallet" : "Unfreeze Wallet"}
+              </button>
+            </div>
+
+            {/* Early Access Control */}
+            <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-medium text-white">Early Access</div>
+                  <div className={`px-2 py-0.5 rounded text-xs ${data.controls?.early_access ? "bg-emerald-500/10 text-emerald-500" : "bg-zinc-500/10 text-zinc-500"}`}>
+                    {data.controls?.early_access ? "Active" : "Inactive"}
+                  </div>
+                </div>
+                <p className="text-xs text-zinc-400 mb-4">
+                  Grants access to beta features for the First 100 cohort.
+                </p>
+              </div>
+              <button
+                onClick={() => toggleControl("early_access", !!data.controls?.early_access)}
+                disabled={updating}
+                className={`w-full py-2 rounded-md text-xs font-semibold transition-colors ${
+                  data.controls?.early_access
+                    ? "bg-red-900/30 text-red-400 hover:bg-red-900/50 border border-red-900/50"
+                    : "bg-emerald-900/30 text-emerald-400 hover:bg-emerald-900/50 border border-emerald-900/50"
+                }`}
+              >
+                {data.controls?.early_access ? "Revoke Access" : "Grant Access"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {activeTab === "profile" && (
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 grid grid-cols-1 md:grid-cols-3 gap-6">

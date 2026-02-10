@@ -13,6 +13,8 @@ import {
 } from "@/types/kaisa";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { userService } from "./userService";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
 
 // Initial Config (Read-only default for now)
 let GLOBAL_CONFIG: KaisaGlobalConfig = {
@@ -263,7 +265,34 @@ export const kaisaService = {
   },
 
   async logAction(log: Omit<KaisaAdminAuditLog, "id" | "timestamp">) {
-    // TODO: Implement audit_logs table
-    console.log("[Kaisa Audit]", log);
+    let eventType = EVENT_TYPES.ADMIN_MANUAL_OVERRIDE;
+    if (log.actionType === 'module_toggle') eventType = EVENT_TYPES.ADMIN_AI_MANAGER_TOGGLED;
+    if (log.actionType === 'config_change') eventType = EVENT_TYPES.AI_SETTINGS_CHANGED;
+    
+    // Determine entity
+    let entityType = 'system';
+    let entityId = null;
+    if (log.scope === 'user' && log.targetUserId) {
+        entityType = 'user';
+        entityId = log.targetUserId;
+    }
+
+    try {
+      await logEvent({
+        tenant_id: null, // Global admin action
+        actor_type: 'admin',
+        actor_id: log.adminId,
+        event_type: eventType,
+        entity_type: entityType,
+        entity_id: entityId,
+        metadata: {
+            details: log.details,
+            scope: log.scope,
+            action_type: log.actionType
+        }
+      });
+    } catch (error) {
+      console.error("Failed to log admin action:", error);
+    }
   }
 };

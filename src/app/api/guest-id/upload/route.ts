@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { randomUUID } from "crypto";
 import { saveEncryptedImage } from "@/lib/guestIdStorage";
 
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Missing token" }, { status: 400 });
     }
 
-    const supabase = await getSupabaseServer();
+    const supabase = await getSupabaseAdmin();
     const { data: record, error } = await supabase
       .from("guest_ids")
       .select("id, booking_id, guest_name, id_type, status")
@@ -48,6 +48,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -59,10 +62,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
     }
 
-    const supabase = await getSupabaseServer();
+    const supabase = await getSupabaseAdmin();
     const { data: record, error } = await supabase
       .from("guest_ids")
-      .select("id, booking_id, id_type")
+      .select("id, tenant_id, booking_id, id_type, bookings(guest_id)")
       .eq("upload_token", token)
       .maybeSingle();
 
@@ -99,6 +102,19 @@ export async function POST(request: NextRequest) {
       .from("bookings")
       .update({ id_status: "submitted" })
       .eq("id", record.booking_id);
+
+    // Log ID Submitted
+    const guestId = Array.isArray(record.bookings) ? record.bookings[0]?.guest_id : record.bookings?.guest_id;
+    
+    await logEvent({
+      tenant_id: record.tenant_id,
+      actor_type: 'user',
+      actor_id: guestId || null, // Guest is the actor
+      event_type: EVENT_TYPES.ID_SUBMITTED,
+      entity_type: 'guest_id',
+      entity_id: record.id,
+      metadata: { booking_id: record.booking_id, id_type: record.id_type }
+    });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

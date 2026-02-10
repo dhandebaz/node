@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSession } from "@/lib/auth/session";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 const getBaseUrl = (request: NextRequest) => {
   const headers = request.headers;
@@ -15,6 +16,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
+
   const supabase = await getSupabaseServer();
   const { id: listingId } = await params;
 
@@ -22,7 +25,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     .from("listings")
     .select("*")
     .eq("id", listingId)
-    .eq("host_id", session.userId)
+    .eq("tenant_id", tenantId)
     .maybeSingle();
 
   if (error) {
@@ -36,7 +39,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const [{ data: integrations }, { data: calendar }] = await Promise.all([
     supabase
       .from("listing_integrations")
-      .select("listing_id, platform, external_ical_url, last_synced_at, status")
+      .select("listing_id, platform, external_ical_url, last_synced_at, status, error_message")
       .eq("listing_id", listingId),
     supabase
       .from("listing_calendars")
@@ -66,7 +69,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       platform: integration.platform,
       externalIcalUrl: integration.external_ical_url || null,
       lastSyncedAt: integration.last_synced_at || null,
-      status: integration.status || "not_connected"
+      status: integration.status || "not_connected",
+      errorMessage: integration.error_message || null
     })),
     calendar: {
       listingId,

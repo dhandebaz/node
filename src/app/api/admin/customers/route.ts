@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/admin";
 
 export async function GET() {
   try {
+    await requireAdmin();
     const supabase = await getSupabaseServer();
     const [{ data: accounts, error: accountsError }, { data: users, error: usersError }, { data: profiles, error: profilesError }] = await Promise.all([
       supabase

@@ -1,95 +1,59 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
-const now = Date.now();
+export async function GET(request: Request) {
+  try {
+    const supabase = await getSupabaseServer();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-const conversations = [
-  {
-    id: "conv-1001",
-    customerName: "Ananya Sharma",
-    customerPhone: "+91 98989 11223",
-    channel: "whatsapp",
-    lastMessage: "Can we check in early tomorrow morning?",
-    lastMessageAt: new Date(now - 1000 * 60 * 12).toISOString(),
-    unreadCount: 2,
-    manager: { slug: "host-ai", name: "Host AI" },
-    status: "payment_pending"
-  },
-  {
-    id: "conv-1002",
-    customerName: "Riya Patel",
-    customerPhone: "+91 90000 12345",
-    channel: "instagram",
-    lastMessage: "Order shipped? Please share tracking update.",
-    lastMessageAt: new Date(now - 1000 * 60 * 48).toISOString(),
-    unreadCount: 0,
-    manager: { slug: "dukan-ai", name: "Dukan AI" },
-    status: "paid"
-  },
-  {
-    id: "conv-1003",
-    customerName: "Dr. Nikhil Verma",
-    customerPhone: "+91 98765 43210",
-    channel: "messenger",
-    lastMessage: "Can we reschedule the appointment to Friday?",
-    lastMessageAt: new Date(now - 1000 * 60 * 120).toISOString(),
-    unreadCount: 1,
-    manager: { slug: "nurse-ai", name: "Nurse AI" },
-    status: "scheduled"
-  },
-  {
-    id: "conv-1004",
-    customerName: null,
-    customerPhone: "+91 88888 54321",
-    channel: "web",
-    lastMessage: "Need pricing for a 3-night stay in March.",
-    lastMessageAt: new Date(now - 1000 * 60 * 260).toISOString(),
-    unreadCount: 0,
-    manager: { slug: "host-ai", name: "Host AI" },
-    status: "open"
-  }
-];
-
-export async function GET() {
-  const supabase = await getSupabaseServer();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const { data: bookingRows } = await supabase
-    .from("bookings")
-    .select("id, guest_contact, guests(name, phone, email), listings!inner(host_id)")
-    .eq("listings.host_id", user.id);
-
-  const normalizedBookings = (bookingRows || []).map((booking: any) => {
-    const guest = Array.isArray(booking.guests) ? booking.guests[0] : booking.guests;
-    return {
-      id: booking.id,
-      guestName: guest?.name || "",
-      guestPhone: booking.guest_contact || guest?.phone || guest?.email || ""
-    };
-  });
-
-  const withBooking = conversations.map((conversation) => {
-    const match = normalizedBookings.find(
-      (booking) =>
-        (conversation.customerPhone && booking.guestPhone && booking.guestPhone.includes(conversation.customerPhone)) ||
-        (conversation.customerName && booking.guestName && booking.guestName === conversation.customerName)
-    );
-    return {
-      ...conversation,
-      bookingId: match?.id || null
-    };
-  });
-
-  return NextResponse.json({
-    conversations: withBooking,
-    meta: {
-      walletStatus: "healthy",
-      integrationStatus: "connected",
-      channelErrors: []
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-  });
+
+    const tenantId = await requireActiveTenant();
+
+    // Fetch recent messages to construct conversations
+    // We fetch messages linked to listings owned by the user
+    const { data: messages, error } = await supabase
+      .from("messages")
+      .select("*, guests(name, phone)")
+      .eq("tenant_id", tenantId)
+      .order("timestamp", { ascending: false })
+      .limit(100);
+
+    if (error) throw error;
+
+    const conversationMap = new Map();
+
+    messages?.forEach((msg: any) => {
+        const key = `${msg.listing_id}:${msg.guest_id}`;
+        
+        if (!conversationMap.has(key)) {
+            const guest = Array.isArray(msg.guests) ? msg.guests[0] : msg.guests;
+            
+            conversationMap.set(key, {
+                id: key,
+                customerName: guest?.name || "Guest",
+                customerPhone: guest?.phone || null,
+                channel: msg.channel,
+                lastMessage: msg.content,
+                lastMessageAt: msg.timestamp,
+                unreadCount: !msg.is_read && msg.direction === 'inbound' ? 1 : 0,
+                manager: { slug: "host-ai", name: "Host AI" }, // Placeholder, could be derived from listing
+                status: "open", 
+                bookingId: null 
+            });
+        } else {
+            const conv = conversationMap.get(key);
+            if (!msg.is_read && msg.direction === 'inbound') {
+                conv.unreadCount += 1;
+            }
+        }
+    });
+
+    return NextResponse.json(Array.from(conversationMap.values()));
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

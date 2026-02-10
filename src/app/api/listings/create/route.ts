@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSession } from "@/lib/auth/session";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { SubscriptionService } from "@/lib/services/subscriptionService";
+import { ReferralService } from "@/lib/services/referralService";
 
 const getBaseUrl = (request: Request) => {
   const headers = request.headers;
@@ -15,6 +18,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
+
   const body = await request.json();
   const listing = body?.listing;
   const integrations = Array.isArray(body?.integrations) ? body.integrations : [];
@@ -25,6 +30,14 @@ export async function POST(request: Request) {
 
   const supabase = await getSupabaseServer();
   const listingId = listing.id || crypto.randomUUID();
+
+  // Subscription Limit Check
+  const { allowed, limit } = await SubscriptionService.checkLimit(tenantId, 'listings');
+  if (!allowed) {
+    return NextResponse.json({ 
+      error: `Listing limit reached (${limit}). Please upgrade your plan.` 
+    }, { status: 403 });
+  }
 
   const { error: listingError } = await supabase.from("listings").insert({
     id: listingId,
@@ -59,6 +72,9 @@ export async function POST(request: Request) {
     }));
     await supabase.from("listing_integrations").upsert(payload, { onConflict: "listing_id, platform" });
   }
+
+  // Check for referral reward (first listing created)
+  await ReferralService.checkAndReward(tenantId);
 
   return NextResponse.json({
     id: listingId,

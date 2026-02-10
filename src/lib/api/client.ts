@@ -28,18 +28,27 @@ apiClient.interceptors.response.use(
   async (error) => {
     const status = error?.response?.status;
     const config = error?.config as any;
+    
     if (status === 401 && config && !config._retry) {
       config._retry = true;
       try {
         const supabase = getSupabaseBrowser();
         const refreshed = await supabase.auth.refreshSession();
         const token = refreshed.data.session?.access_token;
+        
         if (!token) {
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new Event('auth:session-expired'));
+          }
           throw new SessionExpiredError();
         }
+        
         config.headers['Authorization'] = `Bearer ${token}`;
         return apiClient(config);
       } catch {
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('auth:session-expired'));
+        }
         return Promise.reject(new SessionExpiredError());
       }
     }

@@ -1,0 +1,92 @@
+export const EVENT_TYPES = {
+  // Auth
+  AUTH_LOGIN: 'AUTH_LOGIN',
+  AUTH_LOGOUT: 'AUTH_LOGOUT',
+  
+  // Booking
+  BOOKING_CREATED: 'BOOKING_CREATED',
+  BOOKING_CONFIRMED: 'BOOKING_CONFIRMED',
+  BOOKING_CANCELLED: 'BOOKING_CANCELLED',
+
+  // Listing
+  LISTING_UPDATED: 'LISTING_UPDATED',
+  
+  // Payment & Wallet
+  PAYMENT_LINK_CREATED: 'PAYMENT_LINK_CREATED',
+  PAYMENT_CONFIRMED: 'PAYMENT_CONFIRMED',
+  PAYMENT_FAILED: 'PAYMENT_FAILED',
+  WALLET_DEBITED: 'WALLET_DEBITED',
+  WALLET_CREDITED: 'WALLET_CREDITED',
+  WALLET_TOPUP: 'WALLET_TOPUP',
+  SUBSCRIPTION_UPDATED: 'SUBSCRIPTION_UPDATED',
+  SUBSCRIPTION_CREATED: 'SUBSCRIPTION_CREATED',
+  SUBSCRIPTION_CANCELLED: 'SUBSCRIPTION_CANCELLED',
+  
+  // AI
+  AI_REPLY_SENT: 'AI_REPLY_SENT',
+  AI_REPLY_BLOCKED: 'AI_REPLY_BLOCKED',
+  AI_ESCALATED: 'AI_ESCALATED',
+  AI_REMINDER_SENT: 'AI_REMINDER_SENT',
+  AI_ACTION_DENIED: 'AI_ACTION_DENIED',
+  AI_SETTINGS_CHANGED: 'AI_SETTINGS_CHANGED',
+  MEMORY_CREATED: 'MEMORY_CREATED',
+  MEMORY_DELETED: 'MEMORY_DELETED',
+  
+  // Security & Safety
+  ACTION_BLOCKED: 'ACTION_BLOCKED',
+  
+  // ID Verification
+  ID_REQUESTED: 'ID_REQUESTED',
+  ID_SUBMITTED: 'ID_SUBMITTED',
+  ID_APPROVED: 'ID_APPROVED',
+  ID_REJECTED: 'ID_REJECTED',
+  
+  // Integration
+  INTEGRATION_CONNECTED: 'INTEGRATION_CONNECTED',
+  INTEGRATION_DISCONNECTED: 'INTEGRATION_DISCONNECTED',
+  
+  // Admin
+  ADMIN_PRICE_CHANGED: 'ADMIN_PRICE_CHANGED',
+  ADMIN_AI_MANAGER_TOGGLED: 'ADMIN_AI_MANAGER_TOGGLED',
+  ADMIN_WALLET_ADJUSTED: 'ADMIN_WALLET_ADJUSTED',
+  ADMIN_MANUAL_OVERRIDE: 'ADMIN_MANUAL_OVERRIDE',
+  ADMIN_SYSTEM_FLAG_CHANGED: 'ADMIN_SYSTEM_FLAG_CHANGED',
+  ADMIN_TENANT_CONTROL_CHANGED: 'ADMIN_TENANT_CONTROL_CHANGED',
+  ADMIN_FEATURE_FLAG_CHANGED: 'ADMIN_FEATURE_FLAG_CHANGED',
+  
+  // System
+  SYSTEM_CALENDAR_SYNC: 'SYSTEM_CALENDAR_SYNC',
+  SYSTEM_BOOKING_IMPORTED: 'SYSTEM_BOOKING_IMPORTED',
+  SYSTEM_WEBHOOK_RECEIVED: 'SYSTEM_WEBHOOK_RECEIVED',
+  SYSTEM_TOKEN_USAGE: 'SYSTEM_TOKEN_USAGE',
+
+  // Failure
+  FAILURE_DETECTED: 'FAILURE_DETECTED',
+  FAILURE_RESOLVED: 'FAILURE_RESOLVED',
+} as const;
+
+export type EventType = typeof EVENT_TYPES[keyof typeof EVENT_TYPES];
+
+export type ActorType = 'user' | 'ai' | 'system' | 'admin';
+
+export interface AuditEvent {
+  id: string;
+  tenant_id?: string | null;
+  actor_type: ActorType;
+  actor_id?: string | null;
+  event_type: EventType;
+  entity_type: string; // 'booking' | 'message' | 'listing' | 'payment' | 'guest_id' | etc.
+  entity_id?: string | null;
+  metadata: Record<string, any>;
+  created_at: string;
+}
+
+export interface CreateAuditEventParams {
+  tenant_id?: string | null;
+  actor_type: ActorType;
+  actor_id?: string | null;
+  event_type: EventType;
+  entity_type: string;
+  entity_id?: string | null;
+  metadata?: Record<string, any>;
+}

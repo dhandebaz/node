@@ -4,9 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, MessageSquare, Calendar, CreditCard, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useDashboardStore } from "@/store/useDashboardStore";
+import { getPersonaCapabilities } from "@/lib/business-context";
 
 export function MobileBottomNav() {
   const pathname = usePathname();
+  const { tenant } = useDashboardStore();
+  const capabilities = getPersonaCapabilities(tenant?.businessType);
+  
+  const showCalendar = capabilities.calendar;
 
   const tabs = [
     {
@@ -28,7 +34,7 @@ export function MobileBottomNav() {
       isActive: (path: string) => path.startsWith("/dashboard/calendar"),
     },
     {
-      name: "Wallet",
+      name: "Billing",
       href: "/dashboard/billing",
       icon: CreditCard,
       isActive: (path: string) => path.startsWith("/dashboard/billing"),
@@ -39,7 +45,7 @@ export function MobileBottomNav() {
       icon: Menu,
       isActive: (path: string) => path.startsWith("/dashboard/more"),
     },
-  ];
+  ].filter(tab => tab.name !== "Calendar" || showCalendar);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-dashboard-surface)] border-t border-white/10 pb-safe">

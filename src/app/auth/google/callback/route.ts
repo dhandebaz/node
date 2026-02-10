@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { getSession } from "@/lib/auth/session";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { encryptToken } from "@/lib/crypto";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { logEvent, EVENT_TYPES } from "@/lib/events";
 
 const getBaseUrl = (request: Request) => {
   const headers = request.headers;
@@ -15,6 +17,18 @@ export async function GET(request: Request) {
   const session = await getSession();
   if (!session?.userId) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // Resolve active tenant
+  let tenantId: string | null = null;
+  try {
+    tenantId = await requireActiveTenant();
+  } catch (error) {
+    console.error("Failed to resolve tenant in Google callback:", error);
+    // Continue without tenantId? 
+    // If tenantId is required for integrations table (which it is for multi-tenancy), this will fail.
+    // We should probably redirect to error if tenant resolution fails.
+    return NextResponse.redirect(new URL("/dashboard/integrations?google=tenant_error", request.url));
   }
 
   const { searchParams } = new URL(request.url);
@@ -76,11 +90,12 @@ export async function GET(request: Request) {
   const expiresAt = expiresIn ? new Date(Date.now() + expiresIn * 1000).toISOString() : null;
 
   const supabase = await getSupabaseServer();
-  const { error: upsertError } = await supabase
+  const { data: integration, error: upsertError } = await supabase
     .from("integrations")
     .upsert(
       {
         user_id: session.userId,
+        tenant_id: tenantId,
         provider: "google",
         status: "connected",
         access_token: encryptToken(accessToken),
@@ -96,10 +111,13 @@ export async function GET(request: Request) {
         updated_at: new Date().toISOString()
       },
       { onConflict: "user_id,provider" }
-    );
+    )
+    .select()
+    .single();
 
   if (upsertError) {
-    return NextResponse.redirect(new URL("/dashboard/integrations?google=save_error", request.url));
+    console.error("Integration upsert error:", upsertError);
+    return NextResponse.redirect(new URL("/dashboard/integrations?google=db_error", request.url));
   }
 
   await supabase.from("google_context").upsert(
@@ -113,13 +131,21 @@ export async function GET(request: Request) {
     { onConflict: "user_id" }
   );
 
-  await supabase.from("admin_audit_logs").insert({
-    admin_id: session.userId,
-    target_resource: "integration",
-    target_id: session.userId,
-    action_type: "google_connect",
-    details: "Connected Google account"
-  });
+  if (integration) {
+    await logEvent({
+      tenant_id: tenantId,
+      actor_type: "user",
+      actor_id: session.userId,
+      event_type: EVENT_TYPES.INTEGRATION_CONNECTED,
+      entity_type: "integration",
+      entity_id: integration.id,
+      metadata: { 
+        provider: "google",
+        connected_email: connectedEmail,
+        scopes 
+      }
+    });
+  }
 
   return NextResponse.redirect(new URL("/dashboard/integrations?google=connected", request.url));
 }

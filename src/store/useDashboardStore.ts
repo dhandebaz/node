@@ -1,11 +1,12 @@
 import { create } from 'zustand';
-import { Listing, Booking, Message, WalletTransaction } from '@/types';
+import { Listing, Booking, Message, WalletTransaction, Tenant } from '@/types';
 import { listingsApi } from '@/lib/api/listings';
 import { messagesApi } from '@/lib/api/messages';
 import { paymentsApi } from '@/lib/api/payments';
 import { isSessionExpiredError } from '@/lib/api/errors';
 
 interface DashboardState {
+  tenant: Tenant | null;
   listings: Listing[];
   bookings: Booking[];
   messages: Message[];
@@ -15,12 +16,14 @@ interface DashboardState {
   error: string | null;
   selectedListingId: string | "all" | null;
 
+  setTenant: (tenant: Tenant) => void;
   fetchDashboardData: () => Promise<void>;
   setSelectedListingId: (id: string | "all") => void;
   fetchCalendar: (listingId: string | "all", range: { start: string; end: string }) => Promise<void>;
 }
 
 export const useDashboardStore = create<DashboardState>((set, get) => ({
+  tenant: null,
   listings: [],
   bookings: [],
   messages: [],
@@ -30,9 +33,12 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
   error: null,
   selectedListingId: null,
 
+  setTenant: (tenant) => set({ tenant }),
+
   fetchDashboardData: async () => {
     set({ isLoading: true, error: null });
     try {
+      // In a real app, we might also fetch tenant details here if not passed from server components
       const [listings, messages, wallet, transactions] = await Promise.all([
         listingsApi.getListings(),
         messagesApi.getMessages(),

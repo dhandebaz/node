@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 export async function POST(request: Request) {
   try {
@@ -9,6 +10,8 @@ export async function POST(request: Request) {
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const tenantId = await requireActiveTenant();
 
     const body = await request.json();
     const listingId = body?.listingId;
@@ -33,9 +36,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 });
     }
 
+    // Overlap Check
+    const { data: existing } = await supabase
+      .from("bookings")
+      .select("id")
+      .eq("listing_id", listingId)
+      .neq("status", "cancelled")
+      .lt("start_date", end)
+      .gt("end_date", start)
+      .maybeSingle();
+
+    if (existing) {
+      return NextResponse.json({ error: "Selected dates are already booked" }, { status: 409 });
+    }
+
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .insert({
+        tenant_id: tenantId,
         listing_id: listingId,
         guest_id: null,
         start_date: start,

@@ -78,5 +78,63 @@ export const geminiService = {
         reason,
       };
     }
+  },
+
+  async generateReply(context: {
+    message: string;
+    listingName: string;
+    city: string;
+    calendar: { startDate: string; endDate: string; status: string }[];
+    guestName: string;
+    previousMessages?: { role: string; content: string }[];
+    role?: string;
+    instructions?: string;
+  }): Promise<{ content: string; usage: { totalTokens: number } }> {
+    try {
+      const settings = await settingsService.getSettings();
+      const apiKey = settings.api.geminiApiKey;
+      if (!apiKey) throw new Error("Gemini API key is not configured");
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      const role = context.role || "AI assistant";
+      const customInstructions = context.instructions || "Your goal is to be helpful, professional, and concise.";
+
+      const prompt = `
+        You are Kaisa, an ${role} for "${context.listingName}" in ${context.city}.
+        ${customInstructions}
+        
+        Context:
+        - Guest Name: ${context.guestName}
+        - Current Message: "${context.message}"
+        - Calendar Availability: ${JSON.stringify(context.calendar)}
+        
+        Instructions:
+        1. Answer availability questions based ONLY on the calendar provided.
+        2. If dates are blocked, suggest alternative dates if possible (from the calendar).
+        3. Do not confirm bookings without payment.
+        4. Keep replies under 3 sentences unless complex.
+        
+        Reply text only.
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const usage = result.response.usageMetadata || { totalTokenCount: 0 }; // Fallback
+      
+      return {
+        content: response.text(),
+        usage: {
+          totalTokens: usage.totalTokenCount || 0
+        }
+      };
+    } catch (error) {
+      console.error("Gemini Reply Error:", error);
+      return {
+        content: "I apologize, but I'm having trouble checking my calendar right now. Please try again in a moment.",
+        usage: { totalTokens: 0 }
+      };
+    }
   }
 };

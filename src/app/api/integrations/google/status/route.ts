@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { FailureService } from "@/lib/services/failureService";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 const REQUIRED_SCOPES = {
   gmail: "https://www.googleapis.com/auth/gmail.readonly",
@@ -15,11 +17,12 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
   const supabase = await getSupabaseServer();
   const { data, error } = await supabase
     .from("integrations")
-    .select("status, scopes, expires_at, error_code, connected_email, connected_name, last_sync, last_synced_at")
-    .eq("user_id", session.userId)
+    .select("tenant_id, status, scopes, expires_at, error_code, connected_email, connected_name, last_sync, last_synced_at")
+    .eq("tenant_id", tenantId)
     .eq("provider", "google")
     .maybeSingle();
 
@@ -49,6 +52,20 @@ export async function GET() {
   const expiresAt = data.expires_at ? new Date(data.expires_at) : null;
   const isExpired = expiresAt ? expiresAt.getTime() <= Date.now() : false;
   const status = isExpired ? "expired" : data.status || "connected";
+
+  // Failure Handling
+  if (isExpired || status === 'error') {
+     await FailureService.raiseFailure({
+       tenant_id: data.tenant_id,
+       category: 'integration',
+       source: 'google',
+       severity: 'critical', // Auth expired is critical
+       message: 'Google integration session expired. Please reconnect.',
+       metadata: { expiresAt }
+     });
+  } else if (status === 'connected') {
+     await FailureService.resolveFailure(data.tenant_id, 'google', 'integration');
+  }
 
   return NextResponse.json({
     status,

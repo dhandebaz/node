@@ -1,3 +1,25 @@
+export interface Tenant {
+  id: string;
+  name: string;
+  ownerUserId: string;
+  createdAt: string;
+  businessType?: BusinessType | null;
+  earlyAccess?: boolean;
+}
+
+export type BusinessType = 
+  | 'airbnb_host'
+  | 'kirana_store'
+  | 'doctor_clinic'
+  | 'thrift_store';
+
+export interface TenantUser {
+  id: string;
+  tenantId: string;
+  userId: string;
+  role: 'owner' | 'admin' | 'staff';
+}
+
 export interface Host {
   id: string;
   name: string;
@@ -15,6 +37,7 @@ export type ListingIntegrationStatus = "connected" | "not_connected" | "error" |
 
 export interface Listing {
   id: string;
+  tenantId: string; // Multi-tenancy
   userId: string;
   name: string;
   city: string;
@@ -30,10 +53,12 @@ export interface Listing {
 
 export interface ListingIntegration {
   listingId: string;
+  tenantId?: string; // Multi-tenancy (optional if implied by listingId, but strictly required by DB)
   platform: ListingPlatform;
   externalIcalUrl: string | null;
   lastSyncedAt: string | null;
   status: ListingIntegrationStatus;
+  errorMessage?: string | null;
 }
 
 export interface ListingCalendar {
@@ -59,6 +84,7 @@ export type IdStatus =
 
 export interface Booking {
   id: string;
+  tenantId: string; // Multi-tenancy
   listingId: string;
   guestId: string;
   guestName?: string;
@@ -75,6 +101,7 @@ export interface Booking {
 
 export interface BookingRecord {
   id: string;
+  tenant_id: string; // Multi-tenancy
   listing_id: string;
   guest_name: string;
   guest_contact: string | null;
@@ -92,6 +119,7 @@ export type PaymentStatus = "pending" | "paid" | "failed" | "expired" | "refunde
 
 export interface PaymentRecord {
   id: string;
+  tenant_id: string; // Multi-tenancy
   booking_id: string;
   provider: "razorpay";
   amount: number;
@@ -102,6 +130,7 @@ export interface PaymentRecord {
 
 export interface GuestIdRecord {
   id: string;
+  tenant_id: string; // Multi-tenancy
   booking_id: string;
   guest_name: string;
   id_type: "aadhaar" | "passport" | "driving_license" | "voter_id" | "any";
@@ -115,18 +144,20 @@ export interface GuestIdRecord {
 
 export interface Guest {
   id: string;
+  tenantId: string; // Multi-tenancy
   name: string;
   phone: string;
-  channel: 'airbnb' | 'booking' | 'direct' | 'whatsapp';
+  channel: 'airbnb' | 'booking' | 'direct' | 'whatsapp' | 'instagram' | 'messenger' | 'web';
   idVerificationStatus: 'pending' | 'verified' | 'rejected' | 'none';
 }
 
 export interface Message {
   id: string;
+  tenantId: string; // Multi-tenancy
   guestId: string;
   guestName?: string; // Optional guest name for UI display
   listingId: string;
-  channel: 'airbnb' | 'booking' | 'whatsapp' | 'sms';
+  channel: 'airbnb' | 'booking' | 'whatsapp' | 'sms' | 'instagram' | 'messenger' | 'web';
   direction: 'inbound' | 'outbound';
   content: string;
   timestamp: string; // ISO Date string
@@ -135,6 +166,7 @@ export interface Message {
 
 export interface WalletTransaction {
   id: string;
+  tenantId: string; // Multi-tenancy
   hostId: string;
   type: 'debit' | 'credit';
   amount: number;
@@ -145,8 +177,9 @@ export interface WalletTransaction {
 
 export interface Integration {
   id: string;
+  tenantId: string; // Multi-tenancy
   userId: string;
-  provider: 'google' | 'airbnb' | 'booking' | 'instagram' | 'whatsapp';
+  provider: 'google' | 'airbnb' | 'booking' | 'instagram' | 'whatsapp' | 'facebook' | 'web';
   status: 'connected' | 'expired' | 'error';
   lastSync?: string;
   expiresAt?: string;

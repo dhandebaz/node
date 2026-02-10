@@ -41,12 +41,12 @@ export default function TermsPage() {
 
               <h3>2. Services Description</h3>
               <p>
-                Nodebase provides digital infrastructure services, including but not limited to:
+                Nodebase provides AI-powered business automation services, including but not limited to:
               </p>
               <ul>
-                <li><strong>kaisa AI:</strong> An AI agent management platform.</li>
-                <li><strong>Nodebase Space:</strong> Cloud hosting, storage, and computing resources.</li>
-                <li><strong>Infrastructure:</strong> Physical node participation and colocation services.</li>
+                <li><strong>AI Employee:</strong> An autonomous agent for managing guest communication, bookings, and payments.</li>
+                <li><strong>Direct Booking Engine:</strong> Tools to collect payments and manage reservations directly.</li>
+                <li><strong>Business Intelligence:</strong> Analytics and insights derived from your business data.</li>
               </ul>
 
               <h3>3. User Account & Security</h3>
@@ -57,8 +57,8 @@ export default function TermsPage() {
 
               <h3>4. Payments, Credits, and Billing</h3>
               <ul>
-                <li><strong>Prepaid Credits:</strong> Some services (like kaisa AI) operate on a prepaid credit system. Credits are non-transferable.</li>
-                <li><strong>Subscriptions:</strong> Recurring subscriptions are billed in advance. Failure to pay may result in service suspension.</li>
+                <li><strong>Subscription:</strong> Monthly or annual fees for access to the AI Employee platform.</li>
+                <li><strong>Usage Credits:</strong> Prepaid credits used for AI actions (replies, ID verification, etc.). Credits do not expire but are non-refundable.</li>
                 <li><strong>Taxes:</strong> All fees are exclusive of applicable taxes (GST), which will be charged additionally.</li>
               </ul>
 
@@ -67,10 +67,10 @@ export default function TermsPage() {
                 You agree not to use our services for any illegal or unauthorized purpose, including but not limited to:
               </p>
               <ul>
-                <li>Hosting malicious content (malware, phishing).</li>
-                <li>Violating intellectual property rights.</li>
-                <li>Engaging in cryptocurrency mining without explicit authorization.</li>
-                <li>Launching DDoS attacks or network scans.</li>
+                <li>Sending unsolicited spam or harassment via the AI agent.</li>
+                <li>Processing fraudulent bookings or payments.</li>
+                <li>Violating the privacy rights of your guests (e.g., sharing ID proofs publicly).</li>
+                <li>Reverse engineering the AI models or platform infrastructure.</li>
               </ul>
               <p>
                 Violation of these rules will result in immediate termination of your account without refund.

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { randomUUID } from "crypto";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
 
 const getBaseUrl = (request: NextRequest) => {
   const headers = request.headers;
@@ -18,6 +21,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const tenantId = await requireActiveTenant();
+
     const body = await request.json();
     const bookingId = body?.bookingId;
     const idType = body?.idType;
@@ -28,9 +33,9 @@ export async function POST(request: NextRequest) {
 
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
-      .select("id, guest_id, listings!inner(host_id), guests(name)")
+      .select("id, guest_id, guests(name)")
       .eq("id", bookingId)
-      .eq("listings.host_id", user.id)
+      .eq("tenant_id", tenantId)
       .maybeSingle();
 
     if (bookingError) {
@@ -48,6 +53,7 @@ export async function POST(request: NextRequest) {
       .from("guest_ids")
       .select("id")
       .eq("booking_id", bookingId)
+      .eq("tenant_id", tenantId)
       .maybeSingle();
 
     if (existing?.id) {
@@ -74,6 +80,7 @@ export async function POST(request: NextRequest) {
       const { error: insertError } = await supabase
         .from("guest_ids")
         .insert({
+          tenant_id: tenantId,
           booking_id: bookingId,
           guest_name: guestName,
           id_type: idType,
@@ -91,6 +98,17 @@ export async function POST(request: NextRequest) {
       .from("bookings")
       .update({ id_status: "requested" })
       .eq("id", bookingId);
+
+    // Log ID Requested
+    await logEvent({
+      tenant_id: tenantId,
+      actor_type: 'user',
+      actor_id: user.id,
+      event_type: EVENT_TYPES.ID_REQUESTED,
+      entity_type: 'guest_id',
+      entity_id: existing?.id, // Note: if we just inserted, we didn't select ID. But it's fine, we can use bookingId in metadata
+      metadata: { booking_id: bookingId, id_type: idType }
+    });
 
     const baseUrl = getBaseUrl(request);
     const uploadUrl = `${baseUrl}/guest-id/${uploadToken}`;

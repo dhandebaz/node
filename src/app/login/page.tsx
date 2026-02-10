@@ -10,8 +10,18 @@ import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { sendOTP, verifyOTP, isLoading, error, host, confirmationResult } = useAuthStore();
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    // Capture referral code from URL and set cookie
+    const refCode = searchParams.get("ref");
+    if (refCode) {
+      document.cookie = `nodebase-referral-code=${refCode}; path=/; max-age=2592000; SameSite=Lax`;
+    }
+  }, [searchParams]);
+
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<'phone' | 'otp'>('phone');

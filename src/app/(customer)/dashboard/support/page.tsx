@@ -1,18 +1,60 @@
 export const dynamic = 'force-dynamic';
 
-import { Mail, MessageSquare, FileText, Phone } from "lucide-react";
+import { Mail, MessageSquare, FileText, Phone, LifeBuoy } from "lucide-react";
 import { getCustomerTickets } from "@/app/actions/customer";
 import { SupportTicketList } from "@/components/customer/SupportTicketList";
+import { SystemHealthCheck } from "@/components/customer/SystemHealthCheck";
+import { getCustomerProfile } from "@/app/actions/customer";
+import { ControlService } from "@/lib/services/controlService";
+import { WalletService } from "@/lib/services/walletService";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { ListingIntegration } from "@/types";
 
 export default async function CustomerSupportPage() {
+  const profile = await getCustomerProfile();
   const tickets = await getCustomerTickets();
+  const flags = await ControlService.getSystemFlags();
+  
+  let walletBalance = 0;
+  let integrations: ListingIntegration[] = [];
+
+  if (profile.tenant) {
+    // Fetch Wallet Balance
+    walletBalance = await WalletService.getBalance(profile.tenant.id);
+
+    // Fetch Integrations
+    const supabase = await getSupabaseServer();
+    const { data } = await supabase
+      .from('listing_integrations')
+      .select('*, listings!inner(tenant_id)')
+      .eq('listings.tenant_id', profile.tenant.id);
+      
+    if (data) {
+        integrations = data as unknown as ListingIntegration[];
+    }
+  }
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white mb-1">Support</h1>
-        <p className="text-zinc-400">Get help with your products and account.</p>
+        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+          <LifeBuoy className="w-8 h-8 text-brand-red" />
+          Support Center
+        </h1>
+        <p className="text-zinc-400">
+          Get help with your products, account, and technical issues.
+        </p>
       </div>
+
+      {/* System Health Check (Failures & Status) */}
+      {profile.tenant && (
+        <SystemHealthCheck 
+          flags={flags} 
+          walletBalance={walletBalance} 
+          tenant={profile.tenant}
+          integrations={integrations}
+        />
+      )}
 
       {/* Ticket System */}
       <SupportTicketList tickets={tickets} />

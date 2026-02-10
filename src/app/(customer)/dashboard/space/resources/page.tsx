@@ -1,11 +1,43 @@
 export const dynamic = 'force-dynamic';
 
 import { getSpaceDashboardData } from "@/app/actions/customer";
-import { Cpu, HardDrive, Zap, Network } from "lucide-react";
+import { Cpu, HardDrive, Zap, Network, Cloud } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function SpaceResourcesPage() {
   const data = await getSpaceDashboardData();
-  const { usage } = data;
+  const { usage, projects } = data;
+
+  if (!projects || projects.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-1">Resources</h1>
+          <p className="text-zinc-400">Monitor your infrastructure usage and limits.</p>
+        </div>
+        <Card className="bg-zinc-900 border-zinc-800 border-dashed">
+            <CardContent className="flex flex-col items-center justify-center py-16 text-center space-y-4">
+              <div className="p-4 rounded-full bg-zinc-800 text-zinc-400">
+                <Cloud className="w-8 h-8" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-xl font-semibold text-white">No active resources</h3>
+                <p className="text-zinc-400 max-w-sm">
+                  Resources are allocated when you deploy a website. Launch your first project to see usage stats.
+                </p>
+              </div>
+              <Button asChild variant="outline" className="border-zinc-700 text-white hover:bg-zinc-800">
+                <Link href="/dashboard/space/websites/new">
+                  Deploy Website
+                </Link>
+              </Button>
+            </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const metrics = [
     {

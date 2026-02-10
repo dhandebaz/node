@@ -1,7 +1,9 @@
 export const dynamic = 'force-dynamic';
 
-import { User, Bell, Shield, Smartphone, Monitor } from "lucide-react";
+import { User, Bell, Shield, Smartphone, Monitor, CheckCircle2, AlertTriangle, FileCheck } from "lucide-react";
 import { getCustomerProfile } from "@/app/actions/customer";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default async function CustomerSettingsPage() {
   const profile = await getCustomerProfile();
@@ -60,6 +62,45 @@ export default async function CustomerSettingsPage() {
                 />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* KYC Section */}
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-zinc-800 flex items-center gap-4">
+            <div className="p-3 bg-zinc-800 rounded-lg">
+              <FileCheck className="w-6 h-6 text-purple-500" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-white">KYC Verification</h2>
+              <p className="text-sm text-zinc-400">Identity verification status</p>
+            </div>
+          </div>
+          <div className="p-6">
+             <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800 mb-4">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-yellow-500/10 rounded-full">
+                        <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                    </div>
+                    <div>
+                        <div className="font-medium text-white">Pending Verification</div>
+                        <div className="text-sm text-zinc-400">Please complete your KYC to unlock higher limits.</div>
+                    </div>
+                </div>
+                <Button variant="outline" className="border-white/10 text-white hover:bg-white/5">
+                    Start KYC
+                </Button>
+             </div>
+             <div className="grid md:grid-cols-2 gap-4 text-sm text-zinc-500">
+                <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-zinc-700" />
+                    <span>Aadhaar Verification</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-zinc-700" />
+                    <span>PAN Card Verification</span>
+                </div>
+             </div>
           </div>
         </div>
 

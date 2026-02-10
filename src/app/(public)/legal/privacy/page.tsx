@@ -42,21 +42,31 @@ export default function PrivacyPage() {
 
               <h3>2. Information We Collect</h3>
               <ul>
-                <li><strong>Personal Information:</strong> Name, email address, phone number, and billing information when you register for an account.</li>
-                <li><strong>Usage Data:</strong> Server logs, IP addresses, device information, and interaction data to improve system performance and security.</li>
-                <li><strong>Content Data:</strong> Files, databases, and application code you upload to our infrastructure. We do not access this content except for automated security scanning (malware detection) or backup purposes.</li>
+                <li><strong>Business Information:</strong> Name, email, property details, and platform links (Airbnb/Booking.com) when you register.</li>
+                <li><strong>Guest Data:</strong> Information you provide or that is synced from OTAs, including guest names, booking dates, and message history.</li>
+                <li><strong>Identity Documents:</strong> Guest IDs collected for verification purposes. These are encrypted and stored securely.</li>
               </ul>
 
-              <h3>3. How We Use Your Information</h3>
+              <h3>3. AI Usage & Data Training</h3>
+              <p>
+                We value your trust and business confidentiality.
+              </p>
+              <ul>
+                <li><strong>No Training on Your Data:</strong> We do NOT use your private guest conversations or business rules to train our public AI models.</li>
+                <li><strong>Encryption:</strong> Guest IDs and sensitive booking details are encrypted at rest.</li>
+                <li><strong>Context Isolation:</strong> Your AI Employee operates within a strict boundary, accessing only the data relevant to your specific business context.</li>
+              </ul>
+
+              <h3>4. How We Use Your Information</h3>
               <p>We use the collected data for the following purposes:</p>
               <ul>
-                <li>To provide, operate, and maintain our services (kaisa AI, Nodebase Space, Infrastructure).</li>
-                <li>To process transactions and manage your account credits.</li>
-                <li>To detect and prevent fraudulent or malicious activity.</li>
+                <li>To provide the AI Employee service (automating replies, managing calendar).</li>
+                <li>To process payments and verify guest identities on your behalf.</li>
+                <li>To prevent fraud and ensure platform safety.</li>
                 <li>To comply with legal obligations under Indian law.</li>
               </ul>
 
-              <h3>4. Data Security</h3>
+              <h3>5. Data Security</h3>
               <p>
                 We implement enterprise-grade security measures, including:
               </p>
@@ -66,7 +76,16 @@ export default function PrivacyPage() {
                 <li><strong>Physical Security:</strong> Our Tier-4 data center in <strong>Okhla, New Delhi, India</strong> features 24/7 physical security, biometric access control, and strict data isolation protocols.</li>
               </ul>
 
-              <h3>5. Third-Party Sharing</h3>
+              <h3>6. Human Review & AI Limitations</h3>
+              <p>
+                To maintain privacy:
+              </p>
+              <ul>
+                <li><strong>No Routine Human Review:</strong> Our team does not read your guest messages or business data unless explicitly requested by you for support, or if flagged by automated systems for severe safety violations (e.g., fraud, abuse).</li>
+                <li><strong>AI Limitations:</strong> While our AI is advanced, it may occasionally generate incorrect responses. You retain full responsibility for reviewing critical actions.</li>
+              </ul>
+
+              <h3>7. Third-Party Sharing</h3>
               <p>
                 We do not sell your personal data. We may share data with:
               </p>
@@ -75,7 +94,7 @@ export default function PrivacyPage() {
                 <li><strong>Legal Authorities:</strong> When required by a valid court order or government directive under Indian law.</li>
               </ul>
 
-              <h3>6. Your Rights</h3>
+              <h3>8. Your Rights</h3>
               <p>
                 Under the DPDP Act, you have the right to:
               </p>

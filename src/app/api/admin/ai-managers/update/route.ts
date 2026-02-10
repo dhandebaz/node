@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { AiManager } from "@/types/ai-managers";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
 
 export async function POST(request: Request) {
   try {
@@ -13,7 +15,7 @@ export async function POST(request: Request) {
     const supabase = await getSupabaseServer();
     const { data: existing, error: existingError } = await supabase
       .from("ai_managers")
-      .select("base_monthly_price")
+      .select("base_monthly_price, status")
       .eq("slug", slug)
       .single();
 
@@ -37,13 +39,48 @@ export async function POST(request: Request) {
     }
 
     const { data: authData } = await supabase.auth.getUser();
+    const adminId = authData?.user?.id || null;
+
     await supabase.from("ai_manager_pricing_history").insert({
       manager_slug: slug,
       old_price: Number(existing.base_monthly_price || 0),
       new_price: baseMonthlyPrice,
-      changed_by: authData?.user?.id || null,
+      changed_by: adminId,
       timestamp: new Date().toISOString()
     });
+
+    // Log Admin Price Change or Status Change
+    if (existing.base_monthly_price !== baseMonthlyPrice) {
+      await logEvent({
+        tenant_id: null, // Global admin action
+        actor_type: 'admin',
+        actor_id: adminId,
+        event_type: EVENT_TYPES.ADMIN_PRICE_CHANGED,
+        entity_type: 'ai_manager',
+        entity_id: null, // No UUID for AI Manager, slug is ID
+        metadata: { 
+          slug, 
+          old_price: existing.base_monthly_price, 
+          new_price: baseMonthlyPrice 
+        }
+      });
+    }
+
+    if (existing.status !== status) {
+      await logEvent({
+        tenant_id: null, // Global admin action
+        actor_type: 'admin',
+        actor_id: adminId,
+        event_type: EVENT_TYPES.ADMIN_AI_MANAGER_TOGGLED,
+        entity_type: 'ai_manager',
+        entity_id: null,
+        metadata: { 
+          slug, 
+          old_status: existing.status, 
+          new_status: status 
+        }
+      });
+    }
 
     return NextResponse.json({
       slug: updated.slug,

@@ -10,10 +10,12 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const tenantId = await requireActiveTenant();
+
     const { data, error } = await supabase
       .from("invoices")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("tenant_id", tenantId)
       .order("date", { ascending: false });
 
     if (error) {

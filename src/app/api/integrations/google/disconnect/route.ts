@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { decryptToken } from "@/lib/crypto";
+import { logEvent, EVENT_TYPES } from "@/lib/events";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 const revokeToken = async (token: string) => {
   const params = new URLSearchParams({ token });
@@ -18,11 +20,12 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
   const supabase = await getSupabaseServer();
   const { data: integration, error } = await supabase
     .from("integrations")
-    .select("id, access_token, refresh_token, last_synced_at, last_sync")
-    .eq("user_id", session.userId)
+    .select("id, tenant_id, access_token, refresh_token, last_synced_at, last_sync")
+    .eq("tenant_id", tenantId)
     .eq("provider", "google")
     .maybeSingle();
 
@@ -56,6 +59,18 @@ export async function POST() {
     if (updateError) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
+
+    if (integration.tenant_id) {
+      await logEvent({
+        tenant_id: integration.tenant_id,
+        actor_type: "user",
+        actor_id: session.userId,
+        event_type: EVENT_TYPES.INTEGRATION_DISCONNECTED,
+        entity_type: "integration",
+        entity_id: integration.id,
+        metadata: { provider: "google" }
+      });
+    }
   }
 
   await supabase.from("google_context").upsert(
@@ -68,14 +83,6 @@ export async function POST() {
     },
     { onConflict: "user_id" }
   );
-
-  await supabase.from("admin_audit_logs").insert({
-    admin_id: session.userId,
-    target_resource: "integration",
-    target_id: session.userId,
-    action_type: "google_disconnect",
-    details: "Disconnected Google account"
-  });
 
   return NextResponse.json({ status: "disconnected" });
 }

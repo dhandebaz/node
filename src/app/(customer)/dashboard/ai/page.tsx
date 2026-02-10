@@ -1,0 +1,7 @@
+"use client";
+
+import BookingsPage from "./bookings/page";
+
+export default function AIDashboardPage() {
+  return <BookingsPage />;
+}

@@ -13,7 +13,7 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 export const userService = {
   async getUsers(filters?: UserFilterOptions): Promise<User[]> {
     const supabase = await getSupabaseServer();
-    let query = supabase.from("users").select("*, kaisa_accounts(*), profiles(*)");
+    let query = supabase.from("users").select("*, kaisa_accounts(*), profiles(*), accounts(*, tenants(*))");
 
     if (filters?.search) {
        // Simple search on phone or ID
@@ -37,7 +37,7 @@ export const userService = {
     const supabase = await getSupabaseServer();
     const { data: dbUser, error } = await supabase
       .from("users")
-      .select("*, kaisa_accounts(*), profiles(*)")
+      .select("*, kaisa_accounts(*), profiles(*), accounts(*, tenants(*))")
       .eq("id", id)
       .single();
 
@@ -122,7 +122,17 @@ export const userService = {
 
 function mapDbUserToAppUser(dbUser: any): User {
   const kaisaAccount = dbUser.kaisa_accounts?.[0] || dbUser.kaisa_accounts; // Handle array or object
-  const isKaisaUser = !!kaisaAccount;
+  
+  // Map Account / Product Selection
+  const account = Array.isArray(dbUser.accounts) ? dbUser.accounts[0] : dbUser.accounts;
+  const productType = account?.product_type;
+  
+  // Determine roles based on product selection
+  const isKaisaUser = productType === 'ai_employee';
+  const isSpaceUser = productType === 'space';
+  
+  // Tenant details
+  const tenant = account?.tenants; // From joined query
   
   // Map Profile
   // Supabase might return array or single object depending on relationship definition
@@ -143,11 +153,11 @@ function mapDbUserToAppUser(dbUser: any): User {
     status: {
       account: "active", // Default
       kyc: "pending",   // Default
-      onboarding: dbUser.onboarding_status === 'completed' ? 'completed' : 'pending',
+      onboarding: (account?.onboarding_status === 'complete' || dbUser.onboarding_status === 'completed') ? 'completed' : 'pending',
     },
     roles: {
       isKaisaUser: isKaisaUser,
-      isSpaceUser: true, // Default enabled (mock for now)
+      isSpaceUser: isSpaceUser,
       isNodeParticipant: false,
     },
     metadata: {
@@ -155,12 +165,20 @@ function mapDbUserToAppUser(dbUser: any): User {
       notes: [],
       lastActivity: dbUser.updated_at || dbUser.created_at,
     },
+    tenant: tenant ? {
+        id: tenant.id,
+        name: tenant.name,
+        ownerUserId: tenant.owner_user_id,
+        createdAt: tenant.created_at,
+        businessType: tenant.business_type
+    } : undefined,
     products: {
       kaisa: isKaisaUser ? {
-        businessType: kaisaAccount.business_type,
+        businessType: tenant?.business_type || kaisaAccount?.business_type || 'hospitality',
+        tenantId: tenant?.id || kaisaAccount?.tenant_id,
         activeModules: ["Frontdesk", "CRM"], // Default modules for now
-        role: kaisaAccount.role,
-        status: kaisaAccount.status,
+        role: kaisaAccount?.role || 'owner',
+        status: kaisaAccount?.status || 'active',
       } : undefined,
       space: {
         hostingPlans: [],

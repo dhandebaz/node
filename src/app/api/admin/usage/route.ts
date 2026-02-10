@@ -1,90 +1,80 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-function formatDateKey(date: Date) {
-  return date.toISOString().slice(0, 10);
-}
-
 export async function GET() {
   try {
     const supabase = await getSupabaseServer();
     const since = new Date();
     since.setDate(since.getDate() - 30);
 
-    const [{ data: usageEvents, error: usageError }, { data: walletTransactions, error: walletError }] = await Promise.all([
-      supabase
-        .from("ai_usage_events")
-        .select("id, manager_slug, user_id, tokens_used, message_count, created_at")
-        .gte("created_at", since.toISOString())
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("wallet_transactions")
-        .select("id, host_id, type, amount, reason, status, timestamp")
-        .gte("timestamp", since.toISOString())
-        .order("timestamp", { ascending: false })
-    ]);
+    // Fetch all transactions
+    const { data: transactions, error } = await supabase
+      .from("wallet_transactions")
+      .select("*, tenants(name, business_type)")
+      .gte("created_at", since.toISOString())
+      .order("created_at", { ascending: false });
 
-    if (usageError || walletError) {
-      return NextResponse.json({ error: usageError?.message || walletError?.message }, { status: 500 });
-    }
+    if (error) throw error;
 
-    const dayBuckets = new Map<string, { tokens: number; messages: number }>();
-    const managerBuckets = new Map<string, { tokens: number; messages: number }>();
-    const todayKey = formatDateKey(new Date());
-
+    // Process data
+    const dayBuckets = new Map<string, { tokens: number; cost: number; count: number }>();
     let tokensToday = 0;
+    let costToday = 0;
     let messagesToday = 0;
+    const todayKey = new Date().toISOString().slice(0, 10);
 
-    (usageEvents || []).forEach((event: any) => {
-      const eventDate = new Date(event.created_at);
-      const key = formatDateKey(eventDate);
-      const tokens = Number(event.tokens_used || 0);
-      const messages = Number(event.message_count || 0);
+    const processedTransactions = transactions.map((tx: any) => ({
+      id: tx.id,
+      tenant_id: tx.tenant_id,
+      tenant_name: tx.tenants?.name || "Unknown",
+      type: tx.type,
+      amount: tx.amount,
+      description: tx.description,
+      timestamp: tx.created_at,
+      metadata: tx.metadata
+    }));
 
-      if (!dayBuckets.has(key)) {
-        dayBuckets.set(key, { tokens: 0, messages: 0 });
+    transactions.forEach((tx: any) => {
+      const date = tx.created_at.slice(0, 10);
+      if (!dayBuckets.has(date)) {
+        dayBuckets.set(date, { tokens: 0, cost: 0, count: 0 });
       }
-      const dayBucket = dayBuckets.get(key)!;
-      dayBucket.tokens += tokens;
-      dayBucket.messages += messages;
+      
+      const bucket = dayBuckets.get(date)!;
+      
+      if (tx.type === 'ai_usage') {
+        const tokens = tx.metadata?.tokens || 0;
+        bucket.tokens += tokens;
+        bucket.cost += Math.abs(tx.amount);
+        bucket.count += 1;
 
-      const managerKey = event.manager_slug || "unassigned";
-      if (!managerBuckets.has(managerKey)) {
-        managerBuckets.set(managerKey, { tokens: 0, messages: 0 });
-      }
-      const managerBucket = managerBuckets.get(managerKey)!;
-      managerBucket.tokens += tokens;
-      managerBucket.messages += messages;
-
-      if (key === todayKey) {
-        tokensToday += tokens;
-        messagesToday += messages;
+        if (date === todayKey) {
+          tokensToday += tokens;
+          costToday += Math.abs(tx.amount);
+          messagesToday += 1;
+        }
       }
     });
 
     const byDay = Array.from(dayBuckets.entries())
       .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([date, data]) => ({ date, tokens: data.tokens, messages: data.messages }));
-
-    const byManager = Array.from(managerBuckets.entries()).map(([managerSlug, data]) => ({
-      managerSlug,
-      tokens: data.tokens,
-      messages: data.messages
-    }));
-
-    const topUps = (walletTransactions || []).filter((tx: any) => tx.type === "credit");
+      .map(([date, data]) => ({ 
+        date, 
+        tokens: data.tokens, 
+        messages: data.count,
+        cost: data.cost 
+      }));
 
     return NextResponse.json({
       summary: {
         tokensToday,
-        messagesToday
+        messagesToday,
+        costToday
       },
       byDay,
-      byManager,
-      walletTransactions: walletTransactions || [],
-      topUps
+      walletTransactions: processedTransactions
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error?.message || "Failed to load usage" }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

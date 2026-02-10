@@ -19,9 +19,14 @@ import {
 } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useDashboardStore } from "@/store/useDashboardStore";
+import { getBusinessLabels, isCalendarEnabled } from "@/lib/business-context";
 
 export default function MorePage() {
   const { host } = useAuthStore();
+  const { tenant } = useDashboardStore();
+  const labels = getBusinessLabels(tenant?.businessType);
+  const showCalendar = isCalendarEnabled(tenant?.businessType);
   
   const menuItems = [
     {
@@ -34,12 +39,12 @@ export default function MorePage() {
     {
       section: "Business",
       items: [
-        { icon: LayoutGrid, label: "Listings", href: "/dashboard/kaisa/listings" }, 
-        { icon: BookOpen, label: "Bookings", href: "/dashboard/bookings" },
-        { icon: Calendar, label: "Calendar", href: "/dashboard/calendar" },
-        { icon: SlidersHorizontal, label: "AI Settings", href: "/dashboard/ai-settings" },
-        { icon: Activity, label: "AI Activity", href: "/dashboard/ai-activity" },
-        { icon: Plug, label: "Integrations", href: "/dashboard/integrations" },
+        { icon: LayoutGrid, label: labels.listings, href: "/dashboard/ai/listings" }, 
+        { icon: BookOpen, label: labels.bookings, href: "/dashboard/ai/bookings" },
+        ...(showCalendar ? [{ icon: Calendar, label: labels.calendar, href: "/dashboard/ai/calendar" }] : []),
+        { icon: SlidersHorizontal, label: "AI Settings", href: "/dashboard/ai/settings" },
+        { icon: Activity, label: "AI Activity", href: "/dashboard/ai/activity" },
+        { icon: Plug, label: "Integrations", href: "/dashboard/ai/integrations" },
         { icon: CreditCard, label: "Billing & Invoices", href: "/dashboard/billing" },
       ]
     },
@@ -60,10 +65,10 @@ export default function MorePage() {
            {host?.name ? host.name.charAt(0) : 'U'}
         </div>
         <div>
-          <h1 className="text-xl font-bold text-white tracking-tight">{host?.name || "Guest User"}</h1>
+          <h1 className="text-xl font-bold text-white tracking-tight">{host?.name || "User"}</h1>
           <p className="text-white/60 text-sm">{host?.email || "No email linked"}</p>
           <div className="mt-1 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-400 border border-green-500/20 uppercase tracking-wider">
-            Verified Host
+            Verified Account
           </div>
         </div>
       </div>

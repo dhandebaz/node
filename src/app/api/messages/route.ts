@@ -11,14 +11,16 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
+
   const searchParams = request.nextUrl.searchParams;
   const listingId = searchParams.get('listingId');
   const channel = searchParams.get('channel');
 
   let query = supabase
     .from('messages')
-    .select('*, guests(name), listings!inner(host_id)')
-    .eq('listings.host_id', user.id)
+    .select('*, guests(name)')
+    .eq('tenant_id', tenantId)
     .order('timestamp', { ascending: false });
 
   if (listingId) {

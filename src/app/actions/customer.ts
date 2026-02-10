@@ -25,7 +25,8 @@ export async function getCustomerProfile() {
     identity: user.identity,
     roles: user.roles,
     products: user.products,
-    metadata: user.metadata
+    metadata: user.metadata,
+    tenant: user.tenant
   };
 }
 

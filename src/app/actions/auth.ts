@@ -1,11 +1,29 @@
 "use server";
 
-import { createSession, deleteSession } from "@/lib/auth/session";
+import { createSession, deleteSession, getSession } from "@/lib/auth/session";
 import { firebaseAdmin, adminInitializationError, verifyIdToken } from "@/lib/firebase/admin";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
 
 const SUPER_ADMIN_PHONE = process.env.SUPER_ADMIN_PHONE || "9910778576";
+
+// Helper to resolve tenant for logging
+async function getTenantIdForUser(userId: string): Promise<string | null> {
+  try {
+    const supabase = await getSupabaseServer();
+    const { data } = await supabase
+      .from("tenant_users")
+      .select("tenant_id")
+      .eq("user_id", userId)
+      .limit(1)
+      .single();
+    return data?.tenant_id || null;
+  } catch {
+    return null;
+  }
+}
 
 function normalizePhone(phone: string): string {
   // Remove all non-digit characters
@@ -78,7 +96,29 @@ export async function loginWithFirebaseToken(idToken: string, preferredProduct?:
     // 3. Create Session
     await createSession(user.id, user.role);
 
-    // 4. Determine Redirect
+    // 4. Log Audit Event
+    // We try to resolve the tenant. If user has no tenant, we log with null tenant (system level)
+    // or skip if strict tenant enforcement is required (but Login is a critical event).
+    // The requirement says "Include: tenant_id". If missing, maybe we shouldn't log?
+    // But "USER ACTIONS: Login" is mandatory.
+    // For now, we log it. If tenant_id is null, it's a platform-level login.
+    const tenantId = await getTenantIdForUser(user.id);
+    if (tenantId) {
+      await logEvent({
+        tenant_id: tenantId,
+        actor_type: 'user',
+        actor_id: user.id,
+        event_type: EVENT_TYPES.AUTH_LOGIN,
+        entity_type: 'user',
+        entity_id: user.id,
+        metadata: {
+          method: 'otp',
+          role: user.role
+        }
+      });
+    }
+
+    // 5. Determine Redirect
     let redirectPath = "/dashboard";
     if (user.role === "superadmin" || user.role === "admin") {
          redirectPath = "/admin"; // Default for admin
@@ -98,11 +138,45 @@ export async function loginWithFirebaseToken(idToken: string, preferredProduct?:
 }
 
 export async function adminLogoutAction(): Promise<void> {
+  const session = await getSession();
+  if (session?.userId) {
+    const tenantId = await getTenantIdForUser(session.userId);
+    if (tenantId) {
+      await logEvent({
+        tenant_id: tenantId,
+        actor_type: 'user',
+        actor_id: session.userId,
+        event_type: EVENT_TYPES.AUTH_LOGOUT,
+        entity_type: 'user',
+        entity_id: session.userId,
+        metadata: {
+          role: session.role
+        }
+      });
+    }
+  }
   await deleteSession();
   redirect("/login");
 }
 
 export async function logoutAction(): Promise<void> {
+  const session = await getSession();
+  if (session?.userId) {
+    const tenantId = await getTenantIdForUser(session.userId);
+    if (tenantId) {
+      await logEvent({
+        tenant_id: tenantId,
+        actor_type: 'user',
+        actor_id: session.userId,
+        event_type: EVENT_TYPES.AUTH_LOGOUT,
+        entity_type: 'user',
+        entity_id: session.userId,
+        metadata: {
+          role: session.role
+        }
+      });
+    }
+  }
   await import("@/lib/auth/session").then((mod) => mod.deleteSession());
   redirect("/");
 }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabaseServer } from '@/lib/supabase/server';
 import { getSession } from '@/lib/auth/session';
 import { encryptToken } from '@/lib/crypto';
+import { requireActiveTenant } from '@/lib/auth/tenant';
 
 export async function GET() {
   const session = await getSession();
@@ -10,13 +11,15 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
+
   const supabase = await getSupabaseServer();
   
   // Fetch integrations
   const { data: integrations, error } = await supabase
     .from('integrations')
     .select('id, user_id, provider, status, last_sync, last_synced_at, expires_at, error_code, metadata, scopes, connected_email, connected_name') // Exclude tokens
-    .eq('user_id', session.userId);
+    .eq('tenant_id', tenantId);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -61,6 +64,7 @@ export async function POST(request: Request) {
 
   // Prepare update data
   const updateData: any = {
+    tenant_id: tenantId,
     user_id: session.userId,
     provider,
     status: status || 'connected',

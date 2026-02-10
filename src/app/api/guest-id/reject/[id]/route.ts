@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
+import { getTenantIdForUser } from "@/app/actions/auth";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -16,7 +19,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const { id } = await params;
     const { data: guestId, error } = await supabase
       .from("guest_ids")
-      .select("id, booking_id, bookings(guest_id, listings!inner(host_id))")
+      .select("id, tenant_id, booking_id, bookings(guest_id, listings!inner(host_id))")
       .eq("id", id)
       .eq("bookings.listings.host_id", user.id)
       .maybeSingle();
@@ -42,6 +45,20 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       .from("bookings")
       .update({ id_status: "rejected" })
       .eq("id", guestId.booking_id);
+
+    // Log ID Rejected
+    const booking = Array.isArray(guestId.bookings) ? guestId.bookings[0] : guestId.bookings;
+    const guestIdValue = booking?.guest_id;
+    
+    await logEvent({
+      tenant_id: guestId.tenant_id,
+      actor_type: 'user',
+      actor_id: user.id, // Host rejected it
+      event_type: EVENT_TYPES.ID_REJECTED,
+      entity_type: 'guest_id',
+      entity_id: id,
+      metadata: { booking_id: guestId.booking_id, reason, guest_id: guestIdValue }
+    });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

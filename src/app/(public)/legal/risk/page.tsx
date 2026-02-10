@@ -45,6 +45,21 @@ export default function RiskPage() {
              <p>
                We do not guarantee uninterrupted access to our services. Scheduled maintenance and unforeseen outages may occur.
              </p>
+
+             <h3 className="text-xl font-bold mt-8 mb-4 uppercase tracking-tight">2. AI Employee Behavior</h3>
+             <p>
+               Nodebase AI Employees are powered by large language models. While they are designed to be accurate and safe:
+             </p>
+             <ul className="list-disc pl-6 space-y-2 mt-4">
+               <li><strong>Accuracy:</strong> AI may occasionally provide incorrect information or "hallucinate" facts. You are responsible for verifying critical communications.</li>
+               <li><strong>Decision Making:</strong> Automated decisions (e.g., accepting bookings, sending refunds) are executed based on your configured rules. You are liable for actions taken by your AI Employee within these rules.</li>
+               <li><strong>Supervision:</strong> We recommend periodic review of AI conversations, especially during the initial setup phase.</li>
+             </ul>
+
+             <h3 className="text-xl font-bold mt-8 mb-4 uppercase tracking-tight">3. Financial Risk</h3>
+             <p>
+               Nodebase is not a bank. Wallet balances are pre-paid credits for service usage and are non-refundable except as required by law.
+             </p>
           </motion.div>
         </div>
       </section>

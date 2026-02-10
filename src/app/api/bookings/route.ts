@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 export async function GET(_request: NextRequest) {
   try {
@@ -9,10 +10,12 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const tenantId = await requireActiveTenant();
+
     const { data: bookings, error } = await supabase
       .from("bookings")
-      .select("id, listing_id, guest_id, start_date, end_date, status, id_status, source, amount, guest_contact, payment_id, created_at, guests(name, phone, email), listings!inner(host_id)")
-      .eq("listings.host_id", user.id)
+      .select("id, listing_id, guest_id, start_date, end_date, status, id_status, source, amount, guest_contact, payment_id, created_at, guests(name, phone, email)")
+      .eq("tenant_id", tenantId)
       .order("created_at", { ascending: false });
 
     if (error) {
