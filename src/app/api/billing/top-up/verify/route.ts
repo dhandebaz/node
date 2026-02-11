@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireActiveTenant } from "@/lib/auth/tenant";
-import { RazorpayService } from "@/lib/services/RazorpayService";
+import { RazorpayService } from "@/lib/services/razorpayService";
 import { WalletService } from "@/lib/services/walletService";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";

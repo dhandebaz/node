@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { CreateAuditEventParams } from "@/types/events";
+export { EVENT_TYPES } from "@/types/events";
 
 /**
  * Logs an audit event to the database.

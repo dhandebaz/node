@@ -186,8 +186,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: bookingError?.message || "Failed to create booking" }, { status: 500 });
     }
 
-import { RazorpayService } from "@/lib/services/razorpayService";
-
     // Log Booking Created
     await logEvent({
       tenant_id: tenantId,

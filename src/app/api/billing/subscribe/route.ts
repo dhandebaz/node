@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireActiveTenant } from "@/lib/auth/tenant";
-import { RazorpayService } from "@/lib/services/RazorpayService";
+import { RazorpayService } from "@/lib/services/razorpayService";
 
 export async function POST(request: Request) {
   try {

@@ -3,7 +3,7 @@ import { getSession } from "@/lib/auth/session";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getPersonaCapabilities } from "@/lib/business-context";
-import { logEvent } from "@/lib/analytics/posthog";
+import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
 
 export async function POST() {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
-import { logEvent } from "@/lib/analytics/posthog"; // Updated import path if needed, or keep existing
+import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
 import { FailureService } from "@/lib/services/failureService";
 import { ControlService } from "@/lib/services/controlService";

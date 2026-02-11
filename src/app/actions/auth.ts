@@ -10,7 +10,7 @@ import { EVENT_TYPES } from "@/types/events";
 const SUPER_ADMIN_PHONE = process.env.SUPER_ADMIN_PHONE || "9910778576";
 
 // Helper to resolve tenant for logging
-async function getTenantIdForUser(userId: string): Promise<string | null> {
+export async function getTenantIdForUser(userId: string): Promise<string | null> {
   try {
     const supabase = await getSupabaseServer();
     const { data } = await supabase

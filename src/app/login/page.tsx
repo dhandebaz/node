@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuthStore } from "@/store/useAuthStore";
 import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { sendOTP, verifyOTP, isLoading, error, host, confirmationResult } = useAuthStore();
@@ -189,5 +189,17 @@ export default function LoginPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-brand-deep-red flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-brand-bone animate-spin" />
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

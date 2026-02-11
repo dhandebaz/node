@@ -36,3 +36,19 @@ export async function fetchWithAuth<T>(url: string, options: FetchOptions = {}):
 
   return response.json();
 }
+
+export async function postWithAuth<T>(url: string, body: any, options: FetchOptions = {}): Promise<T> {
+  return fetchWithAuth<T>(url, {
+    ...options,
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export async function putWithAuth<T>(url: string, body: any, options: FetchOptions = {}): Promise<T> {
+  return fetchWithAuth<T>(url, {
+    ...options,
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+}

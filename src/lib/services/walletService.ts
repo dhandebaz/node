@@ -211,17 +211,3 @@ export class WalletService {
     return data.reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
   }
 }
-    
-    const { data } = await supabase
-      .from("wallet_transactions")
-      .select("amount")
-      .eq("tenant_id", tenantId)
-      .eq("type", "ai_usage")
-      .gte("created_at", yesterday.toISOString());
-      
-    if (!data) return 0;
-    
-    // Sum absolute values
-    return data.reduce((sum, tx) => sum + Math.abs(Number(tx.amount)), 0);
-  }
-}

@@ -20,19 +20,11 @@ import { notFound } from "next/navigation";
 // Just show a static "Thank you" and fetch status client side? 
 // Let's try to fetch server side with admin access for just this read, strictly scoped.
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-
-// We need a way to read booking without user session.
-// DANGER: Using service role key in a server component is okay if we are careful.
-// But we should verify the booking belongs to a tenant.
-
-const supabaseAdmin = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export default async function BookingConfirmationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const supabaseAdmin = await getSupabaseAdmin();
 
   const { data: booking, error } = await supabaseAdmin
     .from("bookings")

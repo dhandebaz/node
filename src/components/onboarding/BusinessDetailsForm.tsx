@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BusinessDetailsFormProps {
@@ -96,7 +96,7 @@ export function BusinessDetailsForm({ onSubmit, loading }: BusinessDetailsFormPr
       </button>
       
       <p className="text-center text-xs text-zinc-500">
-        We'll use this to set up your calendar sync and response rules.
+        Setup takes less than 2 minutes. No credit card or platform passwords required now.
       </p>
     </form>
   );
