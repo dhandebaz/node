@@ -15,6 +15,63 @@ export class RazorpayService {
   }
 
   /**
+   * Create a payment link
+   */
+  static async createPaymentLink(tenantId: string, options: {
+    amount: number;
+    currency: string;
+    description: string;
+    customer: {
+      name: string;
+      email?: string;
+      contact?: string;
+    };
+    reference_id: string;
+    callback_url: string;
+    notes?: Record<string, any>;
+  }) {
+    const instance = this.getInstance();
+
+    try {
+      const paymentLink = await instance.paymentLink.create({
+        amount: options.amount * 100, // Convert to paise
+        currency: options.currency,
+        accept_partial: false,
+        description: options.description,
+        customer: {
+          name: options.customer.name,
+          email: options.customer.email,
+          contact: options.customer.contact
+        },
+        notify: {
+          sms: true,
+          email: true
+        },
+        reminder_enable: true,
+        reference_id: options.reference_id,
+        callback_url: options.callback_url,
+        callback_method: "get",
+        notes: {
+          ...options.notes,
+          tenant_id: tenantId
+        }
+      });
+      return paymentLink;
+    } catch (error) {
+      console.error('Razorpay Create Payment Link Error:', error);
+      // Fallback for development
+      if (process.env.NODE_ENV === 'development') {
+          return {
+              id: `plink_mock_${Date.now()}`,
+              short_url: `http://localhost:3000/mock-payment/${options.reference_id}`,
+              status: 'created'
+          };
+      }
+      throw new Error('Failed to create payment link');
+    }
+  }
+
+  /**
    * Create a new order for top-up
    */
   static async createOrder(amount: number, currency: string = 'INR', receipt: string) {
