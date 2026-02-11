@@ -66,7 +66,7 @@ export async function updateSession(request: NextRequest) {
   // 1. Redirect unauthenticated users to login
   if (!user && !isPublicRoute) {
     // Redirect to login if accessing protected routes
-    if (path.startsWith('/dashboard') || path.startsWith('/admin')) {
+    if (path.startsWith('/dashboard') || path.startsWith('/admin') || path.startsWith('/node/dashboard')) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         url.searchParams.set('next', path)
@@ -80,6 +80,8 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone()
     if (role === 'admin') {
         url.pathname = '/admin/dashboard'
+    } else if (role === 'investor') {
+        url.pathname = '/node/dashboard/overview'
     } else {
         url.pathname = '/dashboard/overview' // or whatever the customer home is
     }
@@ -95,6 +97,15 @@ export async function updateSession(request: NextRequest) {
         const url = request.nextUrl.clone()
         url.pathname = '/dashboard/overview' // Redirect to their safe space
         return NextResponse.redirect(url)
+    }
+
+    // Investor Routes
+    if (path.startsWith('/node/dashboard')) {
+        if (role !== 'investor' && role !== 'admin' && role !== 'superadmin') {
+             const url = request.nextUrl.clone()
+             url.pathname = '/dashboard/overview'
+             return NextResponse.redirect(url)
+        }
     }
 
     // Admin trying to access Customer routes? 

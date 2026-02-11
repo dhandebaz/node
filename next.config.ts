@@ -37,9 +37,6 @@ const nextConfig: NextConfig = {
     // Setting to true to ensure deployment succeeds even with minor type errors, 
     // as requested "deployment ready" often means "it builds".
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
