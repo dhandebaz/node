@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-export async function GET(_request: NextRequest, { params }: { params: Promise<{ bookingId: string }> }) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = await getSupabaseServer();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -10,7 +10,8 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { bookingId } = await params;
+    // Note: In this route, 'id' refers to the bookingId
+    const { id: bookingId } = await params;
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .select("id, guest_id, listings!inner(host_id)")
