@@ -20,7 +20,8 @@ import {
   ClipboardList,
   AlertTriangle,
   Flag,
-  Rocket
+  Rocket,
+  TrendingUp
 } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/ui/Logo";
