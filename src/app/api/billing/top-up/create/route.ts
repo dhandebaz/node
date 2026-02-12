@@ -12,7 +12,11 @@ export async function POST(request: Request) {
     }
 
     const receipt = `rcpt_${tenantId.slice(0, 8)}_${Date.now()}`;
-    const order = await RazorpayService.createOrder(amount, 'INR', receipt);
+    const order = await RazorpayService.createOrder(tenantId, {
+      amount: amount * 100,
+      currency: 'INR',
+      receipt
+    });
 
     return NextResponse.json({
       id: order.id,

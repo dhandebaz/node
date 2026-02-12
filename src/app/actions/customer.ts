@@ -23,6 +23,7 @@ export async function getCustomerProfile() {
   const user = await getCurrentUser();
   return {
     identity: user.identity,
+    status: user.status,
     roles: user.roles,
     products: user.products,
     metadata: user.metadata,

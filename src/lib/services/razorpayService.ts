@@ -74,18 +74,22 @@ export class RazorpayService {
   /**
    * Create a new order for top-up
    */
-  static async createOrder(amount: number, currency: string = 'INR', receipt: string) {
+  static async createOrder(tenantId: string, options: { amount: number, currency: string, receipt: string, notes?: Record<string, any> }) {
     const instance = this.getInstance();
     
-    const options = {
-      amount: amount * 100, // Razorpay expects amount in paise
-      currency,
-      receipt,
-      payment_capture: 1 // Auto capture
+    const orderOptions = {
+      amount: options.amount, // Expecting amount in paise
+      currency: options.currency,
+      receipt: options.receipt,
+      payment_capture: 1, // Auto capture
+      notes: {
+        ...options.notes,
+        tenant_id: tenantId
+      }
     };
 
     try {
-      const order = await instance.orders.create(options);
+      const order = await instance.orders.create(orderOptions);
       return order;
     } catch (error) {
       console.error('Razorpay Create Order Error:', error);

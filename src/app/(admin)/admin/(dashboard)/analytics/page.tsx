@@ -112,7 +112,7 @@ export default async function AdminAnalyticsPage() {
             <CardContent>
               <div className="text-2xl font-bold text-white">{health.growth?.rewardedReferrals || 0}</div>
               <p className="text-xs text-white/40 mt-1">
-                {health.growth?.totalReferrals ? ((health.growth.rewardedReferrals / health.growth.totalReferrals) * 100).toFixed(1) : 0}% Conversion Rate
+                {health.growth?.totalReferrals ? (((health.growth?.rewardedReferrals || 0) / health.growth.totalReferrals) * 100).toFixed(1) : 0}% Conversion Rate
               </p>
             </CardContent>
           </Card>

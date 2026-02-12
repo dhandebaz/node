@@ -48,7 +48,7 @@ export function SystemHealthCheck({ flags, walletBalance, tenant, integrations }
   }
 
   // 4. Check Integrations
-  const failedIntegrations = integrations.filter(i => i.status === 'error' || i.status === 'disconnected');
+  const failedIntegrations = integrations.filter(i => i.status === 'error');
   if (failedIntegrations.length > 0) {
     alerts.push({
       type: 'warning',

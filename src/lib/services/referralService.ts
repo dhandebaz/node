@@ -1,6 +1,6 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { WalletService } from "./walletService";
-import { logEvent } from "./analyticsService"; // Assuming we can log events here, or use a separate logger
+import { logEvent } from "@/lib/events"; // Assuming we can log events here, or use a separate logger
 import { EVENT_TYPES } from "@/types/events"; // Need to check if this exists or just use string
 import { randomBytes } from "crypto";
 

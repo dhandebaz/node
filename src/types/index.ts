@@ -5,6 +5,9 @@ export interface Tenant {
   createdAt: string;
   businessType?: BusinessType | null;
   earlyAccess?: boolean;
+  is_memory_enabled?: boolean;
+  is_branding_enabled?: boolean;
+  is_ai_enabled?: boolean;
 }
 
 export type BusinessType = 

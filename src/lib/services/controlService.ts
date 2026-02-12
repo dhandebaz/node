@@ -150,7 +150,7 @@ export class ControlService {
 
     // 1. Fetch Global Flags & Tenant Controls in parallel
     // If tenantId is null (e.g. signup), we only fetch flags
-    const promises: Promise<any>[] = [supabase.from('system_flags').select('key, value')];
+    const promises: any[] = [supabase.from('system_flags').select('key, value')];
     if (tenantId) {
       promises.push(supabase.from('tenants').select('is_ai_enabled, is_messaging_enabled, is_bookings_enabled, is_wallet_enabled, business_type').eq('id', tenantId).single());
     }

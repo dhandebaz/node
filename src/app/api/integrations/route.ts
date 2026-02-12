@@ -51,6 +51,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const tenantId = await requireActiveTenant();
+
   const supabase = await getSupabaseServer();
   
   const body = await request.json();

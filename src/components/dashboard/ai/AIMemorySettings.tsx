@@ -36,7 +36,6 @@ import {
   Search,
   Filter
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast"; // Assuming this exists, need to verify
 import { cn } from "@/lib/utils";
 
 interface AIMemorySettingsProps {
@@ -147,7 +146,7 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
             <div className="flex gap-2">
               <Select 
                 value={newMemoryType} 
-                onValueChange={(v) => setNewMemoryType(v as MemoryType)}
+                onValueChange={(v: string) => setNewMemoryType(v as MemoryType)}
               >
                 <SelectTrigger className="w-[140px] bg-black/20 border-white/10 text-white">
                   <SelectValue placeholder="Type" />

@@ -104,7 +104,8 @@ export async function POST(request: NextRequest) {
       .eq("id", record.booking_id);
 
     // Log ID Submitted
-    const guestId = Array.isArray(record.bookings) ? record.bookings[0]?.guest_id : record.bookings?.guest_id;
+    const bookings = record.bookings as any;
+    const guestId = Array.isArray(bookings) ? bookings[0]?.guest_id : bookings?.guest_id;
     
     await logEvent({
       tenant_id: record.tenant_id,

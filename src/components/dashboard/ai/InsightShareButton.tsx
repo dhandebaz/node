@@ -5,18 +5,23 @@ import { Copy, MessageCircle, Check } from "lucide-react";
 import { useState } from "react";
 
 interface InsightShareButtonProps {
-  stats: {
+  stats?: {
     conversations: number;
     value: number;
     period: string; // 'week' | 'month'
   };
+  text?: string;
   referralCode?: string;
 }
 
-export function InsightShareButton({ stats, referralCode }: InsightShareButtonProps) {
+export function InsightShareButton({ stats, text, referralCode }: InsightShareButtonProps) {
   const [copied, setCopied] = useState(false);
   
-  const shareText = `My AI Employee handled ${stats.conversations} conversations and generated ₹${stats.value.toLocaleString()} in value this ${stats.period}! 🚀\n\nManaged by Nodebase AI.${referralCode ? ` Try it here: https://nodebase.ai/signup?ref=${referralCode}` : ''}`;
+  const shareText = text
+    ? `${text}\n\nManaged by Nodebase AI.${referralCode ? ` Try it here: https://nodebase.ai/signup?ref=${referralCode}` : ''}`
+    : stats
+    ? `My AI Employee handled ${stats.conversations} conversations and generated ₹${stats.value.toLocaleString()} in value this ${stats.period}! 🚀\n\nManaged by Nodebase AI.${referralCode ? ` Try it here: https://nodebase.ai/signup?ref=${referralCode}` : ''}`
+    : '';
 
   const handleCopy = async () => {
     try {

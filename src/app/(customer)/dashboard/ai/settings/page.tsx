@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AIMemorySettings } from "@/components/dashboard/ai/AIMemorySettings";
+import { AIBrandingSettings } from "@/components/dashboard/ai/AIBrandingSettings";
 
 export default function AISettingsPage() {
   const { host } = useAuthStore();

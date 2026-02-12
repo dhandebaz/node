@@ -75,7 +75,7 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
         <Link href="/" className="flex items-center gap-2">
           <span className="text-xl font-bold tracking-tight text-white">NODEBASE</span>
         </Link>
-        {tenant?.early_access && (
+        {tenant?.earlyAccess && (
           <div className="flex items-center gap-1 bg-yellow-500/20 border border-yellow-500/30 rounded px-1.5 py-0.5" title="Early Access Member">
             <Sparkles className="w-3 h-3 text-yellow-400" />
             <span className="text-[9px] font-bold text-yellow-400 tracking-wide uppercase">Beta</span>
@@ -129,7 +129,7 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
           <NavItem href="/dashboard/invite" label="Invite & Earn" icon={Gift} />
           <NavItem 
             href="/dashboard/support" 
-            label={tenant?.early_access ? "Priority Support" : "Need help?"} 
+            label={tenant?.earlyAccess ? "Priority Support" : "Need help?"} 
             icon={HelpCircle} 
           />
         </div>

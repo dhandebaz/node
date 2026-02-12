@@ -67,7 +67,7 @@ export default async function CustomerLayout({
         </div>
         
         {/* Early Access Feedback (Only for Beta Users) */}
-        {profile.tenant?.early_access && (
+        {profile.tenant?.earlyAccess && (
            <EarlyAccessFeedback />
         )}
       </div>

@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { SessionExpiredOverlay } from "@/components/auth/SessionExpiredOverlay";
 import { TenantErrorOverlay } from "@/components/auth/TenantErrorOverlay";
-import type { User } from "@supabase/supabase-js";
+import type { User, AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 type UserRole = "customer" | "admin";
 type SessionStatus = "loading" | "authenticated" | "unauthenticated" | "expired" | "tenant_error";
@@ -158,7 +158,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (event: AuthChangeEvent, session: Session | null) => {
         if (event === 'SIGNED_OUT') {
             setUser(null);
             setRole(null);

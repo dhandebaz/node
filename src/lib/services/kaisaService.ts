@@ -14,7 +14,7 @@ import {
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { userService } from "./userService";
 import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
+import { EVENT_TYPES, EventType } from "@/types/events";
 
 // Initial Config (Read-only default for now)
 let GLOBAL_CONFIG: KaisaGlobalConfig = {
@@ -265,7 +265,7 @@ export const kaisaService = {
   },
 
   async logAction(log: Omit<KaisaAdminAuditLog, "id" | "timestamp">) {
-    let eventType = EVENT_TYPES.ADMIN_MANUAL_OVERRIDE;
+    let eventType: EventType = EVENT_TYPES.ADMIN_MANUAL_OVERRIDE;
     if (log.actionType === 'module_toggle') eventType = EVENT_TYPES.ADMIN_AI_MANAGER_TOGGLED;
     if (log.actionType === 'config_change') eventType = EVENT_TYPES.AI_SETTINGS_CHANGED;
     
