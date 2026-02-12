@@ -41,6 +41,7 @@ export async function POST(request: Request) {
 
   const { error: listingError } = await supabase.from("listings").insert({
     id: listingId,
+    tenant_id: tenantId,
     host_id: session.userId,
     title: listing.name,
     name: listing.name,

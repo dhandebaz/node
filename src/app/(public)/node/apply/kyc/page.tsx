@@ -61,10 +61,8 @@ export default function ApplyKYCPage() {
       const formData = new FormData();
       formData.append("file", file);
 
-      // TODO: Get actual user ID from session context
-      const userId = "USR-001"; 
-
-      const result = await verifyAndUploadDocumentAction(userId, formData, type);
+      // User ID is handled securely on the server side via session
+      const result = await verifyAndUploadDocumentAction(null, formData, type);
       setUploadResult(result ?? null);
 
     } catch (err) {

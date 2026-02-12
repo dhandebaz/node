@@ -222,36 +222,39 @@ export const nodeService = {
   async getAuditLogs(nodeId: string): Promise<NodeAuditLog[]> {
     const supabase = await getSupabaseServer();
     const { data, error } = await supabase
-      .from("admin_audit_logs")
+      .from("audit_events")
       .select("*")
-      .eq("target_resource", "node")
-      .eq("target_id", nodeId)
-      .order("timestamp", { ascending: false });
+      .eq("entity_type", "node")
+      .eq("entity_id", nodeId)
+      .order("created_at", { ascending: false });
 
     if (error) return [];
 
     return data.map((log: any) => ({
       id: log.id,
-      targetNodeId: log.target_id,
-      adminId: log.admin_id,
-      actionType: log.action_type,
-      details: log.details,
-      previousValue: log.previous_value ? JSON.parse(log.previous_value) : undefined,
-      newValue: log.new_value ? JSON.parse(log.new_value) : undefined,
-      timestamp: log.timestamp
+      targetNodeId: log.entity_id,
+      adminId: log.actor_id,
+      actionType: log.event_type,
+      details: log.metadata?.details,
+      previousValue: log.metadata?.previous_value,
+      newValue: log.metadata?.new_value,
+      timestamp: log.created_at
     }));
   },
 
   async logAction(log: Omit<NodeAuditLog, "id" | "timestamp">) {
     const supabase = await getSupabaseServer();
-    await supabase.from("admin_audit_logs").insert({
-      admin_id: log.adminId,
-      target_resource: "node",
-      target_id: log.targetNodeId,
-      action_type: log.actionType,
-      details: log.details,
-      previous_value: log.previousValue ? JSON.stringify(log.previousValue) : null,
-      new_value: log.newValue ? JSON.stringify(log.newValue) : null
+    await supabase.from("audit_events").insert({
+      actor_type: 'admin',
+      actor_id: log.adminId,
+      entity_type: "node",
+      entity_id: log.targetNodeId,
+      event_type: log.actionType,
+      metadata: {
+        details: log.details,
+        previous_value: log.previousValue,
+        new_value: log.newValue
+      }
     });
   }
 };

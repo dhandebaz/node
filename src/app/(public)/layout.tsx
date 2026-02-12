@@ -12,8 +12,14 @@ export default async function PublicLayout({
   let user = null;
 
   if (session?.userId) {
-    const users = await userService.getUsers();
-    user = users.find(u => u.identity.id === session.userId) || null;
+    try {
+      const users = await userService.getUsers();
+      user = users.find(u => u.identity.id === session.userId) || null;
+    } catch (error) {
+      console.error("Error fetching user in PublicLayout:", error);
+      // Fallback to null user if database fails
+      user = null;
+    }
   }
 
   return (

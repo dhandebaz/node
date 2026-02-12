@@ -105,25 +105,73 @@ export class AnalyticsService {
 
     // 3. AI Influence (Heuristic)
     // AI-assisted = Booking created by a guest who received an AI reply in the last 24h
-    // This requires complex join. For MVP, let's use a simpler proxy:
-    // If booking source is 'direct' and tenant has AI enabled, assume 50% attribution? No, "No fake metrics".
-    // Better: Count bookings where guest_id matches a message receiver.
-    // Let's return 0 for now if we can't calculate strictly, or try a join if possible.
-    // Strict approach: 
-    // We need 'messages' table.
+    // We try to link bookings to guests who had AI conversations
+    let aiAssistedCount = 0;
     
+    // Fetch potential AI interactions
+    // We need to find guests who booked and check their message history
+    if (bookings && bookings.length > 0) {
+        const guestIds = bookings.map(b => b.guest_id).filter(Boolean);
+        if (guestIds.length > 0) {
+            // Find messages for these guests sent by assistant
+            const { data: messages } = await supabase
+                .from("messages")
+                .select("guest_id, created_at")
+                .in("guest_id", guestIds)
+                .eq("role", "assistant")
+                .gte("created_at", subDays(new Date(start), 2).toISOString()); // Look back 48h to be safe
+
+             if (messages) {
+                 bookings.forEach(booking => {
+                     const bookingTime = new Date(booking.created_at).getTime();
+                     const hasRecentAiMsg = messages.some(m => {
+                         if (m.guest_id !== booking.guest_id) return false;
+                         const msgTime = new Date(m.created_at).getTime();
+                         // Check if message was before booking and within 24h
+                         return msgTime < bookingTime && (bookingTime - msgTime) < 24 * 60 * 60 * 1000;
+                     });
+                     if (hasRecentAiMsg) aiAssistedCount++;
+                 });
+             }
+        }
+    }
+
     let metrics: PersonaMetrics = {};
 
     if (businessType === 'airbnb_host') {
        const direct = bookings?.filter(b => b.source === 'direct').length || 0;
        const ota = totalCount - direct;
        
+       // Calculate Occupancy Rate (Approximate)
+       // Assumption: Each booking is avg 3 nights.
+       // Denominator: Days in range * Number of Listings
+       // We need number of listings for this tenant
+       const { count: listingCount } = await supabase
+          .from("listings")
+          .select("*", { count: 'exact', head: true })
+          .eq("tenant_id", tenantId);
+       
+       const activeListings = listingCount || 1; // Default to 1 to avoid div by zero
+       const daysInRange = (new Date(end).getTime() - new Date(start).getTime()) / (1000 * 60 * 60 * 24);
+       const totalCapacityDays = activeListings * daysInRange;
+       
+       // Improved: Sum actual booking duration if available, else 3 days
+       const totalBookedDays = bookings?.reduce((sum, b) => {
+           if (b.check_in && b.check_out) {
+               const stay = (new Date(b.check_out).getTime() - new Date(b.check_in).getTime()) / (1000 * 60 * 60 * 24);
+               return sum + Math.max(1, stay);
+           }
+           return sum + 3; // Fallback avg
+       }, 0) || 0;
+
+       const occupancyRate = Math.min(100, Math.round((totalBookedDays / totalCapacityDays) * 100));
+
        metrics = {
          revenue: totalRevenue,
-         occupancyRate: 0, // Need total days available vs booked days. Hard to calc quickly.
+         occupancyRate,
          directBookings: direct,
          otaBookings: ota,
-         aiAssistedBookings: 0 // TODO: Implement strict linking
+         aiAssistedBookings: aiAssistedCount
        };
     } else if (businessType === 'kirana_store') {
        metrics = {
@@ -235,10 +283,10 @@ export class AnalyticsService {
     const supabase = await getSupabaseServer();
     
     // 1. Active Tenants (with at least 1 booking or login in last 30d?)
-    // Simple: count all
+    // Simple: count all active users
     const { count: activeTenants } = await supabase
-        .from("tenants")
-        .select("*", { count: 'exact', head: true });
+        .from("users")
+        .select("*", { count: 'exact', head: true }); // Assuming all users are tenants
 
     // 2. Credits Consumed Today
     const today = startOfDay(new Date()).toISOString();
@@ -256,7 +304,7 @@ export class AnalyticsService {
 
     // 4. Growth Stats
     const { count: newTenants } = await supabase
-        .from("tenants")
+        .from("users")
         .select("*", { count: 'exact', head: true })
         .gte("created_at", today);
         

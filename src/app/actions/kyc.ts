@@ -4,13 +4,20 @@
 import { geminiService } from "@/lib/services/geminiService";
 import { userService } from "@/lib/services/userService";
 import { KYCDocument } from "@/types/user";
+import { getSession } from "@/lib/auth/session";
 
 export async function verifyAndUploadDocumentAction(
-  userId: string,
+  _userId: string | null, // Kept for signature compatibility but ignored, or better removed if client updated
   formData: FormData,
   documentType: "PAN" | "AADHAAR"
 ) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      throw new Error("Unauthorized");
+    }
+    const userId = session.userId;
+
     const file = formData.get("file") as File;
     if (!file) {
       throw new Error("No file uploaded");

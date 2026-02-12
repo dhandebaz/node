@@ -125,16 +125,107 @@ export const investorService = {
     };
   },
 
-  async getReports(userId: string): Promise<InvestorReport[]> { return []; },
+  async getReports(userId: string): Promise<InvestorReport[]> {
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+        .from("investor_reports")
+        .select("*")
+        .eq("user_id", userId)
+        .order("generated_at", { ascending: false });
+    
+    if (error) return [];
+    
+    return data.map((r: any) => ({
+        id: r.id,
+        title: r.title,
+        period: r.period,
+        generatedAt: r.generated_at,
+        type: (r.metadata?.type || "operational") as any,
+        downloadUrl: r.url,
+        isNew: false // Could implement logic based on 'read' status if table had it
+    }));
+  },
   
-  async getDocuments(userId: string): Promise<InvestorDocument[]> { return []; },
+  async getDocuments(userId: string): Promise<InvestorDocument[]> {
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+        .from("investor_documents")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
+    if (error) return [];
+
+    return data.map((d: any) => ({
+        id: d.id,
+        title: d.title,
+        type: (d.type || "other") as any,
+        signedDate: d.created_at, // Assuming created = signed for now
+        version: "1.0",
+        downloadUrl: d.url,
+        content: undefined
+    }));
+  },
   
-  async getDocument(userId: string, docId: string): Promise<InvestorDocument | null> { return null; },
+  async getDocument(userId: string, docId: string): Promise<InvestorDocument | null> {
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+        .from("investor_documents")
+        .select("*")
+        .eq("id", docId)
+        .eq("user_id", userId)
+        .single();
+
+    if (error || !data) return null;
+
+    return {
+        id: data.id,
+        title: data.title,
+        type: (data.type || "other") as any,
+        signedDate: data.created_at,
+        version: "1.0",
+        downloadUrl: data.url,
+        content: undefined
+    };
+  },
   
-  async getTickets(userId: string): Promise<SupportTicket[]> { return []; },
+  async getTickets(userId: string): Promise<SupportTicket[]> {
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+        .from("support_tickets")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("product", "node") // Filter for investor/node related tickets
+        .order("updated_at", { ascending: false });
+
+    if (error) return [];
+
+    return data.map((t: any) => ({
+        id: t.id,
+        category: "node", // Mapping back to Investor SupportTicket type
+        subject: t.subject,
+        status: t.status as any,
+        createdAt: t.created_at,
+        lastUpdate: t.updated_at
+    }));
+  },
   
   async createTicket(userId: string, ticket: any): Promise<void> { 
-      // TODO: Implement support tickets
-      console.log("Create ticket", userId, ticket);
+      const supabase = await getSupabaseServer();
+      await supabase.from("support_tickets").insert({
+          user_id: userId,
+          subject: ticket.subject,
+          product: "node", // Force product to node for investor service
+          status: "open",
+          priority: "medium",
+          metadata: {
+              category: ticket.category,
+              message: ticket.message // Store initial message in metadata or separate table
+          }
+      });
+      
+      // Also insert message if we want to follow support service pattern
+      // Ideally we reuse supportService.createTicket but we are inside investorService
+      // and imports might cycle if not careful. Here direct DB is fine.
   }
 };

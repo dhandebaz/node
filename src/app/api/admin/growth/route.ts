@@ -12,7 +12,7 @@ export async function GET() {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const { count: newTenants30d } = await supabase
-        .from("tenants")
+        .from("users")
         .select("*", { count: 'exact', head: true })
         .gte("created_at", thirtyDaysAgo.toISOString());
 

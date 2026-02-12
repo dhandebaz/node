@@ -14,7 +14,7 @@ export class SubscriptionService {
   static async getTenantPlan(tenantId: string): Promise<SubscriptionPlan> {
     const supabase = await getSupabaseServer();
     const { data } = await supabase
-      .from("tenants")
+      .from("users")
       .select("subscription_plan")
       .eq("id", tenantId)
       .single();
@@ -25,7 +25,7 @@ export class SubscriptionService {
   static async getTenantContext(tenantId: string): Promise<{ plan: SubscriptionPlan; businessType: BusinessType }> {
     const supabase = await getSupabaseServer();
     const { data } = await supabase
-      .from("tenants")
+      .from("users")
       .select("subscription_plan, business_type")
       .eq("id", tenantId)
       .single();
@@ -40,9 +40,7 @@ export class SubscriptionService {
     tenantId: string, 
     resource: 'listings' | 'integrations'
   ): Promise<{ allowed: boolean; limit: number; current: number }> {
-    const { plan, businessType } = await this.getTenantContext(tenantId);
-    // Listings/Integrations usually don't need multipliers, but we can add if needed.
-    // For now, assuming 1 Listing = 1 Store/Clinic/Property is consistent.
+    const { plan } = await this.getTenantContext(tenantId);
     const limit = PLAN_LIMITS[plan][resource];
     const supabase = await getSupabaseServer();
 
@@ -52,13 +50,13 @@ export class SubscriptionService {
       const { count } = await supabase
         .from("listings")
         .select("*", { count: 'exact', head: true })
-        .eq("tenant_id", tenantId);
+        .eq("user_id", tenantId);
       current = count || 0;
     } else if (resource === 'integrations') {
       const { count } = await supabase
         .from("listing_integrations")
         .select("*", { count: 'exact', head: true })
-        .eq("tenant_id", tenantId)
+        .eq("user_id", tenantId)
         .eq("status", "connected"); 
       current = count || 0;
     }

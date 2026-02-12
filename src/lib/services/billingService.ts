@@ -1,207 +1,207 @@
 
-import { BillingPlan, Subscription, Invoice, PaymentMethod, Transaction } from "@/types/billing";
-
-// Mock Data
-const PLANS: BillingPlan[] = [
-  {
-    id: "plan_kaisa_manager",
-    name: "Kaisa Manager",
-    description: "For individual managers",
-    price: 299,
-    currency: "INR",
-    interval: "month",
-    product: "kaisa",
-    features: ["Task Management", "Basic Modules", "Standard Support"],
-    type: "subscription"
-  },
-  {
-    id: "plan_kaisa_founder",
-    name: "Kaisa Co-founder",
-    description: "For growing businesses",
-    price: 999,
-    currency: "INR",
-    interval: "month",
-    product: "kaisa",
-    features: ["All Modules", "Priority Support", "Advanced Analytics", "Multi-user"],
-    type: "subscription"
-  },
-  {
-    id: "plan_space_shared",
-    name: "Shared Hosting",
-    description: "Reliable web hosting",
-    price: 199,
-    currency: "INR",
-    interval: "month",
-    product: "space",
-    features: ["1 Website", "10GB Storage", "Free SSL"],
-    type: "subscription"
-  },
-  {
-    id: "credit_kaisa_100",
-    name: "100 Credits",
-    description: "Top-up for AI tasks",
-    price: 100,
-    currency: "INR",
-    interval: "one_time",
-    product: "kaisa",
-    features: ["100 Task Credits"],
-    type: "credits"
-  }
-];
-
-// Mock State
-let MOCK_SUBSCRIPTIONS: Subscription[] = [
-  {
-    id: "sub_k_001",
-    userId: "USR-001",
-    planId: "plan_kaisa_manager",
-    status: "active",
-    currentPeriodStart: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 days ago
-    currentPeriodEnd: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 days left
-    cancelAtPeriodEnd: false,
-  },
-  {
-    id: "sub_s_001",
-    userId: "USR-001",
-    planId: "plan_space_shared",
-    status: "active",
-    currentPeriodStart: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    currentPeriodEnd: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
-    cancelAtPeriodEnd: false,
-  }
-];
-
-let MOCK_INVOICES: Invoice[] = [
-  {
-    id: "inv_001",
-    userId: "USR-001",
-    subscriptionId: "sub_k_001",
-    amount: 299,
-    currency: "INR",
-    status: "completed",
-    date: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
-    items: [{ description: "Kaisa Manager - Monthly", amount: 299 }],
-    billingDetails: { name: "Aditya Sharma" }
-  },
-  {
-    id: "inv_002",
-    userId: "USR-001",
-    subscriptionId: "sub_k_001",
-    amount: 299,
-    currency: "INR",
-    status: "completed",
-    date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-    items: [{ description: "Kaisa Manager - Monthly", amount: 299 }],
-    billingDetails: { name: "Aditya Sharma" }
-  },
-  {
-    id: "inv_003",
-    userId: "USR-001",
-    subscriptionId: "sub_s_001",
-    amount: 199,
-    currency: "INR",
-    status: "completed",
-    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    items: [{ description: "Shared Hosting - Monthly", amount: 199 }],
-    billingDetails: { name: "Aditya Sharma" }
-  }
-];
-
-let MOCK_PAYMENT_METHODS: PaymentMethod[] = [
-    {
-        id: "pm_001",
-        type: "card",
-        last4: "4242",
-        brand: "Visa",
-        isDefault: true
-    },
-    {
-        id: "pm_002",
-        type: "upi",
-        brand: "upi",
-        last4: "sharma@okicici",
-        isDefault: false
-    }
-];
+import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
+import { BillingPlan, Subscription, Invoice, PaymentMethod } from "@/types/billing";
 
 export const billingService = {
   async getPlans(product?: 'kaisa' | 'space'): Promise<BillingPlan[]> {
-    if (product) return PLANS.filter(p => p.product === product);
-    return PLANS;
+    const supabase = await getSupabaseServer();
+    let query = supabase.from("billing_plans").select("*");
+    
+    if (product) {
+      query = query.eq("product", product);
+    }
+    
+    const { data, error } = await query;
+    if (error) return [];
+    
+    return data.map(mapDbPlanToAppPlan);
   },
 
   async getPlanById(planId: string): Promise<BillingPlan | undefined> {
-    return PLANS.find(p => p.id === planId);
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+      .from("billing_plans")
+      .select("*")
+      .eq("id", planId)
+      .single();
+      
+    if (error || !data) return undefined;
+    return mapDbPlanToAppPlan(data);
   },
 
   async getUserSubscriptions(userId: string): Promise<Subscription[]> {
-    return MOCK_SUBSCRIPTIONS.filter(s => s.userId === userId);
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", userId);
+      
+    if (error) return [];
+    return data.map(mapDbSubToAppSub);
   },
 
   async getUserInvoices(userId: string): Promise<Invoice[]> {
-    return MOCK_INVOICES.filter(i => i.userId === userId).sort((a, b) => 
-        new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+      .from("invoices")
+      .select("*")
+      .eq("user_id", userId)
+      .order("date", { ascending: false });
+      
+    if (error) return [];
+    return data.map(mapDbInvoiceToAppInvoice);
   },
   
   async getUserPaymentMethods(userId: string): Promise<PaymentMethod[]> {
-      // In real app, fetch from Razorpay/Stripe customer
-      return MOCK_PAYMENT_METHODS;
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+      .from("payment_methods")
+      .select("*")
+      .eq("user_id", userId);
+      
+    if (error) return [];
+    return data.map(mapDbPmToAppPm);
   },
 
   // Actions
   async upgradeSubscription(userId: string, subscriptionId: string, newPlanId: string): Promise<Subscription> {
-    const subIndex = MOCK_SUBSCRIPTIONS.findIndex(s => s.id === subscriptionId && s.userId === userId);
-    if (subIndex === -1) throw new Error("Subscription not found");
-
-    const newPlan = PLANS.find(p => p.id === newPlanId);
-    if (!newPlan) throw new Error("Plan not found");
-
-    // Logic: Prorate, charge difference (mocked)
-    const updatedSub = {
-        ...MOCK_SUBSCRIPTIONS[subIndex],
-        planId: newPlanId,
-        // In reality, this might reset period or just change plan
-    };
-    MOCK_SUBSCRIPTIONS[subIndex] = updatedSub;
+    const supabase = await getSupabaseServer();
     
-    // Create invoice for upgrade
-    MOCK_INVOICES.unshift({
-        id: `inv_${Date.now()}`,
-        userId,
-        subscriptionId,
-        amount: newPlan.price, // Simplified
-        currency: newPlan.currency,
-        status: "completed",
-        date: new Date().toISOString(),
-        items: [{ description: `Upgrade to ${newPlan.name}`, amount: newPlan.price }],
-        billingDetails: { name: "User" }
-    });
+    // 1. Get Subscription
+    const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("id", subscriptionId)
+        .eq("user_id", userId)
+        .single();
+        
+    if (!sub) throw new Error("Subscription not found");
 
-    return updatedSub;
+    // 2. Get New Plan
+    const { data: plan } = await supabase
+        .from("billing_plans")
+        .select("*")
+        .eq("id", newPlanId)
+        .single();
+        
+    if (!plan) throw new Error("Plan not found");
+
+    // 3. Update Subscription
+    const { data: updatedSub, error } = await supabase
+        .from("subscriptions")
+        .update({
+            plan_id: newPlanId,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", subscriptionId)
+        .select()
+        .single();
+
+    if (error || !updatedSub) throw new Error("Failed to update subscription");
+    
+    // 4. Create Invoice (Mock charge)
+    await supabase.from("invoices").insert({
+        user_id: userId,
+        subscription_id: subscriptionId,
+        amount: plan.price,
+        currency: plan.currency,
+        status: "paid",
+        items: [{ description: `Upgrade to ${plan.name}`, amount: plan.price }],
+        billing_details: { name: "User" } // Simplify
+    });
+    
+    // 5. Update User's cached plan
+    const adminSupabase = await getSupabaseAdmin();
+    await adminSupabase.from("users").update({ subscription_plan: newPlanId }).eq("id", userId);
+
+    return mapDbSubToAppSub(updatedSub);
   },
 
   async cancelSubscription(userId: string, subscriptionId: string): Promise<Subscription> {
-    const subIndex = MOCK_SUBSCRIPTIONS.findIndex(s => s.id === subscriptionId && s.userId === userId);
-    if (subIndex === -1) throw new Error("Subscription not found");
+    const supabase = await getSupabaseServer();
+    
+    const { data: updatedSub, error } = await supabase
+        .from("subscriptions")
+        .update({
+            cancel_at_period_end: true,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", subscriptionId)
+        .eq("user_id", userId)
+        .select()
+        .single();
 
-    const updatedSub = {
-        ...MOCK_SUBSCRIPTIONS[subIndex],
-        cancelAtPeriodEnd: true
-    };
-    MOCK_SUBSCRIPTIONS[subIndex] = updatedSub;
-    return updatedSub;
+    if (error || !updatedSub) throw new Error("Failed to cancel subscription");
+    return mapDbSubToAppSub(updatedSub);
   },
   
   async resumeSubscription(userId: string, subscriptionId: string): Promise<Subscription> {
-    const subIndex = MOCK_SUBSCRIPTIONS.findIndex(s => s.id === subscriptionId && s.userId === userId);
-    if (subIndex === -1) throw new Error("Subscription not found");
+    const supabase = await getSupabaseServer();
+    
+    const { data: updatedSub, error } = await supabase
+        .from("subscriptions")
+        .update({
+            cancel_at_period_end: false,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", subscriptionId)
+        .eq("user_id", userId)
+        .select()
+        .single();
 
-    const updatedSub = {
-        ...MOCK_SUBSCRIPTIONS[subIndex],
-        cancelAtPeriodEnd: false
-    };
-    MOCK_SUBSCRIPTIONS[subIndex] = updatedSub;
-    return updatedSub;
+    if (error || !updatedSub) throw new Error("Failed to resume subscription");
+    return mapDbSubToAppSub(updatedSub);
   }
 };
+
+// Mappers
+function mapDbPlanToAppPlan(db: any): BillingPlan {
+    return {
+        id: db.id,
+        name: db.name,
+        description: db.description,
+        price: Number(db.price),
+        currency: db.currency,
+        interval: db.interval,
+        product: db.product,
+        features: db.features || [],
+        type: db.type
+    };
+}
+
+function mapDbSubToAppSub(db: any): Subscription {
+    return {
+        id: db.id,
+        userId: db.user_id,
+        planId: db.plan_id,
+        status: db.status,
+        currentPeriodStart: db.current_period_start,
+        currentPeriodEnd: db.current_period_end,
+        cancelAtPeriodEnd: db.cancel_at_period_end,
+        metadata: db.metadata
+    };
+}
+
+function mapDbInvoiceToAppInvoice(db: any): Invoice {
+    return {
+        id: db.id,
+        userId: db.user_id,
+        subscriptionId: db.subscription_id,
+        amount: Number(db.amount),
+        currency: db.currency,
+        status: db.status,
+        date: db.date,
+        items: db.items || [],
+        billingDetails: db.billing_details || {}
+    };
+}
+
+function mapDbPmToAppPm(db: any): PaymentMethod {
+    return {
+        id: db.id,
+        type: db.type,
+        last4: db.last4,
+        brand: db.brand,
+        isDefault: db.is_default
+    };
+}
