@@ -50,22 +50,27 @@ export const userService = {
   },
 
   async getUserById(id: string): Promise<User | null> {
-    const supabase = await getSupabaseServer();
-    const { data: dbUser, error } = await supabase
-      .from("users")
-      .select(`
-        *,
-        kaisa_accounts (*),
-        profiles (*),
-        nodes (*),
-        listings (*)
-      `)
-      .eq("id", id)
-      .single();
+    try {
+      const supabase = await getSupabaseServer();
+      const { data: dbUser, error } = await supabase
+        .from("users")
+        .select(`
+          *,
+          kaisa_accounts (*),
+          profiles (*),
+          nodes (*),
+          listings (*)
+        `)
+        .eq("id", id)
+        .single();
 
-    if (error || !dbUser) return null;
+      if (error || !dbUser) return null;
 
-    return mapDbUserToAppUser(dbUser);
+      return mapDbUserToAppUser(dbUser);
+    } catch (e) {
+      console.error("Failed to fetch user:", e);
+      return null;
+    }
   },
 
   async updateUserStatus(

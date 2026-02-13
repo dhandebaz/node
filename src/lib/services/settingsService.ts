@@ -137,8 +137,8 @@ const SETTINGS_KEY = "global_config";
 
 export const settingsService = {
   async getSettings(): Promise<AppSettings> {
-    const supabase = await getSupabaseServer();
     try {
+      const supabase = await getSupabaseServer();
       const { data, error } = await supabase
         .from("system_settings")
         .select("value")

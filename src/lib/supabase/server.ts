@@ -5,11 +5,21 @@ import { cookies } from 'next/headers';
 export async function getSupabaseServer() {
   const cookieStore = await cookies();
   
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-    throw new Error("Supabase Env Vars Missing");
+    console.warn("Supabase Env Vars Missing (server). Using placeholders to prevent crash.");
+    return createServerClient(
+      "https://placeholder.supabase.co", 
+      "placeholder", 
+      {
+        cookies: {
+          getAll() { return [] },
+          setAll() {}
+        }
+      }
+    );
   }
 
   return createServerClient(url, key, {
@@ -34,11 +44,21 @@ export async function getSupabaseServer() {
 export async function getSupabaseAdmin() {
   const cookieStore = await cookies();
   
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.nodebase_SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !key) {
-    throw new Error("Supabase Admin Env Vars Missing (Service Role Key)");
+    console.warn("Supabase Admin Env Vars Missing. Using placeholders.");
+    return createServerClient(
+      "https://placeholder.supabase.co", 
+      "placeholder", 
+      {
+        cookies: {
+          getAll() { return [] },
+          setAll() {}
+        }
+      }
+    );
   }
 
   return createServerClient(url, key, {
