@@ -10,6 +10,7 @@ import {
 } from "@/types/investor";
 import { nodeService } from "./nodeService";
 import { userService } from "./userService";
+import { getSupabaseServer } from "@/lib/supabase/server";
 import { dcService } from "./datacenterService";
 
 export const investorService = {
