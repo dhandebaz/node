@@ -1,20 +1,22 @@
-import { 
-  User, 
-  UserFilterOptions, 
-  AuditLog, 
-  AccountStatus, 
+import {
+  User,
+  UserFilterOptions,
+  AuditLog,
+  AccountStatus,
   KYCStatus,
   KYCDocument,
   UserMetadata
 } from "@/types/user";
+import { DBUser, UserMetadataJSON } from "@/types/database";
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
+import { log } from "@/lib/logger";
 
 // Service Methods
 
 export const userService = {
   async getUsers(filters?: UserFilterOptions): Promise<User[]> {
     const supabase = await getSupabaseServer();
-    
+
     // Join with related tables to determine roles and profile
     let query = supabase.from("users")
       .select(`
@@ -26,15 +28,15 @@ export const userService = {
       `);
 
     if (filters?.search) {
-       // Simple search on phone or ID
-       query = query.or(`phone.ilike.%${filters.search}%,id.eq.${filters.search}`);
+      // Simple search on phone or ID
+      query = query.or(`phone.ilike.%${filters.search}%,id.eq.${filters.search}`);
     }
-    
+
     // Apply filters
     if (filters?.accountStatus) {
       query = query.eq('status', filters.accountStatus);
     }
-    
+
     if (filters?.kycStatus) {
       query = query.eq('kyc_status', filters.kycStatus);
     }
@@ -42,11 +44,12 @@ export const userService = {
     const { data: dbUsers, error } = await query;
 
     if (error) {
-      console.error("Error fetching users:", error);
+      log.error("Error fetching users:", error);
       return [];
     }
 
-    return dbUsers.map(u => mapDbUserToAppUser(u));
+    // Cast response to DBUser[] - robust against Supabase's varying return types
+    return (dbUsers as unknown as DBUser[]).map(u => mapDbUserToAppUser(u));
   },
 
   async getUserById(id: string): Promise<User | null> {
@@ -66,27 +69,27 @@ export const userService = {
 
       if (error || !dbUser) return null;
 
-      return mapDbUserToAppUser(dbUser);
+      return mapDbUserToAppUser(dbUser as unknown as DBUser);
     } catch (e) {
-      console.error("Failed to fetch user:", e);
+      log.error("Failed to fetch user:", e);
       return null;
     }
   },
 
   async updateUserStatus(
-    adminId: string, 
-    userId: string, 
+    adminId: string,
+    userId: string,
     status: AccountStatus
   ): Promise<boolean> {
     const supabase = await getSupabaseAdmin();
-    
+
     const { error } = await supabase
       .from("users")
       .update({ status })
       .eq("id", userId);
 
     if (error) {
-      console.error(`Error updating status for ${userId}:`, error);
+      log.error(`Error updating status for ${userId}:`, error);
       return false;
     }
 
@@ -95,45 +98,46 @@ export const userService = {
   },
 
   async updateKYCStatus(
-    adminId: string, 
-    userId: string, 
-    status: KYCStatus, 
+    adminId: string,
+    userId: string,
+    status: KYCStatus,
     reason?: string
   ): Promise<boolean> {
     const supabase = await getSupabaseAdmin();
-    
+
     const { error } = await supabase
       .from("users")
       .update({ kyc_status: status })
       .eq("id", userId);
 
     if (error) {
-      console.error(`Error updating KYC status for ${userId}:`, error);
+      log.error(`Error updating KYC status for ${userId}:`, error);
       return false;
     }
 
-     await this.logAction(adminId, userId, "kyc_decision", `Changed KYC to ${status}${reason ? `. Reason: ${reason}` : ''}`);
-     return true;
+    await this.logAction(adminId, userId, "kyc_decision", `Changed KYC to ${status}${reason ? `. Reason: ${reason}` : ''}`);
+    return true;
   },
 
   async addKYCDocument(userId: string, document: KYCDocument): Promise<boolean> {
     const supabase = await getSupabaseAdmin();
-    
+
     // 1. Fetch current metadata
     const { data: user, error: fetchError } = await supabase
       .from("users")
       .select("metadata")
       .eq("id", userId)
       .single();
-      
+
     if (fetchError || !user) {
-      console.error(`Error fetching user ${userId} for KYC doc:`, fetchError);
+      log.error(`Error fetching user ${userId} for KYC doc:`, fetchError);
       return false;
     }
 
-    const metadata = (user.metadata as UserMetadata) || { tags: [], notes: [], lastActivity: new Date().toISOString() };
-    const currentDocs = (metadata as any).kycDocuments || [];
-    
+    // Properly typed metadata handling
+    const metadata = (user.metadata as UserMetadataJSON) || {};
+    const currentDocs = Array.isArray(metadata.kycDocuments) ? metadata.kycDocuments : [];
+
     // 2. Append document
     const updatedMetadata = {
       ...metadata,
@@ -147,7 +151,7 @@ export const userService = {
       .eq("id", userId);
 
     if (updateError) {
-      console.error(`Error adding KYC doc for ${userId}:`, updateError);
+      log.error(`Error adding KYC doc for ${userId}:`, updateError);
       return false;
     }
 
@@ -156,22 +160,23 @@ export const userService = {
 
   async addNote(adminId: string, userId: string, note: string): Promise<boolean> {
     const supabase = await getSupabaseAdmin();
-    
+
     // 1. Fetch current metadata
     const { data: user, error: fetchError } = await supabase
       .from("users")
       .select("metadata")
       .eq("id", userId)
       .single();
-      
+
     if (fetchError || !user) return false;
 
-    const metadata = (user.metadata as UserMetadata) || { tags: [], notes: [], lastActivity: new Date().toISOString() };
-    
+    const metadata = (user.metadata as UserMetadataJSON) || {};
+    const notes = Array.isArray(metadata.notes) ? metadata.notes : [];
+
     // 2. Append note
     const updatedMetadata = {
       ...metadata,
-      notes: [...(metadata.notes || []), note]
+      notes: [...notes, note]
     };
 
     // 3. Update
@@ -188,18 +193,18 @@ export const userService = {
 
   async updateTags(adminId: string, userId: string, tags: string[]): Promise<boolean> {
     const supabase = await getSupabaseAdmin();
-    
+
     // 1. Fetch current metadata
     const { data: user, error: fetchError } = await supabase
       .from("users")
       .select("metadata")
       .eq("id", userId)
       .single();
-      
+
     if (fetchError || !user) return false;
 
-    const metadata = (user.metadata as UserMetadata) || { tags: [], notes: [], lastActivity: new Date().toISOString() };
-    
+    const metadata = (user.metadata as UserMetadataJSON) || {};
+
     // 2. Update tags
     const updatedMetadata = {
       ...metadata,
@@ -230,10 +235,10 @@ export const userService = {
       .eq("user_id", userId);
 
     if (error) {
-      console.error("Error updating kaisa status:", error);
+      log.error("Error updating kaisa status:", error);
       return false;
     }
-    
+
     await this.logAction(adminId, userId, "status_change", `Kaisa status: ${status}`);
     return true;
   },
@@ -252,13 +257,13 @@ export const userService = {
       });
 
     if (error) {
-      console.error("Failed to log audit action:", error);
+      log.error("Failed to log audit action:", error);
     }
   },
 
   async getAuditLogs(userId?: string): Promise<AuditLog[]> {
     const supabase = await getSupabaseAdmin();
-    
+
     let query = supabase
       .from("audit_events")
       .select("*")
@@ -272,31 +277,34 @@ export const userService = {
     const { data, error } = await query;
 
     if (error) {
-      console.error("Error fetching audit logs:", error);
+      log.error("Error fetching audit logs:", error);
       return [];
     }
 
-    return data.map((log: any) => ({
-      id: log.id,
-      adminId: log.actor_id || "SYSTEM",
-      targetUserId: log.entity_id,
-      actionType: log.event_type as any,
-      details: log.metadata?.details || "",
-      timestamp: log.created_at
+    return (data || []).map((logItem: any) => ({
+      id: logItem.id,
+      adminId: logItem.actor_id || "SYSTEM",
+      targetUserId: logItem.entity_id,
+      actionType: logItem.event_type as any,
+      details: logItem.metadata?.details || "",
+      timestamp: logItem.created_at
     }));
   }
 };
 
-function mapDbUserToAppUser(dbUser: any): User {
-  const kaisaAccount = Array.isArray(dbUser.kaisa_accounts) ? dbUser.kaisa_accounts[0] : dbUser.kaisa_accounts;
+function mapDbUserToAppUser(dbUser: DBUser): User {
+  const kaisaAccount = Array.isArray(dbUser.kaisa_accounts)
+    ? dbUser.kaisa_accounts[0]
+    : dbUser.kaisa_accounts;
+
   const nodes = Array.isArray(dbUser.nodes) ? dbUser.nodes : (dbUser.nodes ? [dbUser.nodes] : []);
   const listings = Array.isArray(dbUser.listings) ? dbUser.listings : (dbUser.listings ? [dbUser.listings] : []);
-  
+
   // Determine roles based on existence of related records
   const isKaisaUser = !!kaisaAccount;
   const isSpaceUser = listings.length > 0;
   const isNodeParticipant = nodes.length > 0;
-  
+
   // Map Profile
   const rawProfile = Array.isArray(dbUser.profiles) ? dbUser.profiles[0] : dbUser.profiles;
   const profile = rawProfile ? {
@@ -319,7 +327,7 @@ function mapDbUserToAppUser(dbUser: any): User {
       account: (dbUser.status as AccountStatus) || "active",
       kyc: (dbUser.kyc_status as KYCStatus) || "not_started",
       onboarding: dbUser.onboarding_status === 'completed' ? 'completed' : 'pending',
-      kycDocuments: (metadata as any).kycDocuments
+      kycDocuments: Array.isArray(metadata.kycDocuments) ? metadata.kycDocuments : []
     },
     roles: {
       isKaisaUser,
@@ -334,19 +342,19 @@ function mapDbUserToAppUser(dbUser: any): User {
     // Tenant: "Tenant" table doesn't exist in DB schema. 
     // We construct a basic tenant context from profile if business_name exists.
     tenant: rawProfile?.business_name ? {
-        id: rawProfile.id, // Using profile ID as proxy for tenant ID
-        name: rawProfile.business_name,
-        ownerUserId: dbUser.id,
-        createdAt: rawProfile.created_at || dbUser.created_at,
-        businessType: "airbnb_host" // Default
+      id: rawProfile.id, // Using profile ID as proxy for tenant ID
+      name: rawProfile.business_name,
+      ownerUserId: dbUser.id,
+      createdAt: rawProfile.created_at || dbUser.created_at,
+      businessType: "airbnb_host" // Default
     } : undefined,
     products: {
-      kaisa: isKaisaUser ? {
-        businessType: 'hospitality', // Default
+      kaisa: isKaisaUser && kaisaAccount ? {
+        businessType: kaisaAccount.business_type || 'hospitality', // Default
         tenantId: rawProfile?.id,
-        activeModules: ["Frontdesk", "CRM"], 
+        activeModules: ["Frontdesk", "CRM"],
         role: 'owner', // Default
-        status: kaisaAccount.status || 'active',
+        status: (kaisaAccount.status as any) || 'active',
       } : undefined,
       space: {
         hostingPlans: listings.map((l: any) => l.title),
@@ -354,7 +362,7 @@ function mapDbUserToAppUser(dbUser: any): User {
       },
       node: isNodeParticipant ? {
         nodeUnits: nodes.reduce((acc: number, n: any) => acc + (n.unit_value || 0), 0),
-        mouStatus: nodes[0]?.mou_status || 'draft',
+        mouStatus: (nodes[0]?.mou_status as any) || 'draft',
       } : undefined
     },
   };

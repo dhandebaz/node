@@ -1,11 +1,14 @@
 "use server";
 
 import { createSession, deleteSession, getSession } from "@/lib/auth/session";
-import { firebaseAdmin, adminInitializationError, verifyIdToken } from "@/lib/firebase/admin";
+import { verifyIdToken } from "@/lib/firebase/admin";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
+import { userLoginSchema } from "@/lib/validation/auth";
+import { log } from "@/lib/logger";
+import { z } from "zod";
 
 const SUPER_ADMIN_PHONE = process.env.SUPER_ADMIN_PHONE || "9910778576";
 
@@ -23,17 +26,6 @@ export async function getTenantIdForUser(userId: string): Promise<string | null>
   } catch {
     return null;
   }
-}
-
-function normalizePhone(phone: string): string {
-  // Remove all non-digit characters
-  const cleaned = phone.replace(/\D/g, "");
-  // Ensure it has +91 or appropriate code if needed, but for comparison we often use the last 10 digits
-  // or full E.164. Firebase usually returns E.164 (+91...).
-  // We'll stick to E.164 format for storage if possible.
-  if (cleaned.length === 10) return `+91${cleaned}`;
-  if (cleaned.length > 10 && !phone.startsWith("+")) return `+${cleaned}`;
-  return phone.startsWith("+") ? phone : `+${cleaned}`;
 }
 
 async function getOrCreateUser(phone: string) {
@@ -62,9 +54,9 @@ async function getOrCreateUser(phone: string) {
     .single();
 
   if (createError) {
-    console.error("Error creating user:", createError);
+    log.error(`User Creation Failed for ${phone}`, createError);
     // Include details for debugging (RLS, schema, etc.)
-    throw new Error(`Failed to create user record: ${createError.message}. Details: ${createError.details || 'None'} (Hint: Check database permissions/RLS)`);
+    throw new Error(`Failed to create user record: ${createError.message}. Code: ${createError.code}. Details: ${createError.details || 'None'} (Hint: Check database permissions/RLS or Supabase Logs)`);
   }
 
   // Create empty profile
@@ -73,8 +65,7 @@ async function getOrCreateUser(phone: string) {
     .insert([{ user_id: newUser.id, full_name: null }]);
 
   if (profileError) {
-    console.error("Error creating profile:", profileError);
-    // Non-fatal but should be logged.
+    log.warn("Error creating profile (non-fatal)", profileError);
   }
 
   return newUser;
@@ -82,11 +73,15 @@ async function getOrCreateUser(phone: string) {
 
 export async function loginWithFirebaseToken(idToken: string, preferredProduct?: string) {
   try {
+    // 0. Validate Input
+    const input = userLoginSchema.parse({ idToken, preferredProduct });
+
     // 1. Verify Token (using Admin SDK or Public Key fallback)
-    const decodedToken = await verifyIdToken(idToken);
+    const decodedToken = await verifyIdToken(input.idToken);
     const phone = decodedToken.phone_number;
 
     if (!phone) {
+      log.warn("Login failed: Token missing phone number", { uid: decodedToken.uid });
       return { success: false, message: "No phone number found in token." };
     }
 
@@ -97,12 +92,9 @@ export async function loginWithFirebaseToken(idToken: string, preferredProduct?:
     await createSession(user.id, user.role);
 
     // 4. Log Audit Event
-    // We try to resolve the tenant. If user has no tenant, we log with null tenant (system level)
-    // or skip if strict tenant enforcement is required (but Login is a critical event).
-    // The requirement says "Include: tenant_id". If missing, maybe we shouldn't log?
-    // But "USER ACTIONS: Login" is mandatory.
-    // For now, we log it. If tenant_id is null, it's a platform-level login.
     const tenantId = await getTenantIdForUser(user.id);
+    log.info("User logged in", { userId: user.id, role: user.role, tenantId });
+
     if (tenantId) {
       await logEvent({
         tenant_id: tenantId,
@@ -121,17 +113,21 @@ export async function loginWithFirebaseToken(idToken: string, preferredProduct?:
     // 5. Determine Redirect
     let redirectPath = "/dashboard";
     if (user.role === "superadmin" || user.role === "admin") {
-         redirectPath = "/admin"; // Default for admin
+      redirectPath = "/admin"; // Default for admin
     }
 
-    if (preferredProduct === "kaisa") redirectPath = "/dashboard/kaisa";
-    else if (preferredProduct === "space") redirectPath = "/dashboard/space";
-    else if (preferredProduct === "node") redirectPath = "/node/dashboard";
+    if (input.preferredProduct === "kaisa") redirectPath = "/dashboard/kaisa";
+    else if (input.preferredProduct === "space") redirectPath = "/dashboard/space";
+    else if (input.preferredProduct === "node") redirectPath = "/node/dashboard";
 
     return { success: true, redirect: redirectPath, isSuperAdmin: user.role === "superadmin" || user.role === "admin" };
 
   } catch (error: any) {
-    console.error("Firebase Login Error:", error);
+    if (error instanceof z.ZodError) {
+      log.warn("Login validation failed", { errors: error.issues });
+      return { success: false, message: "Invalid input parameters." };
+    }
+    log.error("Firebase Login Error", error);
     // Return specific error message for debugging
     return { success: false, message: error.message || "Authentication failed." };
   }
@@ -141,6 +137,7 @@ export async function adminLogoutAction(): Promise<void> {
   const session = await getSession();
   if (session?.userId) {
     const tenantId = await getTenantIdForUser(session.userId);
+    log.info("Admin logged out", { userId: session.userId, role: session.role, tenantId });
     if (tenantId) {
       await logEvent({
         tenant_id: tenantId,
@@ -163,6 +160,7 @@ export async function logoutAction(): Promise<void> {
   const session = await getSession();
   if (session?.userId) {
     const tenantId = await getTenantIdForUser(session.userId);
+    log.info("User logged out", { userId: session.userId, role: session.role, tenantId });
     if (tenantId) {
       await logEvent({
         tenant_id: tenantId,
