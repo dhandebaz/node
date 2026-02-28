@@ -9,6 +9,8 @@ import { FailureBanner } from "@/components/ui/FailureBanner";
 import { StoreInitializer } from "@/components/dashboard/StoreInitializer";
 import { EarlyAccessFeedback } from "@/components/dashboard/EarlyAccessFeedback";
 
+export const dynamic = "force-dynamic";
+
 export default async function CustomerLayout({
   children,
 }: {
