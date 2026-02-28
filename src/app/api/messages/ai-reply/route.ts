@@ -11,6 +11,8 @@ import { PricingService } from "@/lib/services/pricingService";
 import { SubscriptionService } from "@/lib/services/subscriptionService";
 
 import { MemoryService } from "@/lib/services/memoryService";
+import { generateText } from 'ai';
+import { google } from '@ai-sdk/google';
 
 export async function POST(request: Request) {
   try {
@@ -168,28 +170,32 @@ ${memories.map(m => `- [${m.memory_type.toUpperCase()}] ${m.summary} (Confidence
     }
 
     // 5. Generate Reply
-    const { geminiService } = await import("@/lib/services/geminiService");
-    const result = await geminiService.generateReply({
-      message: message.content,
-      listingName: listing.name,
-      city: listing.city,
-      calendar: calendar.map(b => ({
+    const systemPrompt = aiDefaults.instructions + memoryContext;
+    const prompt = `
+      Guest Name: ${guest.name}
+      Message: ${message.content}
+      Listing Name: ${listing.name}
+      City: ${listing.city}
+      Calendar: ${JSON.stringify(calendar.map(b => ({
         startDate: b.start_date,
         endDate: b.end_date,
         status: b.status || 'booked'
-      })),
-      guestName: guest.name,
-      role: aiDefaults.role,
-      instructions: aiDefaults.instructions + memoryContext // Append memory context
+      })))}
+    `;
+
+    const result = await generateText({
+      model: google('gemini-2.5-flash'),
+      system: systemPrompt,
+      prompt: prompt,
     });
 
-    const replyContent = result.content;
+    const replyContent = result.text;
     const tokensUsed = result.usage.totalTokens;
 
     // 6. Calculate & Deduct Actual Cost
     // If tokensUsed is 0 (error or mock), charge minimum or 0? 
     // Let's charge minimum for the attempt if it succeeded in returning content.
-    const actualCost = await PricingService.calculateCost('ai_reply', Math.max(tokensUsed, 50), tenantId);
+    const actualCost = await PricingService.calculateCost('ai_reply', Math.max(tokensUsed, MIN_ESTIMATED_TOKENS), tenantId);
     
     await WalletService.deductCredits(tenantId, actualCost, 'ai_reply', {
       tokens: tokensUsed,

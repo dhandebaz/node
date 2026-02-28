@@ -1,0 +1,10 @@
+name: shadcn-ui
+version: 0.0.1
+schema: v1
+mcpServers:
+  - name: shadcn-ui
+    command: npx
+    args:
+      - "shadcn@latest"
+      - "mcp"
+    env: {}

@@ -15,15 +15,6 @@ export const logger = pino({
             return { level: label.toUpperCase() };
         },
     },
-    // Use pretty print in development only
-    ...(isProduction ? {} : {
-        transport: {
-            target: 'pino-pretty',
-            options: {
-                colorize: true,
-            },
-        },
-    }),
 });
 
 export const log = {
