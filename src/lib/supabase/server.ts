@@ -5,26 +5,8 @@ import { cookies } from 'next/headers';
 export async function getSupabaseServer() {
   const cookieStore = await cookies();
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!url || !key) {
-    // In production, we MUST fail hard if env vars are missing to avoid silent failures
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error("FATAL: Missing Supabase Environment Variables (NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY). Check deployment settings.");
-    }
-    console.warn("Supabase Env Vars Missing (server). Using placeholders to prevent crash in dev.");
-    return createServerClient(
-      "https://placeholder.supabase.co",
-      "placeholder",
-      {
-        cookies: {
-          getAll() { return [] },
-          setAll() { }
-        }
-      }
-    );
-  }
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder";
 
   return createServerClient(url, key, {
     cookies: {
@@ -48,22 +30,8 @@ export async function getSupabaseServer() {
 export async function getSupabaseAdmin() {
   const cookieStore = await cookies();
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.nodebase_SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!url || !key) {
-    console.warn("Supabase Admin Env Vars Missing. Using placeholders.");
-    return createServerClient(
-      "https://placeholder.supabase.co",
-      "placeholder",
-      {
-        cookies: {
-          getAll() { return [] },
-          setAll() { }
-        }
-      }
-    );
-  }
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.nodebase_SUPABASE_SERVICE_ROLE_KEY || "placeholder";
 
   return createServerClient(url, key, {
     cookies: {
