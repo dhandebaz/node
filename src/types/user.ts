@@ -55,21 +55,8 @@ export interface KaisaProfile {
   status: "active" | "paused";
 }
 
-export interface SpaceProfile {
-  hostingPlans: string[];
-  status: "active" | "inactive";
-}
-
-export interface NodeProfile {
-  nodeUnits: number;
-  dataCenterMapped?: string;
-  mouStatus: MoUStatus;
-}
-
 export interface UserProductProfiles {
   kaisa?: KaisaProfile;
-  space?: SpaceProfile;
-  node?: NodeProfile;
 }
 
 export interface UserProfile {
