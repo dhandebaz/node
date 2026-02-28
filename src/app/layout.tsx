@@ -5,6 +5,8 @@ import { Providers } from "@/components/providers";
 import { getAppSettingsAction } from "@/app/actions/settings";
 import { FirebaseAnalytics } from "@/components/analytics/FirebaseAnalytics";
 
+export const dynamic = "force-dynamic";
+
 const alfaSlabOne = Alfa_Slab_One({
   variable: "--font-alfa-slab-one",
   weight: "400",
