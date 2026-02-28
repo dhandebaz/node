@@ -7,8 +7,7 @@ import {
   updateUserStatusAction, 
   updateKYCStatusAction, 
   addNoteAction, 
-  updateTagsAction,
-  updateKaisaStatusAction
+  updateTagsAction
 } from "@/app/actions/user";
 import { Loader2, AlertTriangle, CheckCircle, XCircle, Plus, Tag, FileText, ExternalLink, Eye, ShieldCheck, Play, Pause } from "lucide-react";
 
@@ -43,16 +42,6 @@ export function AdminControls({ user }: AdminControlsProps) {
 
     setIsLoading(true);
     await updateKYCStatusAction(user.identity.id, newStatus, reason);
-    setIsLoading(false);
-  };
-
-  const handleKaisaStatusToggle = async () => {
-    if (!user.products.kaisa) return;
-    const newStatus = user.products.kaisa.status === "active" ? "paused" : "active";
-    if (!confirm(`Are you sure you want to ${newStatus === "active" ? "activate" : "pause"} kaisa AI for this user?`)) return;
-    
-    setIsLoading(true);
-    await updateKaisaStatusAction(user.identity.id, newStatus);
     setIsLoading(false);
   };
 
@@ -315,27 +304,19 @@ export function AdminControls({ user }: AdminControlsProps) {
             <Box className="w-5 h-5 text-blue-500" />
             kaisa AI Status
           </h3>
-          <button
-            onClick={handleKaisaStatusToggle}
-            disabled={isLoading}
-            className={`w-full py-2 rounded border text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-              user.products.kaisa.status === "active"
-                ? "border-amber-900 text-amber-500 hover:bg-amber-900/10"
-                : "border-green-900 text-green-500 hover:bg-green-900/10"
-            }`}
-          >
+          <div className="w-full py-2 rounded border text-sm font-medium transition-colors flex items-center justify-center gap-2 border-zinc-800 text-zinc-500 cursor-not-allowed">
             {user.products.kaisa.status === "active" ? (
               <>
                 <Pause className="w-4 h-4" />
-                Pause AI Employee
+                AI Employee Active
               </>
             ) : (
               <>
                 <Play className="w-4 h-4" />
-                Activate AI Employee
+                AI Employee Paused
               </>
             )}
-          </button>
+          </div>
         </div>
       )}
 
