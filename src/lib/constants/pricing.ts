@@ -5,19 +5,16 @@ export type SubscriptionPlan = "starter" | "pro" | "business";
 
 export const PLAN_LIMITS = {
   starter: {
-    listings: 1,
     integrations: 1,
     bookings_per_month: 10,
     ai_replies_per_day: 20
   },
   pro: {
-    listings: 5,
     integrations: 3,
     bookings_per_month: 100,
     ai_replies_per_day: 100
   },
   business: {
-    listings: 50,
     integrations: 10,
     bookings_per_month: 1000,
     ai_replies_per_day: 1000

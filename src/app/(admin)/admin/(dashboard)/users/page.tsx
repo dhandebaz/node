@@ -95,12 +95,6 @@ export default function AdminUsersPage() {
                       {user.roles.isKaisaUser && (
                         <span className="px-1.5 py-0.5 rounded bg-blue-900/20 text-blue-400 border border-blue-900/50 text-xs">kaisa</span>
                       )}
-                      {user.roles.isSpaceUser && (
-                        <span className="px-1.5 py-0.5 rounded bg-purple-900/20 text-purple-400 border border-purple-900/50 text-xs">space</span>
-                      )}
-                      {user.roles.isNodeParticipant && (
-                        <span className="px-1.5 py-0.5 rounded bg-orange-900/20 text-orange-400 border border-orange-900/50 text-xs">node</span>
-                      )}
                     </div>
                   </td>
                   <td className="px-6 py-4">

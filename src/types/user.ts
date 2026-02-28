@@ -3,7 +3,7 @@ import { KaisaRoleType } from "./kaisa";
 
 export type AccountStatus = "active" | "suspended" | "blocked";
 export type KYCStatus = "not_started" | "pending" | "verified" | "rejected";
-export type ProductType = "kaisa" | "space" | "node";
+export type ProductType = "kaisa";
 
 export interface UserIdentity {
   id: string; // Immutable internal ID

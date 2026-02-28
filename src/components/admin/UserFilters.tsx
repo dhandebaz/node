@@ -67,8 +67,6 @@ export function UserFilters() {
             >
               <option value="">All Products</option>
               <option value="kaisa">kaisa AI</option>
-              <option value="space">Nodebase Space</option>
-              <option value="node">Node Participant</option>
             </select>
           </div>
           

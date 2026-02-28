@@ -10,8 +10,7 @@ import { ControlService } from "@/lib/services/controlService";
 import { ReferralService } from "@/lib/services/referralService";
 
 export async function completeOnboarding(
-  productType: "ai_employee" | "space", 
-  businessType?: BusinessType,
+  businessType: BusinessType,
   details?: { propertyCount: number; platforms: string[] }
 ) {
   // Check Global Kill Switch for Signups
@@ -25,11 +24,8 @@ export async function completeOnboarding(
   }
 
   // Validate business_type
-  if (productType === "ai_employee" && !businessType) {
+  if (!businessType) {
     throw new Error("Business type is required for AI Employee");
-  }
-  if (productType === "space" && businessType) {
-    throw new Error("Business type should not be provided for Nodebase Space");
   }
 
   // 1. Handle Tenant Creation/Retrieval
@@ -46,18 +42,16 @@ export async function completeOnboarding(
     tenantId = existingMembership.tenant_id;
     
     // Update business type if provided (Repair/Migration scenario)
-    if (businessType) {
-      await supabase
-        .from("tenants")
-        .update({ 
-          business_type: businessType,
-          ...(details ? { 
-            property_count: details.propertyCount,
-            platforms: details.platforms 
-          } : {})
-        })
-        .eq("id", tenantId);
-    }
+    await supabase
+      .from("tenants")
+      .update({ 
+        business_type: businessType,
+        ...(details ? { 
+          property_count: details.propertyCount,
+          platforms: details.platforms 
+        } : {})
+      })
+      .eq("id", tenantId);
   } else {
     // Create new tenant
     // Use user metadata for name if available, else default
@@ -70,7 +64,7 @@ export async function completeOnboarding(
       .insert({
         name: tenantName,
         owner_user_id: user.id,
-        business_type: businessType || null,
+        business_type: businessType,
         ...(details ? { 
           property_count: details.propertyCount,
           platforms: details.platforms 
@@ -144,7 +138,7 @@ export async function completeOnboarding(
     const { error: updateError } = await supabase
       .from("accounts")
       .update({
-        product_type: productType,
+        product_type: "ai_employee",
         onboarding_status: "complete",
         tenant_id: tenantId, // Link account to tenant
         updated_at: new Date().toISOString()
@@ -157,7 +151,7 @@ export async function completeOnboarding(
       .from("accounts")
       .insert({
         user_id: user.id,
-        product_type: productType,
+        product_type: "ai_employee",
         onboarding_status: "complete",
         tenant_id: tenantId // Link account to tenant
       });
@@ -169,40 +163,33 @@ export async function completeOnboarding(
     throw new Error("Failed to save selection");
   }
   
-  console.log(`[Onboarding] User ${user.id} selected ${productType}. Tenant ${tenantId} active.`);
+  console.log(`[Onboarding] User ${user.id} selected ai_employee. Tenant ${tenantId} active.`);
 
   // 4. Legacy/Compatibility: Ensure kaisa_account exists for AI Employee
-  if (productType === "ai_employee") {
-     const { data: kaisaAccount } = await supabase
-        .from("kaisa_accounts")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
-     
-     if (!kaisaAccount) {
-        console.log(`[Onboarding] Creating default kaisa_account for ${user.id}`);
-        await supabase.from("kaisa_accounts").insert({
-            user_id: user.id,
-            tenant_id: tenantId, // Link to tenant
-            status: "active",
-            business_type: "hospitality" // default
-        });
-     } else if (!kaisaAccount.tenant_id) {
-        // Backfill tenant_id if missing
-        await supabase
-          .from("kaisa_accounts")
-          .update({ tenant_id: tenantId })
-          .eq("id", kaisaAccount.id);
-     }
+  const { data: kaisaAccount } = await supabase
+    .from("kaisa_accounts")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  
+  if (!kaisaAccount) {
+    console.log(`[Onboarding] Creating default kaisa_account for ${user.id}`);
+    await supabase.from("kaisa_accounts").insert({
+        user_id: user.id,
+        tenant_id: tenantId, // Link to tenant
+        status: "active",
+        business_type: "hospitality" // default
+    });
+  } else if (!kaisaAccount.tenant_id) {
+    // Backfill tenant_id if missing
+    await supabase
+      .from("kaisa_accounts")
+      .update({ tenant_id: tenantId })
+      .eq("id", kaisaAccount.id);
   }
 
   revalidatePath("/", "layout");
   
-  if (productType === "ai_employee") {
-    console.log(`[Onboarding] Redirecting to /dashboard/ai`);
-    redirect("/dashboard/ai");
-  } else {
-    console.log(`[Onboarding] Redirecting to /dashboard/space`);
-    redirect("/dashboard/space");
-  }
+  console.log(`[Onboarding] Redirecting to /dashboard/ai`);
+  redirect("/dashboard/ai");
 }

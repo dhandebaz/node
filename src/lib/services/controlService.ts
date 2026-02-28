@@ -6,12 +6,12 @@ import { BusinessType } from "@/types";
 
 export type SystemFlagKey = 
   | 'ai_global_enabled'
-  | 'payments_global_enabled'
   | 'bookings_global_enabled'
+  | 'incident_mode_enabled'
   | 'messaging_global_enabled'
-  | 'sync_global_enabled'
+  | 'payments_global_enabled'
   | 'signups_global_enabled'
-  | 'incident_mode_enabled';
+  | 'sync_global_enabled';
 
 export type TenantControlKey =
   | 'is_ai_enabled'

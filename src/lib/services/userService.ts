@@ -336,13 +336,8 @@ function mapDbUserToAppUser(dbUser: DBUser): User {
     ? dbUser.kaisa_accounts[0]
     : dbUser.kaisa_accounts;
 
-  const nodes = Array.isArray(dbUser.nodes) ? dbUser.nodes : (dbUser.nodes ? [dbUser.nodes] : []);
-  const listings = Array.isArray(dbUser.listings) ? dbUser.listings : (dbUser.listings ? [dbUser.listings] : []);
-
   // Determine roles based on existence of related records
   const isKaisaUser = !!kaisaAccount;
-  const isSpaceUser = listings.length > 0;
-  const isNodeParticipant = nodes.length > 0;
 
   // Map Profile
   const rawProfile = Array.isArray(dbUser.profiles) ? dbUser.profiles[0] : dbUser.profiles;
@@ -370,8 +365,6 @@ function mapDbUserToAppUser(dbUser: DBUser): User {
     },
     roles: {
       isKaisaUser,
-      isSpaceUser,
-      isNodeParticipant,
     },
     metadata: {
       tags: metadata.tags || [],
@@ -395,14 +388,6 @@ function mapDbUserToAppUser(dbUser: DBUser): User {
         role: 'owner', // Default
         status: (kaisaAccount.status as any) || 'active',
       } : undefined,
-      space: {
-        hostingPlans: listings.map((l: any) => l.title),
-        status: isSpaceUser ? "active" : "inactive",
-      },
-      node: isNodeParticipant ? {
-        nodeUnits: nodes.reduce((acc: number, n: any) => acc + (n.unit_value || 0), 0),
-        mouStatus: (nodes[0]?.mou_status as any) || 'draft',
-      } : undefined
     },
   };
 }

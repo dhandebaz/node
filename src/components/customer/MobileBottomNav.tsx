@@ -17,21 +17,21 @@ export function MobileBottomNav() {
   const tabs = [
     {
       name: "Home",
-      href: "/dashboard/kaisa",
+      href: "/dashboard/ai",
       icon: Home,
-      isActive: (path: string) => path === "/dashboard/kaisa" || path === "/dashboard",
+      isActive: (path: string) => path === "/dashboard/ai" || path === "/dashboard",
     },
     {
       name: "Inbox",
-      href: "/dashboard/inbox",
+      href: "/dashboard/ai/inbox",
       icon: MessageSquare,
-      isActive: (path: string) => path.startsWith("/dashboard/inbox"),
+      isActive: (path: string) => path.startsWith("/dashboard/ai/inbox"),
     },
     {
       name: "Calendar",
-      href: "/dashboard/calendar",
+      href: "/dashboard/ai/calendar",
       icon: Calendar,
-      isActive: (path: string) => path.startsWith("/dashboard/calendar"),
+      isActive: (path: string) => path.startsWith("/dashboard/ai/calendar"),
     },
     {
       name: "Billing",
@@ -41,9 +41,9 @@ export function MobileBottomNav() {
     },
     {
       name: "More",
-      href: "/dashboard/more",
+      href: "/dashboard/ai/settings",
       icon: Menu,
-      isActive: (path: string) => path.startsWith("/dashboard/more"),
+      isActive: (path: string) => path.startsWith("/dashboard/ai/settings"),
     },
   ].filter(tab => tab.name !== "Calendar" || showCalendar);
 
