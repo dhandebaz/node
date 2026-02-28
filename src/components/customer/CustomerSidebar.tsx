@@ -16,8 +16,6 @@ import {
   Puzzle, 
   CreditCard, 
   Settings,
-  Globe,
-  Library,
   BookOpen,
   Wallet,
   HelpCircle,
@@ -108,16 +106,6 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
             <NavItem href="/dashboard/ai/activity" label="AI Activity" icon={Activity} />
             <NavItem href="/dashboard/ai/integrations" label="Integrations" icon={Puzzle} />
             <NavItem href="/dashboard/billing" label="Wallet & Usage" icon={Wallet} />
-          </div>
-        )}
-
-        {/* Nodebase Space Menu */}
-        {roles.isSpaceUser && (
-          <div className="space-y-1">
-            <SectionLabel label="Space" />
-            <NavItem href="/dashboard/space" label="Overview" icon={LayoutDashboard} exact />
-            <NavItem href="/dashboard/space/websites" label="Websites" icon={Globe} />
-            <NavItem href="/dashboard/space/resources" label="Resources" icon={Library} />
           </div>
         )}
 

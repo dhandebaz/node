@@ -33,8 +33,6 @@ export function Header({ user }: HeaderProps) {
 
   const navItems = [
     { name: "AI Employees", href: "/employees" },
-    { name: "Space", href: "/space" },
-    { name: "Node", href: "/node" },
   ];
 
   const employeesMenuItems = [

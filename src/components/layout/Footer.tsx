@@ -12,8 +12,6 @@ export function Footer() {
     products: [
       { name: "AI Manager", href: "/products/manager" },
       { name: "AI Co-Founder", href: "/products/co-founder" },
-      { name: "Nodebase Space", href: "/space" },
-      { name: "Nodebase Node", href: "/node" },
     ],
     company: [
       { name: t("footer.about"), href: "/company" },
@@ -25,7 +23,6 @@ export function Footer() {
     legal: [
       { name: t("footer.privacy"), href: "/legal/privacy" },
       { name: t("footer.terms"), href: "/legal/terms" },
-      { name: t("footer.risk"), href: "/node/risk" },
       { name: t("footer.refund"), href: "/legal/refund" },
       { name: t("footer.cookies"), href: "/legal/cookies" },
       { name: t("footer.aup"), href: "/legal/aup" },

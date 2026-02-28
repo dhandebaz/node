@@ -24,98 +24,84 @@ export default function PrivacyPage() {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-12 text-brand-bone">
-            {t("legal.privacy.title")}
+            Privacy Policy
           </h1>
 
           <div className="p-8 md:p-12 rounded-2xl border border-brand-bone/10 bg-brand-bone/5 backdrop-blur-sm">
             <div className="prose prose-invert prose-lg max-w-none text-brand-bone/80 prose-headings:text-brand-bone prose-strong:text-brand-bone prose-a:text-brand-bone hover:prose-a:text-white">
               <p className="lead text-xl text-brand-bone">
-                At nodebase (a Chishti Ventures Private Limited company), we are committed to protecting the privacy and security of our users' data. 
-                This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
+                At Nodebase, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclosure, and safeguard your information when you visit our website or use our AI Employee platform.
               </p>
 
-              <h3>1. Data Sovereignty & Residency</h3>
+              <h3>1. Information We Collect</h3>
               <p>
-                We process and store all sensitive user data exclusively within the territory of India. We are fully committed to compliance with the 
-                <strong> Digital Personal Data Protection Act, 2023 (DPDP Act)</strong>. Your data never leaves Indian soil without your explicit consent or a legal mandate from a competent Indian authority.
-              </p>
-
-              <h3>2. Information We Collect</h3>
-              <ul>
-                <li><strong>Business Information:</strong> Name, email, property details, and platform links (Airbnb/Booking.com) when you register.</li>
-                <li><strong>Guest Data:</strong> Information you provide or that is synced from OTAs, including guest names, booking dates, and message history.</li>
-                <li><strong>Identity Documents:</strong> Guest IDs collected for verification purposes. These are encrypted and stored securely.</li>
-              </ul>
-
-              <h3>3. AI Usage & Data Training</h3>
-              <p>
-                We value your trust and business confidentiality.
+                We collect information that you provide directly to us, as well as information collected automatically when you use our Services.
               </p>
               <ul>
-                <li><strong>No Training on Your Data:</strong> We do NOT use your private guest conversations or business rules to train our public AI models.</li>
-                <li><strong>Encryption:</strong> Guest IDs and sensitive booking details are encrypted at rest.</li>
-                <li><strong>Context Isolation:</strong> Your AI Employee operates within a strict boundary, accessing only the data relevant to your specific business context.</li>
+                <li><strong>Account Information:</strong> Name, email address, password, and billing details provided during registration.</li>
+                <li><strong>Business Data:</strong> Information regarding your business operations, including property details, service listings, and operational preferences configured for your AI Employee.</li>
+                <li><strong>Communication Data:</strong> Logs of interactions between your AI Employee and your customers/guests, which are processed to provide the automation service.</li>
+                <li><strong>Usage Data:</strong> Information about how you access and use the platform, including device information, log files, and interaction metrics.</li>
               </ul>
 
-              <h3>4. How We Use Your Information</h3>
-              <p>We use the collected data for the following purposes:</p>
-              <ul>
-                <li>To provide the AI Employee service (automating replies, managing calendar).</li>
-                <li>To process payments and verify guest identities on your behalf.</li>
-                <li>To prevent fraud and ensure platform safety.</li>
-                <li>To comply with legal obligations under Indian law.</li>
-              </ul>
-
-              <h3>5. Data Security</h3>
+              <h3>2. Use of Information</h3>
               <p>
-                We implement enterprise-grade security measures, including:
+                We use the collected information for the following purposes:
               </p>
               <ul>
-                <li><strong>Encryption:</strong> Data is encrypted at rest (AES-256) and in transit (TLS 1.3).</li>
-                <li><strong>Access Control:</strong> Strict role-based access control (RBAC) and Multi-Factor Authentication (MFA) for internal administrative access.</li>
-                <li><strong>Physical Security:</strong> Our Tier-4 data center in <strong>Okhla, New Delhi, India</strong> features 24/7 physical security, biometric access control, and strict data isolation protocols.</li>
+                <li>To provide, maintain, and improve our AI Employee services.</li>
+                <li>To process transactions and manage your subscription.</li>
+                <li>To facilitate integrations with third-party platforms (e.g., syncing calendars or messages).</li>
+                <li>To communicate with you regarding updates, security alerts, and support.</li>
+                <li>To detect, prevent, and address technical issues and fraudulent activity.</li>
               </ul>
 
-              <h3>6. Human Review & AI Limitations</h3>
+              <h3>3. Third-Party Integrations</h3>
               <p>
-                To maintain privacy:
+                Our platform integrates with various third-party services to function effectively. By connecting these services, you authorize us to access and process data from them.
               </p>
               <ul>
-                <li><strong>No Routine Human Review:</strong> Our team does not read your guest messages or business data unless explicitly requested by you for support, or if flagged by automated systems for severe safety violations (e.g., fraud, abuse).</li>
-                <li><strong>AI Limitations:</strong> While our AI is advanced, it may occasionally generate incorrect responses. You retain full responsibility for reviewing critical actions.</li>
+                <li><strong>Google Services:</strong> Integration with Google Calendar and Gmail to manage scheduling and communications. Data accessed via Google APIs is used strictly in accordance with the Google API Services User Data Policy.</li>
+                <li><strong>Booking Platforms:</strong> Integration with platforms like Airbnb, Booking.com, and others to sync reservation data.</li>
+                <li><strong>Payment Processors:</strong> We use secure third-party payment processors (e.g., Stripe) to handle financial transactions. We do not store your complete credit card information.</li>
               </ul>
 
-              <h3>7. Third-Party Sharing</h3>
+              <h3>4. Cookies and Tracking Technologies</h3>
               <p>
-                We do not sell your personal data. We may share data with:
+                We use cookies and similar tracking technologies to track activity on our Services and hold certain information.
               </p>
               <ul>
-                <li><strong>Service Providers:</strong> Payment processors (e.g., Razorpay, Stripe) strictly for billing purposes.</li>
-                <li><strong>Legal Authorities:</strong> When required by a valid court order or government directive under Indian law.</li>
+                <li><strong>Essential Cookies:</strong> Necessary for the operation of the website (e.g., session management).</li>
+                <li><strong>Analytics Cookies:</strong> Help us understand how users interact with the platform so we can improve the experience.</li>
               </ul>
-
-              <h3>8. Your Rights</h3>
               <p>
-                Under the DPDP Act, you have the right to:
+                You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Service.
+              </p>
+
+              <h3>5. Data Protection and Security</h3>
+              <p>
+                We implement robust security measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction.
               </p>
               <ul>
-                <li>Access the personal data we hold about you.</li>
-                <li>Request correction of inaccurate or incomplete data.</li>
-                <li>Request erasure of your data (Right to be Forgotten), subject to data retention laws.</li>
-                <li>Withdraw consent for data processing at any time.</li>
+                <li><strong>Encryption:</strong> Sensitive data is encrypted at rest and in transit using industry-standard protocols (TLS/SSL).</li>
+                <li><strong>Access Control:</strong> Access to personal data is restricted to authorized personnel who need to know that information to process it.</li>
+                <li><strong>Data Retention:</strong> We retain your personal information only for as long as is necessary for the purposes set out in this Privacy Policy.</li>
               </ul>
 
-              <h3>7. Contact Us</h3>
+              <h3>6. Your Data Rights</h3>
               <p>
-                If you have questions about this Privacy Policy, please contact our Grievance Officer:
+                Depending on your jurisdiction, you may have the right to access, correct, update, or request deletion of your personal information. You can manage most of your data directly within your account settings or contact us for assistance.
               </p>
-              <div className="bg-brand-bone/10 p-6 rounded-xl border border-brand-bone/10 mt-4 not-prose">
-                <p className="font-bold text-brand-bone">Grievance Officer</p>
-                <p className="text-brand-bone/80">Chishti Ventures Private Limited</p>
-                <p className="text-brand-bone/80">Okhla Industrial Estate, Phase III</p>
-                <p className="text-brand-bone/80">New Delhi, India 110020</p>
-                <p className="mt-2 text-brand-bone">Email: privacy@nodebase.space</p>
-              </div>
+
+              <h3>7. Changes to This Policy</h3>
+              <p>
+                We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.
+              </p>
+
+              <h3>8. Contact Us</h3>
+              <p>
+                If you have questions about this Privacy Policy, please contact us at support@nodebase.space.
+              </p>
             </div>
           </div>
         </motion.div>
