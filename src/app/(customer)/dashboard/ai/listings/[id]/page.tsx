@@ -7,6 +7,7 @@ import { Listing, ListingIntegration, ListingCalendar, ListingPlatform, ListingI
 import { listingsApi } from "@/lib/api/listings";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { ICalSyncCard } from "@/components/listings/ICalSyncCard";
 
 const platformLabels: Record<ListingPlatform, string> = {
   airbnb: "Airbnb",
@@ -222,6 +223,11 @@ export default function ListingDetailPage() {
             <div className="text-xs text-white/50">
               Last synced: {lastSyncedAt ? new Date(lastSyncedAt).toLocaleString() : "Never"}
             </div>
+          </div>
+
+          {/* New ICalSyncCard Integration */}
+          <div className="dashboard-surface p-6">
+             <ICalSyncCard listingId={listingId} />
           </div>
         </div>
       )}

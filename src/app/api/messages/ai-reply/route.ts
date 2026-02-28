@@ -190,7 +190,7 @@ ${memories.map(m => `- [${m.memory_type.toUpperCase()}] ${m.summary} (Confidence
     });
 
     const replyContent = result.text;
-    const tokensUsed = result.usage.totalTokens;
+    const tokensUsed = result.usage?.totalTokens ?? 0;
 
     // 6. Calculate & Deduct Actual Cost
     // If tokensUsed is 0 (error or mock), charge minimum or 0? 
