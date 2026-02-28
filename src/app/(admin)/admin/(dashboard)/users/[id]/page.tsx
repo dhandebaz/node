@@ -9,11 +9,9 @@ import { useParams, notFound } from "next/navigation";
 import { getUserDetailData } from "@/app/actions/admin-data";
 import { AdminControls } from "@/components/admin/user/AdminControls";
 import { KaisaStatusControl } from "@/components/admin/user/KaisaStatusControl";
-import { SpaceServiceControl } from "@/components/admin/space/SpaceServiceControl";
-import { User, KaisaProfile, SpaceProfile, NodeProfile, AuditLog } from "@/types/user";
-import { ArrowLeft, User as UserIcon, Calendar, Phone, Mail, Box, Server, Cpu, Loader2 } from "lucide-react";
+import { User, AuditLog } from "@/types/user";
+import { ArrowLeft, User as UserIcon, Calendar, Phone, Mail, Box, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { NodeStatus } from "@/types/node";
 
 export default function UserProfilePage() {
   const params = useParams();
@@ -43,7 +41,7 @@ export default function UserProfilePage() {
     return notFound();
   }
 
-  const { user, auditLogs, nodes, spaceServices } = data;
+  const { user, auditLogs } = data;
 
   return (
     <div className="space-y-6">
@@ -110,99 +108,6 @@ export default function UserProfilePage() {
             <EmptyProductCard name="kaisa AI" />
           )}
 
-          {/* Space Profile */}
-          {user.roles.isSpaceUser ? (
-            <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Server className="w-24 h-24 text-purple-500" />
-              </div>
-              <h3 className="text-lg font-medium text-purple-400 mb-4 flex items-center gap-2">
-                Nodebase Space
-              </h3>
-              <div className="relative z-10">
-                {spaceServices.length > 0 ? (
-                    <div className="space-y-4">
-                        {spaceServices.map(service => (
-                            <SpaceServiceControl key={service.id} service={service} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-zinc-500 text-sm border border-zinc-800 rounded p-4 bg-black/20 text-center">
-                        User has 'isSpaceUser' role but no active services found.
-                    </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <EmptyProductCard name="Nodebase Space" />
-          )}
-
-          {/* Node Profile & Participating Nodes */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 relative overflow-hidden">
-            <div className="flex items-center justify-between mb-4 relative z-10">
-                <h3 className="text-lg font-medium text-orange-400 flex items-center gap-2">
-                    <Cpu className="w-5 h-5" />
-                    Participating Nodes
-                </h3>
-                {user.roles.isNodeParticipant && (
-                    <Link href="/admin/nodes/create" className="text-xs text-white hover:underline">
-                        Allocate New Node
-                    </Link>
-                )}
-            </div>
-
-            {/* Background Icon */}
-            <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-                <Cpu className="w-24 h-24 text-orange-500" />
-            </div>
-
-            {/* Summary if user is a participant */}
-            {user.roles.isNodeParticipant && user.products.node && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10 mb-6 border-b border-zinc-800 pb-6">
-                    <InfoItem label="Units Owned" value={user.products.node.nodeUnits.toString()} />
-                    <InfoItem label="MoU Status" value={user.products.node.mouStatus.replace("_", " ")} capitalize />
-                    <InfoItem label="Data Center" value={user.products.node.dataCenterMapped || "Pending Allocation"} />
-                </div>
-            )}
-
-            {/* Nodes Table */}
-            <div className="border border-zinc-800 rounded overflow-hidden relative z-10 bg-zinc-950/50">
-                <table className="w-full text-left text-sm text-zinc-400">
-                    <thead className="bg-zinc-950 text-zinc-500 font-medium text-xs uppercase">
-                        <tr>
-                            <th className="px-4 py-2">Node ID</th>
-                            <th className="px-4 py-2">Data Center</th>
-                            <th className="px-4 py-2">Status</th>
-                            <th className="px-4 py-2 text-right">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-800">
-                        {nodes.map(node => (
-                            <tr key={node.identity.id} className="hover:bg-zinc-900/50">
-                                <td className="px-4 py-2 font-mono text-white">{node.identity.id}</td>
-                                <td className="px-4 py-2">{node.infrastructure.dcId}</td>
-                                <td className="px-4 py-2">
-                                    <NodeStatusBadge status={node.state.status} />
-                                </td>
-                                <td className="px-4 py-2 text-right">
-                                    <Link href={`/admin/nodes/${node.identity.id}`} className="text-white hover:text-blue-400 text-xs font-medium">
-                                        Manage
-                                    </Link>
-                                </td>
-                            </tr>
-                        ))}
-                        {nodes.length === 0 && (
-                            <tr>
-                                <td colSpan={4} className="px-4 py-8 text-center text-zinc-600">
-                                    {user.roles.isNodeParticipant ? "User has no allocated nodes." : "User is not a node participant."}
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-          </div>
-
           {/* Audit Logs */}
           <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
              <h3 className="text-lg font-medium text-white mb-4">Audit Log</h3>
@@ -268,21 +173,6 @@ function StatusBadge({ status }: { status: string }) {
   };
   return (
     <span className={`px-2 py-0.5 rounded text-xs border uppercase tracking-wider font-bold ${styles[status] || "bg-zinc-800"}`}>
-      {status}
-    </span>
-  );
-}
-
-function NodeStatusBadge({ status }: { status: NodeStatus }) {
-  const styles = {
-    pending: "text-zinc-500",
-    deploying: "text-blue-400",
-    active: "text-green-400",
-    paused: "text-amber-400",
-    retired: "text-red-400",
-  };
-  return (
-    <span className={`text-xs uppercase font-bold ${styles[status]}`}>
       {status}
     </span>
   );

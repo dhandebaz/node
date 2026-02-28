@@ -3,7 +3,6 @@
 
 import { userService } from "@/lib/services/userService";
 import { kaisaService } from "@/lib/services/kaisaService";
-import { spaceService } from "@/lib/services/spaceService";
 import { supportService } from "@/lib/services/supportService";
 import { getSession } from "@/lib/auth/session";
 import { User } from "@/types/user";
@@ -67,36 +66,6 @@ export async function toggleKaisaModuleAction(moduleName: string, enabled: boole
     }
 }
 
-// --- Space Actions ---
-
-export async function getSpaceDashboardData() {
-  const user = await getCurrentUser();
-  if (!user.roles.isSpaceUser) throw new Error("Access Denied: Not a Space user");
-
-  const [projects, services, usage] = await Promise.all([
-    spaceService.getUserProjects(user.identity.id),
-    spaceService.getUserServices(user.identity.id),
-    spaceService.getResourceUsage(user.identity.id)
-  ]);
-
-  return {
-    identity: user.identity,
-    profile: user.products.space,
-    projects,
-    services,
-    usage
-  };
-}
-
-export async function getSpaceProjectDetails(projectId: string) {
-    const project = await spaceService.getProjectById(projectId);
-    if (!project) return null;
-    
-    // In a real app, verify ownership
-    const dns = await spaceService.getProjectDns(projectId);
-    return { project, dns };
-}
-
 // --- Support Actions ---
 
 export async function getCustomerTickets() {
@@ -108,7 +77,7 @@ export async function createCustomerTicket(formData: FormData): Promise<void> {
     try {
         const user = await getCurrentUser();
         const subject = formData.get("subject") as string;
-        const product = formData.get("product") as "kaisa" | "space" | "node";
+        const product = formData.get("product") as "kaisa" | "general";
         const message = formData.get("message") as string;
         const priority = formData.get("priority") as "low" | "medium" | "high";
 
@@ -132,7 +101,7 @@ export async function createCustomerTicket(formData: FormData): Promise<void> {
     }
 }
 
-export async function createTicketAction(subject: string, product: "kaisa" | "space" | "general", message: string): Promise<void> {
+export async function createTicketAction(subject: string, product: "kaisa" | "general", message: string): Promise<void> {
   const user = await getCurrentUser();
   
   const ticket = await supportService.createTicket({
