@@ -55,8 +55,6 @@ export interface PlatformSettings {
   readOnlyMode: boolean;
   signupEnabled: {
     kaisa: boolean;
-    space: boolean;
-    node: boolean;
   };
 }
 

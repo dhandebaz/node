@@ -92,21 +92,6 @@ const DEFAULT_SETTINGS: AppSettings = {
       enabled: false,
       restrictedToRoles: ["manager"],
     },
-    {
-      id: "feat_space_cdn",
-      key: "space_cdn",
-      name: "Space CDN Global",
-      description: "Enable CDN provisioning for all users",
-      enabled: true,
-    },
-    {
-      id: "feat_node_dashboard",
-      key: "node_dash_preview",
-      name: "Node Dashboard Preview",
-      description: "Early access to Node investment dashboard",
-      enabled: false,
-      restrictedToProducts: ["node"],
-    },
   ],
   platform: {
     environment: "mock",
@@ -114,8 +99,6 @@ const DEFAULT_SETTINGS: AppSettings = {
     readOnlyMode: false,
     signupEnabled: {
       kaisa: true,
-      space: true,
-      node: false, // Invite only usually
     },
   },
   notifications: {

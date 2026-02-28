@@ -96,6 +96,7 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
         {roles.isKaisaUser && (
           <div className="space-y-1">
             <SectionLabel label="AI Employee" />
+            <NavItem href="/dashboard/ai" label="Overview" icon={LayoutDashboard} exact />
             <NavItem href="/dashboard/ai/inbox" label="Inbox" icon={MessageSquare} />
             <NavItem href="/dashboard/ai/listings" label={labels.listings} icon={List} />
             <NavItem href="/dashboard/ai/bookings" label={labels.bookings} icon={BookOpen} />

@@ -52,28 +52,67 @@ export const userService = {
     return (dbUsers as unknown as DBUser[]).map(u => mapDbUserToAppUser(u));
   },
 
-  async getUserById(id: string): Promise<User | null> {
-    try {
-      const supabase = await getSupabaseServer();
-      const { data: dbUser, error } = await supabase
-        .from("users")
-        .select(`
-          *,
-          kaisa_accounts (*),
-          profiles (*),
-          nodes (*),
-          listings (*)
-        `)
-        .eq("id", id)
-        .single();
+  async getUserById(userId: string): Promise<User | null> {
+    const supabase = await getSupabaseAdmin();
+    
+    // Fetch core user data
+    const { data: user, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", userId)
+      .single();
 
-      if (error || !dbUser) return null;
+    if (error || !user) return null;
 
-      return mapDbUserToAppUser(dbUser as unknown as DBUser);
-    } catch (e) {
-      log.error("Failed to fetch user:", e);
-      return null;
-    }
+    // Fetch related profiles
+    const [
+      { data: kaisaProfile },
+    ] = await Promise.all([
+      supabase.from("kaisa_profiles").select("*").eq("user_id", userId).single(),
+    ]);
+
+    // Construct User object
+    return {
+      identity: {
+        id: user.id,
+        email: user.email,
+        phone: user.phone,
+        fullName: user.full_name,
+        avatarUrl: user.avatar_url,
+        createdAt: user.created_at,
+        updatedAt: user.updated_at
+      },
+      roles: {
+        isKaisaUser: !!kaisaProfile,
+      },
+      status: {
+        account: user.status,
+        kyc: user.kyc_status,
+        emailVerified: !!user.email_confirmed_at,
+        phoneVerified: !!user.phone_confirmed_at
+      },
+      products: {
+        kaisa: kaisaProfile ? {
+          businessType: kaisaProfile.business_type,
+          role: kaisaProfile.role,
+          activeModules: kaisaProfile.active_modules || [],
+          onboardingCompleted: kaisaProfile.onboarding_completed
+        } : undefined,
+      },
+      metadata: {
+        lastLogin: user.last_sign_in_at,
+        lastActivity: user.last_sign_in_at, // Mock for now
+        registrationIp: "0.0.0.0",
+        deviceInfo: {}
+      },
+      tenant: {
+        id: user.tenant_id,
+        name: "Personal Tenant", // Mock
+        plan: "free",
+        features: [],
+        earlyAccess: false
+      }
+    };
   },
 
   async updateUserStatus(

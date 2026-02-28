@@ -1,6 +1,5 @@
 
 import { KaisaRoleType } from "./kaisa";
-import { MoUStatus } from "./node";
 
 export type AccountStatus = "active" | "suspended" | "blocked";
 export type KYCStatus = "not_started" | "pending" | "verified" | "rejected";
@@ -37,8 +36,6 @@ export interface UserStatus {
 
 export interface UserRoles {
   isKaisaUser: boolean;
-  isSpaceUser: boolean;
-  isNodeParticipant: boolean;
 }
 
 export interface UserMetadata {
