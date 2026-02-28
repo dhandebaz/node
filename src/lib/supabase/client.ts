@@ -22,7 +22,8 @@ const getSupabaseEnv = () => {
 
 export function getSupabaseBrowser() {
   if (browserClient) return browserClient;
-  const { url, anonKey } = getSupabaseEnv();
-  browserClient = createBrowserClient(url, anonKey);
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
+  browserClient = createBrowserClient(url, key);
   return browserClient;
 }
