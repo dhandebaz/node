@@ -118,7 +118,7 @@ export default function PartnersPage() {
             whileInView="animate"
             viewport={{ once: true }}
             variants={stagger}
-            className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20"
+            className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-20"
           >
             <motion.div variants={fadeInUp} className="p-8 rounded-2xl border border-brand-bone/10 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors text-center group">
               <div className="w-16 h-16 mx-auto bg-brand-bone/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -143,19 +143,6 @@ export default function PartnersPage() {
               </p>
               <Link href="/company/partners/technology" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-bone/60 group-hover:text-brand-bone transition-colors">
                 Build Integration <ArrowRight className="w-4 h-4" />
-              </Link>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="p-8 rounded-2xl border border-brand-bone/10 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors text-center group">
-              <div className="w-16 h-16 mx-auto bg-brand-bone/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Cpu className="w-8 h-8 text-brand-bone" />
-              </div>
-              <h3 className="text-xl font-bold uppercase tracking-tight mb-4 text-brand-bone">Hardware</h3>
-              <p className="text-brand-bone/70 mb-6 leading-relaxed text-sm">
-                For data centers and hardware OEMs validating their equipment.
-              </p>
-              <Link href="/company/partners/hardware" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-bone/60 group-hover:text-brand-bone transition-colors">
-                Certify Hardware <ArrowRight className="w-4 h-4" />
               </Link>
             </motion.div>
           </motion.div>

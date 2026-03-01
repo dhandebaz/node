@@ -114,11 +114,7 @@ export async function loginWithFirebaseToken(idToken: string, preferredProduct?:
     let redirectPath = "/dashboard";
     if (user.role === "superadmin" || user.role === "admin") {
       redirectPath = "/admin"; // Default for admin
-    }
-
-    if (input.preferredProduct === "kaisa") redirectPath = "/dashboard/kaisa";
-    else if (input.preferredProduct === "space") redirectPath = "/dashboard/space";
-    else if (input.preferredProduct === "node") redirectPath = "/node/dashboard";
+    } else if (input.preferredProduct === "kaisa") redirectPath = "/dashboard/kaisa";
 
     return { success: true, redirect: redirectPath, isSuperAdmin: user.role === "superadmin" || user.role === "admin" };
 
