@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { 
   Book, 
   Code2, 
-  Terminal, 
-  Rocket, 
   Layout,
-  Brain
+  Brain,
+  Rocket,
+  Terminal
 } from "lucide-react";
 
 export function DocsSidebar() {
@@ -28,23 +28,6 @@ export function DocsSidebar() {
         { name: "Overview", href: "/docs/kaisa", icon: Brain },
         { name: "Agents API", href: "/docs/kaisa/agents-api", icon: Code2 },
         { name: "Integrations", href: "/docs/kaisa/integrations", icon: Layout },
-      ]
-    },
-    {
-      title: "Nodebase Space",
-      items: [
-        { name: "Hosting", href: "/docs/space", icon: Cloud },
-        { name: "Object Storage", href: "/docs/space/storage", icon: Database },
-        { name: "Edge CDN", href: "/docs/space/cdn", icon: Globe },
-        { name: "CLI Reference", href: "/docs/space/cli", icon: Terminal },
-      ]
-    },
-    {
-      title: "Infrastructure",
-      items: [
-        { name: "Node Setup", href: "/docs/infrastructure", icon: Server },
-        { name: "H100 Clusters", href: "/docs/infrastructure/h100", icon: Cpu },
-        { name: "Security", href: "/docs/infrastructure/security", icon: Shield },
       ]
     }
   ];

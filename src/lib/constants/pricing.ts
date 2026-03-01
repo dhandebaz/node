@@ -7,17 +7,20 @@ export const PLAN_LIMITS = {
   starter: {
     integrations: 1,
     bookings_per_month: 10,
-    ai_replies_per_day: 20
+    ai_replies_per_day: 20,
+    listings: 1
   },
   pro: {
     integrations: 3,
     bookings_per_month: 100,
-    ai_replies_per_day: 100
+    ai_replies_per_day: 100,
+    listings: 5
   },
   business: {
     integrations: 10,
     bookings_per_month: 1000,
-    ai_replies_per_day: 1000
+    ai_replies_per_day: 1000,
+    listings: 20
   }
 };
 

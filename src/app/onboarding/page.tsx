@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bot, Cloud } from "lucide-react";
-import { OnboardingCard } from "@/components/onboarding/OnboardingCard";
+import { Bot } from "lucide-react";
 import { BusinessTypeCard } from "@/components/onboarding/BusinessTypeCard";
 import { BusinessDetailsForm } from "@/components/onboarding/BusinessDetailsForm";
 import { completeOnboarding } from "@/app/actions/onboarding";
@@ -13,15 +12,9 @@ interface OnboardingPageProps {
 }
 
 export default function OnboardingPage({ searchParams }: OnboardingPageProps) {
-  const [step, setStep] = useState<"product" | "business_type" | "details">("business_type");
+  const [step, setStep] = useState<"business_type" | "details">("business_type");
   const [loading, setLoading] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<"ai_employee" | null>("ai_employee");
   const [selectedBusinessType, setSelectedBusinessType] = useState<BusinessType | null>(null);
-
-  const handleProductSelect = async (product: "ai_employee") => {
-      setSelectedProduct("ai_employee");
-      setStep("business_type");
-  };
 
   const handleBusinessTypeSelect = (type: BusinessType) => {
     setSelectedBusinessType(type);
@@ -31,7 +24,7 @@ export default function OnboardingPage({ searchParams }: OnboardingPageProps) {
   const handleDetailsSubmit = async (details: { propertyCount: number; platforms: string[] }) => {
     try {
       setLoading(true);
-      await completeOnboarding("ai_employee", selectedBusinessType!, details);
+      await completeOnboarding(selectedBusinessType!, details);
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -42,28 +35,6 @@ export default function OnboardingPage({ searchParams }: OnboardingPageProps) {
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
       <div className="max-w-4xl w-full space-y-8 text-center">
         
-        {step === "product" && (
-          <>
-            <div className="space-y-2">
-              <h1 className="text-4xl font-bold tracking-tight">Welcome to Nodebase</h1>
-              <p className="text-zinc-400 text-lg">What do you want to use Nodebase for?</p>
-            </div>
-
-            <div className="grid md:grid-cols-1 gap-6 mt-8 max-w-md mx-auto">
-              <OnboardingCard
-                title="AI Employee"
-                description="For Airbnb hosts & property managers. Automate guest messaging, sync calendars, and manage bookings."
-                icon={Bot}
-                productType="ai_employee"
-                gradient="from-blue-500/20 to-purple-500/20"
-                borderColor="hover:border-blue-500/50"
-                loading={loading && selectedProduct === "ai_employee"}
-                onSelect={() => handleProductSelect("ai_employee")}
-              />
-            </div>
-          </>
-        )}
-
         {step === "business_type" && (
           <>
             <div className="space-y-2">

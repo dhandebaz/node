@@ -16,6 +16,6 @@ export const userLoginSchema = z.object({
 export const userCreateSchema = z.object({
     phone: phoneSchema,
     email: emailSchema,
-    role: z.enum(['customer', 'investor', 'admin', 'superadmin']).default('customer'),
+    role: z.enum(['customer', 'admin', 'superadmin']).default('customer'),
     metadata: z.record(z.string(), z.any()).optional(),
 });

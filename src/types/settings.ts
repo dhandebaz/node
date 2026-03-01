@@ -46,7 +46,7 @@ export interface FeatureFlag {
   description: string;
   enabled: boolean;
   restrictedToRoles?: string[];
-  restrictedToProducts?: string[]; // "kaisa", "space", "node"
+  restrictedToProducts?: string[]; // "ai_employee"
 }
 
 export interface PlatformSettings {

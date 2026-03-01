@@ -23,7 +23,6 @@ export const userService = {
         *,
         kaisa_accounts (*),
         profiles (*),
-        nodes (*),
         listings (*)
       `);
 
@@ -67,20 +66,22 @@ export const userService = {
     // Fetch related profiles
     const [
       { data: kaisaProfile },
+      { data: userProfile },
     ] = await Promise.all([
       supabase.from("kaisa_profiles").select("*").eq("user_id", userId).single(),
+      supabase.from("profiles").select("*").eq("id", userId).single(),
     ]);
 
     // Construct User object
     return {
       identity: {
         id: user.id,
-        email: user.email,
         phone: user.phone,
-        fullName: user.full_name,
-        avatarUrl: user.avatar_url,
+        email: user.email,
         createdAt: user.created_at,
-        updatedAt: user.updated_at
+      },
+      profile: {
+        fullName: userProfile?.full_name || null,
       },
       roles: {
         isKaisaUser: !!kaisaProfile,
@@ -88,29 +89,27 @@ export const userService = {
       status: {
         account: user.status,
         kyc: user.kyc_status,
-        emailVerified: !!user.email_confirmed_at,
-        phoneVerified: !!user.phone_confirmed_at
+        onboarding: user.onboarding_status === 'completed' ? 'completed' : 'pending',
       },
       products: {
         kaisa: kaisaProfile ? {
           businessType: kaisaProfile.business_type,
           role: kaisaProfile.role,
           activeModules: kaisaProfile.active_modules || [],
-          onboardingCompleted: kaisaProfile.onboarding_completed
+          status: kaisaProfile.status,
+          tenantId: user.tenant_id
         } : undefined,
       },
       metadata: {
-        lastLogin: user.last_sign_in_at,
-        lastActivity: user.last_sign_in_at, // Mock for now
-        registrationIp: "0.0.0.0",
-        deviceInfo: {}
+        tags: [],
+        notes: [],
+        lastActivity: user.last_sign_in_at || user.updated_at || user.created_at
       },
       tenant: {
         id: user.tenant_id,
         name: "Personal Tenant", // Mock
-        plan: "free",
-        features: [],
-        earlyAccess: false
+        ownerUserId: user.id,
+        createdAt: user.created_at
       }
     };
   },
@@ -382,10 +381,10 @@ function mapDbUserToAppUser(dbUser: DBUser): User {
     } : undefined,
     products: {
       kaisa: isKaisaUser && kaisaAccount ? {
-        businessType: kaisaAccount.business_type || 'hospitality', // Default
-        tenantId: rawProfile?.id,
-        activeModules: ["Frontdesk", "CRM"],
-        role: 'owner', // Default
+        businessType: (kaisaAccount as any).business_type || 'hospitality', // Default
+        tenantId: (dbUser as any).tenant_id || rawProfile?.id,
+        activeModules: (kaisaAccount as any).active_modules || [],
+        role: (kaisaAccount as any).role || 'owner', // Default
         status: (kaisaAccount.status as any) || 'active',
       } : undefined,
     },

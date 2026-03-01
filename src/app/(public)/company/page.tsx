@@ -64,8 +64,8 @@ export default function CompanyPage() {
               variants={fadeInUp}
               className="text-xl md:text-2xl text-brand-bone/80 mb-12 max-w-3xl mx-auto leading-relaxed font-light"
             >
-              We are building the infrastructure that allows businesses to run themselves. 
-              From physical nodes in Delhi to AI agents in the cloud, Nodebase is the bridge between raw compute and real-world results.
+              We are building the intelligent workforce that allows businesses to run themselves. 
+              Nodebase provides autonomous AI employees that work alongside your team to deliver real-world results.
             </motion.p>
           </motion.div>
         </div>
@@ -100,16 +100,16 @@ export default function CompanyPage() {
                 </div>
                 <div className="space-y-8 text-lg text-brand-bone/80 leading-relaxed">
                    <p>
-                     <strong>Nodebase is vertically integrated.</strong> We don't just resell AWS. We own the hardware (Nodes), we build the virtualization layer (Space), and we deploy the workforce (kaisa AI).
+                     <strong>Nodebase is your digital workforce.</strong> We don't just offer tools. We provide fully autonomous AI employees (Kaisa) that understand your business context and execute tasks.
                    </p>
                    <ul className="space-y-6 mt-8">
                       <li className="flex items-start gap-4">
                         <div className="p-2 bg-brand-bone/10 rounded-lg shrink-0">
-                           <Cpu className="w-5 h-5 text-brand-bone" />
+                           <Zap className="w-5 h-5 text-brand-bone" />
                         </div>
                         <div>
-                           <h4 className="text-xl font-bold text-brand-bone mb-1">Physical Sovereignty</h4>
-                           <p className="text-sm">Real hardware assets in secure Indian datacenters. No black-box cloud magic.</p>
+                           <h4 className="text-xl font-bold text-brand-bone mb-1">Autonomous Execution</h4>
+                           <p className="text-sm">Agents that don't just chat, but do. Booking management, customer support, and operations.</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-4">
@@ -118,7 +118,7 @@ export default function CompanyPage() {
                         </div>
                         <div>
                            <h4 className="text-xl font-bold text-brand-bone mb-1">Digital Workforce</h4>
-                           <p className="text-sm">AI employees that live on the infrastructure, ready to work from Day 1.</p>
+                           <p className="text-sm">AI employees that integrate with your existing tools, ready to work from Day 1.</p>
                         </div>
                       </li>
                    </ul>

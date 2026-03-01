@@ -9,7 +9,7 @@ import {
   addNoteAction, 
   updateTagsAction
 } from "@/app/actions/user";
-import { Loader2, AlertTriangle, CheckCircle, XCircle, Plus, Tag, FileText, ExternalLink, Eye, ShieldCheck, Play, Pause } from "lucide-react";
+import { Loader2, AlertTriangle, CheckCircle, XCircle, Plus, Tag, FileText, ExternalLink, Eye, ShieldCheck, Play, Pause, Box } from "lucide-react";
 
 interface AdminControlsProps {
   user: User;

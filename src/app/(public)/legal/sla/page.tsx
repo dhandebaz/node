@@ -35,12 +35,12 @@ export default function SlaPage() {
 
               <h3>1. Uptime Guarantee</h3>
               <p>
-                We guarantee that our network and power infrastructure will be available <strong>99.9%</strong> of the time during any monthly billing cycle.
+                We guarantee that our AI platform services will be available <strong>99.9%</strong> of the time during any monthly billing cycle.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6 not-prose">
                 <div className="bg-brand-bone/10 p-4 rounded-lg border border-brand-bone/10">
                   <h4 className="font-bold text-brand-bone mb-2">Service</h4>
-                  <p className="text-sm text-brand-bone/80">Nodebase Space (Shared & Dedicated)</p>
+                  <p className="text-sm text-brand-bone/80">Kaisa AI Platform</p>
                 </div>
                 <div className="bg-brand-bone/10 p-4 rounded-lg border border-brand-bone/10">
                   <h4 className="font-bold text-brand-bone mb-2">Guarantee</h4>

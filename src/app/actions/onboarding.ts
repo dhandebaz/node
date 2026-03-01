@@ -139,6 +139,7 @@ export async function completeOnboarding(
       .from("accounts")
       .update({
         product_type: "ai_employee",
+        business_type: businessType,
         onboarding_status: "complete",
         tenant_id: tenantId, // Link account to tenant
         updated_at: new Date().toISOString()
@@ -152,6 +153,7 @@ export async function completeOnboarding(
       .insert({
         user_id: user.id,
         product_type: "ai_employee",
+        business_type: businessType,
         onboarding_status: "complete",
         tenant_id: tenantId // Link account to tenant
       });

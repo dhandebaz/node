@@ -77,7 +77,7 @@ export async function createCustomerTicket(formData: FormData): Promise<void> {
     try {
         const user = await getCurrentUser();
         const subject = formData.get("subject") as string;
-        const product = formData.get("product") as "kaisa" | "general";
+        const product = formData.get("product") as "ai_employee" | "general";
         const message = formData.get("message") as string;
         const priority = formData.get("priority") as "low" | "medium" | "high";
 
@@ -101,7 +101,7 @@ export async function createCustomerTicket(formData: FormData): Promise<void> {
     }
 }
 
-export async function createTicketAction(subject: string, product: "kaisa" | "general", message: string): Promise<void> {
+export async function createTicketAction(subject: string, product: "ai_employee" | "general", message: string): Promise<void> {
   const user = await getCurrentUser();
   
   const ticket = await supportService.createTicket({
