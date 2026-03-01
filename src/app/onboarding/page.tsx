@@ -13,27 +13,14 @@ interface OnboardingPageProps {
 }
 
 export default function OnboardingPage({ searchParams }: OnboardingPageProps) {
-  const initialStep = searchParams?.step === "business_type" ? "business_type" : "product";
-  const [step, setStep] = useState<"product" | "business_type" | "details">(initialStep);
+  const [step, setStep] = useState<"product" | "business_type" | "details">("business_type");
   const [loading, setLoading] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<"ai_employee" | "space" | null>(
-    initialStep === "business_type" ? "ai_employee" : null
-  );
+  const [selectedProduct, setSelectedProduct] = useState<"ai_employee" | null>("ai_employee");
   const [selectedBusinessType, setSelectedBusinessType] = useState<BusinessType | null>(null);
 
-  const handleProductSelect = async (product: "ai_employee" | "space") => {
-    if (product === "space") {
-      try {
-        setLoading(true);
-        await completeOnboarding("space");
-      } catch (error) {
-        console.error(error);
-        setLoading(false);
-      }
-    } else {
+  const handleProductSelect = async (product: "ai_employee") => {
       setSelectedProduct("ai_employee");
       setStep("business_type");
-    }
   };
 
   const handleBusinessTypeSelect = (type: BusinessType) => {
@@ -62,7 +49,7 @@ export default function OnboardingPage({ searchParams }: OnboardingPageProps) {
               <p className="text-zinc-400 text-lg">What do you want to use Nodebase for?</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6 mt-8">
+            <div className="grid md:grid-cols-1 gap-6 mt-8 max-w-md mx-auto">
               <OnboardingCard
                 title="AI Employee"
                 description="For Airbnb hosts & property managers. Automate guest messaging, sync calendars, and manage bookings."
@@ -72,17 +59,6 @@ export default function OnboardingPage({ searchParams }: OnboardingPageProps) {
                 borderColor="hover:border-blue-500/50"
                 loading={loading && selectedProduct === "ai_employee"}
                 onSelect={() => handleProductSelect("ai_employee")}
-              />
-              
-              <OnboardingCard
-                title="Nodebase Space"
-                description="For developers & businesses. Deploy websites, manage domains, and scale cloud infrastructure."
-                icon={Cloud}
-                productType="space"
-                gradient="from-emerald-500/20 to-teal-500/20"
-                borderColor="hover:border-emerald-500/50"
-                loading={loading && selectedProduct === "space"} // Though direct, for completeness
-                onSelect={() => handleProductSelect("space")}
               />
             </div>
           </>

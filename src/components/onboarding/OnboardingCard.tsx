@@ -7,7 +7,7 @@ interface OnboardingCardProps {
   title: string;
   description: string;
   icon: LucideIcon;
-  productType: "ai_employee" | "space";
+  productType: "ai_employee";
   gradient: string;
   borderColor: string;
   loading?: boolean;
