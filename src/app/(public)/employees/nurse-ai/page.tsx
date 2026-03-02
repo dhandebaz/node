@@ -5,16 +5,14 @@ export default function NurseAiPage() {
     <AiManagerDetailPage
       slug="nurse-ai"
       title="Nurse AI"
-      intro="Nurse AI manages patient conversations, appointment flow, and follow-ups for clinics and diagnostic centers."
+      intro="Nurse AI manages patient appointments, clinic FAQs, and automated follow-ups so your doctors can focus on care."
       responsibilities={[
-        "Inbox management",
-        "Follow-ups",
-        "Scheduling / calendar",
-        "Payments coordination",
-        "Context-aware replies",
-        "Escalation to staff when needed"
+        "Patient appointment scheduling",
+        "Automated WhatsApp reminders",
+        "Basic clinic FAQ answering",
+        "Post-visit follow-ups",
+        "Seamless calendar management"
       ]}
-      disclaimer="Nurse AI does not provide diagnoses or medical decisions."
     />
   );
 }

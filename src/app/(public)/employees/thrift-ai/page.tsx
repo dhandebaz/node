@@ -5,13 +5,13 @@ export default function ThriftAiPage() {
     <AiManagerDetailPage
       slug="thrift-ai"
       title="Thrift AI"
-      intro="Thrift AI manages buyer conversations, listing updates, and follow-ups for resale businesses."
+      intro="Thrift AI handles your Instagram DMs, closes sales, and manages shipping updates for your online thrift store."
       responsibilities={[
-        "Inbox management",
-        "Follow-ups",
-        "Scheduling / calendar",
-        "Payments coordination",
-        "Context-aware replies"
+        "Instagram DM management",
+        "Price drops and negotiation",
+        "Size and condition FAQ",
+        "Payment collection",
+        "Shipping tracking updates"
       ]}
     />
   );

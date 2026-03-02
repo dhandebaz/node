@@ -38,8 +38,9 @@ export default function Home() {
             variants={fadeInUp}
             className="text-display-huge uppercase leading-[0.85] tracking-tighter mb-6 md:mb-8"
           >
-            Stop Paying<br />
-            30% Commission.
+            Hire AI Employees.<br />
+            Run your business<br />
+            on autopilot.
           </motion.h1>
           
           <motion.div 
@@ -48,11 +49,7 @@ export default function Home() {
           >
             <div>
               <p className="text-editorial-body max-w-md text-white">
-                Take bookings directly with your AI employee.
-                <br/>
-                <span className="text-white/60 text-lg mt-4 block">
-                  Focused on direct bookings, payments, and control.
-                </span>
+                Autonomous AI agents that handle your customer support, direct bookings, and daily operations 24/7.
               </p>
             </div>
             <div className="flex flex-col items-center md:items-start justify-end">
@@ -60,7 +57,7 @@ export default function Home() {
                 href="/login"
                 className="group flex items-center gap-4 text-2xl font-semibold uppercase tracking-tight hover:gap-6 transition-all bg-white text-black px-8 py-4 rounded-full"
               >
-                Get AI Employee <ArrowRight className="w-6 h-6" />
+                Hire an AI <ArrowRight className="w-6 h-6" />
               </Link>
               <p className="text-sm text-white/50 mt-4 uppercase tracking-wider">No credit card required</p>
             </div>
@@ -68,7 +65,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* SECTION 2: WHAT IT DOES */}
+      {/* SECTION 2: OUR EMPLOYEES */}
       <section className="min-h-auto md:min-h-screen flex flex-col justify-center px-6 py-16 md:py-24 border-b border-brand-bone/20 z-10 relative bg-brand-deep-red/90 backdrop-blur-sm">
         <motion.div 
           initial={{ opacity: 0 }}
@@ -78,40 +75,67 @@ export default function Home() {
           className="max-w-7xl mx-auto w-full"
         >
           <h2 className="text-display-huge uppercase leading-[0.85] tracking-tighter mb-8 md:mb-12">
-            Your Business,<br />Automated.
+            Meet Your New<br />Workforce.
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-            <div className="border-t border-brand-bone/20 pt-6">
-               <h3 className="text-xl font-bold uppercase tracking-widest mb-4">24/7 Guest Replies</h3>
-               <p className="text-2xl leading-tight opacity-90">
-                 Instant responses to inquiries, day or night. Never miss a potential booking.
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            {/* Host AI */}
+            <div className="group border border-brand-bone/20 p-6 hover:bg-brand-bone/5 transition-colors relative">
+               <div className="h-12 w-12 bg-blue-500/20 rounded-full mb-6 flex items-center justify-center">
+                 <span className="text-2xl">🏠</span>
+               </div>
+               <h3 className="text-2xl font-bold uppercase tracking-tight mb-2">Host AI</h3>
+               <p className="text-brand-bone/70 mb-8 min-h-[3rem]">
+                 For Airbnb hosts & property managers.
                </p>
+               <Link href="/employees/host-ai" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider border-b border-brand-bone/30 pb-1 group-hover:border-brand-bone transition-colors">
+                 View Details <ArrowRight className="w-4 h-4" />
+               </Link>
             </div>
-            <div className="border-t border-brand-bone/20 pt-6">
-               <h3 className="text-xl font-bold uppercase tracking-widest mb-4">Direct Payments</h3>
-               <p className="text-2xl leading-tight opacity-90">
-                 Collect payments instantly via UPI or secure links. Money goes straight to your bank.
+
+            {/* Dukan AI */}
+            <div className="group border border-brand-bone/20 p-6 hover:bg-brand-bone/5 transition-colors relative">
+               <div className="h-12 w-12 bg-green-500/20 rounded-full mb-6 flex items-center justify-center">
+                 <span className="text-2xl">🛍️</span>
+               </div>
+               <h3 className="text-2xl font-bold uppercase tracking-tight mb-2">Dukan AI</h3>
+               <p className="text-brand-bone/70 mb-8 min-h-[3rem]">
+                 For local Kirana & WhatsApp selling.
                </p>
+               <Link href="/employees/dukan-ai" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider border-b border-brand-bone/30 pb-1 group-hover:border-brand-bone transition-colors">
+                 View Details <ArrowRight className="w-4 h-4" />
+               </Link>
             </div>
-            <div className="border-t border-brand-bone/20 pt-6">
-               <h3 className="text-xl font-bold uppercase tracking-widest mb-4">ID Verification</h3>
-               <p className="text-2xl leading-tight opacity-90">
-                 Securely collect and verify guest IDs before arrival. Safety first.
+
+            {/* Nurse AI */}
+            <div className="group border border-brand-bone/20 p-6 hover:bg-brand-bone/5 transition-colors relative">
+               <div className="h-12 w-12 bg-red-500/20 rounded-full mb-6 flex items-center justify-center">
+                 <span className="text-2xl">⚕️</span>
+               </div>
+               <h3 className="text-2xl font-bold uppercase tracking-tight mb-2">Nurse AI</h3>
+               <p className="text-brand-bone/70 mb-8 min-h-[3rem]">
+                 For Doctor appointment scheduling.
                </p>
+               <Link href="/employees/nurse-ai" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider border-b border-brand-bone/30 pb-1 group-hover:border-brand-bone transition-colors">
+                 View Details <ArrowRight className="w-4 h-4" />
+               </Link>
             </div>
-             <div className="border-t border-brand-bone/20 pt-6">
-               <h3 className="text-xl font-bold uppercase tracking-widest mb-4">Calendar Sync</h3>
-               <p className="text-2xl leading-tight opacity-90">
-                 Syncs perfectly with Airbnb, Booking.com, and MMT. No double bookings.
+
+            {/* Thrift AI */}
+            <div className="group border border-brand-bone/20 p-6 hover:bg-brand-bone/5 transition-colors relative">
+               <div className="h-12 w-12 bg-purple-500/20 rounded-full mb-6 flex items-center justify-center">
+                 <span className="text-2xl">👗</span>
+               </div>
+               <h3 className="text-2xl font-bold uppercase tracking-tight mb-2">Thrift AI</h3>
+               <p className="text-brand-bone/70 mb-8 min-h-[3rem]">
+                 For Instagram resale & DM management.
                </p>
+               <Link href="/employees/thrift-ai" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider border-b border-brand-bone/30 pb-1 group-hover:border-brand-bone transition-colors">
+                 View Details <ArrowRight className="w-4 h-4" />
+               </Link>
             </div>
-            <div className="border-t border-brand-bone/20 pt-6 md:col-span-2">
-               <h3 className="text-xl font-bold uppercase tracking-widest mb-4 text-brand-bone">Zero Commission</h3>
-               <p className="text-2xl leading-tight opacity-90">
-                 Keep 100% of your direct booking revenue. We don't take a cut.
-               </p>
-            </div>
+
           </div>
         </motion.div>
       </section>
@@ -120,29 +144,29 @@ export default function Home() {
       <section className="min-h-auto flex flex-col justify-center px-6 py-16 md:py-24 border-b border-brand-bone/20 z-10 relative">
         <div className="max-w-7xl mx-auto w-full">
           <h2 className="text-display-large uppercase leading-[0.85] tracking-tighter mb-12">
-            The Old Way vs. Nodebase
+            Traditional Staff<br />vs. Nodebase AI
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* The Old Way */}
             <div className="p-8 border border-brand-bone/20 bg-brand-bone/5 opacity-70">
-              <h3 className="text-2xl font-bold uppercase tracking-widest mb-8 text-brand-bone/50">OTA Booking</h3>
+              <h3 className="text-2xl font-bold uppercase tracking-widest mb-8 text-brand-bone/50">Human Staff / OTAs</h3>
               <ul className="space-y-6">
                 <li className="flex items-start gap-4">
                   <XCircle className="w-6 h-6 text-red-400 mt-1 flex-shrink-0" />
-                  <span className="text-xl">15-30% Commission Fees</span>
+                  <span className="text-xl">High Monthly Salaries</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <XCircle className="w-6 h-6 text-red-400 mt-1 flex-shrink-0" />
-                  <span className="text-xl">Delayed Payouts</span>
+                  <span className="text-xl">8-Hour Work Shifts</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <XCircle className="w-6 h-6 text-red-400 mt-1 flex-shrink-0" />
-                  <span className="text-xl">Guest Control Owned by Platform</span>
+                  <span className="text-xl">Slow Response Times</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <XCircle className="w-6 h-6 text-red-400 mt-1 flex-shrink-0" />
-                  <span className="text-xl">Confusing Coupon Logic</span>
+                  <span className="text-xl">High Training Costs</span>
                 </li>
               </ul>
             </div>
@@ -152,23 +176,23 @@ export default function Home() {
               <div className="absolute top-0 right-0 bg-brand-bone text-brand-deep-red px-4 py-1 font-bold text-xs uppercase">
                 Recommended
               </div>
-              <h3 className="text-2xl font-bold uppercase tracking-widest mb-8 text-brand-bone">Nodebase</h3>
+              <h3 className="text-2xl font-bold uppercase tracking-widest mb-8 text-brand-bone">Nodebase AI</h3>
               <ul className="space-y-6">
                 <li className="flex items-start gap-4">
                   <CheckCircle2 className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
-                  <span className="text-xl font-bold">0% Commission</span>
+                  <span className="text-xl font-bold">Fraction of the cost</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <CheckCircle2 className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
-                  <span className="text-xl font-bold">Instant Direct Payments</span>
+                  <span className="text-xl font-bold">24/7 Instant Replies</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <CheckCircle2 className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
-                  <span className="text-xl font-bold">You Own the Guest Relationship</span>
+                  <span className="text-xl font-bold">Zero Commission on Sales</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <CheckCircle2 className="w-6 h-6 text-green-400 mt-1 flex-shrink-0" />
-                  <span className="text-xl font-bold">Full Control Over Rules</span>
+                  <span className="text-xl font-bold">Multilingual Support</span>
                 </li>
               </ul>
             </div>
@@ -187,7 +211,7 @@ export default function Home() {
             href="/login"
             className="inline-flex items-center gap-6 text-3xl md:text-5xl font-bold uppercase tracking-tighter border-b-4 border-brand-bone pb-2 hover:gap-8 transition-all hover:text-brand-bone/80 hover:border-brand-bone/80"
           >
-            Get AI Employee <ArrowRight className="w-8 h-8 md:w-12 md:h-12" />
+            Hire an AI <ArrowRight className="w-8 h-8 md:w-12 md:h-12" />
           </Link>
           <p className="mt-8 text-lg opacity-60">Join the waitlist for early access.</p>
         </div>

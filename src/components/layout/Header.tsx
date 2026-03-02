@@ -36,10 +36,9 @@ export function Header({ user }: HeaderProps) {
   ];
 
   const employeesMenuItems = [
-    { name: "Overview", href: "/employees" },
     { name: "Host AI", href: "/employees/host-ai" },
-    { name: "Nurse AI", href: "/employees/nurse-ai" },
     { name: "Dukan AI", href: "/employees/dukan-ai" },
+    { name: "Nurse AI", href: "/employees/nurse-ai" },
     { name: "Thrift AI", href: "/employees/thrift-ai" },
   ];
 
@@ -61,20 +60,23 @@ export function Header({ user }: HeaderProps) {
 
         {/* Center: Nav Items (Desktop) */}
         <nav className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "text-sm font-medium tracking-wide transition-opacity duration-200 text-white",
-                pathname.startsWith(item.href)
-                  ? "opacity-100 border-b border-white"
-                  : "opacity-70 hover:opacity-100"
-              )}
-            >
-              {item.name}
-            </Link>
-          ))}
+           {/* Simple dropdown for AI Employees */}
+           <div className="relative group">
+              <button className="flex items-center gap-1 text-sm font-medium tracking-wide text-white opacity-70 group-hover:opacity-100 transition-opacity">
+                AI Employees <ChevronDown className="w-4 h-4" />
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden py-2 hidden group-hover:block">
+                 {employeesMenuItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      {item.name}
+                    </Link>
+                 ))}
+              </div>
+           </div>
         </nav>
 
         {/* Right: Account / User Menu */}
@@ -153,26 +155,7 @@ export function Header({ user }: HeaderProps) {
         </div>
       </div>
 
-      {pathname.startsWith("/employees") && (
-        <div className="w-full border-t border-white/10 bg-[var(--color-brand-red)]">
-          <div className="max-w-7xl mx-auto px-6 overflow-x-auto no-scrollbar">
-            <nav className="flex items-center gap-8 h-12 min-w-max">
-              {employeesMenuItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "text-xs font-bold uppercase tracking-widest transition-colors relative h-full flex items-center",
-                    pathname === item.href ? "text-white opacity-100" : "text-white opacity-50 hover:opacity-100"
-                  )}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
-      )}
+
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -188,17 +171,6 @@ export function Header({ user }: HeaderProps) {
                 AI Employees
               </div>
               {employeesMenuItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-medium text-white/90 hover:text-white"
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <div className="border-t border-white/10 my-2" />
-              {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}

@@ -7,11 +7,11 @@ export default function DukanAiPage() {
       title="Dukan AI"
       intro="Dukan AI manages customer conversations, order updates, and follow-ups for local retail stores."
       responsibilities={[
-        "Inbox management",
-        "Follow-ups",
-        "Scheduling / calendar",
-        "Payments coordination",
-        "Context-aware replies"
+        "WhatsApp order taking",
+        "Inventory and price inquiries",
+        "UPI payment link generation",
+        "Delivery status updates",
+        "Multilingual local customer support"
       ]}
     />
   );

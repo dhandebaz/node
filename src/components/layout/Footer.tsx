@@ -9,24 +9,19 @@ export function Footer() {
   const { t } = useLanguage();
 
   const footerLinks = {
-    products: [
-      { name: "AI Manager", href: "/products/manager" },
-      { name: "AI Co-Founder", href: "/products/co-founder" },
+    employees: [
+      { name: "Host AI", href: "/employees/host-ai" },
+      { name: "Dukan AI", href: "/employees/dukan-ai" },
+      { name: "Nurse AI", href: "/employees/nurse-ai" },
+      { name: "Thrift AI", href: "/employees/thrift-ai" },
     ],
     company: [
-      { name: t("footer.about"), href: "/company" },
-      { name: t("footer.contact"), href: "/company/contact" },
-      { name: t("footer.careers"), href: "/company/careers" },
-      { name: t("footer.partners"), href: "/company/partners" },
-      { name: t("footer.docs"), href: "/docs" },
+      { name: "Contact Us", href: "/company/contact" },
     ],
     legal: [
-      { name: t("footer.privacy"), href: "/legal/privacy" },
-      { name: t("footer.terms"), href: "/legal/terms" },
-      { name: t("footer.refund"), href: "/legal/refund" },
-      { name: t("footer.cookies"), href: "/legal/cookies" },
-      { name: t("footer.aup"), href: "/legal/aup" },
-      { name: t("footer.sla"), href: "/legal/sla" },
+      { name: "Terms of Service", href: "/legal/terms" },
+      { name: "Privacy Policy", href: "/legal/privacy" },
+      { name: "Refund Policy", href: "/legal/refund" },
     ],
   };
 
@@ -40,7 +35,7 @@ export function Footer() {
             </Link>
             <div className="space-y-4">
               <p className="text-sm font-medium opacity-60 max-w-xs uppercase tracking-wide">
-                The intelligence infrastructure company.
+                The intelligent workforce for Indian businesses.
               </p>
               <address className="not-italic text-xs opacity-50 uppercase tracking-widest flex flex-col gap-1">
                 <span>{COMPANY_CONFIG.headquarters.address}</span>
@@ -49,9 +44,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">Products</h3>
+            <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">AI Employees</h3>
             <ul className="space-y-3">
-              {footerLinks.products.map((link, index) => (
+              {footerLinks.employees.map((link, index) => (
                 <li key={`${link.name}-${index}`}>
                   <Link href={link.href} className="text-sm font-bold uppercase tracking-wider hover:underline decoration-1 underline-offset-4">
                     {link.name}
@@ -62,7 +57,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">{t("footer.company")}</h3>
+            <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">Company</h3>
             <ul className="space-y-3">
               {footerLinks.company.map((link, index) => (
                 <li key={`${link.name}-${index}`}>
@@ -75,7 +70,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">{t("footer.legal")}</h3>
+            <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">Legal</h3>
             <ul className="space-y-3">
               {footerLinks.legal.map((link, index) => (
                 <li key={`${link.name}-${index}`}>
