@@ -4,7 +4,7 @@ import { ControlService, TenantControlKey } from "@/lib/services/controlService"
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const adminUser = await requireAdmin();
+    const adminUserId = await requireAdmin();
     // id is not strictly needed if tenantId is in body, but good for validation if we wanted to
     // const { id } = await params; 
     
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       tenantId,
       control as TenantControlKey,
       value,
-      adminUser.id,
+      adminUserId,
       reason || "Admin update"
     );
 
