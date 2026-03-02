@@ -3,7 +3,8 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
+import { Loader2, ArrowLeft, CheckCircle2, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuthStore } from "@/store/useAuthStore";
 import { NetworkBackground } from "@/components/ui/NetworkBackground";
@@ -11,7 +12,7 @@ import { NetworkBackground } from "@/components/ui/NetworkBackground";
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { sendOTP, verifyOTP, isLoading, error, host, confirmationResult } = useAuthStore();
+  const { sendAuthCode, verifyPhoneOTP, signInWithOAuth, isLoading, error, host } = useAuthStore();
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
@@ -22,9 +23,9 @@ function LoginContent() {
     }
   }, [searchParams]);
 
-  const [phone, setPhone] = useState("");
+  const [contact, setContact] = useState("");
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState<'phone' | 'otp'>('phone');
+  const [step, setStep] = useState<'contact' | 'otp' | 'magic-link-sent'>('contact');
 
   useEffect(() => {
     if (host && !isLoading) {
@@ -35,19 +36,26 @@ function LoginContent() {
     }
   }, [host, isLoading, router]);
 
-  const handleSendOTP = async (e: React.FormEvent) => {
+  const handleSendAuthCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length < 10) return;
-    await sendOTP(phone);
-    if (!useAuthStore.getState().error) {
-      setStep('otp');
+    if (!contact) return;
+    try {
+      const type = await sendAuthCode(contact);
+      if (type === 'email') {
+        setStep('magic-link-sent');
+      } else if (type === 'phone') {
+        setStep('otp');
+      }
+    } catch (err) {
+      // error handled in store
     }
   };
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     if (otp.length < 6) return;
-    await verifyOTP(otp);
+    const formattedPhone = contact.startsWith('+') ? contact : '+91' + contact;
+    await verifyPhoneOTP(formattedPhone, otp);
   };
 
   return (
@@ -89,53 +97,84 @@ function LoginContent() {
             <p className="text-brand-bone/60 text-sm">Manage your AI Workforce</p>
           </div>
 
+          <div className="flex flex-col gap-3 mb-6">
+            <button 
+                onClick={() => signInWithOAuth('google')}
+                className="w-full bg-white text-black font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors"
+            >
+                <Image src="/images/integrations/google.png" alt="Google" width={20} height={20} />
+                Continue with Google
+            </button>
+            <button 
+                onClick={() => signInWithOAuth('facebook')}
+                className="w-full bg-[#1877F2] text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-3 hover:bg-[#1864D9] transition-colors"
+            >
+                <Image src="/images/integrations/facebook.png" alt="Facebook" width={20} height={20} />
+                Continue with Facebook
+            </button>
+            <button 
+                onClick={() => alert('Web3 wallet integration coming soon!')}
+                className="w-full bg-brand-bone/10 text-brand-bone font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-3 hover:bg-brand-bone/20 transition-colors border border-brand-bone/10"
+            >
+                <Wallet className="w-5 h-5" />
+                Continue with Web3
+            </button>
+          </div>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-brand-bone/10"></div>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase tracking-widest">
+                <span className="bg-brand-deep-red px-2 text-brand-bone/40">OR</span>
+            </div>
+          </div>
+
           <div className="space-y-4">
             {error && (
               <div className="p-3 bg-red-500/10 text-red-400 text-sm rounded-xl border border-red-500/20">
                 {error}
               </div>
             )}
+            
+            {step === 'magic-link-sent' && (
+                <div className="text-center p-4 bg-green-500/10 rounded-xl border border-green-500/20 text-green-400">
+                    <p>Magic link sent! Check your email to login.</p>
+                </div>
+            )}
 
-            {step === 'phone' ? (
-              <form onSubmit={handleSendOTP} className="space-y-4">
+            {step === 'contact' ? (
+              <form onSubmit={handleSendAuthCode} className="space-y-4">
                 <div>
                   <label className="block text-brand-bone/60 text-xs font-bold uppercase tracking-wider mb-2">
-                    Mobile Number
+                    Email or Mobile Number
                   </label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-bone/40 font-medium select-none">
-                      +91
-                    </span>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, '');
-                        if (val.length <= 10) setPhone(val);
-                      }}
-                      placeholder="98765 43210"
-                      className="w-full bg-brand-bone/5 border border-brand-bone/10 rounded-xl px-4 pl-12 py-3 text-brand-bone placeholder:text-brand-bone/20 focus:outline-none focus:border-brand-bone/40 transition-colors font-mono tracking-wider"
-                      required
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    value={contact}
+                    onChange={(e) => setContact(e.target.value)}
+                    placeholder="name@example.com or 9876543210"
+                    className="w-full bg-brand-bone/5 border border-brand-bone/10 rounded-xl px-4 py-3 text-brand-bone placeholder:text-brand-bone/20 focus:outline-none focus:border-brand-bone/40 transition-colors font-mono tracking-wider"
+                    required
+                  />
                 </div>
 
                 <button
                   type="submit"
-                  disabled={isLoading || phone.length < 10}
+                  disabled={isLoading || !contact}
                   className="w-full bg-brand-bone text-brand-deep-red hover:bg-white font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden uppercase tracking-wider text-sm flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
                     <>
-                      Send OTP
+                      Continue
                       <ArrowLeft className="w-4 h-4 rotate-180 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
               </form>
-            ) : (
+            ) : step === 'otp' ? (
               <form onSubmit={handleVerifyOTP} className="space-y-4">
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -144,10 +183,10 @@ function LoginContent() {
                     </label>
                     <button 
                       type="button"
-                      onClick={() => setStep('phone')}
+                      onClick={() => setStep('contact')}
                       className="text-xs text-brand-bone/40 hover:text-brand-bone transition-colors"
                     >
-                      Change Number
+                      Change
                     </button>
                   </div>
                   <input
@@ -178,9 +217,8 @@ function LoginContent() {
                   )}
                 </button>
               </form>
-            )}
-
-            <div id="recaptcha-container"></div>
+            ) : null}
+            
           </div>
 
           <div className="mt-8 text-center text-[10px] uppercase tracking-widest text-brand-bone/30">

@@ -16,9 +16,6 @@ if (fs.existsSync(envPath)) {
 const requiredVars = [
   'NEXT_PUBLIC_SUPABASE_URL',
   'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-  'FIREBASE_PROJECT_ID',
-  // 'FIREBASE_CLIENT_EMAIL', // Often handled via google-application-credentials in advanced setups, but good to check if using direct creds
-  // 'FIREBASE_PRIVATE_KEY',
   // 'SUPABASE_SERVICE_ROLE_KEY' // Needed for admin actions
 ];
 

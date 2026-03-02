@@ -43,10 +43,10 @@ export function Header({ user }: HeaderProps) {
   ];
 
   const userMenuItems = [
-    { name: "Dashboard", href: "/dashboard/kaisa", icon: LayoutDashboard },
+    { name: "Dashboard", href: "/dashboard/ai", icon: LayoutDashboard },
     { name: "Wallet & Usage", href: "/dashboard/billing", icon: CreditCard },
-    { name: "Integrations", href: "/dashboard/integrations", icon: Plug },
-    { name: "Settings", href: "/dashboard/settings/profile", icon: Settings },
+    { name: "Integrations", href: "/dashboard/ai/integrations", icon: Plug },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
   return (

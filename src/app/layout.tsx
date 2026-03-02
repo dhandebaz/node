@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Alfa_Slab_One } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-import { getAppSettingsAction } from "@/app/actions/settings";
-import { FirebaseAnalytics } from "@/components/analytics/FirebaseAnalytics";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +25,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await getAppSettingsAction();
   
   return (
     <html lang="en" className="scroll-smooth">
@@ -35,10 +32,6 @@ export default async function RootLayout({
         className={`${alfaSlabOne.className} ${alfaSlabOne.variable} antialiased min-h-screen flex flex-col`}
       >
         <Providers>
-          <FirebaseAnalytics 
-            configString={settings.analytics?.firebaseConfig || ""} 
-            enabled={settings.analytics?.enabled || false} 
-          />
           {children}
         </Providers>
       </body>

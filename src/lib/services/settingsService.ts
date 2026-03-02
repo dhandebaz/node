@@ -15,14 +15,12 @@ import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
 // Initial Default Data (used if DB is empty)
 const DEFAULT_SETTINGS: AppSettings = {
   auth: {
-    otpProvider: "Firebase",
+    otpProvider: "Supabase",
     otpExpirySeconds: 300,
     otpRetryLimit: 3,
     adminLoginEnabled: true,
     rateLimitWindowSeconds: 60,
     rateLimitMaxRequests: 10,
-    firebaseConfig: "",
-    firebaseEnabled: false,
   },
   api: {
     publicApiEnabled: false,
@@ -30,19 +28,6 @@ const DEFAULT_SETTINGS: AppSettings = {
     webhookOutgoingEnabled: true,
   },
   integrations: [
-    {
-      id: "int_firebase",
-      name: "Firebase Auth",
-      enabled: false,
-      apiKey: "",
-      authDomain: "",
-      projectId: "",
-      storageBucket: "",
-      messagingSenderId: "",
-      appId: "",
-      measurementId: "",
-      status: "disconnected",
-    },
     {
       id: "int_twilio",
       name: "Twilio SMS",
@@ -111,7 +96,6 @@ const DEFAULT_SETTINGS: AppSettings = {
     adminAccessLocked: false,
   },
   analytics: {
-    firebaseConfig: "",
     enabled: false
   }
 };
@@ -120,226 +104,101 @@ const SETTINGS_KEY = "global_config";
 
 export const settingsService = {
   async getSettings(): Promise<AppSettings> {
-    try {
-      const supabase = await getSupabaseAdmin();
-      const { data, error } = await supabase
-        .from("system_settings")
-        .select("value")
-        .eq("key", SETTINGS_KEY)
-        .single();
-      
-      if (error || !data) {
-        // Fallback to defaults if not found
-        return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-      }
-      
-      const dbSettings = data.value as AppSettings;
-      
-      // Merge with defaults to ensure schema compatibility
-      return {
-        ...DEFAULT_SETTINGS,
-        ...dbSettings,
-        auth: { ...DEFAULT_SETTINGS.auth, ...dbSettings.auth },
-        api: { ...DEFAULT_SETTINGS.api, ...dbSettings.api },
-        // For arrays like integrations/features, we prefer DB version if it exists, 
-        // but might want to merge new definitions from code. 
-        // For simplicity, use DB version if present, or Default.
-        integrations: dbSettings.integrations?.length ? dbSettings.integrations : DEFAULT_SETTINGS.integrations,
-        features: dbSettings.features?.length ? dbSettings.features : DEFAULT_SETTINGS.features,
-        platform: { ...DEFAULT_SETTINGS.platform, ...dbSettings.platform },
-        notifications: { ...DEFAULT_SETTINGS.notifications, ...dbSettings.notifications },
-        security: { ...DEFAULT_SETTINGS.security, ...dbSettings.security },
-        analytics: { ...DEFAULT_SETTINGS.analytics, ...dbSettings.analytics },
-      };
-    } catch (e) {
-      console.error("Failed to fetch settings, using defaults", e);
-      return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+      .from("system_settings")
+      .select("value")
+      .eq("key", SETTINGS_KEY)
+      .single();
+
+    if (error || !data) {
+      // Return defaults if not found
+      return DEFAULT_SETTINGS;
     }
+    
+    // Merge with defaults to ensure new fields are present
+    return { ...DEFAULT_SETTINGS, ...data.value };
   },
 
-  async saveSettings(settings: AppSettings, adminId?: string): Promise<void> {
-    const supabase = await getSupabaseAdmin();
+  async updateSettings(adminId: string, updates: Partial<AppSettings>): Promise<void> {
+    const supabase = await getSupabaseAdmin(); // Admin client for writing system settings
     
-    // We filter out masked values before saving if they are being saved back?
-    // Actually, the UI should send partial updates, but here we save the whole object.
-    // If '***MASKED***' comes in, we should ideally NOT overwrite the real value.
-    // However, for this implementation, we assume the caller (update methods) handles fetching real values first.
-    
+    // 1. Get current
+    const current = await this.getSettings();
+    const newSettings = { ...current, ...updates };
+
+    // 2. Save
     const { error } = await supabase
       .from("system_settings")
       .upsert({ 
         key: SETTINGS_KEY, 
-        value: settings,
-        updated_by: adminId && adminId !== "SYSTEM" ? adminId : null
+        value: newSettings,
+        updated_by: adminId,
+        updated_at: new Date().toISOString()
       });
 
-    if (error) {
-      console.error("Failed to save settings:", error);
-      throw new Error("Failed to save settings to database");
-    }
-  },
+    if (error) throw new Error("Failed to update settings: " + error.message);
 
-  async updateAuthSettings(adminId: string, updates: Partial<AuthSettings>): Promise<void> {
-    const settings = await this.getSettings();
-    settings.auth = { ...settings.auth, ...updates };
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "auth", "update_settings", `Updated auth config: ${Object.keys(updates).join(", ")}`);
+    // 3. Audit Log
+    // Determine what changed for the log
+    const sections = Object.keys(updates) as (keyof AppSettings)[];
+    for (const section of sections) {
+       await this.logChange(adminId, section, "update", `Updated ${section} settings`);
+    }
   },
 
   async toggleIntegration(adminId: string, integrationId: string, enabled: boolean): Promise<void> {
-    const settings = await this.getSettings();
-    const int = settings.integrations.find(i => i.id === integrationId);
-    if (!int) return;
-    int.enabled = enabled;
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "integrations", "toggle", `${enabled ? "Enabled" : "Disabled"} integration: ${int.name}`);
+     const current = await this.getSettings();
+     const integrationIndex = current.integrations.findIndex(i => i.id === integrationId);
+     
+     if (integrationIndex === -1) throw new Error("Integration not found");
+
+     current.integrations[integrationIndex].enabled = enabled;
+     current.integrations[integrationIndex].status = enabled ? "connected" : "disconnected"; // Simplified status logic
+
+     await this.updateSettings(adminId, { integrations: current.integrations });
+     await this.logChange(adminId, "integrations", enabled ? "enable" : "disable", `Toggled ${integrationId}`);
   },
 
-  async updateIntegration(adminId: string, integrationId: string, updates: Partial<IntegrationConfig>): Promise<void> {
-    const settings = await this.getSettings();
-    const int = settings.integrations.find(i => i.id === integrationId);
-    if (!int) return;
+  async updateIntegrationConfig(adminId: string, integrationId: string, config: Partial<IntegrationConfig>): Promise<void> {
+    const current = await this.getSettings();
+    const integrationIndex = current.integrations.findIndex(i => i.id === integrationId);
     
-    const safeUpdates = { ...updates };
-    if (safeUpdates.apiKey) safeUpdates.apiKey = "***MASKED***";
-    if (safeUpdates.clientSecret) safeUpdates.clientSecret = "***MASKED***";
-    if (safeUpdates.authToken) safeUpdates.authToken = "***MASKED***";
+    if (integrationIndex === -1) throw new Error("Integration not found");
 
-    Object.assign(int, updates);
-
-    const hasKeys = this.validateIntegrationKeys(int);
-    if (hasKeys) {
-      int.status = "connected";
-      int.enabled = true; 
-      int.lastChecked = new Date().toISOString();
-    } else {
-      int.status = "disconnected";
-      int.enabled = false;
-    }
-
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "integrations", "update_config", `Updated integration ${int.name}: ${Object.keys(safeUpdates).join(", ")}`);
-  },
-
-  validateIntegrationKeys(int: IntegrationConfig): boolean {
-    if (int.id === "int_paddle") {
-      return !!(int.vendorId && int.apiKey && int.publicKey);
-    }
-    if (int.id === "int_paypal") {
-      return !!(int.clientId && int.clientSecret);
-    }
-    if (int.id === "int_razorpay") {
-      return !!(int.clientId && int.clientSecret);
-    }
-    if (int.id === "int_firebase") {
-      return !!(int.apiKey && int.authDomain && int.projectId && int.appId);
-    }
-    if (int.id === "int_twilio") {
-      return !!(int.accountSid && int.authToken && int.fromPhoneNumber);
-    }
-    return !!int.apiKey;
-  },
-
-  async updateApi(adminId: string, updates: Partial<ApiSettings>): Promise<void> {
-    const settings = await this.getSettings();
-    settings.api = { ...settings.api, ...updates };
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "api" as any, "update_config", `Updated API settings: ${Object.keys(updates).join(", ")}`);
-  },
-
-  async rotateApiKeys(adminId: string): Promise<void> {
-    const settings = await this.getSettings();
-    settings.api.rotationLastPerformed = new Date().toISOString();
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "api" as any, "rotate_keys", "Rotated internal API keys");
-  },
-
-  async toggleFeature(adminId: string, featureId: string, enabled: boolean): Promise<void> {
-    const settings = await this.getSettings();
-    const feat = settings.features.find(f => f.id === featureId);
-    if (!feat) return;
-    feat.enabled = enabled;
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "features", "toggle", `${enabled ? "Enabled" : "Disabled"} feature: ${feat.name}`);
-  },
-
-  async updatePlatform(adminId: string, updates: Partial<PlatformSettings>): Promise<void> {
-    const settings = await this.getSettings();
-    settings.platform = { ...settings.platform, ...updates };
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "platform", "update_mode", `Updated platform mode: ${JSON.stringify(updates)}`);
-  },
-
-  async isProductionMode(): Promise<boolean> {
-    const settings = await this.getSettings();
-    return settings.platform.environment === "production";
-  },
-  
-  async updatePlatformSignups(adminId: string, product: keyof PlatformSettings["signupEnabled"], enabled: boolean): Promise<void> {
-    const settings = await this.getSettings();
-    settings.platform.signupEnabled[product] = enabled;
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "platform", "update_signup", `${enabled ? "Enabled" : "Disabled"} signups for ${product}`);
-  },
-
-  async updateNotifications(adminId: string, updates: Partial<NotificationSettings>): Promise<void> {
-    const settings = await this.getSettings();
-    settings.notifications = { ...settings.notifications, ...updates };
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "notifications", "update_config", `Updated notification config`);
-  },
-
-  async updateSecurity(adminId: string, updates: Partial<SecuritySettings>): Promise<void> {
-    const settings = await this.getSettings();
-    settings.security = { ...settings.security, ...updates };
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "security", "update_config", `Updated security settings`);
-  },
-
-  async forceLogoutAll(adminId: string): Promise<void> {
-    const settings = await this.getSettings();
-    settings.security.forceLogoutTriggeredAt = new Date().toISOString();
-    await this.saveSettings(settings, adminId);
-    await this.log(adminId, "security", "force_logout", "Triggered global force logout");
-  },
-
-  async getAuditLogs(): Promise<SettingsAuditLog[]> {
-    const supabase = await getSupabaseAdmin();
-    const { data, error } = await supabase
-      .from("audit_events")
-      .select("*")
-      .eq("actor_type", "admin")
-      .order("created_at", { ascending: false })
-      .limit(100);
-
-    if (error) return [];
+    // Merge config
+    current.integrations[integrationIndex] = { ...current.integrations[integrationIndex], ...config };
     
-    // Map DB logs to SettingsAuditLog interface
-    return data.map((log: any) => ({
-      id: log.id,
-      adminId: log.actor_id || "SYSTEM",
-      section: "platform", // Generic fallback
-      action: log.event_type,
-      details: log.metadata?.details,
-      timestamp: log.created_at
-    }));
+    await this.updateSettings(adminId, { integrations: current.integrations });
+    await this.logChange(adminId, "integrations", "update", `Updated config for ${integrationId}`);
   },
 
-  async log(adminId: string, section: SettingsAuditLog["section"], action: string, details: string) {
-    try {
-      const supabase = await getSupabaseAdmin();
-      await supabase.from("audit_events").insert({
-        actor_type: 'admin',
-        actor_id: adminId === "SYSTEM" ? null : adminId,
-        event_type: action,
-        entity_type: 'settings',
-        metadata: {
-          section,
-          details
-        }
-      });
-    } catch (e) {
-      console.error("Failed to write audit log", e);
-    }
+  async getAuditLogs(limit = 20): Promise<SettingsAuditLog[]> {
+     const supabase = await getSupabaseServer();
+     const { data } = await supabase
+        .from("admin_audit_logs")
+        .select("*")
+        .eq("action_type", "settings_update")
+        .order("timestamp", { ascending: false })
+        .limit(limit);
+
+     return (data || []).map(log => ({
+        id: log.id,
+        adminId: log.admin_id,
+        section: "platform", // Generic fallback
+        action: "update",
+        details: log.details,
+        timestamp: log.timestamp
+     }));
+  },
+
+  async logChange(adminId: string, section: string, action: string, details: string) {
+     const supabase = await getSupabaseAdmin();
+     await supabase.from("admin_audit_logs").insert({
+        admin_id: adminId,
+        action_type: "settings_update",
+        details: `[${section.toUpperCase()}] ${action}: ${details}`,
+        timestamp: new Date().toISOString()
+     });
   }
 };

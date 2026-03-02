@@ -1,5 +1,5 @@
 
-export type OTPProvider = "Twilio" | "Firebase" | "Custom";
+export type OTPProvider = "Twilio" | "Supabase" | "Custom";
 export type EnvironmentMode = "production" | "staging" | "maintenance" | "readonly";
 
 export interface AuthSettings {
@@ -9,8 +9,6 @@ export interface AuthSettings {
   adminLoginEnabled: boolean;
   rateLimitWindowSeconds: number;
   rateLimitMaxRequests: number;
-  firebaseConfig?: string; // For OTP integration
-  firebaseEnabled?: boolean;
 }
 
 export interface IntegrationConfig {
@@ -26,13 +24,6 @@ export interface IntegrationConfig {
   clientSecret?: string; // PayPal, Razorpay
   vendorId?: string;     // Paddle
   publicKey?: string;    // Paddle (Client-side token)
-  // Firebase specific fields
-  authDomain?: string;
-  projectId?: string;
-  storageBucket?: string;
-  messagingSenderId?: string;
-  appId?: string;
-  measurementId?: string;
   // Twilio specific fields
   accountSid?: string;
   authToken?: string;
@@ -80,7 +71,6 @@ export interface ApiSettings {
 }
 
 export interface AnalyticsSettings {
-  firebaseConfig: string; // Storing the raw pasted string or JSON
   enabled: boolean;
 }
 
