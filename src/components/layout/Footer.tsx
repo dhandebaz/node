@@ -43,44 +43,46 @@ export function Footer() {
             </div>
           </div>
 
-          <div>
-            <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">AI Employees</h3>
-            <ul className="space-y-3">
-              {footerLinks.employees.map((link, index) => (
-                <li key={`${link.name}-${index}`}>
-                  <Link href={link.href} className="text-sm font-bold uppercase tracking-wider hover:underline decoration-1 underline-offset-4">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <nav aria-label="Footer Navigation" className="col-span-1 md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div>
+              <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">AI Employees</h3>
+              <ul className="space-y-3">
+                {footerLinks.employees.map((link, index) => (
+                  <li key={`${link.name}-${index}`}>
+                    <Link href={link.href} className="text-sm font-bold uppercase tracking-wider hover:underline decoration-1 underline-offset-4">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div>
-            <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">Company</h3>
-            <ul className="space-y-3">
-              {footerLinks.company.map((link, index) => (
-                <li key={`${link.name}-${index}`}>
-                  <Link href={link.href} className="text-sm font-bold uppercase tracking-wider hover:underline decoration-1 underline-offset-4">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div>
+              <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">Company</h3>
+              <ul className="space-y-3">
+                {footerLinks.company.map((link, index) => (
+                  <li key={`${link.name}-${index}`}>
+                    <Link href={link.href} className="text-sm font-bold uppercase tracking-wider hover:underline decoration-1 underline-offset-4">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <div>
-            <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">Legal</h3>
-            <ul className="space-y-3">
-              {footerLinks.legal.map((link, index) => (
-                <li key={`${link.name}-${index}`}>
-                  <Link href={link.href} className="text-sm font-bold uppercase tracking-wider hover:underline decoration-1 underline-offset-4">
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div>
+              <h3 className="font-bold text-xs uppercase tracking-widest opacity-40 mb-6">Legal</h3>
+              <ul className="space-y-3">
+                {footerLinks.legal.map((link, index) => (
+                  <li key={`${link.name}-${index}`}>
+                    <Link href={link.href} className="text-sm font-bold uppercase tracking-wider hover:underline decoration-1 underline-offset-4">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
         </div>
 
         <div className="pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center gap-4">

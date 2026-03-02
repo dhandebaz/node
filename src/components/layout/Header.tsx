@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/Logo";
 import { useAuthStore } from "@/store/useAuthStore";
 import { User } from "@/types/user";
-import { Menu, X, User as UserIcon, LogOut, LayoutDashboard, CreditCard, Settings, Plug, ChevronDown } from "lucide-react";
+import { Menu, X, User as UserIcon, LogOut, LayoutDashboard, CreditCard, Settings, Plug } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface HeaderProps {
@@ -33,13 +33,8 @@ export function Header({ user }: HeaderProps) {
 
   const navItems = [
     { name: "AI Employees", href: "/employees" },
-  ];
-
-  const employeesMenuItems = [
-    { name: "Host AI", href: "/employees/host-ai" },
-    { name: "Dukan AI", href: "/employees/dukan-ai" },
-    { name: "Nurse AI", href: "/employees/nurse-ai" },
-    { name: "Thrift AI", href: "/employees/thrift-ai" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "Company", href: "/company" },
   ];
 
   const userMenuItems = [
@@ -59,46 +54,58 @@ export function Header({ user }: HeaderProps) {
         </Link>
 
         {/* Center: Nav Items (Desktop) */}
-        <nav className="hidden md:flex items-center gap-8">
-           {/* Simple dropdown for AI Employees */}
-           <div className="relative group">
-              <button className="flex items-center gap-1 text-sm font-medium tracking-wide text-white opacity-70 group-hover:opacity-100 transition-opacity">
-                AI Employees <ChevronDown className="w-4 h-4" />
-              </button>
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl overflow-hidden py-2 hidden group-hover:block">
-                 {employeesMenuItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                 ))}
-              </div>
-           </div>
+        <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-8">
+           {!isLoggedIn ? (
+             <ul role="list" className="flex items-center gap-8">
+               {navItems.map((item) => (
+                 <li key={item.href}>
+                   <Link 
+                     href={item.href}
+                     className={cn(
+                       "text-sm font-bold uppercase tracking-wider text-white hover:text-white/80 transition-colors",
+                       pathname === item.href && "underline decoration-2 underline-offset-4"
+                     )}
+                   >
+                     {item.name}
+                   </Link>
+                 </li>
+               ))}
+             </ul>
+           ) : (
+             <Link 
+               href="/dashboard/ai"
+               className="bg-white text-[var(--color-brand-red)] hover:bg-gray-100 px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-colors"
+             >
+               Go to Dashboard
+             </Link>
+           )}
         </nav>
 
         {/* Right: Account / User Menu */}
         <div className="flex items-center gap-4">
           {!isLoggedIn ? (
-            <Link 
-              href="/login" 
-              className="hidden md:flex items-center gap-2 text-white/70 hover:text-white font-medium text-sm transition-colors"
-            >
-              <UserIcon className="w-5 h-5" />
-              <span>Account</span>
-            </Link>
+            <div className="hidden md:flex items-center gap-4">
+               <Link 
+                 href="/login" 
+                 className="text-white font-bold text-sm uppercase tracking-wider hover:underline underline-offset-4"
+               >
+                 Login
+               </Link>
+            </div>
           ) : (
             <div className="relative">
               <button 
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition-colors text-white"
+                aria-expanded={userMenuOpen}
+                aria-haspopup="true"
               >
                 <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
                    <UserIcon className="w-4 h-4" />
                 </div>
-                <ChevronDown className="w-4 h-4 opacity-70" />
+                <span className="text-sm font-medium hidden sm:block max-w-[100px] truncate">
+                  {displayUser?.name?.split(' ')[0]}
+                </span>
               </button>
 
               <AnimatePresence>
@@ -107,25 +114,27 @@ export function Header({ user }: HeaderProps) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl overflow-hidden py-2"
-                    onMouseLeave={() => setUserMenuOpen(false)}
+                    className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden py-2"
                   >
-                    <div className="px-4 py-3 border-b border-gray-100 mb-1">
-                      <p className="text-sm font-bold text-gray-900">{displayUser?.name}</p>
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-900 truncate">{displayUser?.name}</p>
                       <p className="text-xs text-gray-500 truncate">{displayUser?.email}</p>
                     </div>
                     
-                    {userMenuItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        <item.icon className="w-4 h-4 text-gray-400" />
-                        {item.name}
-                      </Link>
-                    ))}
+                    <ul role="list" className="py-1">
+                      {userMenuItems.map((item) => (
+                        <li key={item.href}>
+                          <Link
+                            href={item.href}
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            <item.icon className="w-4 h-4 text-gray-400" />
+                            {item.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
 
                     <div className="border-t border-gray-100 mt-1 pt-1">
                       <button
@@ -133,10 +142,10 @@ export function Header({ user }: HeaderProps) {
                           logout();
                           setUserMenuOpen(false);
                         }}
-                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
                       >
                         <LogOut className="w-4 h-4" />
-                        Logout
+                        Sign Out
                       </button>
                     </div>
                   </motion.div>
@@ -149,73 +158,88 @@ export function Header({ user }: HeaderProps) {
           <button 
             className="md:hidden text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X /> : <Menu />}
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
-
-
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: "auto" }}
-            exit={{ height: 0 }}
-            className="md:hidden bg-[var(--color-brand-red)] border-b border-white/10 overflow-hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-[var(--color-brand-red)] border-t border-white/20 overflow-hidden"
           >
-             <nav className="flex flex-col p-6 gap-4">
-              <div className="text-xs font-bold uppercase tracking-widest text-white/60">
-                AI Employees
-              </div>
-              {employeesMenuItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-medium text-white/90 hover:text-white"
-                >
-                  {item.name}
-                </Link>
-              ))}
+            <nav aria-label="Mobile Navigation" className="p-6 space-y-4">
               {!isLoggedIn ? (
-                 <Link
-                   href="/login"
-                   onClick={() => setMobileMenuOpen(false)}
-                   className="text-lg font-medium text-white/90 hover:text-white flex items-center gap-2 pt-4 border-t border-white/10"
-                 >
-                   <UserIcon className="w-5 h-5" />
-                   Account (Login)
-                 </Link>
+                 <ul role="list" className="space-y-4">
+                    {navItems.map((item) => (
+                      <li key={item.href}>
+                        <Link 
+                          href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block text-lg font-bold uppercase tracking-wider text-white"
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    ))}
+                    <li>
+                      <Link 
+                        href="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-lg font-bold uppercase tracking-wider text-white/70"
+                      >
+                        Login
+                      </Link>
+                    </li>
+                 </ul>
               ) : (
-                <>
-                  <div className="pt-4 border-t border-white/10 text-white/60 text-xs uppercase tracking-widest font-bold mb-2">My Account</div>
-                  {userMenuItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 text-white/90 hover:text-white"
-                    >
-                      <item.icon className="w-5 h-5" />
-                      {item.name}
-                    </Link>
-                  ))}
-                  <button
-                    onClick={() => {
-                      logout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="flex items-center gap-3 text-white/90 hover:text-white pt-2"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    Logout
-                  </button>
-                </>
+                <div className="space-y-4">
+                   <Link 
+                     href="/dashboard/ai"
+                     onClick={() => setMobileMenuOpen(false)}
+                     className="block w-full text-center bg-white text-[var(--color-brand-red)] px-4 py-3 rounded-lg font-bold uppercase tracking-wider"
+                   >
+                     Go to Dashboard
+                   </Link>
+                   
+                   <div className="pt-4 border-t border-white/20">
+                      <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-4">Menu</p>
+                      <ul role="list" className="space-y-3">
+                        {userMenuItems.map((item) => (
+                          <li key={item.href}>
+                            <Link
+                              href={item.href}
+                              onClick={() => setMobileMenuOpen(false)}
+                              className="flex items-center gap-3 text-white font-medium"
+                            >
+                              <item.icon className="w-5 h-5 text-white/70" />
+                              {item.name}
+                            </Link>
+                          </li>
+                        ))}
+                         <li>
+                            <button
+                              onClick={() => {
+                                logout();
+                                setMobileMenuOpen(false);
+                              }}
+                              className="flex items-center gap-3 text-white/70 font-medium w-full text-left"
+                            >
+                              <LogOut className="w-5 h-5" />
+                              Sign Out
+                            </button>
+                         </li>
+                      </ul>
+                   </div>
+                </div>
               )}
-             </nav>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>
