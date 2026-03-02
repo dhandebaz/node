@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth/session";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { ControlService } from "@/lib/services/controlService";
 import { FailureRecord } from "@/types/failure";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 export const dynamic = "force-dynamic";
 
@@ -13,11 +14,19 @@ export async function GET() {
   }
 
   try {
+    // Resolve tenant explicitly
+    let tenantId: string;
+    try {
+      tenantId = await requireActiveTenant();
+    } catch (e) {
+      return NextResponse.json({ error: "Tenant context missing" }, { status: 400 });
+    }
+
     const supabase = await getSupabaseServer();
     const { data: failures, error } = await supabase
       .from("failures")
       .select("*")
-      .eq("tenant_id", session.tenantId)
+      .eq("tenant_id", tenantId)
       .eq("is_active", true)
       .order("created_at", { ascending: false });
 
@@ -30,7 +39,7 @@ export async function GET() {
     if (flags['incident_mode_enabled']) {
       resultFailures.unshift({
         id: 'system-incident',
-        tenant_id: session.tenantId,
+        tenant_id: tenantId,
         category: 'system',
         source: 'system',
         severity: 'critical',
