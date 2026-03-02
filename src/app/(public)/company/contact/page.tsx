@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, MessageSquare, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

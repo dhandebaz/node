@@ -1,19 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
+import {import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
-import Link from "next/link";
 
 export default function RefundPage() {
   const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-brand-deep-red text-brand-bone font-sans selection:bg-brand-bone/20">
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <NetworkBackground />
-      </div>
-
+      
       <div className="relative z-10 pt-32 pb-24 px-6 container mx-auto max-w-4xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 

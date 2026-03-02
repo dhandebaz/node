@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, XCircle } from "lucide-react";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import { motion } from "framer-motion";
 
 const fadeInUp = {
@@ -21,12 +20,9 @@ const stagger = {
 
 export default function Home() {
   return (
-    <div className="flex flex-col w-full bg-brand-deep-red text-brand-bone selection:bg-brand-bone selection:text-brand-deep-red relative overflow-hidden">
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-20">
-        <NetworkBackground />
-      </div>
-
-      {/* SECTION 1: HERO */}
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone selection:bg-brand-bone/20 overflow-x-hidden font-sans">
+      
+      {/* HERO SECTION */}
       <section className="min-h-[90vh] flex flex-col justify-center px-6 pt-32 pb-16 relative border-b border-brand-bone/20 z-10">
         <motion.div 
           initial="initial"

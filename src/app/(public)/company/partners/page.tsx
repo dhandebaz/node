@@ -1,9 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Handshake, Building2, Code2, Cpu, Globe, ArrowRight, CheckCircle2 } from "lucide-react";
+importimport { motion } from "framer-motion";
+import { Handshake, Building2, Code2, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
 export default function PartnersPage() {
   const fadeInUp = {
@@ -40,11 +39,7 @@ export default function PartnersPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <NetworkBackground />
-      </div>
-
-      {/* Hero Section */}
+      
       <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10">
         <div className="container mx-auto px-6 text-center">
           <motion.div 

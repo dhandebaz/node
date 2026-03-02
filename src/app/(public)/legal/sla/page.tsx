@@ -8,24 +8,18 @@ export default function SlaPage() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-brand-deep-red text-brand-bone font-sans selection:bg-brand-bone/20">
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <NetworkBackground />
-      </div>
-
+    <div className="bg-brand-deep-red min-h-screen text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
       <div className="relative z-10 pt-32 pb-24 px-6 container mx-auto max-w-4xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-block border border-brand-bone/20 px-4 py-1.5 mb-8 text-xs font-mono font-bold uppercase tracking-widest bg-brand-bone/5 text-brand-bone/60">
-            Legal
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-12 text-brand-bone">
-            {t("legal.sla.title")}
-          </h1>
+          <PageHeader 
+            title={t("legal.sla.title")}
+            badge="Legal"
+            className="mb-12"
+          />
 
           <div className="p-8 md:p-12 rounded-2xl border border-brand-bone/10 bg-brand-bone/5 backdrop-blur-sm">
             <div className="prose prose-invert prose-lg max-w-none text-brand-bone/80 prose-headings:text-brand-bone prose-strong:text-brand-bone prose-a:text-brand-bone hover:prose-a:text-white">

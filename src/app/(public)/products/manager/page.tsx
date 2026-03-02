@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, MessageSquare, Calendar, CreditCard, UserCheck, CheckCircle2 } from "lucide-react";
@@ -60,13 +59,9 @@ export default function ManagerPage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone selection:bg-brand-bone/20 overflow-x-hidden font-sans">
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
       
-      {/* SECTION 1: HERO */}
-      <section className="relative min-h-[90vh] flex flex-col justify-center items-center overflow-hidden pt-20">
-        <div className="absolute inset-0 opacity-30">
-          <NetworkBackground />
-        </div>
+      <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10">
         
         <div className="container mx-auto px-6 relative z-10">
           <motion.div 

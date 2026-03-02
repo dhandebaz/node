@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import Link from "next/link";
 import { ArrowRight, BrainCircuit, Target, Globe, Zap, ShieldCheck } from "lucide-react";
 
@@ -43,9 +42,6 @@ export default function CoFounderPage() {
       
       {/* HERO SECTION */}
       <section className="relative min-h-[90vh] flex flex-col justify-center items-center overflow-hidden pt-20">
-        <div className="absolute inset-0 opacity-40">
-          <NetworkBackground />
-        </div>
         
         <div className="container mx-auto px-6 relative z-10">
           <motion.div 

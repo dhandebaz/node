@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import Link from "next/link";
 import { ShieldCheck, Lock, Database, FileText, CheckCircle2 } from "lucide-react";
 

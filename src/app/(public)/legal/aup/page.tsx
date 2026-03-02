@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function AupPage() {
@@ -9,10 +8,7 @@ export default function AupPage() {
 
   return (
     <div className="min-h-screen bg-brand-deep-red text-brand-bone font-sans selection:bg-brand-bone/20">
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <NetworkBackground />
-      </div>
-
+      
       <div className="relative z-10 pt-32 pb-24 px-6 container mx-auto max-w-4xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 

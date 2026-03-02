@@ -2,16 +2,12 @@
 
 import Link from "next/link";
 import { ArrowLeft, FileQuestion } from "lucide-react";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import { motion } from "framer-motion";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-brand-deep-red text-brand-bone flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-brand-bone/20">
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <NetworkBackground />
-      </div>
-
+      
       <div className="w-full max-w-md text-center relative z-10">
         <motion.div 
           initial={{ rotate: -10, scale: 0.9, opacity: 0 }}

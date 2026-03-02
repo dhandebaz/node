@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import { Bot, Users, Sparkles, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -22,10 +21,7 @@ export default function KaisaOverviewPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <NetworkBackground />
-      </div>
-
+      
       <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10">
         <div className="container mx-auto px-6 text-center">
           <motion.div 

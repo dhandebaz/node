@@ -3,6 +3,7 @@ import { WalletService } from "@/lib/services/walletService";
 import { SubscriptionService } from "@/lib/services/subscriptionService";
 import { ControlService } from "@/lib/services/controlService";
 import { WalletUI } from "./WalletUI";
+import { UPISettings } from "@/components/dashboard/billing/UPISettings";
 
 export default async function BillingPage() {
   const tenantId = await requireActiveTenant();
@@ -34,13 +35,18 @@ export default async function BillingPage() {
   }
 
   return (
-    <WalletUI 
-      initialBalance={balance} 
-      history={history} 
-      usage24h={usage24h}
-      plan={plan}
-      isPaused={isPaused}
-      pauseReason={pauseReason}
-    />
+    <div className="space-y-8">
+      <WalletUI 
+        initialBalance={balance} 
+        history={history} 
+        usage24h={usage24h}
+        plan={plan}
+        isPaused={isPaused}
+        pauseReason={pauseReason}
+      />
+      <div className="grid md:grid-cols-2 gap-8">
+        <UPISettings />
+      </div>
+    </div>
   );
 }

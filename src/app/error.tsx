@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
-import { NetworkBackground } from '@/components/ui/NetworkBackground';
 
 export default function Error({
   error,
@@ -17,12 +16,9 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center p-6 text-center relative overflow-hidden rounded-3xl bg-brand-deep-red text-brand-bone my-8 mx-4">
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <NetworkBackground />
-      </div>
+    <div className="min-h-screen bg-brand-deep-red text-brand-bone flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-brand-bone/20">
       
-      <div className="relative z-10 max-w-md w-full">
+      <div className="w-full max-w-md text-center relative z-10">
         <motion.div 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

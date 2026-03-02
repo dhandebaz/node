@@ -1,5 +1,6 @@
 
 import { BusinessType } from "@/types";
+import { PricingService } from "@/lib/services/pricingService";
 
 export type SubscriptionPlan = "starter" | "pro" | "business";
 
@@ -24,6 +25,11 @@ export const PLAN_LIMITS = {
   }
 };
 
+// Helper to fetch dynamic price, fallback to static if server side call fails or for client side static refs
+// Note: Constants are usually static. If we need dynamic, we should use the service.
+// We will modify this object to use getters or placeholders, but for now, 
+// let's export a function or keep the structure and rely on the Service where needed.
+
 export const PLAN_PRICING = {
   starter: {
     amount: 0,
@@ -32,22 +38,22 @@ export const PLAN_PRICING = {
     credits_per_month: 500
   },
   pro: {
-    amount: 999, // INR
+    amount: 1999, // Default fallback
     currency: "INR",
     name: "Nodebase Pro",
-    credits_per_month: 5000 // 10x value
+    credits_per_month: 5000 
   },
   business: {
-    amount: 4999, // INR
+    amount: 4999, 
     currency: "INR",
     name: "Nodebase Business",
-    credits_per_month: 30000 // 60x value
+    credits_per_month: 30000 
   }
 };
 
 export const BOOKING_MULTIPLIERS: Record<BusinessType, number> = {
   airbnb_host: 1,
-  kirana_store: 10,   // 100 orders/month (Starter)
-  doctor_clinic: 5,   // 50 appts/month (Starter)
-  thrift_store: 5     // 50 orders/month (Starter)
+  kirana_store: 10,   
+  doctor_clinic: 5,   
+  thrift_store: 5     
 };

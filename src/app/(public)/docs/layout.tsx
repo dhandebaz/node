@@ -2,7 +2,6 @@
 
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
 import { Search } from "lucide-react";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
 export default function DocsLayout({
   children,
@@ -11,9 +10,6 @@ export default function DocsLayout({
 }) {
   return (
     <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone pt-20 relative overflow-hidden font-sans selection:bg-brand-bone/20">
-      <div className="fixed inset-0 opacity-20 pointer-events-none z-0">
-        <NetworkBackground />
-      </div>
       
       {/* Mobile Search / Nav Header could go here */}
       <div className="lg:hidden p-4 border-b border-brand-bone/10 flex items-center gap-4 sticky top-20 bg-brand-deep-red/90 backdrop-blur-md z-20">

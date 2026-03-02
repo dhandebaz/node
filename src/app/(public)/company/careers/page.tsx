@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Briefcase, Code2, Server, BrainCircuit, ArrowRight } from "lucide-react";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
+import { Briefcase, MapPin, Clock, ArrowRight, Code2, Heart, Zap } from "lucide-react";
+import Link from "next/link";
 
 export default function CareersPage() {
   const fadeInUp = {

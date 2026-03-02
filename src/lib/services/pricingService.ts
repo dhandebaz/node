@@ -4,6 +4,8 @@ export interface PricingRules {
   per_1k_tokens: number;
   action_multipliers: Record<string, number>;
   persona_multipliers?: Record<string, number>;
+  ai_monthly_price?: number;
+  ai_message_cost?: number;
 }
 
 const DEFAULT_PRICING: PricingRules = {
@@ -23,7 +25,9 @@ const DEFAULT_PRICING: PricingRules = {
     doctor_clinic: 1.2,
     thrift_store: 0.9,
     default: 1.0
-  }
+  },
+  ai_monthly_price: 1999,
+  ai_message_cost: 1
 };
 
 export class PricingService {
@@ -61,6 +65,13 @@ export class PricingService {
 
   static async calculateCost(actionType: string, tokensUsed: number, tenantId?: string): Promise<number> {
     const rules = await this.getRules();
+    
+    // New simplified SaaS pricing logic
+    // If action is 'ai_reply', use the fixed cost if available
+    if (actionType === 'ai_reply' && rules.ai_message_cost !== undefined) {
+       return rules.ai_message_cost;
+    }
+
     const actionMultiplier = rules.action_multipliers[actionType] || rules.action_multipliers.default || 1.0;
     
     let personaMultiplier = 1.0;
@@ -80,5 +91,10 @@ export class PricingService {
     const cost = (tokensUsed / 1000) * rules.per_1k_tokens * actionMultiplier * personaMultiplier;
     
     return Math.max(0.0001, Number(cost.toFixed(6)));
+  }
+
+  static async getSubscriptionPrice(): Promise<number> {
+    const rules = await this.getRules();
+    return rules.ai_monthly_price ?? 1999;
   }
 }

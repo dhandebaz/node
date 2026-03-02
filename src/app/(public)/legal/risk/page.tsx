@@ -2,7 +2,6 @@
 
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import { motion } from "framer-motion";
 
 export default function RiskPage() {
@@ -16,13 +15,9 @@ export default function RiskPage() {
 
   return (
     <div className="bg-brand-deep-red min-h-screen text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
-      {/* Ambient Background */}
-      <div className="absolute inset-0 pointer-events-none opacity-30">
-        <NetworkBackground />
-      </div>
-
+      
       <PageHeader 
-        title={t("legal.risk.title")} 
+        title={t("legal.risk.title")}  
         description={t("legal.risk.desc")}
         tag="Legal"
         align="left"

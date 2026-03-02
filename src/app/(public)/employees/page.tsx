@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Briefcase, MessageSquare, Calendar, Database, Activity } from "lucide-react";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
 export default function EmployeesPage() {
   const fadeInUp = {
@@ -62,11 +61,9 @@ export default function EmployeesPage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone font-sans selection:bg-brand-bone/20">
-      <section className="relative min-h-[60vh] md:min-h-[70vh] flex flex-col justify-center items-center pt-32 md:pt-24 pb-16 px-6 overflow-hidden border-b border-brand-bone/10">
-        <div className="absolute inset-0 opacity-30 pointer-events-none">
-          <NetworkBackground />
-        </div>
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
+      
+      <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10">
         <div className="container mx-auto relative z-10 max-w-6xl text-center">
           <motion.div
             initial="initial"

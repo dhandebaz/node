@@ -16,7 +16,6 @@ import {
   Heart,
   Globe
 } from "lucide-react";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 
 export default function CompanyPage() {
   const fadeInUp = {
@@ -34,13 +33,10 @@ export default function CompanyPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone selection:bg-brand-bone/20 font-sans">
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <NetworkBackground />
-      </div>
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
       
       {/* 1. HERO: Mission Statement */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden z-10">
+      <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10">
         <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             initial="initial"
