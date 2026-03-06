@@ -45,7 +45,7 @@ export function Header({ user }: HeaderProps) {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-brand-red)] border-b border-white/20">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-red border-b border-white/20 backdrop-blur-md">
       <div className="w-full px-6 h-16 flex items-center justify-between">
         
         {/* Left: Logo */}

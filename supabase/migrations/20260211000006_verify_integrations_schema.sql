@@ -38,7 +38,14 @@ ALTER TABLE public.integrations ADD COLUMN IF NOT EXISTS metadata JSONB;
 
 -- Add indexes
 CREATE INDEX IF NOT EXISTS idx_integrations_tenant_id ON public.integrations(tenant_id);
-CREATE INDEX IF NOT EXISTS idx_integrations_user_id ON public.integrations(user_id);
+
+-- Only create index on user_id if the column exists
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'integrations' AND column_name = 'user_id') THEN
+        CREATE INDEX IF NOT EXISTS idx_integrations_user_id ON public.integrations(user_id);
+    END IF;
+END $$;
 CREATE INDEX IF NOT EXISTS idx_integrations_provider ON public.integrations(provider);
 
 -- RLS Policies (Idempotent via DROP IF EXISTS)

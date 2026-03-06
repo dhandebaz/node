@@ -15,19 +15,39 @@ CREATE TABLE IF NOT EXISTS public.ai_usage_events (
 ALTER TABLE public.ai_usage_events ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Tenant users can view their own usage
-CREATE POLICY "Tenant users can view own usage events" ON public.ai_usage_events
-  FOR SELECT USING (
-    tenant_id IN (
-      SELECT tenant_id FROM public.tenant_users WHERE user_id = auth.uid()
-    )
-  );
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_policies
+        WHERE tablename = 'ai_usage_events'
+        AND policyname = 'Tenant users can view own usage events'
+    ) THEN
+        CREATE POLICY "Tenant users can view own usage events" ON public.ai_usage_events
+        FOR SELECT USING (
+            tenant_id IN (
+            SELECT tenant_id FROM public.tenant_users WHERE user_id = auth.uid()
+            )
+        );
+    END IF;
+END $$;
 
 -- 2. Enforce Non-Negative Balance (Strict Requirement Part 10 & 4)
 -- We add a check constraint to the wallets table.
 -- This ensures that the trigger update will fail if balance drops below 0,
 -- causing the transaction insert to rollback.
-ALTER TABLE public.wallets 
-ADD CONSTRAINT wallets_balance_non_negative CHECK (balance >= 0);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.table_constraints
+        WHERE constraint_name = 'wallets_balance_non_negative'
+        AND table_name = 'wallets'
+    ) THEN
+        ALTER TABLE public.wallets 
+        ADD CONSTRAINT wallets_balance_non_negative CHECK (balance >= 0);
+    END IF;
+END $$;
 
 -- 3. Add Index for Analytics
 CREATE INDEX IF NOT EXISTS idx_ai_usage_tenant_date ON public.ai_usage_events(tenant_id, created_at);

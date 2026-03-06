@@ -86,21 +86,41 @@ alter table admin_audit_logs enable row level security;
 -- Policies
 
 -- Wallets
+drop policy if exists "Tenants can view own wallet" on wallets;
 create policy "Tenants can view own wallet"
   on wallets for select
   using (auth.uid() in (select user_id from tenant_users where tenant_id = wallets.tenant_id));
 
 -- Wallet Transactions
+drop policy if exists "Tenants can view own transactions" on wallet_transactions;
 create policy "Tenants can view own transactions"
   on wallet_transactions for select
   using (auth.uid() in (select user_id from tenant_users where tenant_id = wallet_transactions.tenant_id));
 
 -- System Settings
+drop policy if exists "Everyone can read system settings" on system_settings;
 create policy "Everyone can read system settings"
   on system_settings for select
   using (true); -- Usually public or authenticated, for pricing rules etc.
 
 -- Admin Audit Logs
+drop policy if exists "Admins can view audit logs" on admin_audit_logs;
 create policy "Admins can view audit logs"
   on admin_audit_logs for select
-  using (exists (select 1 from users where id = auth.uid() and role = 'admin')); -- Assuming user role check
+  using (exists (select 1 from users where id = auth.uid() and role = 'admin'));
+
+-- Triggers for System Settings Updates
+create or replace function log_system_settings_update()
+returns trigger as $$
+begin
+  insert into admin_audit_logs (admin_id, target_resource, target_id, action_type, previous_value, new_value)
+  values (auth.uid(), 'system_settings', new.key, 'update', old.value::text, new.value::text);
+  return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists on_system_setting_update on system_settings;
+create trigger on_system_setting_update
+after update on system_settings
+for each row
+execute function log_system_settings_update();

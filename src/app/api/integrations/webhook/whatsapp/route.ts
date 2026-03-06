@@ -2,16 +2,47 @@ import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { geminiService } from "@/lib/services/geminiService";
 
+// Verify Webhook (GET)
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  
+  const mode = searchParams.get("hub.mode");
+  const token = searchParams.get("hub.verify_token");
+  const challenge = searchParams.get("hub.challenge");
+
+  if (mode === "subscribe" && token === process.env.META_VERIFY_TOKEN) {
+    return new Response(challenge, { status: 200 });
+  } else {
+    return new Response("Forbidden", { status: 403 });
+  }
+}
+
+// Handle Messages (POST)
 export async function POST(request: Request) {
   try {
+    const body = await request.json();
+    
+    // Safely extract the message
+    const value = body.entry?.[0]?.changes?.[0]?.value;
+    if (!value?.messages?.[0]) {
+      // Return success if it's not a message event we care about (e.g. status update)
+      return NextResponse.json({ success: true });
+    }
+
+    const msg = value.messages[0];
+    const sender = msg.from; // Phone number
+    const text = msg.text?.body;
+
+    if (!text) {
+      return NextResponse.json({ success: true }); // Ignore non-text messages for now
+    }
+
     const { searchParams } = new URL(request.url);
     const tenantId = searchParams.get("tenantId");
 
     if (!tenantId) {
       return NextResponse.json({ error: "Missing tenantId" }, { status: 400 });
     }
-
-    const { sender, text } = await request.json();
 
     const supabase = await getSupabaseServer();
 
@@ -23,7 +54,6 @@ export async function POST(request: Request) {
       .single();
 
     if (walletError || !wallet) {
-      // Assuming wallet exists if tenant exists, but good to handle
       console.error("Wallet fetch error", walletError);
       return NextResponse.json({ error: "Wallet not found" }, { status: 500 });
     }
@@ -50,126 +80,86 @@ export async function POST(request: Request) {
       tenant_id: tenantId,
       type: "deduction",
       amount: 1,
-      description: "WhatsApp AI Reply",
+      description: "Official WhatsApp AI Reply",
     });
 
-    // 3. Build AI Context
+    // 3. Fetch Tenant's WhatsApp Credentials
+    const { data: integration, error: integrationError } = await supabase
+      .from("integrations")
+      .select("credentials")
+      .eq("tenant_id", tenantId)
+      .eq("provider", "whatsapp")
+      .single();
+
+    if (integrationError || !integration || !integration.credentials) {
+      console.error("Integration not found", integrationError);
+      return NextResponse.json({ error: "WhatsApp integration not found" }, { status: 404 });
+    }
+
+    // Parse JSONB credentials
+    // Type assertion or check needed if credentials is strict type
+    const credentials = integration.credentials as { phoneNumberId: string, accessToken: string };
+    const { phoneNumberId, accessToken } = credentials;
+
+    if (!phoneNumberId || !accessToken) {
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 500 });
+    }
+
+    // 4. Generate AI Reply
+    // Fetch context (listings, etc) - simplified for brevity/speed as per instruction
+    // "Generate AI reply using geminiService.generateText(prompt). Log to messages table."
     const { data: tenant } = await supabase
       .from("tenants")
       .select("business_type")
       .eq("id", tenantId)
       .single();
+      
+    const businessType = tenant?.business_type || "business";
+    const prompt = `You are a helpful AI assistant for a ${businessType}. User said: "${text}". Reply concisely.`;
 
-    // Fetch active listings or products
-    // Assuming 'listings' table for now based on previous context
-    const { data: listings } = await supabase
-      .from("listings")
-      .select("id, name, type, status, city")
-      .eq("tenant_id", tenantId)
-      .eq("status", "active");
-
-    const businessType = tenant?.business_type || "generic business";
-    const contextData = listings || [];
-
-    const prompt = `You are a helpful AI assistant managing WhatsApp for a ${businessType}. Use this context to answer the user: ${JSON.stringify(
-      contextData
-    )}. User message: ${text}`;
-
-    // 4. Generate AI Reply
     const aiReply = await geminiService.generateText(prompt);
 
-    // 5. Log Messages
-    // Assuming 'messages' table schema from types/index.ts
-    // We need to map to the DB schema.
-    // Message interface: id, tenantId, guestId, listingId, channel, direction, content, timestamp, read
-    // The instructions say: Insert two records into the messages table (or your inbox table)
-    // One for incoming user message (role: 'user', ...), and one for AI's reply (role: 'assistant', ...)
-    // The DB schema in migrations/003_fullstack_schema.sql (implied) or types/index.ts might differ from "role" field.
-    // In types/index.ts: Message has direction: 'inbound' | 'outbound'.
-    // So 'user' -> 'inbound', 'assistant' -> 'outbound'.
-    // We also need guestId. For now we might need to find or create a guest based on sender contact.
-    // The instructions didn't specify guest creation, but we need guestId for the message table usually.
-    // However, the instructions were specific: "Insert two records... (role: 'user', ...)"
-    // If the table strictly follows the Message interface, it might not have 'role'.
-    // But maybe there's a different table for AI chat or the user meant a specific structure.
-    // Given "role: 'user'" and "role: 'assistant'", it sounds like an LLM chat history table.
-    // But the instructions also say "log to the unified inbox".
-    // I will try to map to the `messages` table which seems to be the inbox.
-    // `messages` table usually has `direction` (inbound/outbound).
-    // I'll use `direction` instead of `role` if the table structure demands it, or add `role` if it's a JSONB field or similar.
-    // Wait, the instruction says "Insert two records... (role: 'user'...)"
-    // If I look at `messages` table definition in `src/types/index.ts`, it has `direction`.
-    // I will map role 'user' -> direction 'inbound' and role 'assistant' -> direction 'outbound'.
-    // And I'll store the text in `content`.
-    // I need a `guest_id`. I'll try to find a guest by phone (sender) or create a placeholder.
-    // For this task, to strictly follow "Execute these exact steps", I should probably just insert what I can.
-    // But `guest_id` is likely a foreign key.
-    // I'll try to find/create a guest.
-    
-    // Find/Create Guest
-    let guestId = null;
-    const { data: existingGuest } = await supabase
-        .from('guests')
-        .select('id')
-        .eq('tenant_id', tenantId)
-        .eq('phone', sender)
-        .maybeSingle();
-    
-    if (existingGuest) {
-        guestId = existingGuest.id;
-    } else {
-        const { data: newGuest } = await supabase
-            .from('guests')
-            .insert({
-                tenant_id: tenantId,
-                name: sender, // Placeholder name
-                phone: sender,
-                channel: 'whatsapp',
-                id_verification_status: 'none'
-            })
-            .select('id')
-            .single();
-        guestId = newGuest?.id;
-    }
+    // 5. Log to Messages Table (Unified Inbox)
+    // Insert User Message
+    await supabase.from("messages").insert({
+      tenant_id: tenantId,
+      direction: 'inbound',
+      channel: 'whatsapp',
+      content: text,
+      sender_id: sender, // Using phone number as sender_id for now
+      timestamp: new Date().toISOString(),
+      read: false
+    });
 
-    if (guestId) {
-        // Incoming Message
-        await supabase.from("messages").insert({
-            tenant_id: tenantId,
-            guest_id: guestId,
-            channel: 'whatsapp',
-            direction: 'inbound',
-            content: text,
-            // timestamp: new Date().toISOString(), // Default now()
-            read: false,
-            // listing_id: ... // Might be nullable or needed. I'll omit if nullable.
-            // If listing_id is required, I might need to pick one or handle it. 
-            // Based on types/index.ts, listingId is in the interface.
-            // In SQL migration `messages` usually references `listings`.
-            // I'll check if I can leave it null or generic.
-            // If required, I'll pick the first active listing or null if allowed.
-            listing_id: listings && listings.length > 0 ? (listings[0] as any).id : null // Assuming id is selected (I need to select id above)
-        });
+    // Insert AI Reply
+    await supabase.from("messages").insert({
+      tenant_id: tenantId,
+      direction: 'outbound',
+      channel: 'whatsapp',
+      content: aiReply,
+      sender_id: 'ai_assistant',
+      timestamp: new Date().toISOString(),
+      read: true
+    });
 
-        // AI Reply
-        await supabase.from("messages").insert({
-            tenant_id: tenantId,
-            guest_id: guestId,
-            channel: 'whatsapp',
-            direction: 'outbound',
-            content: aiReply,
-            read: true,
-            listing_id: listings && listings.length > 0 ? (listings[0] as any).id : null
-        });
-    } else {
-        console.error("Failed to find/create guest for message logging");
-    }
+    // 6. Send Reply via Meta Graph API
+    await fetch(`https://graph.facebook.com/v19.0/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to: sender,
+        type: 'text',
+        text: { body: aiReply }
+      })
+    });
 
-    // TODO: Execute HTTP POST to EvolutionAPI/Waha instance to physically send the message back to the user's phone.
-
-    return NextResponse.json({ success: true, reply: aiReply });
-  } catch (error: any) {
-    console.error("Webhook Error:", error);
-    return NextResponse.json({ error: error.message || "Internal Error" }, { status: 500 });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Webhook error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

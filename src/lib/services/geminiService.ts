@@ -1,4 +1,3 @@
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { settingsService } from "./settingsService";
 
@@ -121,7 +120,7 @@ export const geminiService = {
 
       const result = await model.generateContent(prompt);
       const response = await result.response;
-      const usage = result.response.usageMetadata || { totalTokenCount: 0 }; // Fallback
+      const usage = result.response.usageMetadata || { totalTokenCount: 0 }; 
       
       return {
         content: response.text(),
@@ -150,9 +149,9 @@ export const geminiService = {
       const result = await model.generateContent(prompt);
       const response = await result.response;
       return response.text();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Gemini Text Generation Error:", error);
-      throw new Error("Failed to generate text");
+      throw error;
     }
   }
 };

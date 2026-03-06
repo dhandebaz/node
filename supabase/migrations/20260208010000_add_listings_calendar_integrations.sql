@@ -1,3 +1,11 @@
+-- Create Listings Table if not exists
+create table if not exists public.listings (
+  id uuid default gen_random_uuid() primary key,
+  tenant_id uuid references public.tenants(id),
+  host_id uuid references auth.users(id),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
 alter table public.listings
   add column if not exists name text,
   add column if not exists city text,

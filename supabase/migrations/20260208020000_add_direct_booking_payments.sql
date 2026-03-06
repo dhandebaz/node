@@ -1,8 +1,31 @@
+-- Create Guests Table if not exists
+create table if not exists public.guests (
+  id uuid default gen_random_uuid() primary key,
+  tenant_id uuid references public.tenants(id),
+  name text not null,
+  email text,
+  phone text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Create Bookings Table if not exists
+create table if not exists public.bookings (
+  id uuid default gen_random_uuid() primary key,
+  tenant_id uuid references public.tenants(id),
+  listing_id uuid references public.listings(id),
+  guest_id uuid references public.guests(id),
+  check_in date not null,
+  check_out date not null,
+  status text default 'draft',
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
 alter table bookings
   add column if not exists guest_contact text,
   add column if not exists amount numeric default 0,
-  add column if not exists payment_id uuid,
-  alter column status set default 'draft';
+  add column if not exists payment_id uuid;
+
+alter table bookings alter column status set default 'draft';
 
 create table if not exists payment_accounts (
   id uuid primary key default gen_random_uuid(),

@@ -26,7 +26,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-[var(--color-brand-red)] border-t border-white/20 pt-24 pb-12 text-white">
+    <footer className="bg-brand-red border-t border-white/20 pt-24 pb-12 text-white">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-24">
           <div className="space-y-6">

@@ -20,10 +20,13 @@ create policy "Referrers can view their referrals"
   ));
 
 -- Admins can view all (handled by service role usually, but good to have)
+-- Use tenant_users role 'admin' instead of admin_users table
 create policy "Admins can view all referrals"
   on referrals for select
   using (
     exists (
-      select 1 from admin_users where id = auth.uid()
+      select 1 from tenant_users 
+      where user_id = auth.uid() 
+      and role = 'admin'
     )
   );

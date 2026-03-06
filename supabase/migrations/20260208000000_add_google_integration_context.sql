@@ -1,3 +1,12 @@
+create table if not exists public.integrations (
+  id uuid default gen_random_uuid() primary key,
+  tenant_id uuid references public.tenants(id),
+  provider text not null,
+  enabled boolean default false,
+  settings jsonb default '{}'::jsonb,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
 alter table public.integrations
   add column if not exists last_synced_at timestamp with time zone,
   add column if not exists connected_email text,

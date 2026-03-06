@@ -22,11 +22,11 @@ import { MockChatInterface } from "@/components/ui/MockChatInterface";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone selection:bg-brand-bone/20 overflow-x-hidden font-sans bg-grid-pattern">
+    <div className="flex flex-col min-h-screen bg-brand-red text-brand-bone selection:bg-brand-bone/20 overflow-x-hidden font-sans bg-grid-pattern">
       
       {/* HERO SECTION */}
       <section className="min-h-[90vh] flex flex-col justify-center px-6 pt-32 pb-16 relative border-b border-brand-bone/20 z-10">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-brand-deep-red/90 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-brand-red/90 pointer-events-none" />
         
         <div className="max-w-7xl mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div 
@@ -78,7 +78,7 @@ export default function Home() {
       </section>
 
       {/* SECTION 2: OUR EMPLOYEES */}
-      <section className="min-h-auto md:min-h-screen flex flex-col justify-center px-6 py-16 md:py-24 border-b border-brand-bone/20 z-10 relative bg-brand-deep-red/95 backdrop-blur-sm">
+      <section className="min-h-auto md:min-h-screen flex flex-col justify-center px-6 py-16 md:py-24 border-b border-brand-bone/20 z-10 relative bg-brand-red/95 backdrop-blur-sm">
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
