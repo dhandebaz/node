@@ -20,6 +20,8 @@ export async function POST(request: Request) {
     const sender = body.payload.from;
     const text = body.payload.body;
 
+    const supabase = await getSupabaseServer();
+
     // Check for paused AI
     const { data: existingGuest } = await supabase
       .from('guests')
