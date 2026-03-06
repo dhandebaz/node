@@ -836,7 +836,6 @@ export default function InboxPage() {
                         />
                       </div>
                     </div>
-                  </div>
                   <button
                     onClick={openPaymentModal}
                   className="text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 text-white/80 hover:border-white/50"
