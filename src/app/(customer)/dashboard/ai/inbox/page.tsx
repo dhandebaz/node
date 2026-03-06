@@ -46,7 +46,6 @@ type Conversation = {
   manager: { slug: string; name: string };
   status: "draft" | "payment_pending" | "paid" | "scheduled" | "open";
   bookingId?: string | null;
-  guestId?: string; // Add guestId to Conversation type if not present in API response, or fetch it.
   // Assuming the API returns guestId or we can use id if it matches guestId. 
   // Wait, Conversation ID might be different from Guest ID.
   // Let's assume conversation.id is NOT guestId.
@@ -65,7 +64,7 @@ type Conversation = {
   // Wait, the prompt says "Open src/app/(customer)/dashboard/ai/inbox/page.tsx... Add a UI toggle..."
   // It implies I should use what's available.
   // I'll add `guestId: string` to Conversation type and assume it's populated.
-  guestId: string;
+  guestId?: string; // Add guestId to Conversation type if not present in API response, or fetch it.
   aiPaused?: boolean; // We also need this state from the conversation list
 };
 
