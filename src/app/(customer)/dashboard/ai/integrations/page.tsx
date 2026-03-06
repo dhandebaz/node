@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useDashboardStore } from "@/store/useDashboardStore";
 import { getBusinessLabels, getPersonaCapabilities } from "@/lib/business-context";
 import { toast } from "sonner";
+import { WhatsAppBYONCard } from "@/components/dashboard/integrations/WhatsAppBYONCard";
 
 interface GoogleIntegrationStatus {
   status: "connected" | "disconnected" | "expired" | "error";
@@ -244,6 +245,9 @@ export default function ListingIntegrationsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
+        {/* Featured WhatsApp BYON Card */}
+        <WhatsAppBYONCard initialStatus={whatsappStatus as any} />
+
         {/* Google Integration */}
         {capabilities.integrations.google && (
           <Card className="bg-[var(--color-dashboard-surface)] border-white/10">

@@ -8,6 +8,10 @@ export interface Tenant {
   is_memory_enabled?: boolean;
   is_branding_enabled?: boolean;
   is_ai_enabled?: boolean;
+  kyc_status?: 'pending' | 'verified';
+  pan_number?: string;
+  aadhaar_number?: string;
+  kyc_verified_at?: string;
 }
 
 export type BusinessType = 
@@ -183,9 +187,10 @@ export interface Integration {
   tenantId: string; // Multi-tenancy
   userId: string;
   provider: 'google' | 'airbnb' | 'booking' | 'instagram' | 'whatsapp' | 'facebook' | 'web';
-  status: 'connected' | 'expired' | 'error';
+  status: 'connected' | 'expired' | 'error' | 'active';
   lastSync?: string;
   expiresAt?: string;
   errorCode?: string;
   metadata?: Record<string, any>;
+  credentials?: Record<string, any>;
 }
