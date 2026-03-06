@@ -376,10 +376,7 @@ export default function ListingIntegrationsPage() {
 
         {/* WhatsApp Integration */}
         {capabilities.integrations.whatsapp && (
-          <>
-            <WhatsAppOfficialCard />
-            <WhatsAppBYONCard initialStatus={whatsappStatus as any} />
-          </>
+          <WhatsAppBYONCard initialStatus={whatsappStatus as any} />
         )}
 
         {/* Instagram Integration */}
