@@ -20,7 +20,26 @@ export async function POST(request: Request) {
     const sender = body.payload.from;
     const text = body.payload.body;
 
-    const supabase = await getSupabaseServer();
+    // Check for paused AI
+    const { data: existingGuest } = await supabase
+      .from('guests')
+      .select('ai_paused')
+      .eq('phone', sender)
+      .eq('tenant_id', tenantId)
+      .single();
+
+    if (existingGuest?.ai_paused) {
+      await supabase.from("messages").insert({
+        tenant_id: tenantId,
+        direction: 'inbound',
+        channel: 'whatsapp',
+        content: text,
+        sender_id: sender,
+        timestamp: new Date().toISOString(),
+        read: false
+      });
+      return NextResponse.json({ success: true, ai_paused: true });
+    }
 
     // Check Wallet Balance
     const { data: wallet, error: walletError } = await supabase

@@ -1,0 +1,1 @@
+alter table guests add column if not exists ai_paused boolean default false;

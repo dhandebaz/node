@@ -156,6 +156,7 @@ export interface Guest {
   phone: string;
   channel: 'airbnb' | 'booking' | 'direct' | 'whatsapp' | 'instagram' | 'messenger' | 'web';
   idVerificationStatus: 'pending' | 'verified' | 'rejected' | 'none';
+  ai_paused?: boolean;
 }
 
 export interface Message {

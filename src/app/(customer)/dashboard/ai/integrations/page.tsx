@@ -246,7 +246,7 @@ export default function ListingIntegrationsPage() {
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Featured WhatsApp BYON Card */}
-        <WhatsAppOfficialCard />
+        <WhatsAppBYONCard />
 
         {/* Google Integration */}
         {capabilities.integrations.google && (
