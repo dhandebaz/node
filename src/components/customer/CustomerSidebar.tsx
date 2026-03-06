@@ -22,6 +22,7 @@ import {
   Gift,
   Sparkles
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CustomerSidebarProps {
   roles: UserRoles;
@@ -35,7 +36,6 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
   const labels = getBusinessLabels(tenant?.businessType);
   const capabilities = getPersonaCapabilities(tenant?.businessType);
 
-  // Helper to determine if a link is active
   const isActive = (path: string, exact = false) => {
     if (exact) return pathname === path;
     return pathname.startsWith(path);
@@ -46,85 +46,107 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
     return (
       <Link 
         href={href}
-        className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 group ${
+        className={cn(
+          "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group text-sm font-medium",
           active 
-            ? "bg-white/10 text-white font-medium" 
-            : "text-white/70 hover:text-white hover:bg-white/5"
-        }`}
+            ? "bg-white text-black shadow-sm" 
+            : "text-white/60 hover:text-white hover:bg-white/10"
+        )}
       >
-        <Icon className={`w-4 h-4 ${active ? "text-white" : "text-white/70 group-hover:text-white"}`} />
-        <span className="text-sm">{label}</span>
+        <Icon className={cn("w-4 h-4", active ? "text-black" : "text-white/60 group-hover:text-white")} />
+        <span>{label}</span>
       </Link>
     );
   };
 
   const SectionLabel = ({ label }: { label: string }) => (
     <div className="px-3 mb-2 mt-6">
-      <span className="text-xs font-bold uppercase tracking-widest text-white/40">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">
         {label}
       </span>
     </div>
   );
 
   return (
-    <aside className="w-64 fixed inset-y-0 left-0 z-50 bg-[var(--color-brand-red)] border-r border-white/10 flex flex-col shadow-xl">
+    <aside className="w-64 fixed inset-y-0 left-0 z-50 bg-[#1A1A1A] border-r border-white/5 flex flex-col">
       {/* Brand */}
-      <div className="h-16 flex items-center px-6 border-b border-white/10 bg-white/5 justify-between">
+      <div className="h-16 flex items-center px-5 border-b border-white/5">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold tracking-tight text-white">NODEBASE</span>
+          <div className="w-6 h-6 bg-[var(--color-brand-red)] rounded-md flex items-center justify-center">
+            <span className="font-bold text-white text-xs">N</span>
+          </div>
+          <span className="text-lg font-bold tracking-tight text-white">Nodebase</span>
         </Link>
         {tenant?.earlyAccess && (
-          <div className="flex items-center gap-1 bg-yellow-500/20 border border-yellow-500/30 rounded px-1.5 py-0.5" title="Early Access Member">
-            <Sparkles className="w-3 h-3 text-yellow-400" />
-            <span className="text-[9px] font-bold text-yellow-400 tracking-wide uppercase">Beta</span>
+          <div className="ml-auto flex items-center gap-1 bg-yellow-500/10 border border-yellow-500/20 rounded px-1.5 py-0.5">
+            <span className="text-[9px] font-bold text-yellow-500 tracking-wide uppercase">Beta</span>
           </div>
         )}
       </div>
 
-      {/* Credit Status (Only for AI Users) */}
+      {/* Credit Status (Compact) */}
       {roles.isKaisaUser && kaisaCredits && (
-        <div className="p-4 border-b border-white/10 bg-black/10">
-           <div className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-1">Wage Balance</div>
-           <div className="text-2xl font-mono font-medium text-white">₹{kaisaCredits.balance.toLocaleString()}</div>
+        <div className="p-4 border-b border-white/5">
+           <div className="flex items-center justify-between mb-1">
+             <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Balance</span>
+             <Link href="/dashboard/billing" className="text-[10px] text-[var(--color-brand-red)] hover:text-white transition-colors">
+               Add Funds
+             </Link>
+           </div>
+           <div className="text-xl font-mono font-medium text-white">₹{kaisaCredits.balance.toLocaleString()}</div>
         </div>
       )}
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 overflow-y-auto custom-scrollbar">
         
-        {/* AI Employee Menu */}
         {roles.isKaisaUser && (
-          <div className="space-y-1">
-            <SectionLabel label="AI Employee" />
-            <NavItem href="/dashboard/ai" label="Overview" icon={LayoutDashboard} exact />
+          <div className="space-y-0.5">
+            <SectionLabel label="Workspace" />
+            <NavItem href="/dashboard/ai" label="Home" icon={LayoutDashboard} exact />
             <NavItem href="/dashboard/ai/inbox" label="Inbox" icon={MessageSquare} />
-            <NavItem href="/dashboard/ai/listings" label={labels.listings} icon={List} />
-            <NavItem href="/dashboard/ai/bookings" label={labels.bookings} icon={BookOpen} />
+            
             {capabilities.calendar && (
-              <NavItem href="/dashboard/ai/calendar" label={labels.calendar} icon={CalendarDays} />
+              <NavItem href="/dashboard/ai/calendar" label="Calendar" icon={CalendarDays} />
             )}
-            <NavItem href="/dashboard/ai/settings" label="AI Settings" icon={Settings2} />
-            <NavItem href="/dashboard/ai/activity" label="AI Activity" icon={Activity} />
-            <NavItem href="/dashboard/ai/integrations" label="Integrations" icon={Puzzle} />
-            <NavItem href="/dashboard/billing" label="Wallet & Usage" icon={Wallet} />
+            
+            <NavItem href="/dashboard/ai/listings" label={labels.listings} icon={List} />
+            <NavItem href="/dashboard/ai/activity" label="Activity" icon={Activity} />
           </div>
         )}
 
-        {/* System Menu (Shared) */}
-        <div className="space-y-1">
-          <SectionLabel label="System" />
-          <NavItem href="/dashboard/billing" label="Billing" icon={CreditCard} />
-          <NavItem href="/dashboard/settings" label="Settings" icon={Settings} />
-          <NavItem href="/dashboard/invite" label="Invite & Earn" icon={Gift} />
-          <NavItem 
-            href="/dashboard/support" 
-            label={tenant?.earlyAccess ? "Priority Support" : "Need help?"} 
-            icon={HelpCircle} 
-          />
+        <div className="space-y-0.5">
+          <SectionLabel label="Configuration" />
+          <NavItem href="/dashboard/ai/settings" label="AI Rules" icon={Settings2} />
+          <NavItem href="/dashboard/ai/integrations" label="Integrations" icon={Puzzle} />
+          <NavItem href="/dashboard/billing" label="Billing & Plans" icon={CreditCard} />
+          <NavItem href="/dashboard/settings" label="Account" icon={Settings} />
+        </div>
+
+        <div className="space-y-0.5">
+          <SectionLabel label="Resources" />
+          <NavItem href="/docs" label="Documentation" icon={BookOpen} />
+          <NavItem href="/dashboard/support" label="Support" icon={HelpCircle} />
+          <NavItem href="/dashboard/invite" label="Refer & Earn" icon={Gift} />
         </div>
       </nav>
-      
-      {/* User Profile / Footer could go here */}
+
+      {/* User Footer */}
+      <div className="p-4 border-t border-white/5 bg-white/5">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[var(--color-brand-red)] flex items-center justify-center text-white font-bold text-xs">
+            {tenant?.businessType?.charAt(0).toUpperCase() || "U"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-white truncate">
+              {tenant?.name || "User Account"}
+            </p>
+            <p className="text-[10px] text-white/40 truncate">
+              {tenant?.businessType || "Standard Plan"}
+            </p>
+          </div>
+        </div>
+      </div>
     </aside>
   );
 }

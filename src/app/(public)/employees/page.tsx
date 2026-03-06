@@ -24,44 +24,34 @@ export default function EmployeesPage() {
       name: "Host AI",
       for: "For Airbnb & homestay owners",
       desc: "Handles guest conversations, availability updates, and booking follow-ups.",
-      href: "/employees/host-ai"
+      href: "/employees/host-ai",
+      icon: "🏠"
     },
     {
       name: "Nurse AI",
       for: "For doctors, clinics, diagnostic centers",
       desc: "Manages patient messages, reminders, and intake follow-ups.",
-      href: "/employees/nurse-ai"
+      href: "/employees/nurse-ai",
+      icon: "🩺"
     },
     {
       name: "Dukan AI",
       for: "For kirana & local retail stores",
       desc: "Answers customer questions, tracks orders, and confirms pickups.",
-      href: "/employees/dukan-ai"
+      href: "/employees/dukan-ai",
+      icon: "🛍️"
     },
     {
       name: "Thrift AI",
       for: "For thrift stores & resellers",
       desc: "Coordinates buyer inquiries, availability, and payment reminders.",
-      href: "/employees/thrift-ai"
-    },
-    {
-      name: "General Manager AI",
-      for: "For freelancers & solo service providers",
-      desc: "Keeps client intake, scheduling, and payment follow-ups organized.",
-      href: "/employees/general-manager-ai"
+      href: "/employees/thrift-ai",
+      icon: "👗"
     }
   ];
 
-  const whatIs = [
-    { title: "Handles customer conversations", icon: MessageSquare },
-    { title: "Tracks follow-ups and status", icon: Activity },
-    { title: "Works across channels", icon: Briefcase },
-    { title: "Uses your business data as context", icon: Database },
-    { title: "Runs continuously", icon: Calendar }
-  ];
-
   return (
-    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20 bg-grid-pattern">
       
       <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10">
         <div className="container mx-auto relative z-10 max-w-6xl text-center">
@@ -75,90 +65,44 @@ export default function EmployeesPage() {
               AI Employees
             </div>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold uppercase leading-[0.85] tracking-tighter mb-8 text-brand-bone">
-              AI Managers for Solo Businesses
+              Your New<br/>Workforce
             </h1>
             <p className="text-xl md:text-2xl text-brand-silver mb-10 max-w-3xl font-light leading-relaxed">
               Hire role-specific AI employees that handle customers, operations, and follow-ups without tools or workflows.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="#ai-managers"
-                className="w-full sm:w-auto px-8 py-3 bg-brand-bone text-brand-deep-red rounded-lg font-bold uppercase tracking-wide hover:bg-white transition-all text-center flex items-center justify-center gap-2"
-              >
-                View AI Managers
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/docs/getting-started"
-                className="w-full sm:w-auto px-8 py-3 border border-brand-bone/30 text-brand-bone rounded-lg font-bold uppercase tracking-wide hover:bg-brand-bone/10 transition-all text-center"
-              >
-                See how Nodebase works
-              </Link>
-            </div>
           </motion.div>
         </div>
       </section>
 
-      <section className="py-16 md:py-24 px-6 border-b border-brand-bone/10 bg-black/10">
+      <section id="ai-managers" className="py-24 px-6 border-t border-brand-bone/10 bg-brand-deep-red/95 backdrop-blur-sm relative z-10">
         <div className="container mx-auto max-w-6xl">
-          <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold uppercase tracking-tight text-brand-bone">
-              What is an AI Manager
-            </h2>
-            <p className="text-brand-bone/60 text-lg mt-4 max-w-3xl">
-              A role-specific AI employee that runs daily operations using the same Nodebase Core across inbox, calendar, wallet, and integrations.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {whatIs.map((item) => (
-              <div key={item.title} className="p-6 rounded-2xl border border-brand-bone/10 bg-brand-bone/5">
-                <item.icon className="w-6 h-6 text-brand-bone/70 mb-4" />
-                <p className="text-brand-bone/80 font-medium">{item.title}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="ai-managers" className="py-16 md:py-24 px-6 border-b border-brand-bone/10">
-        <div className="container mx-auto max-w-6xl">
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-12">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold uppercase leading-none text-brand-bone">
-                AI Managers
-              </h2>
-              <p className="text-brand-bone/60 mt-3 max-w-2xl">
-                Each manager uses the same system. The difference is context, workflows, and UI emphasis.
-              </p>
-            </div>
-          </div>
-          <motion.div
+          <motion.div 
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
             variants={stagger}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
           >
-            {managers.map((role) => (
-              <motion.div
-                key={role.name}
+            {managers.map((manager, i) => (
+              <motion.div 
+                key={i} 
                 variants={fadeInUp}
-                className="p-8 rounded-2xl border border-brand-bone/10 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors flex flex-col h-full"
+                className="group p-8 rounded-3xl border border-brand-bone/20 bg-brand-bone/5 hover:bg-brand-bone/10 transition-colors"
               >
-                <div className="text-xs font-mono uppercase tracking-widest text-brand-bone/60 mb-3">
-                  {role.for}
+                <div className="flex items-start justify-between mb-6">
+                  <div className="h-14 w-14 bg-brand-bone/10 rounded-full flex items-center justify-center text-3xl">
+                    {manager.icon}
+                  </div>
+                  <Link href={manager.href} className="p-2 rounded-full border border-brand-bone/20 text-brand-bone/60 group-hover:bg-brand-bone group-hover:text-brand-deep-red transition-all">
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
                 </div>
-                <h3 className="text-2xl font-bold uppercase tracking-tight mb-3 text-brand-bone">
-                  {role.name}
-                </h3>
-                <p className="text-brand-bone/60 mb-8 flex-grow">{role.desc}</p>
-                <Link
-                  href={role.href}
-                  className="w-full py-3 border border-brand-bone/30 text-brand-bone rounded-lg font-bold uppercase tracking-wide hover:bg-brand-bone/10 transition-all text-center flex items-center justify-center gap-2"
-                >
-                  View details
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+                
+                <h3 className="text-2xl font-bold uppercase tracking-tight mb-2">{manager.name}</h3>
+                <p className="text-sm font-bold text-brand-bone/40 uppercase tracking-wider mb-4">{manager.for}</p>
+                <p className="text-lg opacity-80 leading-relaxed">
+                  {manager.desc}
+                </p>
               </motion.div>
             ))}
           </motion.div>

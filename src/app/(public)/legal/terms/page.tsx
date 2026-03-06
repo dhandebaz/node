@@ -7,7 +7,7 @@ export default function TermsPage() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-brand-deep-red text-brand-bone font-sans selection:bg-brand-bone/20">
+    <div className="min-h-screen bg-brand-deep-red text-brand-bone font-sans selection:bg-brand-bone/20 bg-grid-pattern">
       
       <div className="relative z-10 pt-32 pb-24 px-6 container mx-auto max-w-4xl">
         <motion.div 
@@ -26,70 +26,60 @@ export default function TermsPage() {
           <div className="p-8 md:p-12 rounded-2xl border border-brand-bone/10 bg-brand-bone/5 backdrop-blur-sm">
             <div className="prose prose-invert prose-lg max-w-none text-brand-bone/80 prose-headings:text-brand-bone prose-strong:text-brand-bone prose-a:text-brand-bone hover:prose-a:text-white">
               <p className="lead text-xl text-brand-bone">
-                Welcome to Nodebase. These Terms of Service ("Terms") govern your access to and use of the Nodebase platform, including our AI Employee services, website, and related applications (collectively, the "Services"). By accessing or using the Services, you agree to be bound by these Terms.
+                Effective Date: March 6, 2026<br/>
+                These Terms of Service ("Terms") constitute a legally binding agreement between you ("User") and Nodebase Technologies Pvt. Ltd. ("Nodebase"), a company incorporated under the Companies Act, 2013, with its registered office in Bangalore, India.
               </p>
 
-              <h3>1. User Accounts</h3>
+              <h3>1. Acceptance of Terms</h3>
               <p>
-                To access certain features of the Services, you must register for an account. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete.
-              </p>
-              <p>
-                You are responsible for safeguarding your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account. Nodebase will not be liable for any loss or damage arising from your failure to comply with these requirements.
+                By registering for or using our services, you agree to be bound by these Terms and our Privacy Policy. If you are using the Services on behalf of a business, you represent that you have the authority to bind that entity.
               </p>
 
               <h3>2. AI Employee Services</h3>
               <p>
-                Nodebase provides AI-powered autonomous agents ("AI Employees") designed to automate business tasks such as customer communication, scheduling, and data management.
+                Nodebase provides automated AI agents ("Host AI", "Dukan AI", etc.) acting as intermediaries to facilitate your business communications.
               </p>
               <ul>
-                <li><strong>Autonomy:</strong> AI Employees operate autonomously based on the instructions and parameters you configure. You acknowledge that AI systems may occasionally produce unpredictable results.</li>
-                <li><strong>Supervision:</strong> You retain ultimate responsibility for supervising the activities of your AI Employees and for reviewing their outputs for accuracy and appropriateness.</li>
+                <li><strong>Accuracy Disclaimer:</strong> While we strive for accuracy, AI models may occasionally hallucinate or provide incorrect information. You are responsible for verifying critical outputs.</li>
+                <li><strong>Intermediary Status:</strong> Under Section 79 of the Information Technology Act, 2000, Nodebase acts as an intermediary. We are not responsible for the content generated or transmitted by users through our platform.</li>
               </ul>
 
-              <h3>3. Subscription and Billing</h3>
+              <h3>3. Payments and Billing</h3>
               <p>
-                The Services are offered on a subscription basis and may include usage-based charges for AI compute resources ("Credits").
+                We use <strong>Razorpay</strong> as our primary payment gateway. By using our payment services, you agree to be bound by Razorpay's <a href="https://razorpay.com/terms/" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>.
               </p>
               <ul>
-                <li><strong>Subscriptions:</strong> Subscription fees are billed in advance on a monthly or annual basis. Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current billing period.</li>
-                <li><strong>AI Credits:</strong> Usage of AI models consumes Credits. Credits may be purchased in bundles or included in your subscription. Unused Credits do not expire but are non-refundable.</li>
-                <li><strong>Changes to Fees:</strong> We reserve the right to change our pricing upon notice to you. Continued use of the Service after a price change constitutes your agreement to pay the changed amount.</li>
+                <li><strong>Wallet System:</strong> Services are prepaid via a wallet system. Credits are deducted per AI interaction.</li>
+                <li><strong>GST:</strong> All fees are exclusive of Goods and Services Tax (GST) unless stated otherwise. You will be issued a GST-compliant invoice if you provide a valid GSTIN.</li>
+                <li><strong>Non-Refundable:</strong> Wallet top-ups are generally non-refundable except as provided in our Refund Policy.</li>
               </ul>
 
-              <h3>4. Acceptable Use of AI</h3>
-              <p>
-                You agree to use the Services only for lawful purposes and in accordance with these Terms. You shall not use the Services to:
-              </p>
+              <h3>4. User Obligations</h3>
+              <p>You agree not to:</p>
               <ul>
-                <li>Generate or disseminate content that is illegal, harmful, threatening, abusive, harassing, defamatory, or otherwise objectionable.</li>
-                <li>Engage in automated interactions that deceive others or misrepresent the nature of the interaction (e.g., failing to disclose AI involvement where required by law).</li>
-                <li>Attempt to reverse engineer, decompile, or disassemble any aspect of the AI models or underlying software.</li>
-                <li>Use the Services to develop a competing AI model or platform.</li>
+                <li>Use the platform for any illegal purpose under Indian law (e.g., selling prohibited goods, fraud).</li>
+                <li>Reverse engineer or attempt to extract the source code or model weights of our AI.</li>
+                <li>Harass or abuse other users or our support staff.</li>
               </ul>
 
               <h3>5. Intellectual Property</h3>
               <p>
-                The Services, including the Nodebase platform, algorithms, software, and visual interfaces, are the exclusive property of Nodebase and its licensors. You retain ownership of the data you upload to the Service ("User Data"). By using the Service, you grant Nodebase a limited license to process User Data solely for the purpose of providing and improving the Services.
+                All rights, title, and interest in the Nodebase platform, including its software, AI models, and branding, remain with Nodebase. You retain ownership of your customer data.
               </p>
 
               <h3>6. Limitation of Liability</h3>
               <p>
-                TO THE MAXIMUM EXTENT PERMITTED BY LAW, NODEBASE SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM (A) YOUR ACCESS TO OR USE OF OR INABILITY TO ACCESS OR USE THE SERVICES; (B) ANY CONDUCT OR CONTENT OF ANY THIRD PARTY ON THE SERVICES; OR (C) UNAUTHORIZED ACCESS, USE, OR ALTERATION OF YOUR TRANSMISSIONS OR CONTENT.
+                To the maximum extent permitted by Indian law, Nodebase shall not be liable for any indirect, incidental, or consequential damages, including loss of profits or data, arising from your use of the service. Our total liability is limited to the amount paid by you in the 3 months preceding the claim.
               </p>
 
-              <h3>7. Termination</h3>
+              <h3>7. Governing Law and Jurisdiction</h3>
               <p>
-                We may terminate or suspend your account and access to the Services immediately, without prior notice or liability, for any reason, including without limitation if you breach the Terms. Upon termination, your right to use the Services will immediately cease.
+                These Terms shall be governed by the laws of India. Any disputes arising out of these Terms shall be subject to the exclusive jurisdiction of the courts in <strong>Bangalore, Karnataka</strong>.
               </p>
 
-              <h3>8. Governing Law</h3>
+              <h3>8. Contact Us</h3>
               <p>
-                These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Nodebase is incorporated, without regard to its conflict of law provisions.
-              </p>
-
-              <h3>9. Contact Us</h3>
-              <p>
-                If you have any questions about these Terms, please contact us at support@nodebase.space.
+                For legal notices or questions, please contact us at legal@nodebase.space.
               </p>
             </div>
           </div>

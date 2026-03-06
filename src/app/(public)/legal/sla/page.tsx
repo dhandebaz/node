@@ -1,14 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { NetworkBackground } from "@/components/ui/NetworkBackground";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PageHeader } from "@/components/ui/PageHeader";
 
 export default function SlaPage() {
   const { t } = useLanguage();
 
   return (
-    <div className="bg-brand-deep-red min-h-screen text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
+    <div className="bg-brand-deep-red min-h-screen text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20 bg-grid-pattern">
+
       <div className="relative z-10 pt-32 pb-24 px-6 container mx-auto max-w-4xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 
@@ -17,7 +18,8 @@ export default function SlaPage() {
         >
           <PageHeader 
             title={t("legal.sla.title")}
-            badge="Legal"
+            tag="Legal"
+            description="Our commitment to uptime and reliability."
             className="mb-12"
           />
 

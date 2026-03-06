@@ -14,7 +14,7 @@ export default function RiskPage() {
   };
 
   return (
-    <div className="bg-brand-deep-red min-h-screen text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
+    <div className="bg-brand-deep-red min-h-screen text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20 bg-grid-pattern">
       
       <PageHeader 
         title={t("legal.risk.title")}  

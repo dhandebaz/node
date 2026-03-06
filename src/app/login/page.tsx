@@ -3,10 +3,11 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ArrowLeft, CheckCircle2, Wallet, Mail } from "lucide-react";
+import { Loader2, ArrowLeft, CheckCircle2, Wallet, Mail, Phone, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuthStore } from "@/store/useAuthStore";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { Logo } from "@/components/ui/Logo";
 
 function LoginContent() {
   const router = useRouter();
@@ -102,178 +103,175 @@ function LoginContent() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setLocalLoading(true);
-    try {
-      const supabase = getSupabaseBrowser();
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
-      });
-      if (error) throw error;
-    } catch (err) {
-      console.error(err);
-      setLocalLoading(false);
-    }
-  };
-
   const isLoading = authLoading || localLoading;
 
   return (
-    <div className="min-h-screen bg-brand-deep-red flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-brand-bone/20">
-      <div className="w-full max-w-md relative z-10">
-        <Link 
-          href="/" 
-          className="inline-flex items-center gap-2 text-brand-bone/60 hover:text-brand-bone mb-8 transition-colors text-sm font-medium uppercase tracking-wider"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Home
+    <div className="min-h-screen bg-brand-deep-red flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-grid-pattern relative overflow-hidden font-sans text-brand-bone selection:bg-brand-bone/20">
+      
+      {/* Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="sm:mx-auto sm:w-full sm:max-w-md relative z-10"
+      >
+        <Link href="/" className="flex justify-center mb-8 hover:scale-105 transition-transform">
+          <Logo className="w-20 h-20" />
         </Link>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-brand-bone/5 backdrop-blur-md rounded-3xl p-8 border border-brand-bone/10 shadow-2xl relative overflow-hidden"
-        >
-          {showSuccess ? (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="absolute inset-0 bg-brand-deep-red/95 z-20 flex flex-col items-center justify-center text-center p-8 backdrop-blur-xl"
-            >
-              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4 text-green-500 border border-green-500/20">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
-              <h2 className="text-2xl font-bold text-brand-bone mb-2 uppercase tracking-tight">Welcome back!</h2>
-              <p className="text-brand-bone/60">Redirecting to your dashboard...</p>
-            </motion.div>
-          ) : null}
-
-          <div className="mb-8 text-center">
-            <h1 className="text-2xl font-bold text-brand-bone mb-2 uppercase tracking-tight">Sign in to Nodebase</h1>
-            <p className="text-brand-bone/60 text-sm">Manage your AI Workforce</p>
-          </div>
-
-          <div className="flex flex-col gap-3 mb-6">
-            <button
-              onClick={handleGoogleLogin}
-              disabled={isLoading}
-              className="flex items-center justify-center gap-3 bg-white text-black hover:bg-gray-100 font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50"
-            >
-              {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path
-                    fill="currentColor"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z"
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  />
-                </svg>
-              )}
-              Continue with Google
-            </button>
-            
-            <button
-              disabled={true}
-              className="flex items-center justify-center gap-3 bg-[#333] text-white font-bold py-3 px-4 rounded-xl opacity-50 cursor-not-allowed"
-            >
-              <Wallet className="w-5 h-5" />
-              Connect Web3 Wallet (Coming Soon)
-            </button>
-          </div>
-
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-brand-bone/10"></div>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-brand-deep-red px-2 text-brand-bone/40 tracking-widest">Or continue with</span>
-            </div>
-          </div>
-
-          <form onSubmit={step === 'otp' ? handleVerifyOTP : handleSendAuthCode} className="space-y-4">
-            {step === 'contact' && (
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-brand-bone/60 uppercase tracking-wider ml-1">
-                  Email or Mobile Number
-                </label>
-                <input
-                  type="text"
-                  value={contact}
-                  onChange={(e) => setContact(e.target.value)}
-                  placeholder="name@example.com or 9876543210"
-                  className="w-full bg-brand-bone/5 border border-brand-bone/10 rounded-xl px-4 py-3 text-brand-bone placeholder:text-brand-bone/20 focus:outline-none focus:border-brand-bone/30 transition-all"
-                  required
-                />
-              </div>
-            )}
-
-            {step === 'otp' && (
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-brand-bone/60 uppercase tracking-wider ml-1">
-                  Enter OTP sent to {contact}
-                </label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  placeholder="000000"
-                  className="w-full bg-brand-bone/5 border border-brand-bone/10 rounded-xl px-4 py-3 text-brand-bone placeholder:text-brand-bone/20 focus:outline-none focus:border-brand-bone/30 transition-all text-center tracking-[0.5em] font-mono text-xl"
-                  autoFocus
-                  required
-                />
-              </div>
-            )}
-
-            {step === 'magic-link-sent' && (
-               <div className="text-center p-6 bg-brand-bone/5 rounded-xl border border-brand-bone/10">
-                  <Mail className="w-12 h-12 text-brand-bone mx-auto mb-4" />
-                  <h3 className="text-lg font-bold text-brand-bone mb-2">Check your email</h3>
-                  <p className="text-brand-bone/60 text-sm">We sent a magic link to <strong>{contact}</strong></p>
-                  <button 
-                    type="button"
-                    onClick={() => setStep('contact')}
-                    className="text-brand-bone/40 text-xs mt-4 hover:text-brand-bone/60"
-                  >
-                    Try different email
-                  </button>
-               </div>
-            )}
-
-            {step !== 'magic-link-sent' && (
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-brand-bone text-brand-deep-red hover:bg-white font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50 mt-2"
-              >
-                {isLoading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : (
-                  step === 'otp' ? 'Verify & Login' : 'Continue'
-                )}
-              </button>
-            )}
-          </form>
-        </motion.div>
         
-        <p className="text-center text-brand-bone/30 text-xs mt-8 max-w-xs mx-auto">
-          By continuing, you agree to our Terms of Service and Privacy Policy.
+        <h2 className="text-center text-4xl font-bold uppercase tracking-tighter text-white mb-2">
+          Welcome Back
+        </h2>
+        <p className="text-center text-brand-bone/70 text-lg font-light">
+          Sign in to manage your AI workforce
         </p>
-      </div>
+      </motion.div>
+
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.1 }}
+        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
+      >
+        <div className="bg-brand-bone/10 backdrop-blur-md py-8 px-4 shadow-2xl border border-brand-bone/20 sm:rounded-3xl sm:px-10">
+          
+          {showSuccess ? (
+            <div className="text-center py-12">
+              <motion.div 
+                initial={{ scale: 0 }} 
+                animate={{ scale: 1 }}
+                className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <CheckCircle2 className="w-8 h-8 text-white" />
+              </motion.div>
+              <h3 className="text-2xl font-bold text-white uppercase tracking-tight">Success!</h3>
+              <p className="text-brand-bone/70 mt-2">Redirecting to dashboard...</p>
+            </div>
+          ) : step === 'magic-link-sent' ? (
+             <div className="text-center py-8">
+               <div className="w-16 h-16 bg-brand-bone/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                 <Mail className="w-8 h-8 text-white" />
+               </div>
+               <h3 className="text-xl font-bold text-white uppercase tracking-tight mb-2">Check your email</h3>
+               <p className="text-brand-bone/70 mb-6">
+                 We sent a magic link to <span className="font-bold text-white">{contact}</span>
+               </p>
+               <button 
+                 onClick={() => setStep('contact')}
+                 className="text-sm text-brand-bone underline hover:text-white"
+               >
+                 Use a different email
+               </button>
+             </div>
+          ) : (
+            <div className="space-y-6">
+              
+              {/* Google Sign In */}
+              <div>
+                <button
+                  onClick={() => signInWithOAuth('google')}
+                  disabled={isLoading}
+                  className="w-full flex justify-center items-center gap-3 py-3 px-4 rounded-xl shadow-sm bg-white text-black text-sm font-bold uppercase tracking-wider hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-bone transition-all transform hover:scale-[1.02]"
+                >
+                  {isLoading ? (
+                    <Loader2 className="animate-spin h-5 w-5" />
+                  ) : (
+                    <svg className="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
+                      <path
+                        d="M12.0003 20.45c4.6667 0 7.3333-3.3333 7.3333-8.6667 0-.6-.0666-1.1333-.1333-1.6666H12.0003v3.3333h4.1333c-.2 1.2667-1.3333 3.6667-4.1333 3.6667-2.4667 0-4.5333-1.6667-5.2667-3.9333-.2-.6667-.3333-1.3334-.3333-2.1334s.1333-1.4667.3333-2.1333c.7334-2.2667 2.8-3.9334 5.2667-3.9334 1.4 0 2.6.5333 3.5333 1.4l2.5334-2.5333C16.5336 2.3833 14.4669 1.5167 12.0003 1.5167 6.3336 1.5167 1.6669 6.1834 1.6669 11.85s4.6667 10.3333 10.3334 10.3333z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  )}
+                  Continue with Google
+                </button>
+              </div>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-brand-bone/20" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-brand-deep-red text-brand-bone/60 font-mono text-xs uppercase tracking-widest">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
+
+              {step === 'contact' ? (
+                <form onSubmit={handleSendAuthCode} className="space-y-6">
+                  <div>
+                    <label htmlFor="contact" className="block text-xs font-bold uppercase tracking-widest text-brand-bone/70 mb-2">
+                      Email or Phone
+                    </label>
+                    <div className="mt-1 relative rounded-md shadow-sm">
+                      <input
+                        id="contact"
+                        name="contact"
+                        type="text"
+                        autoComplete="username"
+                        required
+                        value={contact}
+                        onChange={(e) => setContact(e.target.value)}
+                        placeholder="name@company.com or 9876543210"
+                        className="block w-full px-4 py-3 rounded-xl bg-brand-bone/5 border border-brand-bone/20 text-white placeholder-brand-bone/30 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold uppercase tracking-wider text-brand-deep-red bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-bone transition-all transform hover:scale-[1.02]"
+                  >
+                    {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "Continue"}
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyOTP} className="space-y-6">
+                  <div>
+                    <label htmlFor="otp" className="block text-xs font-bold uppercase tracking-widest text-brand-bone/70 mb-2">
+                      Enter OTP
+                    </label>
+                    <div className="mt-1">
+                      <input
+                        id="otp"
+                        name="otp"
+                        type="text"
+                        autoComplete="one-time-code"
+                        required
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        placeholder="123456"
+                        className="block w-full px-4 py-3 rounded-xl bg-brand-bone/5 border border-brand-bone/20 text-white placeholder-brand-bone/30 text-center tracking-[1em] font-mono text-lg focus:ring-2 focus:ring-white focus:border-transparent outline-none transition-all"
+                      />
+                    </div>
+                    <div className="flex justify-between mt-2">
+                       <p className="text-xs text-brand-bone/50">Sent to {contact}</p>
+                       <button 
+                         type="button" 
+                         onClick={() => setStep('contact')}
+                         className="text-xs text-brand-bone underline hover:text-white"
+                       >
+                         Change
+                       </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold uppercase tracking-wider text-brand-deep-red bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-bone transition-all transform hover:scale-[1.02]"
+                  >
+                    {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "Verify & Login"}
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
+        </div>
+      </motion.div>
     </div>
   );
 }
@@ -281,9 +279,9 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-brand-deep-red flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-brand-bone animate-spin" />
-      </div>
+       <div className="min-h-screen bg-brand-deep-red flex items-center justify-center">
+         <Loader2 className="w-8 h-8 text-white animate-spin" />
+       </div>
     }>
       <LoginContent />
     </Suspense>

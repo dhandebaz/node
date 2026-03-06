@@ -1,0 +1,21 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+
+interface PageContainerProps {
+  children: React.ReactNode;
+  className?: string;
+  fullWidth?: boolean;
+}
+
+export function PageContainer({ children, className, fullWidth = false }: PageContainerProps) {
+  return (
+    <div className={cn(
+      "animate-in fade-in slide-in-from-bottom-4 duration-500",
+      !fullWidth && "max-w-7xl mx-auto",
+      className
+    )}>
+      {children}
+    </div>
+  );
+}

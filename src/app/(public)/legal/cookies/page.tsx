@@ -7,7 +7,7 @@ export default function CookiesPage() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-brand-deep-red text-brand-bone font-sans selection:bg-brand-bone/20">
+    <div className="min-h-screen bg-brand-deep-red text-brand-bone font-sans selection:bg-brand-bone/20 bg-grid-pattern">
       
       <div className="relative z-10 pt-32 pb-24 px-6 container mx-auto max-w-4xl">
         <motion.div 

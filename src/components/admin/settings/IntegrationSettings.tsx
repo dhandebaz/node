@@ -103,7 +103,7 @@ export function IntegrationSettingsPanel({ integrations }: { integrations: Integ
             <label className={labelClass}>Key ID</label>
             <input 
               type="text"
-              value={editForm.clientId || ""}
+              value={editForm.clientId || ""} // Reuse clientId for Key ID
               onChange={(e) => setEditForm(prev => ({ ...prev, clientId: e.target.value }))}
               className={inputClass}
             />
@@ -121,10 +121,43 @@ export function IntegrationSettingsPanel({ integrations }: { integrations: Integ
       );
     }
 
-    // Default for others (Twilio, Stripe, etc.)
+    if (id === "int_twilio") {
+      return (
+        <>
+          <div>
+            <label className={labelClass}>Account SID</label>
+            <input 
+              type="text"
+              value={editForm.accountSid || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, accountSid: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Auth Token - Leave empty to keep unchanged</label>
+            <input 
+              type="password"
+              value={editForm.authToken || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, authToken: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>From Phone Number</label>
+            <input 
+              type="text"
+              value={editForm.fromPhoneNumber || ""}
+              onChange={(e) => setEditForm(prev => ({ ...prev, fromPhoneNumber: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+        </>
+      );
+    }
+
     return (
       <div>
-        <label className={labelClass}>API Key / Secret Token</label>
+        <label className={labelClass}>API Key / Secret</label>
         <input 
           type="password"
           value={editForm.apiKey || ""}
@@ -136,68 +169,82 @@ export function IntegrationSettingsPanel({ integrations }: { integrations: Integ
   };
 
   return (
-    <div className="space-y-4">
-      {integrations.map(integration => (
-        <div key={integration.id} className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${integration.enabled ? 'bg-purple-500/20 text-purple-400' : 'bg-zinc-800 text-zinc-500'}`}>
-                <Plug className="w-5 h-5" />
-              </div>
+    <div className="bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden">
+      <div className="p-6 border-b border-white/10 flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-purple-500/10 rounded-lg">
+            <Plug className="w-5 h-5 text-purple-400" />
+          </div>
+          <h2 className="text-lg font-bold text-white">Integrations</h2>
+        </div>
+      </div>
+
+      <div className="divide-y divide-white/5">
+        {integrations.map((integration) => (
+          <div key={integration.id} className="p-6 hover:bg-white/5 transition-colors">
+            <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-medium text-zinc-200">{integration.name}</h3>
-                <div className="flex items-center gap-2 mt-1">
-                   <span className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded ${integration.status === 'connected' ? 'bg-green-500/10 text-green-400' : 'bg-zinc-800 text-zinc-500'}`}>
-                     {integration.status}
-                   </span>
+                <div className="flex items-center gap-3 mb-1">
+                  <h3 className="font-bold text-white">{integration.name}</h3>
+                  {integration.enabled ? (
+                    <span className="flex items-center gap-1 text-[10px] uppercase font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">
+                      <CheckCircle className="w-3 h-3" /> Active
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 text-[10px] uppercase font-bold text-zinc-500 bg-zinc-500/10 px-2 py-0.5 rounded-full">
+                      <XCircle className="w-3 h-3" /> Inactive
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-zinc-500 font-mono text-[10px] uppercase tracking-wider">{integration.id}</p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => editingId === integration.id ? setEditingId(null) : startEdit(integration)}
+                  className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <SettingsIcon className="w-4 h-4" />
+                </button>
+                <div 
+                  onClick={() => handleToggle(integration.id, integration.enabled)}
+                  className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
+                    integration.enabled ? "bg-green-500" : "bg-zinc-700"
+                  }`}
+                >
+                  <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${
+                    integration.enabled ? "left-6" : "left-1"
+                  }`} />
                 </div>
               </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={() => handleToggle(integration.id, integration.enabled)}
-                disabled={loading}
-                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${integration.enabled ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20' : 'bg-green-500/10 text-green-400 hover:bg-green-500/20'}`}
-              >
-                {integration.enabled ? 'Disable' : 'Enable'}
-              </button>
-              
-              <button 
-                onClick={() => editingId === integration.id ? setEditingId(null) : startEdit(integration)}
-                className="p-2 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors"
-              >
-                <SettingsIcon className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
 
-          {editingId === integration.id && (
-            <div className="mt-4 pt-4 border-t border-zinc-800 animate-in slide-in-from-top-2 fade-in duration-200">
-               <div className="space-y-4">
+            {/* Edit Mode */}
+            {editingId === integration.id && (
+              <div className="mt-6 pt-6 border-t border-white/5 animate-in fade-in slide-in-from-top-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   {renderConfigFields(integration.id)}
-                  
-                  <div className="flex justify-end pt-2">
-                    <button 
-                      onClick={() => saveEdit(integration.id)}
-                      disabled={loading}
-                      className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded text-xs font-medium transition-colors"
-                    >
-                      <Save className="w-3 h-3" />
-                      Save Configuration
-                    </button>
-                  </div>
-               </div>
-            </div>
-          )}
-        </div>
-      ))}
-
-      {integrations.length === 0 && (
-        <div className="text-center py-12 text-zinc-500 text-sm">
-           No integrations configured.
-        </div>
-      )}
+                </div>
+                <div className="flex justify-end gap-3">
+                  <button 
+                    onClick={() => setEditingId(null)}
+                    className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => saveEdit(integration.id)}
+                    disabled={loading}
+                    className="flex items-center gap-2 px-4 py-2 bg-white text-black text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-zinc-200 transition-colors"
+                  >
+                    <Save className="w-3 h-3" /> Save Changes
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

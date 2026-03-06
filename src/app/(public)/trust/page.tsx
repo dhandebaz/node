@@ -6,11 +6,7 @@ import { ShieldCheck, Lock, Database, FileText, CheckCircle2 } from "lucide-reac
 
 export default function TrustPage() {
   return (
-    <div className="min-h-screen bg-brand-deep-red text-brand-bone font-sans selection:bg-brand-bone/20">
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <NetworkBackground />
-      </div>
-
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20 bg-grid-pattern">
       <div className="relative z-10 pt-32 pb-24 px-6 container mx-auto max-w-6xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 

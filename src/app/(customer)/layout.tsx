@@ -21,17 +21,14 @@ export default async function CustomerLayout({
     
     // Onboarding Check
     if (profile.status.onboarding !== 'completed') {
-      console.log(`[Layout] User ${profile.identity.id} onboarding pending. Redirecting to /onboarding.`);
       redirect('/onboarding');
     }
 
     // Business Type Check for AI Employees
     if (profile.roles.isKaisaUser && !profile.products.kaisa?.businessType) {
-        console.log(`[Layout] User ${profile.identity.id} missing business type. Redirecting to repair.`);
         redirect('/onboarding?step=business_type');
     }
 
-    console.log(`[Layout] User ${profile.identity.id} onboarding complete. Accessing dashboard.`);
     let kaisaCredits: KaisaCreditUsage | null = null;
 
     if (profile.roles.isKaisaUser) {
@@ -43,8 +40,9 @@ export default async function CustomerLayout({
     }
 
     return (
-      <div className="min-h-screen bg-[var(--color-brand-red)] text-white selection:bg-white selection:text-[var(--color-brand-red)]">
+      <div className="min-h-screen bg-[#0A0A0A] text-zinc-100 selection:bg-[var(--color-brand-red)] selection:text-white font-sans">
         <StoreInitializer tenant={profile.tenant} />
+        
         {/* Desktop Sidebar */}
         <div className="hidden md:block">
           <CustomerSidebar 
@@ -56,8 +54,8 @@ export default async function CustomerLayout({
         </div>
 
         {/* Main Content */}
-        <main className="md:pl-64 min-h-screen pb-24 md:pb-0">
-          <div className="max-w-7xl mx-auto p-4 md:p-8">
+        <main className="md:pl-64 min-h-screen pb-24 md:pb-0 transition-all duration-300">
+          <div className="max-w-7xl mx-auto p-6 md:p-10">
             <FailureBanner />
             {children}
           </div>
@@ -75,7 +73,6 @@ export default async function CustomerLayout({
       </div>
     );
   } catch (error) {
-    // If auth fails, redirect to login
     redirect("/login");
   }
 }

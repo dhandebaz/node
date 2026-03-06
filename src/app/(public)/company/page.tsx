@@ -1,21 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Shield, Users, Flag, Database, Layers, Zap, CheckCircle2, Cpu, ArrowRight, Target, Heart, Globe } from "lucide-react";
 import Link from "next/link";
-import { 
-  Shield, 
-  Users, 
-  Flag, 
-  Database, 
-  Layers, 
-  Zap, 
-  CheckCircle2,
-  Cpu,
-  ArrowRight,
-  Target,
-  Heart,
-  Globe
-} from "lucide-react";
 
 export default function CompanyPage() {
   const fadeInUp = {
@@ -33,199 +20,88 @@ export default function CompanyPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20">
+    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone relative overflow-hidden font-sans selection:bg-brand-bone/20 bg-grid-pattern">
       
       {/* 1. HERO: Mission Statement */}
-      <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10">
+      <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative z-10 border-b border-brand-bone/10">
         <div className="container mx-auto px-6 relative z-10">
           <motion.div 
             initial="initial"
             animate="animate"
             variants={stagger}
-            className="max-w-4xl mx-auto text-center"
+            className="max-w-5xl"
           >
-            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-bone/10 text-brand-bone text-sm font-bold uppercase tracking-wider mb-8 border border-brand-bone/20">
-              <Flag className="w-4 h-4" />
-              <span>Made in India. For the World.</span>
+            <motion.div variants={fadeInUp} className="inline-block border border-brand-bone/20 px-4 py-1.5 mb-8 text-xs font-mono font-bold uppercase tracking-widest bg-brand-bone/5 text-brand-bone/60">
+              About Nodebase
             </motion.div>
             
             <motion.h1 
               variants={fadeInUp}
-              className="text-5xl md:text-8xl font-bold uppercase tracking-tighter text-brand-bone mb-8 leading-[0.85]"
+              className="text-display-large uppercase tracking-tighter mb-8 text-brand-bone leading-[0.9]"
             >
-              The Operating<br/>System for<br/>Business.
+              We are building the<br/>intelligent workforce<br/>for Indian businesses.
             </motion.h1>
             
             <motion.p 
               variants={fadeInUp}
-              className="text-xl md:text-2xl text-brand-bone/80 mb-12 max-w-3xl mx-auto leading-relaxed font-light"
+              className="text-xl md:text-2xl text-brand-bone/70 font-light max-w-3xl leading-relaxed"
             >
-              We are building the intelligent workforce that allows businesses to run themselves. 
-              Nodebase provides autonomous AI employees that work alongside your team to deliver real-world results.
+              Nodebase provides the AI infrastructure that empowers millions of solo entrepreneurs, doctors, and shop owners to operate at the scale of large corporations.
             </motion.p>
           </motion.div>
         </div>
       </section>
 
-      {/* 2. THE STORY / CONTEXT */}
-      <section className="py-24 relative z-10 border-t border-brand-bone/10">
-        <div className="container mx-auto px-6">
-           <div className="max-w-4xl mx-auto">
-             <div className="grid md:grid-cols-[1fr_2fr] gap-12 items-start">
-                <div>
-                   <h2 className="text-3xl font-bold uppercase tracking-tight text-brand-bone sticky top-32">The Problem</h2>
-                </div>
-                <div className="space-y-8 text-lg text-brand-bone/80 leading-relaxed">
-                   <p>
-                     <strong>The cloud is broken for operators.</strong> Today's infrastructure was built for engineers who love tinkering with configurations, not for business owners who just want results.
-                   </p>
-                   <p>
-                     Founders are stuck paying 20–30% platform commissions, hiring expensive DevOps teams, and stitching together dozens of SaaS tools just to get basic operations running. The complexity is suffocating.
-                   </p>
-                   <p>
-                     We believe the future of business isn't about managing more software—it's about managing outcomes. That requires a new kind of stack: one that combines sovereign hardware with autonomous AI agents.
-                   </p>
-                </div>
-             </div>
-
-             <div className="h-px bg-brand-bone/10 my-16"></div>
-
-             <div className="grid md:grid-cols-[1fr_2fr] gap-12 items-start">
-                <div>
-                   <h2 className="text-3xl font-bold uppercase tracking-tight text-brand-bone sticky top-32">Our Solution</h2>
-                </div>
-                <div className="space-y-8 text-lg text-brand-bone/80 leading-relaxed">
-                   <p>
-                     <strong>Nodebase is your digital workforce.</strong> We don't just offer tools. We provide fully autonomous AI employees (Kaisa) that understand your business context and execute tasks.
-                   </p>
-                   <ul className="space-y-6 mt-8">
-                      <li className="flex items-start gap-4">
-                        <div className="p-2 bg-brand-bone/10 rounded-lg shrink-0">
-                           <Zap className="w-5 h-5 text-brand-bone" />
-                        </div>
-                        <div>
-                           <h4 className="text-xl font-bold text-brand-bone mb-1">Autonomous Execution</h4>
-                           <p className="text-sm">Agents that don't just chat, but do. Booking management, customer support, and operations.</p>
-                        </div>
-                      </li>
-                      <li className="flex items-start gap-4">
-                        <div className="p-2 bg-brand-bone/10 rounded-lg shrink-0">
-                           <Users className="w-5 h-5 text-brand-bone" />
-                        </div>
-                        <div>
-                           <h4 className="text-xl font-bold text-brand-bone mb-1">Digital Workforce</h4>
-                           <p className="text-sm">AI employees that integrate with your existing tools, ready to work from Day 1.</p>
-                        </div>
-                      </li>
-                   </ul>
-                </div>
-             </div>
-           </div>
+      {/* 2. VALUES */}
+      <section className="py-24 px-6 relative z-10">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div>
+              <h3 className="text-2xl font-bold uppercase tracking-tight mb-4 flex items-center gap-3">
+                <Target className="w-6 h-6 text-brand-bone" />
+                Sovereignty
+              </h3>
+              <p className="text-brand-bone/70 leading-relaxed">
+                We believe Indian businesses should own their data and intelligence. Our infrastructure is built for privacy and local compliance from day one.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold uppercase tracking-tight mb-4 flex items-center gap-3">
+                <Zap className="w-6 h-6 text-brand-bone" />
+                Simplicity
+              </h3>
+              <p className="text-brand-bone/70 leading-relaxed">
+                Technology should be invisible. We build complex AI systems so you can use them as easily as sending a WhatsApp message.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold uppercase tracking-tight mb-4 flex items-center gap-3">
+                <Heart className="w-6 h-6 text-brand-bone" />
+                Empowerment
+              </h3>
+              <p className="text-brand-bone/70 leading-relaxed">
+                We don't replace humans; we remove the drudgery. Our goal is to free you to focus on what makes your business unique.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 3. CORE VALUES */}
-      <section className="py-24 relative z-10 bg-brand-bone/5 border-y border-brand-bone/10">
-        <div className="container mx-auto px-6">
-           <div className="text-center mb-16">
-             <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter mb-4 text-brand-bone">Our Principles</h2>
-             <p className="text-brand-bone/60 text-lg max-w-2xl mx-auto">The code we live by.</p>
-           </div>
-
-           <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {[
-                { 
-                  icon: Target, 
-                  title: "Outcome Over Output", 
-                  text: "We don't care about lines of code or hours worked. We care about solved problems and shipped value." 
-                },
-                { 
-                  icon: Shield, 
-                  title: "Radical Ownership", 
-                  text: "We own our stack, our mistakes, and our future. No passing the buck. If it breaks, we fix it." 
-                },
-                { 
-                  icon: Heart, 
-                  title: "Human First", 
-                  text: "Technology exists to serve humans, not replace them. We automate drudgery so people can do creative work." 
-                },
-                { 
-                  icon: Globe, 
-                  title: "Sovereign by Design", 
-                  text: "Data should stay where it belongs. We build for local compliance, local speed, and local control." 
-                },
-                { 
-                  icon: Zap, 
-                  title: "Speed is a Feature", 
-                  text: "Slow software kills momentum. We optimize for milliseconds in our code and minutes in our decisions." 
-                },
-                { 
-                  icon: Layers, 
-                  title: "Simplicity Wins", 
-                  text: "Complexity is the enemy of scale. We fight to keep things simple, even when it's hard." 
-                }
-              ].map((item, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="p-8 rounded-2xl border border-brand-bone/10 bg-brand-deep-red hover:bg-brand-bone/5 transition-colors group"
-                >
-                  <item.icon className="w-10 h-10 text-brand-bone/50 mb-6 group-hover:text-brand-bone transition-colors" />
-                  <h3 className="text-xl font-bold uppercase tracking-tight mb-4 text-brand-bone">{item.title}</h3>
-                  <p className="text-brand-bone/70 leading-relaxed">{item.text}</p>
-                </motion.div>
-              ))}
-           </div>
-        </div>
-      </section>
-
-      {/* 4. JOIN US / CTA */}
-      <section className="py-32 relative z-10">
-        <div className="container mx-auto px-6">
-           <div className="max-w-5xl mx-auto bg-black/20 backdrop-blur-md rounded-3xl p-12 md:p-20 border border-brand-bone/10 text-center relative overflow-hidden">
-             {/* Decorative background elements */}
-             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand-bone/5 to-transparent pointer-events-none"></div>
-             
-             <h2 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-8 text-brand-bone relative z-10">
-               Build the Future<br/>With Us.
-             </h2>
-             <p className="text-xl text-brand-bone/70 mb-12 max-w-2xl mx-auto relative z-10">
-               We're a small, high-impact team based in India, taking on the global giants. 
-               If you love hard engineering problems and beautiful design, we want you.
-             </p>
-             
-             <div className="flex flex-col md:flex-row items-center justify-center gap-6 relative z-10">
-                <Link 
-                  href="/company/careers"
-                  className="group flex items-center gap-3 px-8 py-4 bg-brand-bone text-brand-deep-red rounded-full font-bold text-lg uppercase tracking-wider hover:bg-white transition-all hover:scale-105"
-                >
-                  View Open Roles
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link 
-                  href="/company/contact"
-                  className="group flex items-center gap-3 px-8 py-4 border border-brand-bone/30 text-brand-bone rounded-full font-bold text-lg uppercase tracking-wider hover:bg-brand-bone/10 transition-all"
-                >
-                  Contact Us
-                </Link>
-             </div>
-           </div>
-        </div>
-      </section>
-      
-      {/* 5. PARTNERS STRIP */}
-      <section className="py-16 border-t border-brand-bone/10 relative z-10 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-        <div className="container mx-auto px-6 text-center">
-           <p className="text-sm font-bold uppercase tracking-widest text-brand-bone/40 mb-8">Trusted by Industry Leaders</p>
-           <div className="flex flex-wrap justify-center gap-12 md:gap-24 items-center">
-              {/* Placeholders for partner logos - using text for now */}
-              {['Dell Technologies', 'NVIDIA Inception', 'Equinix', 'Supabase'].map((partner) => (
-                <span key={partner} className="text-2xl font-bold text-brand-bone/60">{partner}</span>
-              ))}
-           </div>
+      {/* 3. TEAM / CULTURE */}
+      <section className="py-24 px-6 border-t border-brand-bone/10 bg-brand-deep-red/50">
+        <div className="container mx-auto max-w-6xl text-center">
+          <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tight mb-12">Join the Mission</h2>
+          <p className="text-xl text-brand-bone/70 max-w-2xl mx-auto mb-12">
+            We are a small, high-performance team based in Bangalore. We value shipping speed, deep technical craft, and customer obsession.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
+            <Link href="/company/careers" className="px-8 py-4 bg-brand-bone text-brand-deep-red font-bold uppercase tracking-wide rounded-full hover:bg-white transition-colors">
+              View Careers
+            </Link>
+            <Link href="/company/contact" className="px-8 py-4 border border-brand-bone text-brand-bone font-bold uppercase tracking-wide rounded-full hover:bg-brand-bone/10 transition-colors">
+              Contact Us
+            </Link>
+          </div>
         </div>
       </section>
 

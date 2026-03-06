@@ -1,7 +1,7 @@
 "use client";
 
-importimport { motion } from "framer-motion";
-import { Handshake, Building2, Code2, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Handshake, Building2, Code2, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
 export default function PartnersPage() {
