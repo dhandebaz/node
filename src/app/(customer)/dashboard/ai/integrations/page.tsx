@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useDashboardStore } from "@/store/useDashboardStore";
 import { getBusinessLabels, getPersonaCapabilities } from "@/lib/business-context";
 import { toast } from "sonner";
-import { WhatsAppOfficialCard } from "@/components/dashboard/integrations/WhatsAppOfficialCard";
+import { WhatsAppBYONCard } from "@/components/dashboard/integrations/WhatsAppBYONCard";
 
 interface GoogleIntegrationStatus {
   status: "connected" | "disconnected" | "expired" | "error";
@@ -376,65 +376,10 @@ export default function ListingIntegrationsPage() {
 
         {/* WhatsApp Integration */}
         {capabilities.integrations.whatsapp && (
-          <Card className="bg-[var(--color-dashboard-surface)] border-white/10">
-            <CardHeader>
-                <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#25D366] rounded-full flex items-center justify-center">
-                            <Puzzle className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                            <CardTitle className="text-white">WhatsApp Business</CardTitle>
-                            <CardDescription className="text-white/50">Send {labels.booking.toLowerCase()} confirmations</CardDescription>
-                        </div>
-                    </div>
-                    {isWhatsAppConnected ? (
-                      <Badge variant="outline" className="text-green-400 border-green-400/20 bg-green-400/10">Connected</Badge>
-                    ) : (
-                      <Badge variant="outline" className="text-zinc-500 border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
-                    )}
-                </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-               <div className={`p-4 rounded-lg border space-y-3 ${isWhatsAppConnected ? 'bg-green-500/5 border-green-500/10' : 'bg-black/20 border-white/5 opacity-50'}`}>
-                    <div className="flex items-center justify-between text-sm">
-                        <span className="text-white/70">Connected Account</span>
-                        <span className="text-white font-mono">{whatsappStatus?.connectedName || "-"}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                        <span className="text-white/70">Last synced</span>
-                        <span className="text-white font-mono">
-                          {whatsappStatus?.lastSyncedAt ? new Date(whatsappStatus.lastSyncedAt).toLocaleString() : "-"}
-                        </span>
-                    </div>
-               </div>
-
-               {isWhatsAppConnected ? (
-                 <Button 
-                   variant="outline" 
-                   className="w-full border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300"
-                   onClick={handleDisconnectWhatsApp}
-                   disabled={isLoading}
-                 >
-                   <LogOut className="w-4 h-4 mr-2" />
-                   Disconnect
-                 </Button>
-               ) : (
-                 <Button 
-                   variant="default" 
-                   className="w-full bg-[#25D366] text-white hover:bg-[#1EBE57]"
-                   onClick={handleConnectWhatsApp}
-                   disabled={isConnectingWhatsApp || isLoading}
-                 >
-                   {isConnectingWhatsApp ? (
-                     <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Connecting...</>
-                   ) : (
-                     "Connect WhatsApp"
-                   )}
-                 </Button>
-               )}
-            </CardContent>
-          </Card>
+          <>
+            <WhatsAppOfficialCard />
+            <WhatsAppBYONCard initialStatus={whatsappStatus as any} />
+          </>
         )}
 
         {/* Instagram Integration */}

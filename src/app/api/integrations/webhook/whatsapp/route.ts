@@ -2,41 +2,8 @@ import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { geminiService } from "@/lib/services/geminiService";
 
-// Verify Webhook (GET)
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  
-  const mode = searchParams.get("hub.mode");
-  const token = searchParams.get("hub.verify_token");
-  const challenge = searchParams.get("hub.challenge");
-
-  if (mode === "subscribe" && token === process.env.META_VERIFY_TOKEN) {
-    return new Response(challenge, { status: 200 });
-  } else {
-    return new Response("Forbidden", { status: 403 });
-  }
-}
-
-// Handle Messages (POST)
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    
-    // Safely extract the message
-    const value = body.entry?.[0]?.changes?.[0]?.value;
-    if (!value?.messages?.[0]) {
-      // Return success if it's not a message event we care about (e.g. status update)
-      return NextResponse.json({ success: true });
-    }
-
-    const msg = value.messages[0];
-    const sender = msg.from; // Phone number
-    const text = msg.text?.body;
-
-    if (!text) {
-      return NextResponse.json({ success: true }); // Ignore non-text messages for now
-    }
-
     const { searchParams } = new URL(request.url);
     const tenantId = searchParams.get("tenantId");
 
@@ -44,9 +11,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing tenantId" }, { status: 400 });
     }
 
+    const body = await request.json();
+
+    if (body.event !== 'message' || body.payload?.fromMe === true) {
+      return NextResponse.json({ success: true, ignored: true });
+    }
+
+    const sender = body.payload.from;
+    const text = body.payload.body;
+
     const supabase = await getSupabaseServer();
 
-    // 1. Check Wallet Balance
+    // Check Wallet Balance
     const { data: wallet, error: walletError } = await supabase
       .from("wallets")
       .select("balance")
@@ -60,12 +36,12 @@ export async function POST(request: Request) {
 
     if (wallet.balance < 1) {
       return NextResponse.json(
-        { error: "Insufficient credits to process AI reply" },
+        { error: "Insufficient credits" },
         { status: 402 }
       );
     }
 
-    // 2. Deduct Credit
+    // Deduct Credit
     const { error: deductionError } = await supabase
       .from("wallets")
       .update({ balance: wallet.balance - 1 })
@@ -80,58 +56,32 @@ export async function POST(request: Request) {
       tenant_id: tenantId,
       type: "deduction",
       amount: 1,
-      description: "Official WhatsApp AI Reply",
+      description: "WhatsApp AI Reply",
     });
 
-    // 3. Fetch Tenant's WhatsApp Credentials
-    const { data: integration, error: integrationError } = await supabase
-      .from("integrations")
-      .select("credentials")
-      .eq("tenant_id", tenantId)
-      .eq("provider", "whatsapp")
-      .single();
-
-    if (integrationError || !integration || !integration.credentials) {
-      console.error("Integration not found", integrationError);
-      return NextResponse.json({ error: "WhatsApp integration not found" }, { status: 404 });
-    }
-
-    // Parse JSONB credentials
-    // Type assertion or check needed if credentials is strict type
-    const credentials = integration.credentials as { phoneNumberId: string, accessToken: string };
-    const { phoneNumberId, accessToken } = credentials;
-
-    if (!phoneNumberId || !accessToken) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 500 });
-    }
-
-    // 4. Generate AI Reply
-    // Fetch context (listings, etc) - simplified for brevity/speed as per instruction
-    // "Generate AI reply using geminiService.generateText(prompt). Log to messages table."
+    // Generate AI Reply
     const { data: tenant } = await supabase
       .from("tenants")
       .select("business_type")
       .eq("id", tenantId)
       .single();
-      
+
     const businessType = tenant?.business_type || "business";
-    const prompt = `You are a helpful AI assistant for a ${businessType}. User said: "${text}". Reply concisely.`;
+    const prompt = 'You are an AI assistant for a ' + businessType + ' business. Reply to this customer message: ' + text;
 
     const aiReply = await geminiService.generateText(prompt);
 
-    // 5. Log to Messages Table (Unified Inbox)
-    // Insert User Message
+    // Insert messages
     await supabase.from("messages").insert({
       tenant_id: tenantId,
       direction: 'inbound',
       channel: 'whatsapp',
       content: text,
-      sender_id: sender, // Using phone number as sender_id for now
+      sender_id: sender,
       timestamp: new Date().toISOString(),
       read: false
     });
 
-    // Insert AI Reply
     await supabase.from("messages").insert({
       tenant_id: tenantId,
       direction: 'outbound',
@@ -142,22 +92,21 @@ export async function POST(request: Request) {
       read: true
     });
 
-    // 6. Send Reply via Meta Graph API
-    await fetch(`https://graph.facebook.com/v19.0/${phoneNumberId}/messages`, {
+    // Send Reply back to VPS
+    await fetch(process.env.WAHA_SERVER_URL + '/api/sendText', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        to: sender,
-        type: 'text',
-        text: { body: aiReply }
+        session: tenantId,
+        chatId: sender,
+        text: aiReply
       })
     });
 
     return NextResponse.json({ success: true });
+
   } catch (error) {
     console.error("Webhook error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

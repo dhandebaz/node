@@ -138,20 +138,14 @@ export const geminiService = {
   },
 
   async generateText(prompt: string): Promise<string> {
-    try {
-      const settings = await settingsService.getSettings();
-      const apiKey = settings.api.geminiApiKey;
-      if (!apiKey) throw new Error("Gemini API key is not configured");
+    const settings = await settingsService.getSettings();
+    const apiKey = settings.api.geminiApiKey;
+    if (!apiKey) throw new Error("Gemini API key is not configured");
 
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      return response.text();
-    } catch (error: any) {
-      console.error("Gemini Text Generation Error:", error);
-      throw error;
-    }
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    
+    const result = await model.generateContent(prompt);
+    return result.response.text();
   }
 };
