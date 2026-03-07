@@ -84,7 +84,7 @@ export async function updateSession(request: NextRequest) {
     if (role === 'admin') {
         url.pathname = '/admin/dashboard'
     } else {
-        url.pathname = '/dashboard/overview' // or whatever the customer home is
+        url.pathname = '/dashboard/ai' // Corrected redirect
     }
     return NextResponse.redirect(url)
   }
@@ -96,7 +96,7 @@ export async function updateSession(request: NextRequest) {
     // Customer trying to access Admin routes
     if (path.startsWith('/admin') && role !== 'admin') {
         const url = request.nextUrl.clone()
-        url.pathname = '/dashboard/overview' // Redirect to their safe space
+        url.pathname = '/dashboard/ai' // Corrected redirect
         return NextResponse.redirect(url)
     }
 
