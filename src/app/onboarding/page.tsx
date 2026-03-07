@@ -7,11 +7,7 @@ import { BusinessDetailsForm } from "@/components/onboarding/BusinessDetailsForm
 import { completeOnboarding } from "@/app/actions/onboarding";
 import { BusinessType } from "@/types";
 
-interface OnboardingPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export default function OnboardingPage({ searchParams }: OnboardingPageProps) {
+export default function OnboardingPage() {
   const [step, setStep] = useState<"business_type" | "details">("business_type");
   const [loading, setLoading] = useState(false);
   const [selectedBusinessType, setSelectedBusinessType] = useState<BusinessType | null>(null);
@@ -75,13 +71,17 @@ export default function OnboardingPage({ searchParams }: OnboardingPageProps) {
           </>
         )}
 
-        {step === "details" && (
+        {step === "details" && selectedBusinessType && (
           <div className="max-w-xl mx-auto">
             <div className="space-y-2 mb-8">
               <h1 className="text-4xl font-bold tracking-tight">Almost Done</h1>
               <p className="text-zinc-400 text-lg">Tell us a bit more about your operations.</p>
             </div>
-            <BusinessDetailsForm onSubmit={handleDetailsSubmit} loading={loading} />
+            <BusinessDetailsForm 
+              businessType={selectedBusinessType} 
+              onSubmit={handleDetailsSubmit} 
+              loading={loading} 
+            />
           </div>
         )}
       </div>

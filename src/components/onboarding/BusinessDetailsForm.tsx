@@ -4,22 +4,79 @@ import { useState } from "react";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { BusinessType } from "@/types";
+
 interface BusinessDetailsFormProps {
+  businessType: BusinessType;
   onSubmit: (details: { propertyCount: number; platforms: string[] }) => void;
   loading: boolean;
 }
 
-const PLATFORMS = [
-  { id: "airbnb", label: "Airbnb" },
-  { id: "booking", label: "Booking.com" },
-  { id: "mmt", label: "MakeMyTrip" },
-  { id: "agoda", label: "Agoda" },
-  { id: "direct", label: "Direct / WhatsApp" },
-];
-
-export function BusinessDetailsForm({ onSubmit, loading }: BusinessDetailsFormProps) {
+export function BusinessDetailsForm({ businessType, onSubmit, loading }: BusinessDetailsFormProps) {
   const [propertyCount, setPropertyCount] = useState<number>(1);
   const [platforms, setPlatforms] = useState<string[]>([]);
+
+  // Configure questions based on persona
+  const getQuestionConfig = () => {
+    switch (businessType) {
+      case "airbnb_host":
+        return {
+          countLabel: "How many properties do you manage?",
+          platformLabel: "Which platforms are you on?",
+          platforms: [
+            { id: "airbnb", label: "Airbnb" },
+            { id: "booking", label: "Booking.com" },
+            { id: "mmt", label: "MakeMyTrip" },
+            { id: "agoda", label: "Agoda" },
+            { id: "direct", label: "Direct / WhatsApp" },
+          ]
+        };
+      case "kirana_store":
+        return {
+          countLabel: "Average daily orders?",
+          platformLabel: "How do you receive orders?",
+          platforms: [
+            { id: "whatsapp", label: "WhatsApp" },
+            { id: "walkin", label: "Walk-in" },
+            { id: "phone", label: "Phone Call" },
+            { id: "swiggy", label: "Swiggy / Zomato" },
+            { id: "online", label: "Online Store" },
+          ]
+        };
+      case "doctor_clinic":
+        return {
+          countLabel: "Average daily patients?",
+          platformLabel: "How do patients book?",
+          platforms: [
+            { id: "call", label: "Phone Call" },
+            { id: "walkin", label: "Walk-in" },
+            { id: "practo", label: "Practo / Zocdoc" },
+            { id: "google", label: "Google Business" },
+            { id: "whatsapp", label: "WhatsApp" },
+          ]
+        };
+      case "thrift_store":
+        return {
+          countLabel: "Items in inventory?",
+          platformLabel: "Where do you sell?",
+          platforms: [
+            { id: "instagram", label: "Instagram" },
+            { id: "whatsapp", label: "WhatsApp" },
+            { id: "depop", label: "Depop / Poshmark" },
+            { id: "website", label: "Website" },
+            { id: "popups", label: "Pop-up Stores" },
+          ]
+        };
+      default:
+        return {
+          countLabel: "How many units?",
+          platformLabel: "Which platforms?",
+          platforms: []
+        };
+    }
+  };
+
+  const config = getQuestionConfig();
 
   const togglePlatform = (id: string) => {
     setPlatforms(prev => 
@@ -39,7 +96,7 @@ export function BusinessDetailsForm({ onSubmit, loading }: BusinessDetailsFormPr
     <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="space-y-4">
         <label className="block text-sm font-medium text-white/80 uppercase tracking-wider">
-          How many properties do you manage?
+          {config.countLabel}
         </label>
         <input
           type="number"
@@ -53,10 +110,10 @@ export function BusinessDetailsForm({ onSubmit, loading }: BusinessDetailsFormPr
 
       <div className="space-y-4">
         <label className="block text-sm font-medium text-white/80 uppercase tracking-wider">
-          Which platforms are you on?
+          {config.platformLabel}
         </label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {PLATFORMS.map((platform) => (
+          {config.platforms.map((platform) => (
             <button
               key={platform.id}
               type="button"
