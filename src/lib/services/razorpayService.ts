@@ -101,7 +101,7 @@ export class RazorpayService {
    * Verify payment signature
    */
   static verifyPayment(orderId: string, paymentId: string, signature: string): boolean {
-    const secret = process.env.RAZORPAY_KEY_SECRET || 'secret_missing';
+    const secret = process.env.RAZORPAY_KEY_SECRET || process.env.key_secret || 'secret_missing';
     const generated_signature = crypto
       .createHmac('sha256', secret)
       .update(orderId + '|' + paymentId)
