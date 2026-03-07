@@ -11,10 +11,16 @@ import { User } from "@/types/user";
 async function getCurrentUser(): Promise<User> {
   const session = await getSession();
   
-  if (!session?.userId) throw new Error("Unauthorized");
+  if (!session?.userId) throw new Error("Unauthorized: No session");
   
   const user = await userService.getUserById(session.userId);
-  if (!user) throw new Error("User not found");
+  if (!user) {
+    // Session exists but user not found in DB? 
+    // This happens on first login before webhook/trigger syncs.
+    // Let's fallback to creating/fetching a basic user profile if needed,
+    // or just throw specific error.
+    throw new Error(`User not found: ${session.userId}`);
+  }
   return user;
 }
 

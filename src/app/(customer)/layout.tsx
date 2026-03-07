@@ -73,6 +73,7 @@ export default async function CustomerLayout({
       </div>
     );
   } catch (error) {
+    console.error("Layout Error - Redirecting to login:", error);
     redirect("/login");
   }
 }
