@@ -52,12 +52,6 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
   const [newMemoryType, setNewMemoryType] = useState<MemoryType>("business");
   // const { toast } = useToast(); // Commented out until I verify hook path
 
-  useEffect(() => {
-    if (isEnabled) {
-      fetchMemories();
-    }
-  }, [isEnabled, filterType, fetchMemories]); // Added fetchMemories dependency
-
   const fetchMemories = async () => {
     setLoading(true);
     try {
@@ -70,6 +64,14 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isEnabled) {
+      fetchMemories();
+    }
+  }, [isEnabled, filterType]); // Removed fetchMemories from dependencies to avoid circular reference or use-before-declaration if defined inside/outside incorrectly.
+  // Actually, defining fetchMemories inside useEffect or using useCallback is better.
+  // But moving the definition ABOVE the useEffect fixes the "block-scoped variable used before declaration" error.
 
   const handleToggle = async (checked: boolean) => {
     setIsEnabled(checked);

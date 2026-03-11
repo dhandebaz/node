@@ -16,74 +16,17 @@ import {
   Loader2
 } from "lucide-react";
 
-export function MemoryList({ memories }: { memories: KaisaMemory[] }) {
-  const [filter, setFilter] = useState<KaisaMemory['type'] | 'all'>('all');
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const filteredMemories = memories.filter(m => filter === 'all' || m.type === filter);
-  
-  // Sort: Pending first, then newest
-  const sortedMemories = [...filteredMemories].sort((a, b) => {
-    if (a.status === 'pending_confirmation' && b.status !== 'pending_confirmation') return -1;
-    if (b.status === 'pending_confirmation' && a.status !== 'pending_confirmation') return 1;
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  });
-
-  async function handleDelete(id: string) {
-    if(!confirm("Are you sure you want to delete this memory? Your AI Employee will stop using this rule immediately.")) return;
-    setDeletingId(id);
-    await deleteMemoryAction(id);
-    setDeletingId(null);
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2">
-        {['all', 'preference', 'process', 'correction', 'outcome'].map((type) => (
-          <button
-            key={type}
-            onClick={() => setFilter(type as any)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
-              filter === type 
-                ? "bg-white text-black border-white" 
-                : "bg-zinc-900 text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:text-white"
-            }`}
-          >
-            {type.charAt(0).toUpperCase() + type.slice(1)}
-          </button>
-        ))}
-      </div>
-
-      <div className="space-y-4">
-        {sortedMemories.length > 0 ? (
-          sortedMemories.map((memory) => (
-            <MemoryItem 
-              key={memory.id} 
-              memory={memory} 
-              onDelete={handleDelete} 
-              isDeleting={deletingId === memory.id}
-            />
-          ))
-        ) : (
-          <div className="p-8 text-center border border-dashed border-zinc-800 rounded-xl">
-            <p className="text-zinc-500 text-sm">No memories found for this filter.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+interface MemoryItemProps {
+  memory: KaisaMemory;
+  onDelete: (id: string) => void;
+  isDeleting: boolean;
 }
 
 function MemoryItem({ 
   memory, 
   onDelete,
   isDeleting
-}: { 
-  memory: KaisaMemory, 
-  onDelete: (id: string) => void,
-  isDeleting: boolean
-}) {
+}: MemoryItemProps) {
   const [loading, setLoading] = useState(false);
 
   const isPending = memory.status === 'pending_confirmation';
@@ -180,6 +123,65 @@ function MemoryItem({
             </button>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+export function MemoryList({ memories }: { memories: KaisaMemory[] }) {
+  const [filter, setFilter] = useState<KaisaMemory['type'] | 'all'>('all');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const filteredMemories = memories.filter(m => filter === 'all' || m.type === filter);
+  
+  // Sort: Pending first, then newest
+  const sortedMemories = [...filteredMemories].sort((a, b) => {
+    if (a.status === 'pending_confirmation' && b.status !== 'pending_confirmation') return -1;
+    if (b.status === 'pending_confirmation' && a.status !== 'pending_confirmation') return 1;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  async function handleDelete(id: string) {
+    if(!confirm("Are you sure you want to delete this memory? Your AI Employee will stop using this rule immediately.")) return;
+    setDeletingId(id);
+    await deleteMemoryAction(id);
+    setDeletingId(null);
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2">
+        {['all', 'preference', 'process', 'correction', 'outcome'].map((type) => (
+          <button
+            key={type}
+            onClick={() => setFilter(type as any)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
+              filter === type 
+                ? "bg-white text-black border-white" 
+                : "bg-zinc-900 text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:text-white"
+            }`}
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-4">
+        {sortedMemories.length > 0 ? (
+          sortedMemories.map((memory) => (
+            <MemoryItem 
+              key={memory.id} 
+              memory={memory} 
+              onDelete={handleDelete} 
+              isDeleting={deletingId === memory.id}
+            />
+          ))
+        ) : (
+          <div className="p-8 text-center border border-dashed border-zinc-800 rounded-xl">
+            <p className="text-zinc-500 text-sm">No memories found for this filter.</p>
+          </div>
+        )}
       </div>
     </div>
   );
