@@ -63,3 +63,24 @@ export async function createPlanAction(plan: any) {
   if (error) throw error;
   revalidatePath("/admin/pricing");
 }
+
+export async function updatePricingAction(pricingConfig: any) {
+  const supabase = await getSupabaseServer();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("Unauthorized");
+
+  const supabaseAdmin = await getSupabaseAdmin();
+
+  const { error } = await supabaseAdmin
+    .from('system_settings')
+    .update({ 
+      value: pricingConfig,
+      updated_at: new Date().toISOString()
+    })
+    .eq('key', 'pricing_config');
+
+  if (error) throw error;
+
+  revalidatePath("/admin/pricing");
+}
