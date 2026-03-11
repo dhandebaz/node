@@ -31,7 +31,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
   transactions: [],
   isLoading: false,
   error: null,
-  selectedListingId: null,
+  selectedListingId: "all",
 
   setTenant: (tenant) => set({ tenant }),
 

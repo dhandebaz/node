@@ -48,6 +48,29 @@ export async function adminLogoutAction(): Promise<void> {
   redirect("/login");
 }
 
+export async function logoutAction(): Promise<void> {
+  const session = await getSession();
+  if (session?.userId) {
+    const tenantId = await getTenantIdForUser(session.userId);
+    log.info("User logged out", { userId: session.userId, role: session.role, tenantId });
+    if (tenantId) {
+      await logEvent({
+        tenant_id: tenantId,
+        actor_type: 'user',
+        actor_id: session.userId,
+        event_type: EVENT_TYPES.AUTH_LOGOUT,
+        entity_type: 'user',
+        entity_id: session.userId,
+        metadata: {
+          role: session.role
+        }
+      });
+    }
+  }
+  await deleteSession();
+  redirect("/");
+}
+
 export async function impersonateUserAction(targetUserId: string): Promise<void> {
   const session = await getSession();
   
