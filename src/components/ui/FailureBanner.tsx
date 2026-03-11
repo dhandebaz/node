@@ -5,37 +5,48 @@ import { fetchWithAuth } from "@/lib/api/fetcher";
 import { FailureRecord } from "@/types/failure";
 import { AlertTriangle, Info, ShieldAlert, XCircle, RefreshCw, AlertOctagon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ControlService } from "@/lib/services/controlService"; // We can't import server code in client
+// Instead, we need an API to fetch system status or embed it in layout.
+// Or fetch failures which might include system status?
+// Let's create a separate hook or include it in the failures endpoint.
 
 export function FailureBanner() {
   const [failures, setFailures] = useState<FailureRecord[]>([]);
+  const [incidentMode, setIncidentMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
-    const loadFailures = async () => {
+    const loadStatus = async () => {
       try {
-        const data = await fetchWithAuth<{ failures: FailureRecord[] }>("/api/failures");
+        const [failuresData, statusData] = await Promise.all([
+            fetchWithAuth<{ failures: FailureRecord[] }>("/api/failures"),
+            fetch("/api/features").then(r => r.json()) // Check system flags
+        ]);
+        
         if (mounted) {
-          setFailures(data.failures || []);
+          setFailures(failuresData.failures || []);
+          setIncidentMode(statusData.flags?.incident_mode_enabled || false);
         }
       } catch (err) {
-        console.error("Failed to load failures", err);
+        console.error("Failed to load status", err);
       } finally {
         if (mounted) setLoading(false);
       }
     };
 
-    loadFailures();
+    loadStatus();
     
-    // Poll every 30 seconds for new failures
-    const interval = setInterval(loadFailures, 30000);
+    // Poll every 30 seconds
+    const interval = setInterval(loadStatus, 30000);
     return () => {
       mounted = false;
       clearInterval(interval);
     };
   }, []);
 
-  if (loading || failures.length === 0) return null;
+  if (loading) return null;
+  if (!incidentMode && failures.length === 0) return null;
 
   const getIcon = (severity: string, category: string) => {
     if (category === 'system') return AlertOctagon;
@@ -62,14 +73,14 @@ export function FailureBanner() {
     }
     if (f.category === 'payment' && f.source === 'wallet') {
       return (
-        <a href="/dashboard/wallet" className="text-xs font-semibold underline hover:no-underline ml-2">
+        <a href="/dashboard/billing" className="text-xs font-semibold underline hover:no-underline ml-2">
           Top up wallet
         </a>
       );
     }
     if (f.category === 'integration') {
       return (
-        <a href="/dashboard/integrations" className="text-xs font-semibold underline hover:no-underline ml-2">
+        <a href="/dashboard/ai/integrations" className="text-xs font-semibold underline hover:no-underline ml-2">
           Check connection
         </a>
       );
@@ -79,6 +90,20 @@ export function FailureBanner() {
 
   return (
     <div className="space-y-2 mb-6">
+      {/* Incident Mode Banner */}
+      {incidentMode && (
+        <div className="px-4 py-3 rounded-lg border flex items-start gap-3 bg-red-600 border-red-700 text-white shadow-lg shadow-red-500/20 animate-pulse">
+            <AlertOctagon className="w-5 h-5 shrink-0 mt-0.5" />
+            <div className="flex-1">
+                <div className="text-sm font-bold uppercase tracking-wide">System Maintenance</div>
+                <div className="text-sm opacity-90">
+                    We are currently performing emergency maintenance. Some features (AI, Payments) may be unavailable.
+                </div>
+            </div>
+        </div>
+      )}
+
+      {/* Tenant Failures */}
       {failures.map((f) => {
         const Icon = getIcon(f.severity, f.category);
         return (

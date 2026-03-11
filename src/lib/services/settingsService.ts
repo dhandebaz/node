@@ -11,6 +11,7 @@ import {
   ApiSettings
 } from "@/types/settings";
 import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
+import { cacheService } from "@/lib/services/cacheService";
 
 // Initial Default Data (used if DB is empty)
 const DEFAULT_SETTINGS: AppSettings = {
@@ -101,9 +102,15 @@ const DEFAULT_SETTINGS: AppSettings = {
 };
 
 const SETTINGS_KEY = "global_config";
+const SETTINGS_CACHE_KEY = 'system:settings';
+const CACHE_TTL = 300; // 5 minutes
 
 export const settingsService = {
   async getSettings(): Promise<AppSettings> {
+    // 1. Try Cache
+    const cached = await cacheService.get<AppSettings>(SETTINGS_CACHE_KEY);
+    if (cached) return cached;
+
     const supabase = await getSupabaseServer();
     const { data, error } = await supabase
       .from("system_settings")
@@ -111,13 +118,19 @@ export const settingsService = {
       .eq("key", SETTINGS_KEY)
       .single();
 
+    let settings: AppSettings;
     if (error || !data) {
       // Return defaults if not found
-      return DEFAULT_SETTINGS;
+      settings = DEFAULT_SETTINGS;
+    } else {
+      // Merge with defaults to ensure new fields are present
+      settings = { ...DEFAULT_SETTINGS, ...data.value };
     }
-    
-    // Merge with defaults to ensure new fields are present
-    return { ...DEFAULT_SETTINGS, ...data.value };
+
+    // 2. Set Cache
+    await cacheService.set(SETTINGS_CACHE_KEY, settings, CACHE_TTL);
+
+    return settings;
   },
 
   async updateSettings(adminId: string, updates: Partial<AppSettings>): Promise<void> {
@@ -138,6 +151,9 @@ export const settingsService = {
       });
 
     if (error) throw new Error("Failed to update settings: " + error.message);
+
+    // Invalidate Cache
+    await cacheService.del(SETTINGS_CACHE_KEY);
 
     // 3. Audit Log
     // Determine what changed for the log

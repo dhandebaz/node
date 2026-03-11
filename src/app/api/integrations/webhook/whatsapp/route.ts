@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { geminiService } from "@/lib/services/geminiService";
+import { ControlService } from "@/lib/services/controlService";
 
 export async function POST(request: Request) {
   try {
@@ -22,6 +23,16 @@ export async function POST(request: Request) {
 
     const supabase = await getSupabaseServer();
 
+    await supabase.from("messages").insert({
+      tenant_id: tenantId,
+      direction: 'inbound',
+      channel: 'whatsapp',
+      content: text,
+      sender_id: sender,
+      timestamp: new Date().toISOString(),
+      read: false
+    });
+
     // Check for paused AI
     const { data: existingGuest } = await supabase
       .from('guests')
@@ -31,16 +42,15 @@ export async function POST(request: Request) {
       .single();
 
     if (existingGuest?.ai_paused) {
-      await supabase.from("messages").insert({
-        tenant_id: tenantId,
-        direction: 'inbound',
-        channel: 'whatsapp',
-        content: text,
-        sender_id: sender,
-        timestamp: new Date().toISOString(),
-        read: false
-      });
       return NextResponse.json({ success: true, ai_paused: true });
+    }
+
+    try {
+      await ControlService.checkAction(tenantId, 'ai');
+      await ControlService.checkAction(tenantId, 'payment');
+      await ControlService.checkAction(tenantId, 'message');
+    } catch (error: any) {
+      return NextResponse.json({ success: true, blocked: true, reason: error?.message || "Action blocked" });
     }
 
     // Check Wallet Balance
@@ -56,10 +66,7 @@ export async function POST(request: Request) {
     }
 
     if (wallet.balance < 1) {
-      return NextResponse.json(
-        { error: "Insufficient credits" },
-        { status: 402 }
-      );
+      return NextResponse.json({ success: true, blocked: true, reason: "Insufficient credits" });
     }
 
     // Deduct Credit
@@ -90,17 +97,16 @@ export async function POST(request: Request) {
     const businessType = tenant?.business_type || "business";
     const prompt = 'You are an AI assistant for a ' + businessType + ' business. Reply to this customer message: ' + text;
 
-    const aiReply = await geminiService.generateText(prompt);
+    const { text: aiReply, usage } = await geminiService.generateText(prompt);
 
-    // Insert messages
-    await supabase.from("messages").insert({
-      tenant_id: tenantId,
-      direction: 'inbound',
-      channel: 'whatsapp',
-      content: text,
-      sender_id: sender,
-      timestamp: new Date().toISOString(),
-      read: false
+    // Record AI Usage
+    await supabase.from("ai_usage_events").insert({
+        tenant_id: tenantId,
+        action_type: 'ai_reply',
+        tokens_used: usage.totalTokens,
+        credits_deducted: 1, // Or dynamic based on tokens
+        model: 'gemini-1.5-flash',
+        metadata: { channel: 'whatsapp', sender }
     });
 
     await supabase.from("messages").insert({
@@ -114,7 +120,7 @@ export async function POST(request: Request) {
     });
 
     // Send Reply back to VPS
-    await fetch(process.env.WAHA_SERVER_URL + '/api/sendText', {
+    const sendRes = await fetch(process.env.WAHA_SERVER_URL + '/api/sendText', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -125,6 +131,11 @@ export async function POST(request: Request) {
         text: aiReply
       })
     });
+
+    if (!sendRes.ok) {
+      console.error("WAHA sendText failed:", await sendRes.text().catch(() => ""));
+      return NextResponse.json({ success: true, send_failed: true });
+    }
 
     return NextResponse.json({ success: true });
 

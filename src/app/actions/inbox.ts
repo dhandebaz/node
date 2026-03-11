@@ -2,6 +2,7 @@
 
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { ControlService } from "@/lib/services/controlService";
 
 export async function toggleAIPauseAction(guestId: string, paused: boolean) {
   const tenantId = await requireActiveTenant();
@@ -21,6 +22,8 @@ export async function toggleAIPauseAction(guestId: string, paused: boolean) {
 export async function sendManualMessageAction(guestId: string, text: string) {
   const tenantId = await requireActiveTenant();
   const supabase = await getSupabaseServer();
+
+  await ControlService.checkAction(tenantId, 'message');
 
   // Fetch guest
   const { data: guest, error: guestError } = await supabase

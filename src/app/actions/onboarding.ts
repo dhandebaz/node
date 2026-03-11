@@ -180,18 +180,21 @@ export async function completeOnboarding(
         user_id: user.id,
         tenant_id: tenantId, // Link to tenant
         status: "active",
-        business_type: "hospitality" // default
+        business_type: businessType
     });
-  } else if (!kaisaAccount.tenant_id) {
-    // Backfill tenant_id if missing
+  } else {
+    // Update existing if needed
     await supabase
       .from("kaisa_accounts")
-      .update({ tenant_id: tenantId })
+      .update({ tenant_id: tenantId, business_type: businessType })
       .eq("id", kaisaAccount.id);
   }
 
   revalidatePath("/", "layout");
   
-  console.log(`[Onboarding] Redirecting to /dashboard/ai`);
+  // Note: Using a direct return for client-side redirect if needed, 
+  // but since this is a server action called from a client component, 
+  // redirect() throws a NEXT_REDIRECT error which is handled by Next.js.
+  // We should ensure we don't catch it and suppress it in the UI component.
   redirect("/dashboard/ai");
 }

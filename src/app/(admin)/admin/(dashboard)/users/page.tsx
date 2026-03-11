@@ -64,6 +64,7 @@ export default function AdminUsersPage() {
           <thead className="bg-zinc-900 text-zinc-200 uppercase font-medium text-xs">
             <tr>
               <th className="px-6 py-3">User ID / Identity</th>
+              <th className="px-6 py-3">Tenant / Business</th>
               <th className="px-6 py-3">Products</th>
               <th className="px-6 py-3">KYC Status</th>
               <th className="px-6 py-3">Account Status</th>
@@ -74,7 +75,7 @@ export default function AdminUsersPage() {
           <tbody className="divide-y divide-zinc-800 bg-zinc-950">
             {users.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-8 text-center text-zinc-500">
+                <td colSpan={7} className="px-6 py-8 text-center text-zinc-500">
                   No users found matching your criteria.
                 </td>
               </tr>
@@ -89,6 +90,16 @@ export default function AdminUsersPage() {
                         <span className="text-zinc-600 text-xs">{user.identity.email}</span>
                       )}
                     </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    {user.tenant ? (
+                        <div className="flex flex-col">
+                            <span className="text-white text-xs">{user.tenant.name}</span>
+                            <span className="text-zinc-500 text-[10px] uppercase">{user.tenant.businessType}</span>
+                        </div>
+                    ) : (
+                        <span className="text-zinc-600 text-xs italic">No Tenant</span>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-1">

@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     try {
       await ControlService.checkAction(tenantId, 'message');
     } catch (error: any) {
-      return NextResponse.json({ error: error.message }, { status: 503 });
+      return NextResponse.json({ error: error.message }, { status: error?.status || 503 });
     }
 
     // Branding Check

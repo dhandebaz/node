@@ -32,24 +32,34 @@ export async function toggleTenantEarlyAccessAction(tenantId: string, value: boo
     revalidatePath("/admin/customers");
 }
 
-export async function updatePricingAction(pricingConfig: any) {
+export async function updatePlanAction(planId: string, updates: Partial<any>) {
   const supabase = await getSupabaseServer();
   const { data: { user } } = await supabase.auth.getUser();
-
   if (!user) throw new Error("Unauthorized");
 
-  // Using Admin client to bypass RLS if needed, or normal client if policy allows
   const supabaseAdmin = await getSupabaseAdmin();
-
   const { error } = await supabaseAdmin
-    .from('system_settings')
-    .update({ 
-      value: pricingConfig,
-      updated_at: new Date().toISOString()
-    })
-    .eq('key', 'pricing_config');
+    .from('billing_plans')
+    .update(updates)
+    .eq('id', planId);
 
   if (error) throw error;
+  revalidatePath("/admin/pricing");
+}
 
+export async function createPlanAction(plan: any) {
+  const supabase = await getSupabaseServer();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  // Auto-generate ID if not present (simple slug)
+  const planId = plan.id || `plan_${plan.product}_${plan.interval}_${Date.now().toString(36)}`;
+
+  const supabaseAdmin = await getSupabaseAdmin();
+  const { error } = await supabaseAdmin
+    .from('billing_plans')
+    .insert({ ...plan, id: planId });
+
+  if (error) throw error;
   revalidatePath("/admin/pricing");
 }

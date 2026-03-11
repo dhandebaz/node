@@ -63,6 +63,36 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }
     }
+    
+    // Rate Limiting
+    // Note: We use a simplified in-memory check or just rely on Edge Config if available. 
+    // Ideally we call the rateLimit service, but that requires Upstash Redis env vars.
+    // We will add the logic block but wrap it in a try-catch/env check to avoid breaking local dev if not set up.
+    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+        try {
+            const { rateLimit } = await import('@/lib/ratelimit');
+            const ip = request.ip || '127.0.0.1';
+            const { success, limit, reset, remaining } = await rateLimit.limit(ip);
+            
+            if (!success) {
+                return NextResponse.json(
+                    { error: 'Too Many Requests' }, 
+                    { 
+                        status: 429,
+                        headers: {
+                            'X-RateLimit-Limit': limit.toString(),
+                            'X-RateLimit-Remaining': remaining.toString(),
+                            'X-RateLimit-Reset': reset.toString()
+                        }
+                    }
+                );
+            }
+        } catch (e) {
+            console.error("Rate limit error", e);
+            // Fail open
+        }
+    }
+
     return response
   }
 

@@ -36,6 +36,7 @@ export interface UserStatus {
 
 export interface UserRoles {
   isKaisaUser: boolean;
+  isAdmin?: boolean;
 }
 
 export interface UserMetadata {

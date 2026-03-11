@@ -94,30 +94,48 @@ export const kaisaUserService = {
     async getCreditUsage(userId: string): Promise<KaisaCreditUsage> {
         const supabase = await getSupabaseServer();
 
-        // 1. Get Balance
-        const { data: creditData } = await supabase
-            .from("kaisa_credits")
-            .select("*")
+        // 1. Resolve Tenant ID
+        const { data: tenantUser } = await supabase
+            .from("tenant_users")
+            .select("tenant_id")
             .eq("user_id", userId)
+            .limit(1)
+            .single();
+            
+        const tenantId = tenantUser?.tenant_id;
+
+        if (!tenantId) {
+            return {
+                balance: 0,
+                monthlyLimit: 0,
+                usedThisMonth: 0,
+                history: []
+            };
+        }
+
+        // 2. Get Balance from Wallet
+        const { data: wallet } = await supabase
+            .from("wallets")
+            .select("balance")
+            .eq("tenant_id", tenantId)
             .single();
 
-        // 2. Get History (from wallet_transactions)
+        // 3. Get History from Wallet Transactions
         const { data: historyData } = await supabase
             .from("wallet_transactions")
             .select("*")
-            .eq("tenant_id", userId)
-            .eq("type", "ai_usage")
+            .eq("tenant_id", tenantId)
             .order("created_at", { ascending: false })
             .limit(10);
 
         return {
-            balance: creditData?.balance || 0,
-            monthlyLimit: creditData?.monthly_limit || 1000,
-            usedThisMonth: creditData?.used_this_month || 0,
+            balance: wallet?.balance || 0,
+            monthlyLimit: 1000, // Hardcoded or fetch from plan
+            usedThisMonth: 0, // Need to calculate or fetch from aggregate
             history: historyData?.map((h: any) => ({
                 date: h.created_at,
                 amount: Number(h.amount),
-                description: h.metadata?.description || "AI Usage"
+                description: h.description || h.type
             })) || []
         };
     }

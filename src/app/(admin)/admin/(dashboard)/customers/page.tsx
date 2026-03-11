@@ -1,8 +1,4 @@
-"use client";
-
-export const dynamic = "force-dynamic";
-
-import { useEffect, useState } from "react";
+import { getSupabaseServer } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 
@@ -17,30 +13,61 @@ type CustomerRow = {
   createdAt: string | null;
 };
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url, { cache: "no-store" });
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload?.error || "Request failed");
+// Server Component
+export default async function AdminCustomersPage() {
+  const supabase = await getSupabaseServer();
+  
+  // Fetch Tenants (Customers)
+  const { data: tenants, error } = await supabase
+    .from("tenants")
+    .select(`
+        id, 
+        name, 
+        business_type, 
+        subscription_plan, 
+        subscription_status, 
+        created_at,
+        tenant_users (
+            user_id,
+            role,
+            users ( phone )
+        ),
+        wallets ( balance )
+    `)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+      return (
+        <div className="p-8 text-red-400">
+            Error loading customers: {error.message}
+        </div>
+      );
   }
-  return response.json();
-}
 
-export default function AdminCustomersPage() {
-  const [customers, setCustomers] = useState<CustomerRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const customers: CustomerRow[] = tenants.map((t: any) => {
+      const owner = t.tenant_users.find((u: any) => u.role === 'owner')?.users;
+      const wallet = t.wallets?.[0]; // One-to-many relation, usually one wallet per tenant
+      
+      // Determine AI Manager from business type (simplified)
+      let aiManager = null;
+      if (t.business_type === 'doctor_clinic') aiManager = 'Nurse AI';
+      else if (t.business_type === 'airbnb_host') aiManager = 'Host AI';
+      else if (t.business_type === 'kirana_store') aiManager = 'Dukan AI';
+      
+      // Determine Price (Mock logic based on plan)
+      const planPrice = t.subscription_plan === 'pro' ? 999 : 299;
 
-  useEffect(() => {
-    setLoading(true);
-    fetchJson<{ customers: CustomerRow[] }>("/api/admin/customers")
-      .then((payload) => {
-        setCustomers(payload.customers || []);
-        setError(null);
-      })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
+      return {
+          id: t.id,
+          businessName: t.name,
+          phone: owner?.phone || "—",
+          aiManager,
+          planPrice,
+          walletBalance: wallet?.balance || 0,
+          status: t.subscription_status || 'active',
+          createdAt: t.created_at
+      };
+  });
 
   return (
     <div className="space-y-8 pb-10">
@@ -49,20 +76,7 @@ export default function AdminCustomersPage() {
         <p className="text-zinc-400">Active businesses and their AI Manager status.</p>
       </div>
 
-      {loading && (
-        <div className="flex items-center justify-center h-72">
-          <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
-        </div>
-      )}
-
-      {!loading && error && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 text-zinc-300">
-          {error}
-        </div>
-      )}
-
-      {!loading && !error && (
-        <div className="border border-zinc-800 rounded-lg overflow-auto bg-zinc-950/60">
+      <div className="border border-zinc-800 rounded-lg overflow-auto bg-zinc-950/60">
           <table className="w-full text-left text-sm text-zinc-300">
             <thead className="bg-zinc-950 text-zinc-500 uppercase text-xs sticky top-0">
               <tr>
@@ -109,7 +123,6 @@ export default function AdminCustomersPage() {
             </tbody>
           </table>
         </div>
-      )}
     </div>
   );
 }

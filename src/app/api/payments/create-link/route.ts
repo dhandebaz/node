@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     try {
       await ControlService.checkAction(tenantId, 'payment');
     } catch (error: any) {
-      return NextResponse.json({ error: error.message }, { status: 503 });
+      return NextResponse.json({ error: error.message }, { status: error?.status || 503 });
     }
 
     const body = (await request.json()) as Payload;

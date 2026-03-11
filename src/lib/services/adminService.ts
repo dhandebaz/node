@@ -45,16 +45,13 @@ export class AdminService {
     const walletBalances = wallets?.reduce((sum, w) => sum + (Number(w.balance) || 0), 0) || 0;
 
     // 4. MRR Estimate (Fixed Plans + Recent Usage)
-    // This is a rough estimate. Real MRR requires more complex billing logic.
-    // For now: (Count of Pro * Price) + (Count of Business * Price)
-    // We can fetch counts by plan group
-    const { data: users } = await supabase.from("users").select("subscription_plan");
+    const { data: tenants } = await supabase.from("tenants").select("subscription_plan");
     
     let totalRevenue = 0;
-    users?.forEach(u => {
-        const plan = (u.subscription_plan as SubscriptionPlan) || 'starter';
-        if (PLAN_PRICING[plan]) {
-            totalRevenue += PLAN_PRICING[plan].amount;
+    tenants?.forEach(t => {
+        const planKey = t.subscription_plan as SubscriptionPlan;
+        if (PLAN_PRICING[planKey]) {
+            totalRevenue += PLAN_PRICING[planKey].amount;
         }
     });
 

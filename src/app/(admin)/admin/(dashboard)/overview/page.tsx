@@ -1,102 +1,34 @@
-"use client";
-
-export const dynamic = "force-dynamic";
-
-import { useEffect, useMemo, useState } from "react";
+import { getSupabaseServer } from "@/lib/supabase/server";
 import { Loader2, Users, Cpu, MessageSquare, Gauge, Wallet, Plug } from "lucide-react";
 import Link from "next/link";
 
-type OverviewData = {
-  customers: {
-    activeCount: number;
-    walletBalanceTotal: number;
-  };
-  managers: {
-    activeCount: number;
-  };
-  usage: {
-    messagesToday: number;
-    tokensToday: number;
-  };
-  integrations: {
-    failedCount: number;
-  };
-};
+export const dynamic = "force-dynamic";
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url, { cache: "no-store" });
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload?.error || "Request failed");
-  }
-  return response.json();
-}
+export default async function AdminOverviewPage() {
+  const supabase = await getSupabaseServer();
 
-export default function AdminOverviewPage() {
-  const [data, setData] = useState<OverviewData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Parallel Data Fetching
+  const [
+    { count: activeCustomersCount },
+    { data: wallets },
+    { count: activeManagersCount }, // Assuming managers are tenants with specific config or just count all tenants for now
+    { count: messagesToday },
+    { data: usageEvents },
+    { data: integrations }
+  ] = await Promise.all([
+    supabase.from('tenants').select('*', { count: 'exact', head: true }).eq('subscription_status', 'active'),
+    supabase.from('wallets').select('balance'),
+    supabase.from('tenants').select('*', { count: 'exact', head: true }), // Total tenants as proxy for active managers deployed
+    supabase.from('messages').select('*', { count: 'exact', head: true }).gte('timestamp', new Date().toISOString().split('T')[0]),
+    supabase.from('ai_usage_events').select('tokens_used').gte('created_at', new Date().toISOString().split('T')[0]),
+    supabase.from('listing_integrations').select('status')
+  ]);
 
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([
-      fetchJson<any>("/api/admin/customers"),
-      fetchJson<any>("/api/admin/ai-managers"),
-      fetchJson<any>("/api/admin/usage"),
-      fetchJson<any>("/api/admin/integrations/health")
-    ])
-      .then(([customersPayload, managersPayload, usagePayload, integrationsPayload]) => {
-        const activeCustomers = (customersPayload?.customers || []).filter((customer: any) => customer.status === "active");
-        const walletBalanceTotal = (customersPayload?.customers || []).reduce(
-          (sum: number, customer: any) => sum + (Number(customer.walletBalance) || 0),
-          0
-        );
-        const activeManagers = (managersPayload?.managers || []).filter((manager: any) => manager.status === "active");
-        const overview: OverviewData = {
-          customers: {
-            activeCount: activeCustomers.length,
-            walletBalanceTotal
-          },
-          managers: {
-            activeCount: activeManagers.length
-          },
-          usage: {
-            messagesToday: usagePayload?.summary?.messagesToday || 0,
-            tokensToday: usagePayload?.summary?.tokensToday || 0
-          },
-          integrations: {
-            failedCount: integrationsPayload?.summary?.failedCount || 0
-          }
-        };
-        setData(overview);
-        setError(null);
-      })
-      .catch((err) => {
-        setError(err.message);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  const walletBalanceTotal = (wallets || []).reduce((sum, w) => sum + (Number(w.balance) || 0), 0);
+  const tokensToday = (usageEvents || []).reduce((sum, e) => sum + (e.tokens_used || 0), 0);
+  const failedIntegrationsCount = (integrations || []).filter(i => i.status === 'error').length;
 
-  const formattedWallet = useMemo(() => {
-    const value = data?.customers.walletBalanceTotal || 0;
-    return new Intl.NumberFormat("en-IN").format(value);
-  }, [data?.customers.walletBalanceTotal]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
-      </div>
-    );
-  }
-
-  if (error || !data) {
-    return (
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 text-zinc-300">
-        {error || "Unable to load admin overview."}
-      </div>
-    );
-  }
+  const formattedWallet = new Intl.NumberFormat("en-IN").format(walletBalanceTotal);
 
   return (
     <div className="space-y-8 pb-8">
@@ -106,34 +38,34 @@ export default function AdminOverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-4">
-        <StatCard title="Active Customers" value={data.customers.activeCount} icon={Users} />
-        <StatCard title="Active AI Managers" value={data.managers.activeCount} icon={Cpu} />
-        <StatCard title="AI Messages Today" value={data.usage.messagesToday} icon={MessageSquare} />
-        <StatCard title="Token Usage Today" value={data.usage.tokensToday} icon={Gauge} />
+        <StatCard title="Active Customers" value={activeCustomersCount || 0} icon={Users} />
+        <StatCard title="Total Tenants" value={activeManagersCount || 0} icon={Cpu} />
+        <StatCard title="AI Messages Today" value={messagesToday || 0} icon={MessageSquare} />
+        <StatCard title="Token Usage Today" value={tokensToday} icon={Gauge} />
         <StatCard title="Wallet Balance" value={`₹${formattedWallet}`} icon={Wallet} />
-        <StatCard title="Failed Integrations" value={data.integrations.failedCount} icon={Plug} alert />
+        <StatCard title="Failed Integrations" value={failedIntegrationsCount} icon={Plug} alert={failedIntegrationsCount > 0} />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white">Live Ops Pointers</h2>
-            <Link href="/admin/ai-managers" className="text-xs uppercase tracking-widest text-zinc-400 hover:text-white">
-              Manage AI Managers
+            <Link href="/admin/pricing" className="text-xs uppercase tracking-widest text-zinc-400 hover:text-white">
+              Manage Pricing
             </Link>
           </div>
           <ul className="space-y-3 text-sm text-zinc-400">
             <li className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <span>Pricing overrides and availability</span>
-              <span className="text-zinc-200">{data.managers.activeCount} active</span>
+              <span>Active Subscriptions</span>
+              <span className="text-zinc-200">{activeCustomersCount} active</span>
             </li>
             <li className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <span>Customer balances at risk</span>
+              <span>Customer balances held</span>
               <span className="text-zinc-200">₹{formattedWallet}</span>
             </li>
             <li className="flex items-center justify-between">
               <span>Integration incidents today</span>
-              <span className="text-zinc-200">{data.integrations.failedCount}</span>
+              <span className="text-zinc-200">{failedIntegrationsCount}</span>
             </li>
           </ul>
         </div>
@@ -141,14 +73,14 @@ export default function AdminOverviewPage() {
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white">System Health</h2>
-            <Link href="/admin/logs" className="text-xs uppercase tracking-widest text-zinc-400 hover:text-white">
+            <Link href="/admin/audit" className="text-xs uppercase tracking-widest text-zinc-400 hover:text-white">
               Review Logs
             </Link>
           </div>
           <div className="space-y-4 text-sm text-zinc-400">
-            <HealthRow label="AI output throughput" value={`${data.usage.messagesToday} messages`} />
-            <HealthRow label="Token burn rate" value={`${data.usage.tokensToday} tokens`} />
-            <HealthRow label="Failed integrations" value={`${data.integrations.failedCount} providers`} />
+            <HealthRow label="AI output throughput" value={`${messagesToday || 0} messages`} />
+            <HealthRow label="Token burn rate" value={`${tokensToday} tokens`} />
+            <HealthRow label="Failed integrations" value={`${failedIntegrationsCount} providers`} />
           </div>
         </div>
       </div>

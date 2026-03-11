@@ -1,12 +1,10 @@
-export const dynamic = 'force-dynamic';
-
-import { User, Bell, Shield, Smartphone, Monitor, CheckCircle2, AlertTriangle, FileCheck } from "lucide-react";
+import { User, Bell, Shield, Smartphone, Monitor, CheckCircle2, FileCheck } from "lucide-react";
 import { getCustomerProfile } from "@/app/actions/customer";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { requireActiveTenant, getTenantContext } from "@/lib/auth/tenant";
 import { KYCVerificationForm } from "@/components/dashboard/settings/KYCVerificationForm";
 import { ComplianceHubCard } from "@/components/dashboard/settings/ComplianceHubCard";
+
+export const dynamic = 'force-dynamic';
 
 export default async function CustomerSettingsPage() {
   const profile = await getCustomerProfile();

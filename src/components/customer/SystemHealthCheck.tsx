@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, WifiOff, CreditCard, PowerOff } from "lucide-react";
+import { AlertTriangle, WifiOff, CreditCard, PowerOff, AlertOctagon } from "lucide-react";
 import Link from "next/link";
 import { Tenant, ListingIntegration } from "@/types";
 
@@ -14,8 +14,19 @@ interface SystemHealthCheckProps {
 export function SystemHealthCheck({ flags, walletBalance, tenant, integrations }: SystemHealthCheckProps) {
   const alerts = [];
 
-  // 1. Check Global AI Status
-  if (flags['ai_global_enabled'] === false) {
+  // 1. Check Global Incident Mode (Highest Priority)
+  if (flags['incident_mode_enabled']) {
+    alerts.push({
+      type: 'critical',
+      icon: AlertOctagon,
+      title: "System Incident Mode Active",
+      message: "We are currently experiencing system-wide issues. High-risk actions are paused.",
+      action: null
+    });
+  }
+
+  // 2. Check Global AI Status
+  else if (flags['ai_global_enabled'] === false) {
     alerts.push({
       type: 'critical',
       icon: PowerOff,
@@ -25,7 +36,7 @@ export function SystemHealthCheck({ flags, walletBalance, tenant, integrations }
     });
   }
 
-  // 2. Check Tenant AI Status
+  // 3. Check Tenant AI Status
   if (tenant.is_ai_enabled === false && flags['ai_global_enabled'] !== false) {
     alerts.push({
       type: 'warning',
@@ -36,7 +47,7 @@ export function SystemHealthCheck({ flags, walletBalance, tenant, integrations }
     });
   }
 
-  // 3. Check Wallet Balance
+  // 4. Check Wallet Balance
   if (walletBalance < 100) {
     alerts.push({
       type: 'critical',
@@ -47,7 +58,7 @@ export function SystemHealthCheck({ flags, walletBalance, tenant, integrations }
     });
   }
 
-  // 4. Check Integrations
+  // 5. Check Integrations
   const failedIntegrations = integrations.filter(i => i.status === 'error');
   if (failedIntegrations.length > 0) {
     alerts.push({

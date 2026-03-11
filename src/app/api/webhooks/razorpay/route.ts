@@ -46,16 +46,30 @@ export async function POST(request: Request) {
        }
 
        // 1. Update Tenant Subscription Status
+       // Also update subscriptions table
        const { error: updateError } = await supabase
          .from("tenants")
          .update({
              subscription_status: 'active',
              subscription_plan: plan,
-             // store razorpay_subscription_id if we have a column, or in metadata
          })
          .eq("id", tenantId);
 
        if (updateError) console.error("Failed to update tenant subscription", updateError);
+       
+       // Update subscriptions table logic
+       const { data: user } = await supabase.from('tenant_users').select('user_id').eq('tenant_id', tenantId).eq('role', 'owner').single();
+       if (user) {
+           await supabase.from('subscriptions').upsert({
+               user_id: user.user_id,
+               status: 'active',
+               plan_id: plan, // Ensure this matches billing_plans.id
+               current_period_start: new Date(entity.current_start * 1000).toISOString(),
+               current_period_end: new Date(entity.current_end * 1000).toISOString(),
+               provider_subscription_id: id,
+               metadata: { razorpay_plan_id: plan_id }
+           }, { onConflict: 'user_id' });
+       }
 
        // 2. Add Monthly Credits (Renewal or Activation)
        // We should only add if it's a successful charge. 'subscription.charged' implies success?
@@ -81,16 +95,27 @@ export async function POST(request: Request) {
        });
     }
     
-    else if (event.event === 'subscription.cancelled' || event.event === 'subscription.halted') {
+    else if (event.event === 'subscription.cancelled' || event.event === 'subscription.halted' || event.event === 'subscription.paused') {
         const entity = event.payload.subscription.entity;
         const tenantId = entity.notes?.tenantId;
         
         if (tenantId) {
+            // Update Tenant
             await supabase
                 .from("tenants")
                 .update({ subscription_status: 'cancelled' })
                 .eq("id", tenantId);
-                
+            
+            // Update Subscriptions Table
+            const { data: user } = await supabase.from('tenant_users').select('user_id').eq('tenant_id', tenantId).eq('role', 'owner').single();
+            if (user) {
+                await supabase.from('subscriptions').update({
+                    status: 'canceled',
+                    cancel_at_period_end: true,
+                    updated_at: new Date().toISOString()
+                }).eq('user_id', user.user_id);
+            }
+
             await logEvent({
                 tenant_id: tenantId,
                 actor_type: 'system',
@@ -99,6 +124,28 @@ export async function POST(request: Request) {
                 entity_id: entity.id,
                 metadata: { status: 'cancelled' }
             });
+        }
+    }
+    
+    // Dunning: Payment Failed
+    else if (event.event === 'payment.failed') {
+        const entity = event.payload.payment.entity;
+        const tenantId = entity.notes?.tenantId;
+        
+        if (tenantId) {
+             // Log Failure
+             await logEvent({
+                tenant_id: tenantId,
+                actor_type: 'system',
+                event_type: EVENT_TYPES.ACTION_BLOCKED,
+                entity_type: 'payment',
+                entity_id: entity.id,
+                metadata: { reason: entity.error_description || "Payment failed", status: "failed" }
+            });
+            
+            // If it's a subscription renewal failure, maybe mark as past_due?
+            // Razorpay handles retries, but we can notify user via email or in-app alert.
+            // For now, we rely on subscription.halted for final cancellation.
         }
     }
 

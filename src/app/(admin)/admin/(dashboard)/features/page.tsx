@@ -73,7 +73,8 @@ export default function AdminFeatureFlagPage() {
         key: formKey,
         description: formDesc,
         isGlobal: formGlobal,
-        tenantIds
+        tenantIds,
+        action: isCreating ? "create" : "update"
       });
       
       handleCancel();
@@ -91,7 +92,8 @@ export default function AdminFeatureFlagPage() {
         key: flag.key,
         isGlobal: !flag.is_global_enabled,
         tenantIds: flag.tenant_overrides,
-        description: flag.description
+        description: flag.description,
+        action: "update"
       });
       loadFlags();
     } catch (err: any) {

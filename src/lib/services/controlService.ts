@@ -20,6 +20,25 @@ export type TenantControlKey =
   | 'is_wallet_enabled'
   | 'early_access';
 
+type ActionBlockedError = Error & { status?: number };
+
+const createActionBlockedError = (message: string, status: number): ActionBlockedError => {
+  const error = new Error(message) as ActionBlockedError;
+  error.status = status;
+  return error;
+};
+
+type PostgrestResponse<T> = { data: T | null; error: unknown | null };
+type SystemFlagRow = { key: string; value: boolean };
+type TenantControlsRow = {
+  is_ai_enabled: boolean | null;
+  is_messaging_enabled: boolean | null;
+  is_bookings_enabled: boolean | null;
+  is_wallet_enabled: boolean | null;
+  business_type: string | null;
+  kyc_status: string | null;
+};
+
 export class ControlService {
   /**
    * Get all system flags (Global Kill Switches)
@@ -116,7 +135,13 @@ export class ControlService {
   static async toggleFeatureFlag(key: string, isGlobal: boolean, tenantIds: string[], userId: string, description?: string) {
     const supabase = await getSupabaseAdmin();
     
-    const payload: any = { 
+    const payload: {
+      key: string;
+      is_global_enabled: boolean;
+      tenant_overrides: string[];
+      updated_at: string;
+      description?: string;
+    } = {
       key, 
       is_global_enabled: isGlobal,
       tenant_overrides: tenantIds,
@@ -146,38 +171,80 @@ export class ControlService {
    * Throws error if disabled.
    */
   static async checkAction(tenantId: string | null, action: 'ai' | 'payment' | 'booking' | 'message' | 'sync' | 'signup') {
-    const supabase = await getSupabaseServer(); // Use server client (RLS safe for reading flags)
+    const supabase = await getSupabaseServer();
 
-    // 1. Fetch Global Flags & Tenant Controls in parallel
-    // If tenantId is null (e.g. signup), we only fetch flags
-    const promises: any[] = [supabase.from('system_flags').select('key, value')];
+    const flagsPromise = supabase
+      .from('system_flags')
+      .select('key, value') as unknown as Promise<PostgrestResponse<SystemFlagRow[]>>;
+
+    let flagsRes: PostgrestResponse<SystemFlagRow[]>;
+    let tenantRes: PostgrestResponse<TenantControlsRow> | null = null;
+
     if (tenantId) {
-      promises.push(supabase.from('tenants').select('is_ai_enabled, is_messaging_enabled, is_bookings_enabled, is_wallet_enabled, business_type').eq('id', tenantId).single());
+      const tenantPromise = supabase
+        .from('tenants')
+        .select('is_ai_enabled, is_messaging_enabled, is_bookings_enabled, is_wallet_enabled, business_type, kyc_status')
+        .eq('id', tenantId)
+        .single() as unknown as Promise<PostgrestResponse<TenantControlsRow>>;
+
+      [flagsRes, tenantRes] = await Promise.all([flagsPromise, tenantPromise]);
+    } else {
+      flagsRes = await flagsPromise;
     }
 
-    const [flagsRes, tenantRes] = await Promise.all(promises);
+    const shouldRetryWithAdmin = !!flagsRes.error || (!!tenantId && !!tenantRes?.error);
+    if (shouldRetryWithAdmin) {
+      const supabaseAdmin = await getSupabaseAdmin();
+      const adminFlagsPromise = supabaseAdmin
+        .from('system_flags')
+        .select('key, value') as unknown as Promise<PostgrestResponse<SystemFlagRow[]>>;
+
+      if (tenantId) {
+        const adminTenantPromise = supabaseAdmin
+          .from('tenants')
+          .select('is_ai_enabled, is_messaging_enabled, is_bookings_enabled, is_wallet_enabled, business_type, kyc_status')
+          .eq('id', tenantId)
+          .single() as unknown as Promise<PostgrestResponse<TenantControlsRow>>;
+
+        [flagsRes, tenantRes] = await Promise.all([adminFlagsPromise, adminTenantPromise]);
+      } else {
+        flagsRes = await adminFlagsPromise;
+      }
+    }
+
+    if (flagsRes.error) throw createActionBlockedError("System is temporarily unavailable.", 503);
+    if (tenantId && tenantRes?.error) throw createActionBlockedError("Account settings are temporarily unavailable.", 503);
 
     const flags: Record<string, boolean> = {};
-    flagsRes.data?.forEach((f: any) => flags[f.key] = f.value);
-    const tenant = tenantRes?.data;
+    (flagsRes.data || []).forEach((f) => (flags[f.key] = f.value));
+    const tenant = tenantRes?.data || null;
 
     // 2. Check Global Kill Switches
-    if (flags['incident_mode_enabled'] === true) throw new Error("System is in Incident Mode. High-risk actions are temporarily disabled.");
-    if (action === 'ai' && flags['ai_global_enabled'] === false) throw new Error("AI actions are currently disabled globally.");
-    if (action === 'payment' && flags['payments_global_enabled'] === false) throw new Error("Payments are currently disabled globally.");
-    if (action === 'booking' && flags['bookings_global_enabled'] === false) throw new Error("New bookings are currently disabled globally.");
-    if (action === 'message' && flags['messaging_global_enabled'] === false) throw new Error("Outbound messaging is currently disabled globally.");
-    if (action === 'sync' && flags['sync_global_enabled'] === false) throw new Error("Integrations sync is currently disabled globally.");
-    if (action === 'signup' && flags['signups_global_enabled'] === false) throw new Error("New signups are currently paused. Please join our waitlist.");
+    if (flags['incident_mode_enabled'] === true) throw createActionBlockedError("System is temporarily limiting high-risk actions.", 503);
+    if (action === 'ai' && flags['ai_global_enabled'] === false) throw createActionBlockedError("AI actions are temporarily unavailable.", 503);
+    if (action === 'payment' && flags['payments_global_enabled'] === false) throw createActionBlockedError("Payments are temporarily unavailable.", 503);
+    if (action === 'booking' && flags['bookings_global_enabled'] === false) throw createActionBlockedError("New bookings are temporarily unavailable.", 503);
+    if (action === 'message' && flags['messaging_global_enabled'] === false) throw createActionBlockedError("Outbound messaging is temporarily unavailable.", 503);
+    if (action === 'sync' && flags['sync_global_enabled'] === false) throw createActionBlockedError("Integrations sync is temporarily unavailable.", 503);
+    
+    // 3. New User Signups Control (Used in Auth/Onboarding)
+    if (action === 'signup' && flags['signups_global_enabled'] === false) throw createActionBlockedError("New signups are temporarily disabled.", 503);
+    if (action === 'signup' && flags['signups_global_enabled'] === false) throw createActionBlockedError("Signups are currently unavailable.", 403);
 
     // If no tenant (signup), we are done checking global flags
     if (!tenantId || !tenant) return;
 
     // 3. Check Tenant Controls
-    if (action === 'ai' && tenant.is_ai_enabled === false) throw new Error("AI actions are disabled for this account.");
-    if (action === 'payment' && tenant.is_wallet_enabled === false) throw new Error("Wallet/Payments are disabled for this account.");
-    if (action === 'booking' && tenant.is_bookings_enabled === false) throw new Error("Bookings are disabled for this account.");
-    if (action === 'message' && tenant.is_messaging_enabled === false) throw new Error("Messaging is disabled for this account.");
+    if (action === 'ai' && tenant.is_ai_enabled === false) throw createActionBlockedError("AI actions are disabled for this account.", 403);
+    if (action === 'payment' && tenant.is_wallet_enabled === false) throw createActionBlockedError("Payments are disabled for this account.", 403);
+    if (action === 'booking' && tenant.is_bookings_enabled === false) throw createActionBlockedError("Bookings are disabled for this account.", 403);
+    if (action === 'message' && tenant.is_messaging_enabled === false) throw createActionBlockedError("Messaging is disabled for this account.", 403);
+
+    const kycStatus = String(tenant.kyc_status || 'pending');
+    const isVerified = kycStatus === 'verified';
+    if ((action === 'message' || action === 'payment') && !isVerified) {
+      throw createActionBlockedError("Identity verification is required to use this feature. Complete verification in Settings.", 403);
+    }
 
     // 4. Check Persona Capabilities (Safety Layer)
     const capabilities = getPersonaCapabilities(tenant.business_type as BusinessType);
@@ -195,7 +262,7 @@ export class ControlService {
         entity_id: action,
         metadata: { reason: blockedReason, business_type: tenant.business_type }
       });
-      throw new Error(blockedReason);
+      throw createActionBlockedError(blockedReason, 403);
     }
   }
 

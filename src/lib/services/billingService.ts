@@ -66,8 +66,9 @@ export const billingService = {
   // Actions
   async upgradeSubscription(userId: string, subscriptionId: string, newPlanId: string): Promise<Subscription> {
     const supabase = await getSupabaseServer();
+    const adminSupabase = await getSupabaseAdmin();
     
-    // 1. Get Subscription
+    // 1. Get Subscription (User can read)
     const { data: sub } = await supabase
         .from("subscriptions")
         .select("*")
@@ -77,7 +78,7 @@ export const billingService = {
         
     if (!sub) throw new Error("Subscription not found");
 
-    // 2. Get New Plan
+    // 2. Get New Plan (Public)
     const { data: plan } = await supabase
         .from("billing_plans")
         .select("*")
@@ -86,8 +87,8 @@ export const billingService = {
         
     if (!plan) throw new Error("Plan not found");
 
-    // 3. Update Subscription
-    const { data: updatedSub, error } = await supabase
+    // 3. Update Subscription (Admin only)
+    const { data: updatedSub, error } = await adminSupabase
         .from("subscriptions")
         .update({
             plan_id: newPlanId,
@@ -99,8 +100,8 @@ export const billingService = {
 
     if (error || !updatedSub) throw new Error("Failed to update subscription");
     
-    // 4. Create Invoice (Mock charge)
-    await supabase.from("invoices").insert({
+    // 4. Create Invoice (Mock charge) - Admin
+    await adminSupabase.from("invoices").insert({
         user_id: userId,
         subscription_id: subscriptionId,
         amount: plan.price,
@@ -110,8 +111,7 @@ export const billingService = {
         billing_details: { name: "User" } // Simplify
     });
     
-    // 5. Update User's cached plan
-    const adminSupabase = await getSupabaseAdmin();
+    // 5. Update User's cached plan - Admin
     await adminSupabase.from("users").update({ subscription_plan: newPlanId }).eq("id", userId);
 
     return mapDbSubToAppSub(updatedSub);
@@ -119,15 +119,25 @@ export const billingService = {
 
   async cancelSubscription(userId: string, subscriptionId: string): Promise<Subscription> {
     const supabase = await getSupabaseServer();
+    const adminSupabase = await getSupabaseAdmin();
     
-    const { data: updatedSub, error } = await supabase
+    // Verify ownership
+    const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("id")
+        .eq("id", subscriptionId)
+        .eq("user_id", userId)
+        .single();
+
+    if (!sub) throw new Error("Subscription not found");
+    
+    const { data: updatedSub, error } = await adminSupabase
         .from("subscriptions")
         .update({
             cancel_at_period_end: true,
             updated_at: new Date().toISOString()
         })
         .eq("id", subscriptionId)
-        .eq("user_id", userId)
         .select()
         .single();
 
@@ -137,15 +147,25 @@ export const billingService = {
   
   async resumeSubscription(userId: string, subscriptionId: string): Promise<Subscription> {
     const supabase = await getSupabaseServer();
+    const adminSupabase = await getSupabaseAdmin();
+
+    // Verify ownership
+    const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("id")
+        .eq("id", subscriptionId)
+        .eq("user_id", userId)
+        .single();
+
+    if (!sub) throw new Error("Subscription not found");
     
-    const { data: updatedSub, error } = await supabase
+    const { data: updatedSub, error } = await adminSupabase
         .from("subscriptions")
         .update({
             cancel_at_period_end: false,
             updated_at: new Date().toISOString()
         })
         .eq("id", subscriptionId)
-        .eq("user_id", userId)
         .select()
         .single();
 

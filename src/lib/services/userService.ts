@@ -54,7 +54,7 @@ export const userService = {
   async getUserById(userId: string): Promise<User | null> {
     const supabase = await getSupabaseAdmin();
     
-    // Fetch core user data
+    // 1. Fetch core user data
     const { data: user, error } = await supabase
       .from("users")
       .select("*")
@@ -63,54 +63,59 @@ export const userService = {
 
     if (error || !user) return null;
 
-    // Fetch related profiles
+    // 2. Fetch Account & Tenant Info (New Schema)
     const [
-      { data: kaisaProfile },
-      { data: userProfile },
+      { data: account },
+      { data: kaisaAccount },
+      { data: tenantUser }
     ] = await Promise.all([
-      supabase.from("kaisa_profiles").select("*").eq("user_id", userId).single(),
-      supabase.from("profiles").select("*").eq("id", userId).single(),
+      supabase.from("accounts").select("*").eq("user_id", userId).maybeSingle(),
+      supabase.from("kaisa_accounts").select("*").eq("user_id", userId).maybeSingle(),
+      supabase.from("tenant_users").select("*, tenants(*)").eq("user_id", userId).maybeSingle()
     ]);
 
-    // Construct User object
+    const tenant = tenantUser?.tenants;
+
+    // Construct User object matching the new schema
     return {
       identity: {
         id: user.id,
-        phone: user.phone,
-        email: user.email,
+        phone: user.phone || null,
+        email: user.email || null,
         createdAt: user.created_at,
       },
-      profile: {
-        fullName: userProfile?.full_name || null,
+      profile: null,
+      status: {
+        account: account?.status || "active",
+        kyc: "pending", // Default for now
+        onboarding: account?.onboarding_status === 'complete' ? 'completed' : 'pending',
       },
       roles: {
-        isKaisaUser: !!kaisaProfile,
-      },
-      status: {
-        account: user.status,
-        kyc: user.kyc_status,
-        onboarding: user.onboarding_status === 'completed' ? 'completed' : 'pending',
+        isKaisaUser: !!kaisaAccount || account?.product_type === 'ai_employee',
+        isAdmin: user.role === 'admin' || user.role === 'superadmin',
       },
       products: {
-        kaisa: kaisaProfile ? {
-          businessType: kaisaProfile.business_type,
-          role: kaisaProfile.role,
-          activeModules: kaisaProfile.active_modules || [],
-          status: kaisaProfile.status,
-          tenantId: user.tenant_id
+        kaisa: kaisaAccount ? {
+          businessType: kaisaAccount.business_type || tenant?.business_type,
+          status: kaisaAccount.status,
+          activeModules: [], // Load if needed
+          role: "owner",
+          tenantId: kaisaAccount.tenant_id
         } : undefined,
       },
       metadata: {
         tags: [],
         notes: [],
-        lastActivity: user.last_sign_in_at || user.updated_at || user.created_at
+        lastActivity: user.updated_at
       },
-      tenant: {
-        id: user.tenant_id,
-        name: "Personal Tenant", // Mock
-        ownerUserId: user.id,
-        createdAt: user.created_at
-      }
+      tenant: tenant ? {
+        id: tenant.id,
+        name: tenant.name,
+        ownerUserId: tenant.owner_user_id,
+        businessType: tenant.business_type,
+        earlyAccess: tenant.early_access,
+        createdAt: tenant.created_at
+      } : undefined
     };
   },
 

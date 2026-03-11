@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       console.warn(`Booking webhook dropped for tenant ${tenantId}: ${error.message}`);
       // Return 503 so webhook provider might retry later (or 200 to discard if we want to drop definitively)
       // Usually better to fail so they retry when system is up.
-      return NextResponse.json({ error: error.message }, { status: 503 });
+      return NextResponse.json({ error: error.message }, { status: error?.status || 503 });
     }
 
     // 3. Check for existing booking (Deduplication)

@@ -137,7 +137,7 @@ export const geminiService = {
     }
   },
 
-  async generateText(prompt: string): Promise<string> {
+  async generateText(prompt: string): Promise<{ text: string; usage: { totalTokens: number } }> {
     const settings = await settingsService.getSettings();
     const apiKey = settings.api.geminiApiKey;
     if (!apiKey) throw new Error("Gemini API key is not configured");
@@ -146,6 +146,12 @@ export const geminiService = {
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     
     const result = await model.generateContent(prompt);
-    return result.response.text();
+    const response = await result.response;
+    const usage = result.response.usageMetadata || { totalTokenCount: 0 };
+
+    return {
+        text: response.text(),
+        usage: { totalTokens: usage.totalTokenCount || 0 }
+    };
   }
 };
