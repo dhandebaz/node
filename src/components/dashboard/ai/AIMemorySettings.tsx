@@ -56,7 +56,7 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
     if (isEnabled) {
       fetchMemories();
     }
-  }, [isEnabled, filterType]);
+  }, [isEnabled, filterType, fetchMemories]); // Added fetchMemories dependency
 
   const fetchMemories = async () => {
     setLoading(true);

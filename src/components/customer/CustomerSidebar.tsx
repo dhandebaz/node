@@ -31,41 +31,48 @@ interface CustomerSidebarProps {
   tenant?: Tenant;
 }
 
-export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: CustomerSidebarProps) {
-  const pathname = usePathname();
-  const labels = getBusinessLabels(tenant?.businessType);
-  const capabilities = getPersonaCapabilities(tenant?.businessType);
+interface NavItemProps {
+  href: string;
+  label: string;
+  icon: any;
+  exact?: boolean;
+}
 
+const NavItem = ({ href, label, icon: Icon, exact = false }: NavItemProps) => {
+  const pathname = usePathname();
   const isActive = (path: string, exact = false) => {
     if (exact) return pathname === path;
     return pathname.startsWith(path);
   };
-
-  const NavItem = ({ href, label, icon: Icon, exact = false }: { href: string; label: string; icon: any; exact?: boolean }) => {
-    const active = isActive(href, exact);
-    return (
-      <Link 
-        href={href}
-        className={cn(
-          "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group text-sm font-medium",
-          active 
-            ? "bg-white text-black shadow-sm" 
-            : "text-white/60 hover:text-white hover:bg-white/10"
-        )}
-      >
-        <Icon className={cn("w-4 h-4", active ? "text-black" : "text-white/60 group-hover:text-white")} />
-        <span>{label}</span>
-      </Link>
-    );
-  };
-
-  const SectionLabel = ({ label }: { label: string }) => (
-    <div className="px-3 mb-2 mt-6">
-      <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">
-        {label}
-      </span>
-    </div>
+  const active = isActive(href, exact);
+  return (
+    <Link 
+      href={href} 
+      className={cn(
+        "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium",
+        active 
+          ? "bg-white/10 text-white" 
+          : "text-zinc-400 hover:text-white hover:bg-white/5"
+      )}
+    >
+      <Icon className={cn("w-4 h-4", active ? "text-[var(--color-brand-red)]" : "text-zinc-500")} />
+      {label}
+    </Link>
   );
+};
+
+const SectionLabel = ({ label }: { label: string }) => (
+  <div className="px-3 mb-2 mt-6">
+    <span className="text-xs font-bold uppercase tracking-widest text-zinc-600">
+      {label}
+    </span>
+  </div>
+);
+
+export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: CustomerSidebarProps) {
+  const pathname = usePathname();
+  const capabilities = getPersonaCapabilities(tenant?.businessType);
+  const labels = getBusinessLabels(tenant?.businessType);
 
   return (
     <aside className="w-64 fixed inset-y-0 left-0 z-50 bg-[#1A1A1A] border-r border-white/5 flex flex-col">

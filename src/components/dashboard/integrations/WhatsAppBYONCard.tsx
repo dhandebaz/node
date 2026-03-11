@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Loader2, Smartphone, CheckCircle2, XCircle } from "lucide-react";
 import { generateWhatsAppQRAction, checkWhatsAppStatusAction } from "@/app/actions/whatsapp";
@@ -107,7 +108,14 @@ export function WhatsAppBYONCard({ initialStatus }: WhatsAppBYONCardProps) {
           ) : status === 'scanning' && qrCode ? (
             <div className="space-y-4 text-center w-full">
               <div className="bg-white p-4 rounded-lg inline-block">
-                <img src={qrCode} alt="Scan WhatsApp QR" className="w-48 h-48" />
+                <Image
+                  src={qrCode!}
+                  alt="Scan WhatsApp QR"
+                  width={192}
+                  height={192}
+                  className="w-48 h-48"
+                  unoptimized
+                />
               </div>
               <p className="text-xs text-muted-foreground">Open WhatsApp &gt; Linked Devices &gt; Link a Device</p>
               <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground animate-pulse">

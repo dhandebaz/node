@@ -54,7 +54,7 @@ export function ListingsGate({ listingsCount }: ListingsGateProps) {
         // Count > 0
         // console.log(`[ListingsGate] Count is ${listingsCount}. Access granted.`);
     }
-  }, [listingsCount, pathname, router]);
+  }, [listingsCount, pathname, router, labels]);
 
   return null;
 }

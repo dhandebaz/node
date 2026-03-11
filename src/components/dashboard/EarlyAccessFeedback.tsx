@@ -48,7 +48,7 @@ export function EarlyAccessFeedback() {
 
             <h2 className="text-xl font-bold text-white mb-2">Early Access Feedback</h2>
             <p className="text-sm text-white/60 mb-6">
-              You're one of our first 100 users. Your feedback shapes Nodebase directly.
+              You&apos;re one of our first 100 users. Your feedback shapes Nodebase directly.
             </p>
 
             <textarea

@@ -71,7 +71,7 @@ export async function updateSession(request: NextRequest) {
     if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
         try {
             const { rateLimit } = await import('@/lib/ratelimit');
-            const ip = request.ip || '127.0.0.1';
+            const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
             const { success, limit, reset, remaining } = await rateLimit.limit(ip);
             
             if (!success) {

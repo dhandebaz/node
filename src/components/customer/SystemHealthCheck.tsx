@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, WifiOff, CreditCard, PowerOff, AlertOctagon } from "lucide-react";
+import { WifiOff, CreditCard, PowerOff, AlertOctagon } from "lucide-react";
 import Link from "next/link";
 import { Tenant, ListingIntegration } from "@/types";
 

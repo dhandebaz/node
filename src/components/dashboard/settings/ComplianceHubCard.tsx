@@ -25,25 +25,7 @@ export function ComplianceHubCard({ tenant }: ComplianceHubCardProps) {
       "SOP": "sop"
     };
 
-    // If docType isn't in our map (e.g. "Rental Agreement"), just show "Coming Soon" for now
-    // The requirement says: "Update the grid buttons to call generateComplianceDocumentAction with the respective docType ('shop_act', 'gst', 'sop')"
-    // So I should only enable those specific ones or map them.
-    // I'll check if the button label maps to a valid type.
-    
-    let apiType: 'shop_act' | 'gst' | 'sop' | undefined;
-    
-    if (docType === "Shop Act Guidelines") apiType = "shop_act";
-    else if (docType === "GST SOP") apiType = "gst";
-    // Assuming "SOP" refers to a generic SOP or maybe I should add a button for it.
-    // The previous code had specific buttons.
-    // I will use "Standard Operating Procedure" button or just map what I can.
-    
-    // Actually, the previous buttons were: "Shop Act Guidelines", "GST SOP", "Rental Agreement", etc.
-    // The prompt says: "Update the grid buttons to call generateComplianceDocumentAction with the respective docType ('shop_act', 'gst', 'sop')"
-    // This implies I should only implement logic for these 3 types. 
-    // I'll just handle "Shop Act Guidelines" -> 'shop_act' and "GST SOP" -> 'gst'.
-    // For 'sop', I might need a button. 
-    // I'll stick to the existing buttons but wire up the ones that match.
+    const apiType = typeMap[docType];
     
     if (!apiType) {
         toast.info("AI Generation coming soon", {
@@ -58,7 +40,7 @@ export function ComplianceHubCard({ tenant }: ComplianceHubCardProps) {
     try {
       const res = await generateComplianceDocumentAction(apiType);
       if (res.success && res.markdown) {
-        setDocumentContent(res.markdown);
+        setDocumentContent(res.markdown.text); // Fix: Access text property
         toast.success("Document Generated Successfully");
       }
     } catch (error) {

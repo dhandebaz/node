@@ -196,7 +196,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
       window.removeEventListener("auth:session-expired", handleExpired);
     };
-  }, [supabase]);
+  }, [supabase, resolveTenant]);
 
   // Prevent flash of protected content
   if (sessionStatus === "loading") {
