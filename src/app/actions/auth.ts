@@ -99,8 +99,10 @@ export async function impersonateUserAction(targetUserId: string): Promise<void>
   // and redirect the admin to that link. This logs them in as the user.
   // Prerequisite: We need the user's email.
   
-  const { data: user, error } = await supabase.auth.admin.getUserById(targetUserId);
-  if (error || !user) throw new Error("User not found");
+  const { data: userData, error } = await supabase.auth.admin.getUserById(targetUserId);
+  if (error || !userData?.user) throw new Error("User not found");
+  
+  const user = userData.user;
   
   if (!user.email) throw new Error("User has no email to generate login link");
 
