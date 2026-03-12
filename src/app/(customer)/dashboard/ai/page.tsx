@@ -136,25 +136,29 @@ export default async function AIDashboardPage() {
                     </div>
                 ) : (
                     <div className="divide-y divide-zinc-800/50">
-                        {recentActivity.map((activity: any) => (
+                        {recentActivity.map((activity: any) => {
+                          const eventType = String(activity?.event_type ?? "");
+                          const actorType = String(activity?.actor_type ?? "");
+                          const createdAt = activity?.created_at ? new Date(activity.created_at).toLocaleString() : "";
+                          const isError = eventType.includes("ERROR") || eventType.includes("BLOCKED");
+                          const isAiEvent = eventType.includes("AI");
+
+                          return (
                             <div key={activity.id} className="p-4 flex items-center gap-4 hover:bg-zinc-800/20 transition-colors">
-                                <div className={`p-2 rounded-full ${
-                                    activity.event_type.includes('ERROR') || activity.event_type.includes('BLOCKED') 
-                                        ? 'bg-red-500/10 text-red-400' 
-                                        : 'bg-zinc-800 text-zinc-400'
-                                }`}>
-                                    {activity.event_type.includes('AI') ? <Zap className="w-4 h-4" /> : <Activity className="w-4 h-4" />}
+                              <div className={`p-2 rounded-full ${isError ? "bg-red-500/10 text-red-400" : "bg-zinc-800 text-zinc-400"}`}>
+                                {isAiEvent ? <Zap className="w-4 h-4" /> : <Activity className="w-4 h-4" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm text-white font-medium truncate">
+                                  {eventType.replace(/_/g, " ")}
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="text-sm text-white font-medium truncate">
-                                        {activity.event_type.replace(/_/g, ' ')}
-                                    </div>
-                                    <div className="text-xs text-zinc-500 truncate">
-                                        {new Date(activity.created_at).toLocaleString()} • {activity.actor_type}
-                                    </div>
+                                <div className="text-xs text-zinc-500 truncate">
+                                  {createdAt}{createdAt && actorType ? " • " : ""}{actorType}
                                 </div>
+                              </div>
                             </div>
-                        ))}
+                          );
+                        })}
                     </div>
                 )}
             </div>

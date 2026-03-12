@@ -44,16 +44,28 @@ export class ControlService {
    * Get all system flags (Global Kill Switches)
    */
   static async getSystemFlags() {
-    const supabase = await getSupabaseServer();
-    const { data, error } = await supabase
-      .from('system_flags')
-      .select('*');
-    
-    if (error) throw error;
-    
-    // Convert to map for easier access
     const flags: Record<string, boolean> = {};
-    data?.forEach(f => flags[f.key] = f.value);
+
+    try {
+      const supabase = await getSupabaseServer();
+      const { data, error } = await supabase.from("system_flags").select("*");
+
+      if (!error) {
+        data?.forEach((f) => (flags[f.key] = f.value));
+        return flags;
+      }
+    } catch {
+    }
+
+    try {
+      const supabaseAdmin = await getSupabaseAdmin();
+      const { data, error } = await supabaseAdmin.from("system_flags").select("*");
+      if (!error) {
+        data?.forEach((f) => (flags[f.key] = f.value));
+      }
+    } catch {
+    }
+
     return flags;
   }
 
@@ -112,21 +124,30 @@ export class ControlService {
    * Get all feature flags for a tenant
    */
   static async getFeatureFlags(tenantId?: string) {
-    const supabase = await getSupabaseServer();
-    const { data, error } = await supabase
-      .from('feature_flags')
-      .select('*');
-    
-    if (error) throw error;
-    
-    // Resolve flags
-    const flags: Record<string, boolean> = {};
-    data?.forEach(f => {
-      // Enabled if globally enabled OR tenant is in overrides
-      const isEnabled = f.is_global_enabled || (tenantId && f.tenant_overrides?.includes(tenantId));
-      flags[f.key] = !!isEnabled;
-    });
-    return flags;
+    const resolve = (data: any[] | null) => {
+      const flags: Record<string, boolean> = {};
+      data?.forEach((f: any) => {
+        const isEnabled = f.is_global_enabled || (tenantId && f.tenant_overrides?.includes(tenantId));
+        flags[f.key] = !!isEnabled;
+      });
+      return flags;
+    };
+
+    try {
+      const supabase = await getSupabaseServer();
+      const { data, error } = await supabase.from("feature_flags").select("*");
+      if (!error) return resolve(data as any);
+    } catch {
+    }
+
+    try {
+      const supabaseAdmin = await getSupabaseAdmin();
+      const { data, error } = await supabaseAdmin.from("feature_flags").select("*");
+      if (!error) return resolve(data as any);
+    } catch {
+    }
+
+    return {};
   }
 
   /**
