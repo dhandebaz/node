@@ -30,59 +30,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const supabase = getSupabaseBrowser();
-  const tenantResolveTimeoutMs = 4500;
   const sessionResolveTimeoutMs = 4500;
 
   useEffect(() => {
     sessionStatusRef.current = sessionStatus;
   }, [sessionStatus]);
-
-  const setTenantCookie = (id: string) => {
-    const isHttps = typeof window !== "undefined" && window.location?.protocol === "https:";
-    const secure = isHttps ? "; secure" : "";
-    document.cookie = `nodebase-tenant-id=${id}; path=/${secure}; samesite=strict; max-age=31536000`;
-  };
-
-  const clearTenantCookie = () => {
-    const isHttps = typeof window !== "undefined" && window.location?.protocol === "https:";
-    const secure = isHttps ? "; secure" : "";
-    document.cookie = `nodebase-tenant-id=; path=/${secure}; samesite=strict; max-age=0`;
-  };
-
-  const resolveTenant = useCallback(async (userId: string) => {
-    try {
-      // Fetch user's tenants
-      const queryPromise = supabase
-        .from('tenant_users')
-        .select('tenant_id')
-        .eq('user_id', userId)
-        .limit(1);
-      const res = await Promise.race([
-        queryPromise,
-        new Promise<null>((resolve) => setTimeout(() => resolve(null), tenantResolveTimeoutMs)),
-      ]);
-
-      if (res === null) {
-        console.warn("Tenant resolution timed out");
-        return null;
-      }
-
-      const { data, error } = res;
-
-      if (error) {
-        console.error("Tenant resolution error:", error);
-        return null;
-      }
-
-      if (data && data.length > 0) {
-        return data[0].tenant_id;
-      }
-      return null;
-    } catch (e) {
-      console.error("Tenant fetch exception:", e);
-      return null;
-    }
-  }, [supabase, tenantResolveTimeoutMs]);
 
   const getSessionSafely = useCallback(async () => {
     const res = await Promise.race([
@@ -107,24 +59,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(user);
     const userRole = (user.user_metadata?.role as UserRole) || "customer";
     setRole(userRole);
-
-    const tId = await resolveTenant(user.id);
-    if (tId) {
-      setTenantId(tId);
-      setTenantCookie(tId);
-      setSessionStatus("authenticated");
-      return;
-    }
-
-    if (userRole === 'admin' || userRole === 'superadmin') {
-      setTenantId(null);
-      setSessionStatus("authenticated");
-      return;
-    }
-
     setTenantId(null);
     setSessionStatus("authenticated");
-  }, [resolveTenant]);
+  }, []);
 
   const refreshSession = useCallback(async () => {
     try {
@@ -144,7 +81,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setRole(null);
     setTenantId(null);
-    clearTenantCookie();
+    try {
+      await fetch("/api/auth/tenant-cookie/clear", { method: "POST" });
+    } catch {}
     setSessionStatus("unauthenticated");
     router.push("/login");
   }, [supabase, router]);
@@ -217,7 +156,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(null);
             setRole(null);
             setTenantId(null);
-            clearTenantCookie();
             setSessionStatus("unauthenticated");
         } else if (session) {
             await applySession(session);
@@ -236,7 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
       window.removeEventListener("auth:session-expired", handleExpired);
     };
-  }, [applySession, getSessionSafely, pathname, supabase, resolveTenant]);
+  }, [applySession, getSessionSafely, pathname, supabase]);
 
   // Prevent flash of protected content
   if (sessionStatus === "loading") {
