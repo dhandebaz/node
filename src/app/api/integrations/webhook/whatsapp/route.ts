@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { geminiService } from "@/lib/services/geminiService";
 import { ControlService } from "@/lib/services/controlService";
+import { wahaService } from "@/lib/services/wahaService";
 
 export async function POST(request: Request) {
   try {
@@ -49,8 +50,9 @@ export async function POST(request: Request) {
       await ControlService.checkAction(tenantId, 'ai');
       await ControlService.checkAction(tenantId, 'payment');
       await ControlService.checkAction(tenantId, 'message');
-    } catch (error: any) {
-      return NextResponse.json({ success: true, blocked: true, reason: error?.message || "Action blocked" });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Action blocked";
+      return NextResponse.json({ success: true, blocked: true, reason: message });
     }
 
     // Check Wallet Balance
@@ -119,21 +121,10 @@ export async function POST(request: Request) {
       read: true
     });
 
-    // Send Reply back to VPS
-    const sendRes = await fetch(process.env.WAHA_SERVER_URL + '/api/sendText', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        session: tenantId,
-        chatId: sender,
-        text: aiReply
-      })
-    });
-
-    if (!sendRes.ok) {
-      console.error("WAHA sendText failed:", await sendRes.text().catch(() => ""));
+    try {
+      await wahaService.sendText({ sessionName: tenantId, chatId: sender, text: aiReply });
+    } catch (e) {
+      console.error("WAHA sendText failed:", e);
       return NextResponse.json({ success: true, send_failed: true });
     }
 

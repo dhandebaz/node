@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, Zap, MessageSquare, ShieldCheck, HelpCircle } from "lucide-react";
+import { Check, Zap, MessageSquare, HelpCircle } from "lucide-react";
 
 export default function PricingPage() {
   const fadeInUp = {
@@ -43,7 +43,7 @@ export default function PricingPage() {
                 <span className="text-5xl font-bold">₹1,999</span>
                 <span className="text-lg font-normal opacity-60">/month</span>
               </div>
-              <p className="text-xl opacity-80 mb-8">Your AI Employee's salary.</p>
+              <p className="text-xl opacity-80 mb-8">Your AI Employee&apos;s salary.</p>
               
               <ul className="space-y-6 mb-10">
                 <li className="flex items-start gap-4">
@@ -56,7 +56,7 @@ export default function PricingPage() {
                   <div className="p-1 bg-green-500/20 rounded-full mt-1">
                     <Check className="w-4 h-4 text-green-400" />
                   </div>
-                  <span className="text-lg">WhatsApp & Instagram Integration</span>
+                  <span className="text-lg">WhatsApp (WAHA-based) & Instagram Integration</span>
                 </li>
                 <li className="flex items-start gap-4">
                   <div className="p-1 bg-green-500/20 rounded-full mt-1">
@@ -109,7 +109,7 @@ export default function PricingPage() {
                        <span className="font-mono text-2xl font-bold text-brand-bone">₹0</span>
                      </div>
                      <p className="text-sm opacity-60 leading-relaxed">
-                       We don't charge commission on your sales or bookings. You keep 100% of your revenue.
+                       We don&apos;t charge commission on your sales or bookings. You keep 100% of your revenue.
                      </p>
                    </div>
                 </div>
@@ -132,6 +132,10 @@ export default function PricingPage() {
      <section className="py-24 px-6 text-center">
         <h2 className="text-3xl font-bold uppercase tracking-tight mb-8">Common Questions</h2>
         <div className="max-w-3xl mx-auto grid gap-8 text-left">
+           <div className="bg-brand-bone/5 p-6 rounded-xl border border-brand-bone/10">
+              <h3 className="font-bold text-lg mb-2">Is this the official WhatsApp Business API?</h3>
+              <p className="opacity-70">No. This integration is WAHA-based (Linked Devices). It runs a session on your VPS and connects via QR.</p>
+           </div>
            <div className="bg-brand-bone/5 p-6 rounded-xl border border-brand-bone/10">
               <h3 className="font-bold text-lg mb-2">What happens if I run out of balance?</h3>
               <p className="opacity-70">The AI will stop replying. You will get a notification to top up. You can manually reply to customers in the meantime.</p>

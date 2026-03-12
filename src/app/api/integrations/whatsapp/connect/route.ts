@@ -5,6 +5,7 @@ import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getPersonaCapabilities } from "@/lib/business-context";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
+import { wahaService } from "@/lib/services/wahaService";
 
 export async function POST() {
   const session = await getSession();
@@ -38,15 +39,27 @@ export async function POST() {
   }
 
   // 2. Mock Connection (In real life, this would be an OAuth flow or QR code scan)
-  // For now, we just create the record as "connected"
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!appUrl) {
+    return NextResponse.json({ error: "NEXT_PUBLIC_APP_URL is not set" }, { status: 500 });
+  }
+
+  const webhookUrl = `${appUrl}/api/integrations/webhook/whatsapp?tenantId=${tenantId}`;
+  const { status, qrUrl } = await wahaService.startSession({
+    sessionName: tenantId,
+    webhooks: [{ url: webhookUrl, events: ["message"] }],
+  });
+
+  const integrationStatus = status === "WORKING" ? "active" : "pending_qr";
+
   const { error } = await supabase
     .from("integrations")
     .upsert({
       tenant_id: tenantId,
       user_id: session.userId,
       provider: "whatsapp",
-      status: "connected",
-      connected_name: "WhatsApp Business Account",
+      status: integrationStatus,
+      connected_name: "WhatsApp",
       last_synced_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }, { onConflict: "tenant_id, provider" });
@@ -55,5 +68,5 @@ export async function POST() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true, status: "connected" });
+  return NextResponse.json({ success: true, status: integrationStatus, qrUrl });
 }

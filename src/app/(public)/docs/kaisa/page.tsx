@@ -1,6 +1,6 @@
 "use client";
 
-import { BrainCircuit, MessageSquare, Briefcase, IndianRupee, Users } from "lucide-react";
+import { BrainCircuit, Briefcase, IndianRupee } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function KaisaDocsPage() {
@@ -19,12 +19,12 @@ export default function KaisaDocsPage() {
         </div>
         
         <p className="lead text-xl text-brand-bone/70 font-light">
-          Kaisa is an <strong>agentic manager</strong> platform designed specifically for the Indian business ecosystem. Unlike generic chatbots, Kaisa agents are designed to function as "digital employees" with specific roles, responsibilities, and tools.
+          Kaisa is an <strong>agentic manager</strong> platform designed specifically for the Indian business ecosystem. Unlike generic chatbots, Kaisa agents are designed to function as &quot;digital employees&quot; with specific roles, responsibilities, and tools.
         </p>
 
-        <h2 className="mt-12 uppercase tracking-tight">The "Digital Employee" Concept</h2>
+        <h2 className="mt-12 uppercase tracking-tight">The &quot;Digital Employee&quot; Concept</h2>
         <p>
-          We believe that small businesses (SMBs) don't want "AI Models"—they want <strong>staff</strong>. Kaisa abstracts the complexity of LLMs into familiar employment concepts.
+          We believe that small businesses (SMBs) don&apos;t want &quot;AI Models&quot;—they want <strong>staff</strong>. Kaisa abstracts the complexity of LLMs into familiar employment concepts.
         </p>
 
         <div className="grid md:grid-cols-2 gap-6 not-prose my-8">
@@ -34,7 +34,7 @@ export default function KaisaDocsPage() {
                <h3 className="font-bold text-brand-bone m-0 uppercase tracking-tight">Roles, Not Prompts</h3>
              </div>
              <p className="text-sm text-brand-bone/60">
-               You don't prompt Kaisa. You hire a "Receptionist" or a "Sales Associate". These roles come pre-trained with industry-specific knowledge and workflows.
+               You don&apos;t prompt Kaisa. You hire a &quot;Receptionist&quot; or a &quot;Sales Associate&quot;. These roles come pre-trained with industry-specific knowledge and workflows.
              </p>
           </div>
           <div className="p-6 rounded-xl border border-brand-bone/10 bg-brand-bone/5">
@@ -43,7 +43,7 @@ export default function KaisaDocsPage() {
                <h3 className="font-bold text-brand-bone m-0 uppercase tracking-tight">Wages, Not Tokens</h3>
              </div>
              <p className="text-sm text-brand-bone/60">
-               Pricing is calculated in "Credits/Hour" based on the agent's active work time. No confusing token calculations or API metering.
+               Pricing is calculated in &quot;Credits/Hour&quot; based on the agent&apos;s active work time. No confusing token calculations or API metering.
              </p>
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function KaisaDocsPage() {
 
         <h2 className="mt-12 uppercase tracking-tight">Core Architecture</h2>
         <p>
-          Kaisa operates on a proprietary "Human-in-the-Loop" (HITL) architecture.
+          Kaisa operates on a proprietary &quot;Human-in-the-Loop&quot; (HITL) architecture.
         </p>
         <ul>
           <li><strong>Autonomy Levels:</strong> Configure agents to act fully autonomously or require approval for sensitive actions (like refunds).</li>
@@ -76,11 +76,11 @@ export default function KaisaDocsPage() {
 
         <h3 className="uppercase tracking-tight">Example: Medical Receptionist</h3>
         <p>
-          A "Receptionist" agent for a clinic is pre-configured to:
+          A &quot;Receptionist&quot; agent for a clinic is pre-configured to:
         </p>
         <ol>
-          <li>Answer calls/messages via WhatsApp.</li>
-          <li>Check the doctor's calendar (Google Calendar/Outlook).</li>
+          <li>Answer calls/messages via WhatsApp (WAHA / Linked Devices).</li>
+          <li>Check the doctor&apos;s calendar (Google Calendar/Outlook).</li>
           <li>Verify patient details.</li>
           <li>Book the slot and send a confirmation.</li>
         </ol>
@@ -94,7 +94,7 @@ agent:
   languages: ["en-IN", "hi-IN"]
   tools:
     - google_calendar
-    - whatsapp_business
+    - whatsapp_waha
   constraints:
     - "Never double book slots"
     - "Always ask for patient age"`}

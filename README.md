@@ -13,11 +13,11 @@ Our platform offers specialized AI agents:
 
 ## Tech Stack
 
--   **Framework**: Next.js 14 (App Router)
+-   **Framework**: Next.js (App Router)
 -   **Language**: TypeScript
 -   **Styling**: Tailwind CSS
 -   **Database & Auth**: Supabase
--   **AI**: Google Gemini / OpenAI
+-   **AI**: Google Gemini / Anthropic Claude
 -   **State Management**: Zustand
 
 ## Getting Started
@@ -38,6 +38,13 @@ Our platform offers specialized AI agents:
     ```bash
     cp .env.example .env.local
     ```
+
+    For production (Vercel), also configure:
+    - `NEXT_PUBLIC_APP_URL` (e.g. `https://nodebase.space`)
+    - `WAHA_SERVER_URL` (WhatsApp API on your VPS)
+    - `WAHA_API_KEY` (optional, if WAHA is secured)
+    - `VPS_API_URL` (Vibecoding execution server on your VPS)
+    - `VPS_API_KEY` (required, must match the VPS `.env`)
 
 4.  **Run Development Server**:
     ```bash

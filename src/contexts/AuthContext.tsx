@@ -7,7 +7,7 @@ import { SessionExpiredOverlay } from "@/components/auth/SessionExpiredOverlay";
 import { TenantErrorOverlay } from "@/components/auth/TenantErrorOverlay";
 import type { User, AuthChangeEvent, Session } from "@supabase/supabase-js";
 
-type UserRole = "customer" | "admin";
+type UserRole = "customer" | "business" | "admin" | "superadmin";
 type SessionStatus = "loading" | "authenticated" | "unauthenticated" | "expired" | "tenant_error";
 
 interface AuthContextType {
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     document.cookie = `nodebase-tenant-id=; path=/; secure; samesite=strict; max-age=0`;
   };
 
-  const resolveTenant = async (userId: string) => {
+  const resolveTenant = useCallback(async (userId: string) => {
     try {
       // Fetch user's tenants
       const { data, error } = await supabase
@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("Tenant fetch exception:", e);
       return null;
     }
-  };
+  }, [supabase]);
 
   const refreshSession = useCallback(async () => {
     try {
@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // "View as tenant" mode is explicit.
             // So admins might not have a tenant_id in tenant_users for *every* tenant.
             // But they should probably have a 'home' tenant.
-            if (userRole === 'admin') {
+            if (userRole === 'admin' || userRole === 'superadmin') {
                 // Admins might bypass tenant check for their own dashboard, 
                 // OR we assign them a system tenant. 
                 // Let's assume strict fail for now to be safe, unless explicit admin override.
@@ -118,10 +118,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Initial Check & Listener
   useEffect(() => {
+    let mounted = true;
+
     const initSession = async () => {
+      // Safety timeout to prevent infinite loading
+      const timeoutId = setTimeout(() => {
+        if (mounted && sessionStatus === "loading") {
+          console.warn("Auth initialization timed out, forcing unauthenticated state");
+          setSessionStatus("unauthenticated");
+        }
+      }, 5000);
+
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         
+        if (!mounted) return;
+
         if (error) {
             console.error("Session error:", error);
             setSessionStatus("unauthenticated");
@@ -135,12 +147,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setRole(userRole);
 
           const tId = await resolveTenant(user.id);
+          
+          if (!mounted) return;
+
           if (tId) {
             setTenantId(tId);
             setTenantCookie(tId);
             setSessionStatus("authenticated");
           } else {
-             if (userRole === 'admin') {
+             if (userRole === 'admin' || userRole === 'superadmin') {
                  setSessionStatus("authenticated");
              } else {
                  setSessionStatus("tenant_error");
@@ -151,7 +166,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (err) {
         console.error("Auth init error:", err);
-        setSessionStatus("unauthenticated");
+        if (mounted) setSessionStatus("unauthenticated");
+      } finally {
+        clearTimeout(timeoutId);
       }
     };
 
@@ -159,6 +176,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event: AuthChangeEvent, session: Session | null) => {
+        if (!mounted) return;
+
         if (event === 'SIGNED_OUT') {
             setUser(null);
             setRole(null);
@@ -173,12 +192,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             
             // Re-resolve tenant on change to be safe
             const tId = await resolveTenant(user.id);
+            
+            if (!mounted) return;
+
             if (tId) {
                 setTenantId(tId);
                 setTenantCookie(tId);
                 setSessionStatus("authenticated");
             } else {
-                 if (userRole === 'admin') {
+                 if (userRole === 'admin' || userRole === 'superadmin') {
                      setSessionStatus("authenticated");
                  } else {
                      setSessionStatus("tenant_error");
@@ -189,10 +211,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
 
     // Listen for custom 401 events from API client
-    const handleExpired = () => setSessionStatus("expired");
+    const handleExpired = () => {
+        if (mounted) setSessionStatus("expired");
+    };
     window.addEventListener("auth:session-expired", handleExpired);
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
       window.removeEventListener("auth:session-expired", handleExpired);
     };

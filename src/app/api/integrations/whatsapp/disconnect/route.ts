@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
+import { wahaService } from "@/lib/services/wahaService";
 
 export async function POST() {
   const session = await getSession();
@@ -12,6 +13,10 @@ export async function POST() {
 
   const tenantId = await requireActiveTenant();
   const supabase = await getSupabaseServer();
+
+  try {
+    await wahaService.stopSession({ sessionName: tenantId });
+  } catch {}
 
   // Remove the integration record
   const { error } = await supabase

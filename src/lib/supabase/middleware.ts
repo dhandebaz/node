@@ -59,7 +59,9 @@ export async function updateSession(request: NextRequest) {
     // BUT the requirement says "Admin checks must exist at route + API layer".
     // So if it's /api/admin/*, we should probably check here too.
     if (path.startsWith('/api/admin')) {
-      if (!user || user.user_metadata?.role !== 'admin') {
+      const role = user?.user_metadata?.role || 'customer'
+      const isAdmin = role === 'admin' || role === 'superadmin'
+      if (!user || !isAdmin) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }
     }
@@ -110,9 +112,10 @@ export async function updateSession(request: NextRequest) {
   // 2. Redirect authenticated users away from login
   if (user && path === '/login') {
     const role = user.user_metadata?.role || 'customer'
+    const isAdmin = role === 'admin' || role === 'superadmin'
     const url = request.nextUrl.clone()
-    if (role === 'admin') {
-        url.pathname = '/admin/dashboard'
+    if (isAdmin) {
+        url.pathname = '/admin/overview'
     } else {
         url.pathname = '/dashboard/ai' // Corrected redirect
     }
@@ -122,9 +125,10 @@ export async function updateSession(request: NextRequest) {
   // 3. Strict Role Separation
   if (user) {
     const role = user.user_metadata?.role || 'customer'
+    const isAdmin = role === 'admin' || role === 'superadmin'
 
     // Customer trying to access Admin routes
-    if (path.startsWith('/admin') && role !== 'admin') {
+    if (path.startsWith('/admin') && !isAdmin) {
         const url = request.nextUrl.clone()
         url.pathname = '/dashboard/ai' // Corrected redirect
         return NextResponse.redirect(url)
@@ -133,9 +137,9 @@ export async function updateSession(request: NextRequest) {
     // Admin trying to access Customer routes? 
     // Requirement: "Admin and customer areas are strictly isolated"
     // Requirement: "Admin user cannot open customer dashboard"
-    if (path.startsWith('/dashboard') && role === 'admin') {
+    if (path.startsWith('/dashboard') && isAdmin) {
         const url = request.nextUrl.clone()
-        url.pathname = '/admin/dashboard'
+        url.pathname = '/admin/overview'
         return NextResponse.redirect(url)
     }
   }

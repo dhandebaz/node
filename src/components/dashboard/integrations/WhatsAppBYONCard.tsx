@@ -75,7 +75,7 @@ export function WhatsAppBYONCard({ initialStatus }: WhatsAppBYONCardProps) {
               <Smartphone className="w-8 h-8 text-[#25D366]" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-foreground">WhatsApp Personal (Scan to Connect)</h2>
+              <h2 className="text-xl font-bold text-foreground">WhatsApp (WAHA / Linked Devices)</h2>
               <div className="flex items-center gap-2 mt-1">
                 {status === 'connected' ? (
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">

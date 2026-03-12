@@ -38,14 +38,14 @@ export default function Page() {
               <MessageCircle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-brand-bone mb-1">WhatsApp Business</h3>
+              <h3 className="text-lg font-bold text-brand-bone mb-1">WhatsApp (WAHA / Linked Devices)</h3>
               <p className="text-sm text-brand-bone/60 mb-3">
-                The primary interface for kaisa agents. Enable agents to read, reply, and manage WhatsApp conversations automatically.
+                The primary interface for kaisa agents. Connect via QR (Linked Devices) using WAHA on your VPS so agents can read and reply automatically.
               </p>
               <ul className="text-sm text-brand-bone/50 list-disc list-inside">
                 <li>Automatic reply handling</li>
-                <li>Template message sending</li>
-                <li>Media handling (images/documents)</li>
+                <li>Manual takeover support</li>
+                <li>VPS-hosted session (WAHA)</li>
               </ul>
             </div>
           </div>
@@ -72,7 +72,7 @@ export default function Page() {
             <div>
               <h3 className="text-lg font-bold text-brand-bone mb-1">Google Calendar</h3>
               <p className="text-sm text-brand-bone/60 mb-3">
-                Real-time slot checking and appointment booking. kaisa respects your "Busy" status and working hours.
+                Real-time slot checking and appointment booking. kaisa respects your &quot;Busy&quot; status and working hours.
               </p>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function Page() {
                 Generate payment links and verify transaction status.
               </p>
               <div className="bg-black/40 p-3 rounded text-xs font-mono text-brand-bone/60 border border-brand-bone/10">
-                Agent: "I've booked your slot. Please pay ₹500 using this link: https://rzp.io/l/xxxxx"
+                Agent: &quot;I&apos;ve booked your slot. Please pay ₹500 using this link: https://rzp.io/l/xxxxx&quot;
               </div>
             </div>
           </div>

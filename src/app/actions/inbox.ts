@@ -3,6 +3,7 @@
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { ControlService } from "@/lib/services/controlService";
+import { wahaService } from "@/lib/services/wahaService";
 
 export async function toggleAIPauseAction(guestId: string, paused: boolean) {
   const tenantId = await requireActiveTenant();
@@ -35,21 +36,7 @@ export async function sendManualMessageAction(guestId: string, text: string) {
 
   if (guestError || !guest) throw new Error('Guest not found');
 
-  // Send via WAHA
-  const response = await fetch(process.env.WAHA_SERVER_URL + '/api/sendText', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      session: tenantId,
-      chatId: guest.phone,
-      text: text
-    })
-  });
-
-  if (!response.ok) {
-     console.error("WAHA Send Error", await response.text());
-     throw new Error("Failed to send message via WhatsApp");
-  }
+  await wahaService.sendText({ sessionName: tenantId, chatId: guest.phone, text });
 
   // Insert outbound message
   const { error: msgError } = await supabase.from('messages').insert({

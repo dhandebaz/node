@@ -21,13 +21,15 @@ import {
   AlertTriangle,
   Flag,
   Rocket,
-  TrendingUp
+  TrendingUp,
+  Code
 } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 
 const navItems = [
   { name: "Overview", href: "/admin/overview", icon: LayoutDashboard },
+  { name: "Vibecoding", href: "/admin/vibecoding", icon: Code },
   { name: "AI Managers", href: "/admin/ai-managers", icon: Cpu },
   { name: "AI Rules", href: "/admin/ai-rules", icon: ShieldCheck },
   { name: "Pricing & Costs", href: "/admin/pricing", icon: DollarSign },
