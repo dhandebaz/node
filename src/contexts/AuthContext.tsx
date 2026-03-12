@@ -31,6 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const supabase = getSupabaseBrowser();
   const tenantResolveTimeoutMs = 4500;
+  const sessionResolveTimeoutMs = 4500;
 
   useEffect(() => {
     sessionStatusRef.current = sessionStatus;
@@ -79,49 +80,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [supabase, tenantResolveTimeoutMs]);
 
+  const getSessionSafely = useCallback(async () => {
+    const res = await Promise.race([
+      supabase.auth.getSession(),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), sessionResolveTimeoutMs)),
+    ]);
+
+    if (res === null) {
+      return { session: null, error: new Error("Session resolution timed out"), timedOut: true };
+    }
+
+    return { session: res.data.session, error: res.error, timedOut: false };
+  }, [supabase, sessionResolveTimeoutMs]);
+
+  const applySession = useCallback(async (session: Session | null) => {
+    if (!session) {
+      setSessionStatus("unauthenticated");
+      return;
+    }
+
+    const user = session.user;
+    setUser(user);
+    const userRole = (user.user_metadata?.role as UserRole) || "customer";
+    setRole(userRole);
+
+    const tId = await resolveTenant(user.id);
+    if (tId) {
+      setTenantId(tId);
+      setTenantCookie(tId);
+      setSessionStatus("authenticated");
+      return;
+    }
+
+    if (userRole === 'admin' || userRole === 'superadmin') {
+      setTenantId(null);
+      setSessionStatus("authenticated");
+      return;
+    }
+
+    setSessionStatus("tenant_error");
+  }, [resolveTenant]);
+
   const refreshSession = useCallback(async () => {
     try {
       const { data, error } = await supabase.auth.refreshSession();
       if (error || !data.session) {
         setSessionStatus("expired");
       } else {
-        const user = data.user;
-        setUser(user);
-        const userRole = (user.user_metadata?.role as UserRole) || "customer";
-        setRole(userRole);
-        
-        // Resolve Tenant
-        const tId = await resolveTenant(user.id);
-        if (tId) {
-            setTenantId(tId);
-            setTenantCookie(tId);
-            setSessionStatus("authenticated");
-        } else {
-            // Admin users might not need a tenant in some models, but requirement says "Strict Multi-tenancy".
-            // If admin needs to view tenants, they might have a different flow. 
-            // For now, assuming even admins belong to an 'Admin Tenant' or we strictly fail if no tenant.
-            // BUT, if I am admin, maybe I don't enforce tenant_users check the same way? 
-            // Requirement: "Admins can access data explicitly and safely". 
-            // "View as tenant" mode is explicit.
-            // So admins might not have a tenant_id in tenant_users for *every* tenant.
-            // But they should probably have a 'home' tenant.
-            if (userRole === 'admin' || userRole === 'superadmin') {
-                // Admins might bypass tenant check for their own dashboard, 
-                // OR we assign them a system tenant. 
-                // Let's assume strict fail for now to be safe, unless explicit admin override.
-                // Actually, let's allow admin without tenant_id to access /admin, 
-                // but blocking /dashboard.
-                setTenantId(null); 
-                setSessionStatus("authenticated"); 
-            } else {
-                setSessionStatus("tenant_error");
-            }
-        }
+        await applySession(data.session);
       }
     } catch {
       setSessionStatus("expired");
     }
-  }, [supabase, resolveTenant]);
+  }, [applySession, supabase]);
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
@@ -145,34 +156,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         (async () => {
           try {
-            const { data } = await supabase.auth.getSession();
+            const { session } = await getSessionSafely();
             if (!mounted) return;
-            if (data.session) {
-              const user = data.session.user;
-              setUser(user);
-              const userRole = (user.user_metadata?.role as UserRole) || "customer";
-              setRole(userRole);
+            await applySession(session);
+            if (!mounted) return;
 
-              const tId = await resolveTenant(user.id);
-              if (!mounted) return;
+            if (session) return;
 
-              if (tId) {
-                setTenantId(tId);
-                setTenantCookie(tId);
-                setSessionStatus("authenticated");
-              } else {
-                if (userRole === 'admin' || userRole === 'superadmin') {
-                  setTenantId(null);
-                  setSessionStatus("authenticated");
-                } else {
-                  setSessionStatus("tenant_error");
-                }
-              }
-              return;
-            }
-
-            console.warn("Auth initialization timed out, forcing unauthenticated state");
-            setSessionStatus("unauthenticated");
             const currentPath = window.location?.pathname || pathname || "";
             if (currentPath.startsWith("/dashboard") || currentPath.startsWith("/admin")) {
               try {
@@ -188,9 +178,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }, 6000);
 
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const { session, error, timedOut } = await getSessionSafely();
         
         if (!mounted) return;
+
+        if (timedOut) {
+          setSessionStatus("unauthenticated");
+          return;
+        }
 
         if (error) {
             console.error("Session error:", error);
@@ -198,30 +193,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             return;
         }
 
-        if (session) {
-          const user = session.user;
-          setUser(user);
-          const userRole = (user.user_metadata?.role as UserRole) || "customer";
-          setRole(userRole);
-
-          const tId = await resolveTenant(user.id);
-          
-          if (!mounted) return;
-
-          if (tId) {
-            setTenantId(tId);
-            setTenantCookie(tId);
-            setSessionStatus("authenticated");
-          } else {
-             if (userRole === 'admin' || userRole === 'superadmin') {
-                 setSessionStatus("authenticated");
-             } else {
-                 setSessionStatus("tenant_error");
-             }
-          }
-        } else {
-          setSessionStatus("unauthenticated");
-        }
+        await applySession(session);
       } catch (err) {
         console.error("Auth init error:", err);
         if (mounted) setSessionStatus("unauthenticated");
@@ -279,7 +251,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
       window.removeEventListener("auth:session-expired", handleExpired);
     };
-  }, [supabase, resolveTenant, pathname]);
+  }, [applySession, getSessionSafely, pathname, supabase, resolveTenant]);
 
   // Prevent flash of protected content
   if (sessionStatus === "loading") {
