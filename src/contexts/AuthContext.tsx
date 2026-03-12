@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { SessionExpiredOverlay } from "@/components/auth/SessionExpiredOverlay";
 import type { User, AuthChangeEvent, Session } from "@supabase/supabase-js";
@@ -12,7 +12,6 @@ type SessionStatus = "loading" | "authenticated" | "unauthenticated" | "expired"
 interface AuthContextType {
   user: User | null;
   role: UserRole | null;
-  tenantId: string | null;
   sessionStatus: SessionStatus;
   refreshSession: () => Promise<void>;
   logout: () => Promise<void>;
@@ -23,20 +22,19 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
-  const [tenantId, setTenantId] = useState<string | null>(null);
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>("loading");
   const router = useRouter();
-  const pathname = usePathname();
   const supabase = getSupabaseBrowser();
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
     setUser(null);
     setRole(null);
-    setTenantId(null);
+    // Clear the tenant cookie via server route
     try {
       await fetch("/api/auth/tenant-cookie/clear", { method: "POST" });
     } catch {}
+    
     setSessionStatus("unauthenticated");
     router.push("/login");
   }, [supabase, router]);
@@ -57,7 +55,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [supabase]);
 
-  // Initial Check & Listener
   useEffect(() => {
     let mounted = true;
 
@@ -95,7 +92,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (event === 'SIGNED_OUT') {
             setUser(null);
             setRole(null);
-            setTenantId(null);
             setSessionStatus("unauthenticated");
         } else if (session?.user) {
             setUser(session.user);
@@ -107,40 +103,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
-    // Listen for custom 401 events from API client
-    const handleExpired = () => {
-        if (mounted) setSessionStatus("expired");
-    };
-    window.addEventListener("auth:session-expired", handleExpired);
-
     return () => {
       mounted = false;
       subscription.unsubscribe();
-      window.removeEventListener("auth:session-expired", handleExpired);
     };
-  }, [pathname, supabase]);
+  }, [supabase]);
 
-  // Prevent flash of protected content
-  if (sessionStatus === "loading") {
-    // Only block if we are on a protected route to allow public pages to render fast
-    if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin")) {
-        return (
-          <div className="min-h-screen bg-black text-white flex items-center justify-center">
-             <div className="animate-pulse flex flex-col items-center">
-                <div className="h-8 w-8 bg-white/20 rounded-full mb-4"></div>
-                <div className="text-sm text-white/50">Securing environment...</div>
-             </div>
-          </div>
-        );
-    }
-  }
-
+  // Loading UI:
+  // We can show a global loader here if we want to block the entire app until we know auth state.
+  // However, for better UX, we usually let the page load and let Middleware handle protection.
+  // But to avoid "flash of unauthenticated content" in client components that use `useAuth`,
+  // we can block children rendering until loading is done.
+  // Given the middleware protects routes, we can be lenient here.
+  
   if (sessionStatus === "expired") {
     return <SessionExpiredOverlay />;
   }
 
   return (
-    <AuthContext.Provider value={{ user, role, tenantId, sessionStatus, refreshSession, logout }}>
+    <AuthContext.Provider value={{ user, role, sessionStatus, refreshSession, logout }}>
       {children}
     </AuthContext.Provider>
   );
