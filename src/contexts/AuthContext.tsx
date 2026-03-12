@@ -30,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const supabase = getSupabaseBrowser();
+  const tenantResolveTimeoutMs = 4500;
 
   useEffect(() => {
     sessionStatusRef.current = sessionStatus;
@@ -46,11 +47,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const resolveTenant = useCallback(async (userId: string) => {
     try {
       // Fetch user's tenants
-      const { data, error } = await supabase
+      const queryPromise = supabase
         .from('tenant_users')
         .select('tenant_id')
         .eq('user_id', userId)
-        .limit(1); // For now, strict 1-to-1 or take first.
+        .limit(1);
+      const res = await Promise.race([
+        queryPromise,
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), tenantResolveTimeoutMs)),
+      ]);
+
+      if (res === null) {
+        console.warn("Tenant resolution timed out");
+        return null;
+      }
+
+      const { data, error } = res;
 
       if (error) {
         console.error("Tenant resolution error:", error);
@@ -65,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("Tenant fetch exception:", e);
       return null;
     }
-  }, [supabase]);
+  }, [supabase, tenantResolveTimeoutMs]);
 
   const refreshSession = useCallback(async () => {
     try {
@@ -109,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       setSessionStatus("expired");
     }
-  }, [supabase]);
+  }, [supabase, resolveTenant]);
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
@@ -135,11 +147,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           try {
             const { data } = await supabase.auth.getSession();
             if (!mounted) return;
-            if (data.session) return;
+            if (data.session) {
+              const user = data.session.user;
+              setUser(user);
+              const userRole = (user.user_metadata?.role as UserRole) || "customer";
+              setRole(userRole);
+
+              const tId = await resolveTenant(user.id);
+              if (!mounted) return;
+
+              if (tId) {
+                setTenantId(tId);
+                setTenantCookie(tId);
+                setSessionStatus("authenticated");
+              } else {
+                if (userRole === 'admin' || userRole === 'superadmin') {
+                  setTenantId(null);
+                  setSessionStatus("authenticated");
+                } else {
+                  setSessionStatus("tenant_error");
+                }
+              }
+              return;
+            }
 
             console.warn("Auth initialization timed out, forcing unauthenticated state");
             setSessionStatus("unauthenticated");
-            if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin")) {
+            const currentPath = window.location?.pathname || pathname || "";
+            if (currentPath.startsWith("/dashboard") || currentPath.startsWith("/admin")) {
               try {
                 const ts = Date.now();
                 window.location.replace(`/login?ts=${ts}`);
@@ -244,7 +279,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
       window.removeEventListener("auth:session-expired", handleExpired);
     };
-  }, [supabase, resolveTenant]);
+  }, [supabase, resolveTenant, pathname]);
 
   // Prevent flash of protected content
   if (sessionStatus === "loading") {
