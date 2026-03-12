@@ -122,7 +122,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    setSessionStatus("tenant_error");
+    setTenantId(null);
+    setSessionStatus("authenticated");
   }, [resolveTenant]);
 
   const refreshSession = useCallback(async () => {
@@ -219,27 +220,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             clearTenantCookie();
             setSessionStatus("unauthenticated");
         } else if (session) {
-            const user = session.user;
-            setUser(user);
-            const userRole = (user.user_metadata?.role as UserRole) || "customer";
-            setRole(userRole);
-            
-            // Re-resolve tenant on change to be safe
-            const tId = await resolveTenant(user.id);
-            
-            if (!mounted) return;
-
-            if (tId) {
-                setTenantId(tId);
-                setTenantCookie(tId);
-                setSessionStatus("authenticated");
-            } else {
-                 if (userRole === 'admin' || userRole === 'superadmin') {
-                     setSessionStatus("authenticated");
-                 } else {
-                     setSessionStatus("tenant_error");
-                 }
-            }
+            await applySession(session);
         }
       }
     );

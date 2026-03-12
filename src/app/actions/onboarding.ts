@@ -1,6 +1,7 @@
 "use server";
 
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
@@ -17,6 +18,7 @@ export async function completeOnboarding(
   await ControlService.checkAction(null, "signup");
 
   const supabase = await getSupabaseServer();
+  const admin = await getSupabaseAdmin();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
@@ -32,7 +34,7 @@ export async function completeOnboarding(
   let tenantId: string;
   
   // Check for existing tenant membership
-  const { data: existingMembership } = await supabase
+  const { data: existingMembership } = await admin
     .from("tenant_users")
     .select("tenant_id")
     .eq("user_id", user.id)
@@ -42,7 +44,7 @@ export async function completeOnboarding(
     tenantId = existingMembership.tenant_id;
     
     // Update business type if provided (Repair/Migration scenario)
-    await supabase
+    await admin
       .from("tenants")
       .update({ 
         business_type: businessType,
@@ -59,7 +61,7 @@ export async function completeOnboarding(
       ? `${user.user_metadata.full_name}'s Workspace` 
       : "My Workspace";
 
-    const { data: newTenant, error: tenantError } = await supabase
+    const { data: newTenant, error: tenantError } = await admin
       .from("tenants")
       .insert({
         name: tenantName,
@@ -81,7 +83,7 @@ export async function completeOnboarding(
     tenantId = newTenant.id;
 
     // Create membership
-    const { error: memberError } = await supabase
+    const { error: memberError } = await admin
       .from("tenant_users")
       .insert({
         tenant_id: tenantId,
@@ -125,7 +127,7 @@ export async function completeOnboarding(
 
   // 3. Update/Create Account Status
   // Check if account exists
-  const { data: existingAccount } = await supabase
+  const { data: existingAccount } = await admin
     .from("accounts")
     .select("*")
     .eq("user_id", user.id)
@@ -135,7 +137,7 @@ export async function completeOnboarding(
 
   if (existingAccount) {
     // Update existing
-    const { error: updateError } = await supabase
+    const { error: updateError } = await admin
       .from("accounts")
       .update({
         product_type: "ai_employee",
@@ -148,7 +150,7 @@ export async function completeOnboarding(
     error = updateError;
   } else {
     // Insert new
-    const { error: insertError } = await supabase
+    const { error: insertError } = await admin
       .from("accounts")
       .insert({
         user_id: user.id,
@@ -168,7 +170,7 @@ export async function completeOnboarding(
   console.log(`[Onboarding] User ${user.id} selected ai_employee. Tenant ${tenantId} active.`);
 
   // 4. Legacy/Compatibility: Ensure kaisa_account exists for AI Employee
-  const { data: kaisaAccount } = await supabase
+  const { data: kaisaAccount } = await admin
     .from("kaisa_accounts")
     .select("*")
     .eq("user_id", user.id)
@@ -176,7 +178,7 @@ export async function completeOnboarding(
   
   if (!kaisaAccount) {
     console.log(`[Onboarding] Creating default kaisa_account for ${user.id}`);
-    await supabase.from("kaisa_accounts").insert({
+    await admin.from("kaisa_accounts").insert({
         user_id: user.id,
         tenant_id: tenantId, // Link to tenant
         status: "active",
@@ -184,7 +186,7 @@ export async function completeOnboarding(
     });
   } else {
     // Update existing if needed
-    await supabase
+    await admin
       .from("kaisa_accounts")
       .update({ tenant_id: tenantId, business_type: businessType })
       .eq("id", kaisaAccount.id);

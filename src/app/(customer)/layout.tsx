@@ -23,6 +23,9 @@ export default async function CustomerLayout({
     if (profile.status.onboarding !== 'completed') {
       redirect('/onboarding');
     }
+    if (!profile.tenant && !profile.roles.isAdmin) {
+      redirect('/onboarding');
+    }
 
     // Business Type Check for AI Employees
     if (profile.roles.isKaisaUser && !profile.products.kaisa?.businessType) {
