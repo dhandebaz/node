@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { SessionExpiredOverlay } from "@/components/auth/SessionExpiredOverlay";
@@ -26,9 +26,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<UserRole | null>(null);
   const [tenantId, setTenantId] = useState<string | null>(null);
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>("loading");
+  const sessionStatusRef = useRef<SessionStatus>(sessionStatus);
   const router = useRouter();
   const pathname = usePathname();
   const supabase = getSupabaseBrowser();
+
+  useEffect(() => {
+    sessionStatusRef.current = sessionStatus;
+  }, [sessionStatus]);
 
   const setTenantCookie = (id: string) => {
     document.cookie = `nodebase-tenant-id=${id}; path=/; secure; samesite=strict; max-age=31536000`;
@@ -123,11 +128,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const initSession = async () => {
       // Safety timeout to prevent infinite loading
       const timeoutId = setTimeout(() => {
-        if (mounted && sessionStatus === "loading") {
-          console.warn("Auth initialization timed out, forcing unauthenticated state");
-          setSessionStatus("unauthenticated");
-        }
-      }, 5000);
+        if (!mounted) return;
+        if (sessionStatusRef.current !== "loading") return;
+
+        (async () => {
+          try {
+            const { data } = await supabase.auth.getSession();
+            if (!mounted) return;
+            if (data.session) return;
+
+            console.warn("Auth initialization timed out, forcing unauthenticated state");
+            setSessionStatus("unauthenticated");
+            if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin")) {
+              try {
+                const ts = Date.now();
+                window.location.replace(`/login?ts=${ts}`);
+              } catch {}
+            }
+          } catch {
+            if (!mounted) return;
+            setSessionStatus("unauthenticated");
+          }
+        })();
+      }, 6000);
 
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
