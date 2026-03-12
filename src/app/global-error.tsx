@@ -1,15 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { Alfa_Slab_One } from "next/font/google";
-import "./globals.css";
-
-const alfaSlabOne = Alfa_Slab_One({
-  variable: "--font-alfa-slab-one",
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-});
+import { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 export default function GlobalError({
   error,
@@ -19,30 +12,52 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Global Error:", error);
+    console.error(error);
   }, [error]);
 
   return (
     <html lang="en">
-      <body className={`${alfaSlabOne.className} ${alfaSlabOne.variable} antialiased min-h-screen flex flex-col items-center justify-center bg-gray-50 text-gray-900`}>
-        <div className="p-8 max-w-md w-full bg-white rounded-xl shadow-lg text-center">
-          <h2 className="text-3xl font-bold mb-4 text-red-600 font-display">System Error</h2>
-          <p className="text-gray-600 mb-6">
-            We encountered a critical system error. This usually happens when the server configuration is incomplete or the database connection is lost.
-          </p>
-          
-          <div className="bg-gray-100 p-4 rounded mb-6 text-left overflow-auto max-h-32 text-xs font-mono text-gray-700">
-             {error.message || "Unknown error"}
-          </div>
-
-          <button
-            onClick={() => reset()}
-            className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+      <body className="min-h-screen bg-brand-deep-red text-brand-bone flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-brand-bone/20">
+        <div className="w-full max-w-md text-center relative z-10">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-20 h-20 bg-brand-bone/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-brand-bone/20 backdrop-blur-sm"
           >
-            Try Again
-          </button>
+            <AlertTriangle className="w-10 h-10 text-brand-bone" />
+          </motion.div>
+
+          <motion.h2
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl font-bold mb-4 uppercase tracking-tight"
+          >
+            Something went wrong!
+          </motion.h2>
+
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8 text-brand-bone/70 text-lg font-light"
+          >
+            We apologize for the inconvenience. An unexpected error has occurred.
+          </motion.p>
+
+          <motion.button
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            onClick={() => reset()}
+            className="inline-flex items-center gap-2 px-8 py-3 bg-brand-bone text-brand-deep-red rounded-full hover:bg-white transition-all font-bold uppercase tracking-wider text-sm shadow-lg hover:shadow-xl hover:scale-105"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Try again
+          </motion.button>
         </div>
       </body>
     </html>
   );
 }
+

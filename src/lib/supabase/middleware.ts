@@ -32,17 +32,13 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
   const path = request.nextUrl.pathname
-
-  // Public routes that don't need auth
+  
+  // Define public routes
   const isPublicRoute = 
     path === '/login' || 
     path === '/auth/callback' || 
@@ -51,13 +47,10 @@ export async function updateSession(request: NextRequest) {
     path === '/' ||
     path.startsWith('/_next') ||
     path.startsWith('/static') ||
-    path.includes('.') // file extensions
+    path.includes('.')
 
+  // API Routes: Basic protection
   if (path.startsWith('/api/')) {
-    // API protection is handled by interceptors/handlers, but we can enforce strict auth here for specific routes if needed.
-    // For now, let's leave API to the route handlers/interceptors as per "API INTERCEPTOR" requirement, 
-    // BUT the requirement says "Admin checks must exist at route + API layer".
-    // So if it's /api/admin/*, we should probably check here too.
     if (path.startsWith('/api/admin')) {
       const role = user?.user_metadata?.role || 'customer'
       const isAdmin = role === 'admin' || role === 'superadmin'
@@ -65,82 +58,85 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }
     }
-    
-    // Rate Limiting
-    // Note: We use a simplified in-memory check or just rely on Edge Config if available. 
-    // Ideally we call the rateLimit service, but that requires Upstash Redis env vars.
-    // We will add the logic block but wrap it in a try-catch/env check to avoid breaking local dev if not set up.
-    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-        try {
-            const { rateLimit } = await import('@/lib/ratelimit');
-            const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
-            const { success, limit, reset, remaining } = await rateLimit.limit(ip);
-            
-            if (!success) {
-                return NextResponse.json(
-                    { error: 'Too Many Requests' }, 
-                    { 
-                        status: 429,
-                        headers: {
-                            'X-RateLimit-Limit': limit.toString(),
-                            'X-RateLimit-Remaining': remaining.toString(),
-                            'X-RateLimit-Reset': reset.toString()
-                        }
-                    }
-                );
-            }
-        } catch (e) {
-            console.error("Rate limit error", e);
-            // Fail open
-        }
-    }
-
     return response
   }
 
-  // 1. Redirect unauthenticated users to login
-  if (!user && !isPublicRoute) {
-    // Redirect to login if accessing protected routes
-    if (path.startsWith('/dashboard') || path.startsWith('/admin')) {
+  // 1. Unauthenticated Users
+  if (!user) {
+    if (!isPublicRoute) {
+      // Allow access to login, landing page, etc.
+      // Redirect protected routes to login
+      if (path.startsWith('/dashboard') || path.startsWith('/admin') || path.startsWith('/onboarding')) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         url.searchParams.set('next', path)
         return NextResponse.redirect(url)
+      }
     }
+    return response
   }
 
-  // 2. Redirect authenticated users away from login
-  if (user && path === '/login') {
-    const role = user.user_metadata?.role || 'customer'
-    const isAdmin = role === 'admin' || role === 'superadmin'
-    const url = request.nextUrl.clone()
-    if (isAdmin) {
-        url.pathname = '/admin/overview'
-    } else {
-        url.pathname = '/dashboard/ai' // Corrected redirect
-    }
-    return NextResponse.redirect(url)
-  }
-
-  // 3. Strict Role Separation
+  // 2. Authenticated Users - Role & Tenant Checks
   if (user) {
     const role = user.user_metadata?.role || 'customer'
     const isAdmin = role === 'admin' || role === 'superadmin'
 
-    // Customer trying to access Admin routes
-    if (path.startsWith('/admin') && !isAdmin) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/dashboard/ai' // Corrected redirect
-        return NextResponse.redirect(url)
+    // 2.1 Admin Routing
+    if (isAdmin) {
+      if (path === '/login' || path === '/') {
+        return NextResponse.redirect(new URL('/admin/overview', request.url))
+      }
+      if (path.startsWith('/dashboard') || path.startsWith('/onboarding')) {
+        return NextResponse.redirect(new URL('/admin/overview', request.url))
+      }
+      return response
     }
 
-    // Admin trying to access Customer routes? 
-    // Requirement: "Admin and customer areas are strictly isolated"
-    // Requirement: "Admin user cannot open customer dashboard"
-    if (path.startsWith('/dashboard') && isAdmin) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/admin/overview'
-        return NextResponse.redirect(url)
+    // 2.2 Customer Routing
+    // Check Tenant Cookie
+    const tenantCookie = request.cookies.get('nodebase-tenant-id')
+    let tenantId = tenantCookie?.value
+
+    // If no cookie, try to resolve from DB
+    if (!tenantId) {
+      // Check tenant_users table
+      const { data: tenantUser } = await supabase
+        .from('tenant_users')
+        .select('tenant_id')
+        .eq('user_id', user.id)
+        .maybeSingle()
+      
+      if (tenantUser) {
+        tenantId = tenantUser.tenant_id
+        // Set cookie for future requests
+        response.cookies.set('nodebase-tenant-id', tenantId, {
+          path: '/',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          httpOnly: true,
+          maxAge: 60 * 60 * 24 * 30 // 30 days
+        })
+      }
+    }
+
+    // Redirect logic based on tenant status
+    const isOnboarding = path.startsWith('/onboarding')
+    const isDashboard = path.startsWith('/dashboard')
+    const isLogin = path === '/login'
+    const isRoot = path === '/'
+
+    if (tenantId) {
+      // User has a tenant -> Should be in Dashboard
+      if (isOnboarding || isLogin || isRoot) {
+        const dashboardUrl = new URL('/dashboard/ai', request.url)
+        return NextResponse.redirect(dashboardUrl)
+      }
+    } else {
+      // User has NO tenant -> Should be in Onboarding
+      if (isDashboard || isLogin || isRoot) {
+        const onboardingUrl = new URL('/onboarding', request.url)
+        return NextResponse.redirect(onboardingUrl)
+      }
     }
   }
 

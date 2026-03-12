@@ -4,11 +4,10 @@ import { createContext, useContext, useEffect, useState, useCallback, useRef } f
 import { useRouter, usePathname } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { SessionExpiredOverlay } from "@/components/auth/SessionExpiredOverlay";
-import { TenantErrorOverlay } from "@/components/auth/TenantErrorOverlay";
 import type { User, AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 type UserRole = "customer" | "business" | "admin" | "superadmin";
-type SessionStatus = "loading" | "authenticated" | "unauthenticated" | "expired" | "tenant_error";
+type SessionStatus = "loading" | "authenticated" | "unauthenticated" | "expired";
 
 interface AuthContextType {
   user: User | null;
@@ -26,55 +25,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<UserRole | null>(null);
   const [tenantId, setTenantId] = useState<string | null>(null);
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>("loading");
-  const sessionStatusRef = useRef<SessionStatus>(sessionStatus);
   const router = useRouter();
   const pathname = usePathname();
   const supabase = getSupabaseBrowser();
-  const sessionResolveTimeoutMs = 4500;
-
-  useEffect(() => {
-    sessionStatusRef.current = sessionStatus;
-  }, [sessionStatus]);
-
-  const getSessionSafely = useCallback(async () => {
-    const res = await Promise.race([
-      supabase.auth.getSession(),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), sessionResolveTimeoutMs)),
-    ]);
-
-    if (res === null) {
-      return { session: null, error: new Error("Session resolution timed out"), timedOut: true };
-    }
-
-    return { session: res.data.session, error: res.error, timedOut: false };
-  }, [supabase, sessionResolveTimeoutMs]);
-
-  const applySession = useCallback(async (session: Session | null) => {
-    if (!session) {
-      setSessionStatus("unauthenticated");
-      return;
-    }
-
-    const user = session.user;
-    setUser(user);
-    const userRole = (user.user_metadata?.role as UserRole) || "customer";
-    setRole(userRole);
-    setTenantId(null);
-    setSessionStatus("authenticated");
-  }, []);
-
-  const refreshSession = useCallback(async () => {
-    try {
-      const { data, error } = await supabase.auth.refreshSession();
-      if (error || !data.session) {
-        setSessionStatus("expired");
-      } else {
-        await applySession(data.session);
-      }
-    } catch {
-      setSessionStatus("expired");
-    }
-  }, [applySession, supabase]);
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
@@ -88,48 +41,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push("/login");
   }, [supabase, router]);
 
+  const refreshSession = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.auth.refreshSession();
+      if (error || !data.session) {
+        setSessionStatus("expired");
+      } else {
+        const user = data.session.user;
+        setUser(user);
+        setRole((user.user_metadata?.role as UserRole) || "customer");
+        setSessionStatus("authenticated");
+      }
+    } catch {
+      setSessionStatus("expired");
+    }
+  }, [supabase]);
+
   // Initial Check & Listener
   useEffect(() => {
     let mounted = true;
 
     const initSession = async () => {
-      // Safety timeout to prevent infinite loading
-      const timeoutId = setTimeout(() => {
-        if (!mounted) return;
-        if (sessionStatusRef.current !== "loading") return;
-
-        (async () => {
-          try {
-            const { session } = await getSessionSafely();
-            if (!mounted) return;
-            await applySession(session);
-            if (!mounted) return;
-
-            if (session) return;
-
-            const currentPath = window.location?.pathname || pathname || "";
-            if (currentPath.startsWith("/dashboard") || currentPath.startsWith("/admin")) {
-              try {
-                const ts = Date.now();
-                window.location.replace(`/login?ts=${ts}`);
-              } catch {}
-            }
-          } catch {
-            if (!mounted) return;
-            setSessionStatus("unauthenticated");
-          }
-        })();
-      }, 6000);
-
       try {
-        const { session, error, timedOut } = await getSessionSafely();
+        const { data: { session }, error } = await supabase.auth.getSession();
         
         if (!mounted) return;
-
-        if (timedOut) {
-          setSessionStatus("unauthenticated");
-          return;
-        }
 
         if (error) {
             console.error("Session error:", error);
@@ -137,12 +73,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             return;
         }
 
-        await applySession(session);
+        if (session?.user) {
+            setUser(session.user);
+            setRole((session.user.user_metadata?.role as UserRole) || "customer");
+            setSessionStatus("authenticated");
+        } else {
+            setSessionStatus("unauthenticated");
+        }
       } catch (err) {
         console.error("Auth init error:", err);
         if (mounted) setSessionStatus("unauthenticated");
-      } finally {
-        clearTimeout(timeoutId);
       }
     };
 
@@ -157,8 +97,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setRole(null);
             setTenantId(null);
             setSessionStatus("unauthenticated");
-        } else if (session) {
-            await applySession(session);
+        } else if (session?.user) {
+            setUser(session.user);
+            setRole((session.user.user_metadata?.role as UserRole) || "customer");
+            setSessionStatus("authenticated");
+        } else if (!session) {
+            setSessionStatus("unauthenticated");
         }
       }
     );
@@ -174,10 +118,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
       window.removeEventListener("auth:session-expired", handleExpired);
     };
-  }, [applySession, getSessionSafely, pathname, supabase]);
+  }, [pathname, supabase]);
 
   // Prevent flash of protected content
   if (sessionStatus === "loading") {
+    // Only block if we are on a protected route to allow public pages to render fast
     if (pathname?.startsWith("/dashboard") || pathname?.startsWith("/admin")) {
         return (
           <div className="min-h-screen bg-black text-white flex items-center justify-center">
@@ -192,10 +137,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   if (sessionStatus === "expired") {
     return <SessionExpiredOverlay />;
-  }
-
-  if (sessionStatus === "tenant_error") {
-      return <TenantErrorOverlay />;
   }
 
   return (
