@@ -7,62 +7,41 @@ export async function GET(request: Request) {
   const next = searchParams.get('next') ?? '/dashboard/ai';
 
   if (code) {
+    const forwardedHost = request.headers.get('x-forwarded-host');
+    const isLocalEnv = process.env.NODE_ENV === 'development';
+    
+    let redirectUrl = `${origin}${next}`;
+    if (!isLocalEnv && forwardedHost) {
+      redirectUrl = `https://${forwardedHost}${next}`;
+    }
+
+    // Create the response object that we'll attach cookies to
+    const response = NextResponse.redirect(redirectUrl);
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           getAll() {
-            return (request.headers.get('cookie') ?? '').split('; ').map((c) => {
-              const [name, value] = c.split('=');
-              return { name, value };
+            // Improved cookie parsing to handle values with '='
+            return (request.headers.get('cookie') ?? '').split(';').map((c) => {
+              const [name, ...rest] = c.trim().split('=');
+              return { name, value: rest.join('=') };
             });
           },
           setAll(cookiesToSet) {
-            // No-op here, handled below
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            );
           },
         },
       }
     );
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    
+
     if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host');
-      const isLocalEnv = process.env.NODE_ENV === 'development';
-      
-      let redirectUrl = `${origin}${next}`;
-      if (!isLocalEnv && forwardedHost) {
-        redirectUrl = `https://${forwardedHost}${next}`;
-      }
-
-      const response = NextResponse.redirect(redirectUrl);
-      
-      // Create a fresh client to get the session cookies that were just set in memory
-      // and apply them to the response
-      const supabaseResponse = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-          cookies: {
-            getAll() {
-              return (request.headers.get('cookie') ?? '').split('; ').map((c) => {
-                const [name, value] = c.split('=');
-                return { name, value };
-              });
-            },
-            setAll(cookiesToSet) {
-               cookiesToSet.forEach(({ name, value, options }) =>
-                 response.cookies.set(name, value, options)
-               );
-            },
-          },
-        }
-      );
-      
-      // Re-exchange (or just get session) to trigger setAll on the response object
-      await supabaseResponse.auth.exchangeCodeForSession(code);
-
       return response;
     }
   }
