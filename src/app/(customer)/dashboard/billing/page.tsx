@@ -1,12 +1,14 @@
-import { requireActiveTenant } from "@/lib/auth/tenant";
+import { getActiveTenantId } from "@/lib/auth/tenant";
 import { WalletService } from "@/lib/services/walletService";
 import { SubscriptionService } from "@/lib/services/subscriptionService";
 import { ControlService } from "@/lib/services/controlService";
 import { WalletUI } from "./WalletUI";
 import { UPISettings } from "@/components/dashboard/billing/UPISettings";
+import { redirect } from "next/navigation";
 
 export default async function BillingPage() {
-  const tenantId = await requireActiveTenant();
+  const tenantId = await getActiveTenantId();
+  if (!tenantId) redirect("/onboarding");
   
   const [balance, history, usage24h, plan] = await Promise.all([
     WalletService.getBalance(tenantId),

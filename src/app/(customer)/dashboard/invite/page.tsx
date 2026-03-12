@@ -1,13 +1,15 @@
-import { requireActiveTenant, getTenantContext } from "@/lib/auth/tenant";
+import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
 import { ReferralService } from "@/lib/services/referralService";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Copy, Gift, MessageCircle, Mail, Users, CheckCircle } from "lucide-react";
 import { InviteCopyButton } from "@/components/dashboard/invite/InviteCopyButton"; // Client component for copy interaction
+import { redirect } from "next/navigation";
 
 export default async function InvitePage() {
-  const tenantId = await requireActiveTenant();
+  const tenantId = await getActiveTenantId();
+  if (!tenantId) redirect("/onboarding");
   const tenant = await getTenantContext(tenantId);
   
   // Ensure code exists

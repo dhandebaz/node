@@ -1,4 +1,4 @@
-import { requireActiveTenant, getTenantContext } from "@/lib/auth/tenant";
+import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
 import { WalletService } from "@/lib/services/walletService";
 import { ControlService } from "@/lib/services/controlService";
 import { getSupabaseServer } from "@/lib/supabase/server";
@@ -15,11 +15,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { FailureBanner } from "@/components/ui/FailureBanner";
+import { redirect } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
 
 export default async function AIDashboardPage() {
-  const tenantId = await requireActiveTenant();
+  const tenantId = await getActiveTenantId();
+  if (!tenantId) redirect("/onboarding");
   const tenant = await getTenantContext(tenantId);
   const supabase = await getSupabaseServer();
 

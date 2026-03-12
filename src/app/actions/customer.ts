@@ -5,6 +5,7 @@ import { userService } from "@/lib/services/userService";
 import { kaisaService } from "@/lib/services/kaisaService";
 import { supportService } from "@/lib/services/supportService";
 import { getSession } from "@/lib/auth/session";
+import { getSupabaseServer } from "@/lib/supabase/server";
 import { User } from "@/types/user";
 
 // Helper to get current user or throw
@@ -14,14 +15,84 @@ async function getCurrentUser(): Promise<User> {
   if (!session?.userId) throw new Error("Unauthorized: No session");
   
   const user = await userService.getUserById(session.userId);
-  if (!user) {
-    // Session exists but user not found in DB? 
-    // This happens on first login before webhook/trigger syncs.
-    // Let's fallback to creating/fetching a basic user profile if needed,
-    // or just throw specific error.
-    throw new Error(`User not found: ${session.userId}`);
+  if (user) return user;
+
+  const supabase = await getSupabaseServer();
+  const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+  if (authError || !authUser) {
+    throw new Error("Unauthorized: User not found");
   }
-  return user;
+
+  const [{ data: account }, { data: tenantUser }, { data: kaisaAccount }] = await Promise.all([
+    supabase.from("accounts").select("*").eq("user_id", authUser.id).maybeSingle(),
+    supabase
+      .from("tenant_users")
+      .select("tenant_id, role, tenants(id, name, owner_user_id, created_at, business_type, early_access, is_memory_enabled, is_branding_enabled, is_ai_enabled, kyc_status, pan_number, aadhaar_number, kyc_verified_at)")
+      .eq("user_id", authUser.id)
+      .maybeSingle(),
+    supabase.from("kaisa_accounts").select("*").eq("user_id", authUser.id).maybeSingle(),
+  ]);
+
+  const tenant = tenantUser && (tenantUser as any).tenants
+    ? {
+        id: (tenantUser as any).tenants.id,
+        name: (tenantUser as any).tenants.name,
+        ownerUserId: (tenantUser as any).tenants.owner_user_id,
+        createdAt: (tenantUser as any).tenants.created_at,
+        businessType: (tenantUser as any).tenants.business_type,
+        earlyAccess: (tenantUser as any).tenants.early_access,
+        is_memory_enabled: (tenantUser as any).tenants.is_memory_enabled,
+        is_branding_enabled: (tenantUser as any).tenants.is_branding_enabled,
+        is_ai_enabled: (tenantUser as any).tenants.is_ai_enabled,
+        kyc_status: (tenantUser as any).tenants.kyc_status,
+        pan_number: (tenantUser as any).tenants.pan_number,
+        aadhaar_number: (tenantUser as any).tenants.aadhaar_number,
+        kyc_verified_at: (tenantUser as any).tenants.kyc_verified_at,
+      }
+    : undefined;
+
+  const authRole = String(authUser.user_metadata?.role || "customer");
+  const isAdmin = authRole === "admin" || authRole === "superadmin";
+  const isKaisaUser = !!kaisaAccount || account?.product_type === "ai_employee";
+  const onboarding = account?.onboarding_status === "complete" ? "completed" : "pending";
+
+  return {
+    identity: {
+      id: authUser.id,
+      phone: authUser.phone || "",
+      email: authUser.email || undefined,
+      createdAt: authUser.created_at,
+    },
+    profile: {
+      fullName: (authUser.user_metadata?.full_name as string | undefined) || null,
+    },
+    status: {
+      account: "active",
+      kyc: "not_started",
+      onboarding,
+    },
+    roles: {
+      isKaisaUser,
+      isAdmin,
+    },
+    metadata: {
+      tags: [],
+      notes: [],
+      lastActivity: new Date().toISOString(),
+    },
+    products: isKaisaUser
+      ? {
+          kaisa: {
+            businessType: (tenant?.businessType as string | undefined) || "",
+            tenantId: tenant?.id,
+            activeModules: [],
+            role: "manager",
+            status: "active",
+          },
+        }
+      : {},
+    tenant,
+  };
 }
 
 export async function getCustomerProfile() {

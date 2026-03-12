@@ -1,4 +1,4 @@
-import { requireActiveTenant, getTenantContext } from "@/lib/auth/tenant";
+import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
 import { AnalyticsService, TimeRange } from "@/lib/services/analyticsService";
 import { ReferralService } from "@/lib/services/referralService"; // Import Service
 import { InsightShareButton } from "@/components/dashboard/ai/InsightShareButton"; // Import Component
@@ -14,9 +14,11 @@ import {
   Zap,
   ShoppingBag
 } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default async function AIInsightsPage() {
-  const tenantId = await requireActiveTenant();
+  const tenantId = await getActiveTenantId();
+  if (!tenantId) redirect("/onboarding");
   const tenant = await getTenantContext(tenantId);
   const businessType = tenant?.businessType || 'airbnb_host';
 

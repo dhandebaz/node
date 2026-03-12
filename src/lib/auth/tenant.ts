@@ -4,7 +4,25 @@ import { getSupabaseServer } from '@/lib/supabase/server';
 export async function getActiveTenantId(): Promise<string | null> {
   const cookieStore = await cookies();
   const tenantId = cookieStore.get('nodebase-tenant-id')?.value;
-  return tenantId || null;
+  if (tenantId) return tenantId;
+
+  try {
+    const supabase = await getSupabaseServer();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data, error } = await supabase
+      .from('tenant_users')
+      .select('tenant_id')
+      .eq('user_id', user.id)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) return null;
+    return data?.tenant_id || null;
+  } catch {
+    return null;
+  }
 }
 
 export async function requireActiveTenant() {

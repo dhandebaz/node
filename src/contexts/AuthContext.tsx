@@ -38,11 +38,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [sessionStatus]);
 
   const setTenantCookie = (id: string) => {
-    document.cookie = `nodebase-tenant-id=${id}; path=/; secure; samesite=strict; max-age=31536000`;
+    const isHttps = typeof window !== "undefined" && window.location?.protocol === "https:";
+    const secure = isHttps ? "; secure" : "";
+    document.cookie = `nodebase-tenant-id=${id}; path=/${secure}; samesite=strict; max-age=31536000`;
   };
 
   const clearTenantCookie = () => {
-    document.cookie = `nodebase-tenant-id=; path=/; secure; samesite=strict; max-age=0`;
+    const isHttps = typeof window !== "undefined" && window.location?.protocol === "https:";
+    const secure = isHttps ? "; secure" : "";
+    document.cookie = `nodebase-tenant-id=; path=/${secure}; samesite=strict; max-age=0`;
   };
 
   const resolveTenant = useCallback(async (userId: string) => {

@@ -1,14 +1,16 @@
 import { User, Bell, Shield, Smartphone, Monitor, CheckCircle2, FileCheck } from "lucide-react";
 import { getCustomerProfile } from "@/app/actions/customer";
-import { requireActiveTenant, getTenantContext } from "@/lib/auth/tenant";
+import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
 import { KYCVerificationForm } from "@/components/dashboard/settings/KYCVerificationForm";
 import { ComplianceHubCard } from "@/components/dashboard/settings/ComplianceHubCard";
+import { redirect } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
 
 export default async function CustomerSettingsPage() {
   const profile = await getCustomerProfile();
-  const tenantId = await requireActiveTenant();
+  const tenantId = await getActiveTenantId();
+  if (!tenantId) redirect("/onboarding");
   const tenant = await getTenantContext(tenantId);
 
   if (!tenant) return null;
