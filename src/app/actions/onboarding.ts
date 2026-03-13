@@ -194,9 +194,5 @@ export async function completeOnboarding(
 
   revalidatePath("/", "layout");
   
-  // Note: Using a direct return for client-side redirect if needed, 
-  // but since this is a server action called from a client component, 
-  // redirect() throws a NEXT_REDIRECT error which is handled by Next.js.
-  // We should ensure we don't catch it and suppress it in the UI component.
-  redirect("/dashboard/ai");
+  return { success: true };
 }

@@ -13,6 +13,7 @@ export interface DBUser {
     kaisa_accounts: DBKaisaAccount[] | DBKaisaAccount | null;
     nodes: DBNode[];
     listings: DBListing[];
+    accounts: DBAccount[] | DBAccount | null; // Added accounts relation
 }
 
 export interface UserMetadataJSON {
@@ -35,7 +36,37 @@ export interface DBKaisaAccount {
     user_id: string;
     status: string;
     business_type?: string;
+    tenant_id?: string; // Added tenant_id
     // Add other columns as needed based on usage
+}
+
+export interface DBAccount {
+    id: string;
+    user_id: string;
+    product_type: 'ai_employee' | 'space';
+    onboarding_status: string;
+    tenant_id?: string;
+    business_type?: string;
+    created_at: string;
+    updated_at?: string;
+}
+
+export interface DBTenant {
+    id: string;
+    name: string;
+    owner_user_id: string;
+    created_at: string;
+    address?: string;
+    tax_id?: string;
+    kyc_document_path?: string;
+    kyc_extracted_data?: any; // JSONB
+    legal_agreement_path?: string;
+    phone?: string;
+    timezone?: string;
+    kyc_status?: 'not_started' | 'pending' | 'verified' | 'rejected';
+    kyc_verified_at?: string;
+    username?: string;
+    business_type?: string;
 }
 
 export interface DBNode {
@@ -49,4 +80,8 @@ export interface DBListing {
     id: string;
     title: string;
     created_at: string;
+    tenant_id?: string;
+    check_in_time?: string;
+    check_out_time?: string;
+    timezone?: string;
 }

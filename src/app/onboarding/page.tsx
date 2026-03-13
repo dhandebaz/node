@@ -1,31 +1,101 @@
 "use client";
 
-import { useState } from "react";
-import { Bot, ArrowRight, CheckCircle2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { BusinessTypeCard } from "@/components/onboarding/BusinessTypeCard";
 import { BusinessDetailsForm } from "@/components/onboarding/BusinessDetailsForm";
 import { completeOnboarding } from "@/app/actions/onboarding";
 import { BusinessType } from "@/types";
 import { Logo } from "@/components/ui/Logo";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { AlertTriangle } from "lucide-react";
 
 export default function OnboardingPage() {
-  const [step, setStep] = useState<"business_type" | "details">("business_type");
+  const router = useRouter();
+  const [step, setStep] = useState<"business_type" | "details" | "processing" | "timeout">("business_type");
   const [loading, setLoading] = useState(false);
   const [selectedBusinessType, setSelectedBusinessType] = useState<BusinessType | null>(null);
+  const [progress, setProgress] = useState(0);
+
+  const progressInterval = useRef<NodeJS.Timeout | null>(null);
+  const pollInterval = useRef<NodeJS.Timeout | null>(null);
 
   const handleBusinessTypeSelect = (type: BusinessType) => {
     setSelectedBusinessType(type);
     setStep("details");
   };
 
+  const startProcessing = () => {
+    const startTime = Date.now();
+    const TIMEOUT_MS = 30000; // 30s
+    
+    // Progress Animation: 0 -> 100% in 250ms increments
+    // We want it to reach ~95% by 30s, and jump to 100% when ready.
+    // 30s / 250ms = 120 steps.
+    // 95 / 120 = ~0.8% per step.
+    progressInterval.current = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      if (elapsed > TIMEOUT_MS) {
+        setStep("timeout");
+        clearTimers();
+        return;
+      }
+      
+      setProgress(p => Math.min(p + 0.8, 95));
+    }, 250);
+
+    // Polling: Every 500ms
+    pollInterval.current = setInterval(async () => {
+      try {
+        const res = await fetch("/api/onboarding/status");
+        const data = await res.json();
+        
+        if (data.status === "ready") {
+          clearTimers();
+          setProgress(100);
+          setTimeout(() => {
+            router.push("/dashboard/ai");
+          }, 500);
+        }
+      } catch (e) {
+        console.error("Polling error", e);
+      }
+    }, 500);
+  };
+
   const handleDetailsSubmit = async (details: { propertyCount: number; platforms: string[] }) => {
     try {
       setLoading(true);
       await completeOnboarding(selectedBusinessType!, details);
+      setStep("processing");
+      startProcessing();
     } catch (error) {
       console.error(error);
       setLoading(false);
     }
+  };
+
+  const clearTimers = () => {
+    if (progressInterval.current) clearInterval(progressInterval.current);
+    if (pollInterval.current) clearInterval(pollInterval.current);
+  };
+  
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => clearTimers();
+  }, []);
+
+  const handleRetry = () => {
+    setStep("processing");
+    setProgress(0);
+    startProcessing();
+  };
+
+  const handleCancel = () => {
+    clearTimers();
+    setStep("details");
+    setLoading(false);
+    setProgress(0);
   };
 
   return (
@@ -34,7 +104,7 @@ export default function OnboardingPage() {
       <div className="p-6 md:p-8 flex justify-between items-center">
         <Logo className="w-8 h-8 md:w-10 md:h-10" />
         <div className="text-xs font-bold uppercase tracking-widest opacity-60">
-            Setup Step {step === 'business_type' ? '1' : '2'} of 2
+            {step === 'processing' || step === 'timeout' ? 'Finalizing...' : `Setup Step ${step === 'business_type' ? '1' : '2'} of 2`}
         </div>
       </div>
 
@@ -111,6 +181,55 @@ export default function OnboardingPage() {
               </button>
             </div>
           )}
+
+          {step === "processing" && (
+            <div className="max-w-md mx-auto text-center space-y-8">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold uppercase tracking-tight">Setting up your workspace</h2>
+                <p className="text-brand-bone/60">Please wait while we configure your AI employee...</p>
+              </div>
+              
+              <div className="relative w-full h-2 bg-brand-bone/10 rounded-full overflow-hidden">
+                <motion.div 
+                  className="absolute top-0 left-0 h-full bg-brand-bone"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ ease: "linear", duration: 0.25 }}
+                />
+              </div>
+              
+              <div className="text-xs font-mono text-brand-bone/40">
+                {Math.round(progress)}% Complete
+              </div>
+            </div>
+          )}
+
+          {step === "timeout" && (
+            <div className="max-w-md mx-auto bg-brand-bone/5 border border-red-500/30 p-8 rounded-3xl backdrop-blur-sm">
+               <div className="flex justify-center mb-6 text-red-400">
+                 <AlertTriangle size={48} />
+               </div>
+               <h3 className="text-xl font-bold uppercase tracking-tight mb-2">Setup Timeout</h3>
+               <p className="text-brand-bone/60 mb-8">
+                 It's taking longer than expected to configure your workspace. You can retry or contact support.
+               </p>
+               <div className="flex gap-4 justify-center">
+                 <button 
+                   onClick={handleCancel}
+                   className="px-6 py-2 text-sm font-bold uppercase tracking-wider text-brand-bone/60 hover:text-brand-bone transition-colors"
+                 >
+                   Cancel
+                 </button>
+                 <button 
+                   onClick={handleRetry}
+                   className="px-6 py-2 bg-brand-bone text-brand-deep-red text-sm font-bold uppercase tracking-wider rounded-full hover:bg-white transition-colors"
+                 >
+                   Retry
+                 </button>
+               </div>
+            </div>
+          )}
+
         </div>
       </div>
       

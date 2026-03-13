@@ -8,10 +8,15 @@ export interface Tenant {
   is_memory_enabled?: boolean;
   is_branding_enabled?: boolean;
   is_ai_enabled?: boolean;
-  kyc_status?: 'pending' | 'verified';
+  kyc_status?: 'not_started' | 'pending' | 'verified' | 'rejected';
   pan_number?: string;
   aadhaar_number?: string;
   kyc_verified_at?: string;
+  address?: string;
+  tax_id?: string;
+  phone?: string;
+  timezone?: string;
+  username?: string;
 }
 
 export type BusinessType = 
