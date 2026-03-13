@@ -91,20 +91,28 @@ export const kaisaUserService = {
         }));
     },
 
-    async getCreditUsage(userId: string): Promise<KaisaCreditUsage> {
+    /**
+     * Get credit usage for a user (or rather their tenant).
+     * Optimization: Pass tenantId if known to avoid an extra DB lookup.
+     */
+    async getCreditUsage(userId: string, tenantId?: string): Promise<KaisaCreditUsage> {
         const supabase = await getSupabaseServer();
+        
+        let targetTenantId = tenantId;
 
-        // 1. Resolve Tenant ID
-        const { data: tenantUser } = await supabase
-            .from("tenant_users")
-            .select("tenant_id")
-            .eq("user_id", userId)
-            .limit(1)
-            .single();
-            
-        const tenantId = tenantUser?.tenant_id;
+        // 1. Resolve Tenant ID if not provided
+        if (!targetTenantId) {
+            const { data: tenantUser } = await supabase
+                .from("tenant_users")
+                .select("tenant_id")
+                .eq("user_id", userId)
+                .limit(1)
+                .maybeSingle();
+                
+            targetTenantId = tenantUser?.tenant_id;
+        }
 
-        if (!tenantId) {
+        if (!targetTenantId) {
             return {
                 balance: 0,
                 monthlyLimit: 0,
@@ -117,14 +125,14 @@ export const kaisaUserService = {
         const { data: wallet } = await supabase
             .from("wallets")
             .select("balance")
-            .eq("tenant_id", tenantId)
-            .single();
+            .eq("tenant_id", targetTenantId)
+            .maybeSingle();
 
         // 3. Get History from Wallet Transactions
         const { data: historyData } = await supabase
             .from("wallet_transactions")
             .select("*")
-            .eq("tenant_id", tenantId)
+            .eq("tenant_id", targetTenantId)
             .order("created_at", { ascending: false })
             .limit(10);
 

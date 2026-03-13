@@ -31,7 +31,11 @@ export async function getSupabaseAdmin() {
   const cookieStore = await cookies();
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "https://placeholder.supabase.co";
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.nodebase_SUPABASE_SERVICE_ROLE_KEY || "placeholder";
+  
+  // Try standard service role key first, then fallback to project-specific prefixed one
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || 
+              process.env.nodebase_SUPABASE_SERVICE_ROLE_KEY || 
+              "placeholder";
 
   return createServerClient(url, key, {
     cookies: {

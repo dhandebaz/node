@@ -20,9 +20,11 @@ export default async function CustomerLayout({
     const profile = await getCustomerProfile();
     
     // Onboarding Check
+    // Note: Middleware handles basic routing, but this double-check ensures data integrity
     if (profile.status.onboarding !== 'completed') {
       redirect('/onboarding');
     }
+    
     if (!profile.tenant && !profile.roles.isAdmin) {
       redirect('/onboarding');
     }
@@ -36,7 +38,12 @@ export default async function CustomerLayout({
 
     if (profile.roles.isKaisaUser) {
         try {
-            kaisaCredits = await kaisaService.getCreditUsage(profile.identity.id);
+            // Safe fetch - don't block UI if this fails
+            // Optimization: Pass tenant ID to avoid redundant DB lookup
+            kaisaCredits = await kaisaService.getCreditUsage(
+                profile.identity.id, 
+                profile.tenant?.id
+            );
         } catch (e) {
             console.error("Failed to fetch kaisa credits for layout", e);
         }
@@ -75,7 +82,12 @@ export default async function CustomerLayout({
         )}
       </div>
     );
-  } catch (error) {
+  } catch (error: any) {
+    // If we catch a redirect, let it pass
+    if (error?.message === "NEXT_REDIRECT") {
+        throw error;
+    }
+    
     console.error("Layout Error - Redirecting to login:", error);
     redirect("/login");
   }
