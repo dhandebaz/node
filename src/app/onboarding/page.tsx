@@ -65,12 +65,19 @@ export default function OnboardingPage() {
 
   const handleDetailsSubmit = async (details: { propertyCount: number; platforms: string[] }) => {
     try {
+      console.log("Starting onboarding submission...", details); // Debug log
       setLoading(true);
-      await completeOnboarding(selectedBusinessType!, details);
-      setStep("processing");
-      startProcessing();
+      const result = await completeOnboarding(selectedBusinessType!, details);
+      console.log("Submission result:", result); // Debug log
+      
+      if (result.success) {
+          setStep("processing");
+          startProcessing();
+      } else {
+          console.error("Submission failed but no error thrown");
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Submission error:", error);
       setLoading(false);
     }
   };

@@ -89,6 +89,7 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (propertyCount < 1) return;
+    console.log("Submitting form with:", { propertyCount, platforms }); // Debug log
     onSubmit({ propertyCount, platforms });
   };
 

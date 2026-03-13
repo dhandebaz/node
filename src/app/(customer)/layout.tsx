@@ -59,6 +59,7 @@ export default async function CustomerLayout({
           userEmail={profile.identity.email}
           userAvatar={undefined} // Add avatar URL if available in profile
           credits={kaisaCredits}
+          isKaisaUser={profile.roles.isKaisaUser}
         />
 
         {/* Main Content - Adjusted for fixed header */}
