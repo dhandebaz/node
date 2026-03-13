@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { BusinessType } from "@/types";
@@ -15,6 +15,7 @@ interface BusinessDetailsFormProps {
 export function BusinessDetailsForm({ businessType, onSubmit, loading }: BusinessDetailsFormProps) {
   const [propertyCount, setPropertyCount] = useState<number>(1);
   const [platforms, setPlatforms] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   // Configure questions based on persona
   const getQuestionConfig = () => {
@@ -79,6 +80,7 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
   const config = getQuestionConfig();
 
   const togglePlatform = (id: string) => {
+    setError(null);
     setPlatforms(prev => 
       prev.includes(id) 
         ? prev.filter(p => p !== id)
@@ -88,7 +90,15 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (propertyCount < 1) return;
+    if (propertyCount < 1) {
+        setError("Please enter a valid number.");
+        return;
+    }
+    if (platforms.length === 0) {
+        setError("Please select at least one platform.");
+        return;
+    }
+    
     console.log("Submitting form with:", { propertyCount, platforms }); // Debug log
     onSubmit({ propertyCount, platforms });
   };
@@ -103,7 +113,10 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
           type="number"
           min="1"
           value={propertyCount}
-          onChange={(e) => setPropertyCount(parseInt(e.target.value))}
+          onChange={(e) => {
+            setPropertyCount(parseInt(e.target.value));
+            setError(null);
+          }}
           className="w-full bg-zinc-900 border border-white/10 rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-lg"
           required
         />
@@ -111,7 +124,7 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
 
       <div className="space-y-4">
         <label className="block text-sm font-medium text-white/80 uppercase tracking-wider">
-          {config.platformLabel}
+          {config.platformLabel} <span className="text-white/40 ml-2 normal-case font-normal">(Select all that apply)</span>
         </label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {config.platforms.map((platform) => (
@@ -137,6 +150,13 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
           ))}
         </div>
       </div>
+
+      {error && (
+        <div className="flex items-center gap-2 text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20 animate-in fade-in slide-in-from-top-2">
+            <AlertCircle size={16} />
+            <span className="text-sm font-medium">{error}</span>
+        </div>
+      )}
 
       <button
         type="submit"

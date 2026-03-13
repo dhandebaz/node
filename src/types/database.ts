@@ -69,6 +69,12 @@ export interface DBTenant {
     business_type?: string;
     property_count?: number;
     platforms?: string[];
+    early_access?: boolean;
+    is_memory_enabled?: boolean;
+    is_branding_enabled?: boolean;
+    is_ai_enabled?: boolean;
+    pan_number?: string;
+    aadhaar_number?: string;
 }
 
 export interface DBNode {

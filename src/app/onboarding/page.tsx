@@ -6,8 +6,16 @@ import { BusinessDetailsForm } from "@/components/onboarding/BusinessDetailsForm
 import { completeOnboarding } from "@/app/actions/onboarding";
 import { BusinessType } from "@/types";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { AlertTriangle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { AlertTriangle, CheckCircle2, Loader2, Sparkles } from "lucide-react";
+
+const SETUP_STEPS = [
+    { id: 1, label: "Initializing secure workspace" },
+    { id: 2, label: "Allocating AI resources" },
+    { id: 3, label: "Configuring knowledge base" },
+    { id: 4, label: "Connecting platform integrations" },
+    { id: 5, label: "Finalizing setup" },
+];
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -15,7 +23,10 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedBusinessType, setSelectedBusinessType] = useState<BusinessType | null>(null);
+  
+  // Progress state
   const [progress, setProgress] = useState(0);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
   const pollInterval = useRef<NodeJS.Timeout | null>(null);
@@ -28,23 +39,34 @@ export default function OnboardingPage() {
   const startProcessing = () => {
     const startTime = Date.now();
     const TIMEOUT_MS = 30000; // 30s
+    const STEP_DURATION = 4000; // 4s per step roughly
     
-    // Progress Animation: 0 -> 100% in 250ms increments
-    // We want it to reach ~95% by 30s, and jump to 100% when ready.
-    // 30s / 250ms = 120 steps.
-    // 95 / 120 = ~0.8% per step.
+    // Reset states
+    setCurrentStepIndex(0);
+    setProgress(0);
+
+    // Simulate steps progressing
     progressInterval.current = setInterval(() => {
       const elapsed = Date.now() - startTime;
+      
       if (elapsed > TIMEOUT_MS) {
         setStep("timeout");
         clearTimers();
         return;
       }
       
-      setProgress(p => Math.min(p + 0.8, 95));
-    }, 250);
+      // Calculate visual progress (0-100)
+      // We cap it at 95% until we get the actual "ready" signal
+      setProgress(p => Math.min(p + 0.5, 95));
 
-    // Polling: Every 500ms
+      // Update current step index based on progress/time
+      // Map 0-90% to steps 0-3. Step 4 is "Finalizing"
+      const estimatedIndex = Math.floor((elapsed / TIMEOUT_MS) * (SETUP_STEPS.length));
+      setCurrentStepIndex(Math.min(estimatedIndex, SETUP_STEPS.length - 2)); // Don't go to last step yet
+
+    }, 100);
+
+    // Polling: Every 1s
     pollInterval.current = setInterval(async () => {
       try {
         const res = await fetch("/api/onboarding/status");
@@ -53,23 +75,26 @@ export default function OnboardingPage() {
         if (data.status === "ready") {
           clearTimers();
           setProgress(100);
+          setCurrentStepIndex(SETUP_STEPS.length - 1); // Final step
+          
+          // Small delay for user to see "100%"
           setTimeout(() => {
             router.push("/dashboard/ai");
-          }, 500);
+          }, 800);
         }
       } catch (e) {
         console.error("Polling error", e);
       }
-    }, 500);
+    }, 1000);
   };
 
   const handleDetailsSubmit = async (details: { propertyCount: number; platforms: string[] }) => {
     try {
-      console.log("Starting onboarding submission...", details); // Debug log
+      console.log("Starting onboarding submission...", details); 
       setLoading(true);
       setError(null);
       const result = await completeOnboarding(selectedBusinessType!, details);
-      console.log("Submission result:", result); // Debug log
+      console.log("Submission result:", result); 
       
       if (result.success) {
           setStep("processing");
@@ -122,7 +147,11 @@ export default function OnboardingPage() {
         <div className="max-w-5xl w-full space-y-12 text-center">
           
           {step === "business_type" && (
-            <>
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="contents"
+            >
               <div className="space-y-4">
                 <div className="inline-block border border-brand-bone/20 px-4 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-widest bg-brand-bone/5 text-brand-bone/60 mb-2">
                     Welcome to Nodebase
@@ -165,18 +194,23 @@ export default function OnboardingPage() {
                   onSelect={() => handleBusinessTypeSelect("thrift_store")}
                 />
               </div>
-            </>
+            </motion.div>
           )}
 
           {step === "details" && selectedBusinessType && (
-            <div className="max-w-xl mx-auto text-left">
+            <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="max-w-xl mx-auto text-left"
+            >
               <div className="mb-8 text-center">
                 <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-tight mb-2">Almost Done</h1>
                 <p className="text-brand-bone/60">Tell us a bit more about your operations.</p>
               </div>
               
               {error && (
-                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-200 text-sm">
+                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-200 text-sm flex items-center gap-2">
+                  <AlertTriangle size={16} />
                   {error}
                 </div>
               )}
@@ -195,27 +229,56 @@ export default function OnboardingPage() {
               >
                 ← Back to Selection
               </button>
-            </div>
+            </motion.div>
           )}
 
           {step === "processing" && (
             <div className="max-w-md mx-auto text-center space-y-8">
               <div className="space-y-4">
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="w-16 h-16 bg-white rounded-full mx-auto flex items-center justify-center text-black mb-6"
+                >
+                    <Sparkles size={32} className="animate-pulse" />
+                </motion.div>
                 <h2 className="text-2xl font-bold uppercase tracking-tight">Setting up your workspace</h2>
-                <p className="text-brand-bone/60">Please wait while we configure your AI employee...</p>
+                <p className="text-brand-bone/60">Hold tight! We're configuring your AI employee.</p>
               </div>
               
-              <div className="relative w-full h-2 bg-brand-bone/10 rounded-full overflow-hidden">
+              <div className="space-y-3 text-left bg-brand-bone/5 p-6 rounded-2xl border border-brand-bone/10 backdrop-blur-sm">
+                {SETUP_STEPS.map((stepItem, index) => {
+                    const isCompleted = index < currentStepIndex;
+                    const isCurrent = index === currentStepIndex;
+                    
+                    return (
+                        <div key={stepItem.id} className="flex items-center gap-3">
+                            <div className="w-5 h-5 flex items-center justify-center">
+                                {isCompleted ? (
+                                    <CheckCircle2 size={18} className="text-green-400" />
+                                ) : isCurrent ? (
+                                    <Loader2 size={16} className="animate-spin text-brand-bone" />
+                                ) : (
+                                    <div className="w-2 h-2 rounded-full bg-brand-bone/20" />
+                                )}
+                            </div>
+                            <span className={`text-sm font-medium transition-colors ${
+                                isCompleted || isCurrent ? "text-brand-bone" : "text-brand-bone/30"
+                            }`}>
+                                {stepItem.label}...
+                            </span>
+                        </div>
+                    );
+                })}
+              </div>
+              
+              <div className="relative w-full h-1 bg-brand-bone/10 rounded-full overflow-hidden mt-8">
                 <motion.div 
                   className="absolute top-0 left-0 h-full bg-brand-bone"
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ ease: "linear", duration: 0.25 }}
                 />
-              </div>
-              
-              <div className="text-xs font-mono text-brand-bone/40">
-                {Math.round(progress)}% Complete
               </div>
             </div>
           )}

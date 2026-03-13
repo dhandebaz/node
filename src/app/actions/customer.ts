@@ -1,4 +1,3 @@
-
 "use server";
 
 import { userService } from "@/lib/services/userService";
@@ -7,6 +6,7 @@ import { supportService } from "@/lib/services/supportService";
 import { getSession } from "@/lib/auth/session";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { User } from "@/types/user";
+import { DBTenant } from "@/types/database";
 
 // Helper to get current user or throw
 async function getCurrentUser(): Promise<User> {
@@ -23,31 +23,57 @@ async function getCurrentUser(): Promise<User> {
     throw new Error("Unauthorized: User not found");
   }
 
-  const [{ data: account }, { data: tenantUser }, { data: kaisaAccount }] = await Promise.all([
+  // Define types for the joined query result
+  type TenantUserResult = {
+    tenant_id: string;
+    role: string;
+    tenants: DBTenant;
+  };
+
+  const [{ data: account }, { data: tenantUserResult }, { data: kaisaAccount }] = await Promise.all([
     supabase.from("accounts").select("*").eq("user_id", authUser.id).maybeSingle(),
     supabase
       .from("tenant_users")
-      .select("tenant_id, role, tenants(id, name, owner_user_id, created_at, business_type, early_access, is_memory_enabled, is_branding_enabled, is_ai_enabled, kyc_status, pan_number, aadhaar_number, kyc_verified_at)")
+      .select(`
+        tenant_id, 
+        role, 
+        tenants (
+          id, 
+          name, 
+          owner_user_id, 
+          created_at, 
+          business_type, 
+          early_access, 
+          kyc_status, 
+          pan_number, 
+          aadhaar_number, 
+          kyc_verified_at
+        )
+      `)
       .eq("user_id", authUser.id)
       .maybeSingle(),
     supabase.from("kaisa_accounts").select("*").eq("user_id", authUser.id).maybeSingle(),
   ]);
 
-  const tenant = tenantUser && (tenantUser as any).tenants
+  // Safely cast the result to our type (Supabase types can be tricky with joins)
+  const tenantUser = tenantUserResult as unknown as TenantUserResult | null;
+  const tenantData = tenantUser?.tenants;
+
+  const tenant = tenantData
     ? {
-        id: (tenantUser as any).tenants.id,
-        name: (tenantUser as any).tenants.name,
-        ownerUserId: (tenantUser as any).tenants.owner_user_id,
-        createdAt: (tenantUser as any).tenants.created_at,
-        businessType: (tenantUser as any).tenants.business_type,
-        earlyAccess: (tenantUser as any).tenants.early_access,
-        is_memory_enabled: (tenantUser as any).tenants.is_memory_enabled,
-        is_branding_enabled: (tenantUser as any).tenants.is_branding_enabled,
-        is_ai_enabled: (tenantUser as any).tenants.is_ai_enabled,
-        kyc_status: (tenantUser as any).tenants.kyc_status,
-        pan_number: (tenantUser as any).tenants.pan_number,
-        aadhaar_number: (tenantUser as any).tenants.aadhaar_number,
-        kyc_verified_at: (tenantUser as any).tenants.kyc_verified_at,
+        id: tenantData.id,
+        name: tenantData.name,
+        ownerUserId: tenantData.owner_user_id,
+        createdAt: tenantData.created_at,
+        businessType: tenantData.business_type,
+        earlyAccess: tenantData.early_access,
+        is_memory_enabled: tenantData.is_memory_enabled,
+        is_branding_enabled: tenantData.is_branding_enabled,
+        is_ai_enabled: tenantData.is_ai_enabled,
+        kyc_status: tenantData.kyc_status,
+        pan_number: tenantData.pan_number,
+        aadhaar_number: tenantData.aadhaar_number,
+        kyc_verified_at: tenantData.kyc_verified_at,
       }
     : undefined;
 
