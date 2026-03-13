@@ -112,10 +112,10 @@ export async function updateSession(request: NextRequest) {
       .eq('user_id', user.id)
       .maybeSingle()
     
-    if (membership) {
+    if (membership && membership.tenant_id) {
       tenantId = membership.tenant_id
       // Persist to cookie for next request
-      response.cookies.set('nodebase-tenant-id', tenantId, {
+      response.cookies.set('nodebase-tenant-id', membership.tenant_id, {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
