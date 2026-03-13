@@ -44,7 +44,7 @@ export async function completeOnboarding(
     tenantId = existingMembership.tenant_id;
     
     // Update business type if provided (Repair/Migration scenario)
-    await admin
+    const { error: updateError } = await admin
       .from("tenants")
       .update({ 
         business_type: businessType,
@@ -54,6 +54,11 @@ export async function completeOnboarding(
         } : {})
       })
       .eq("id", tenantId);
+
+    if (updateError) {
+      console.error("Failed to update tenant details:", updateError);
+      // Don't fail the whole process if this is just an update
+    }
   } else {
     // Create new tenant
     // Use user metadata for name if available, else default
@@ -77,7 +82,11 @@ export async function completeOnboarding(
 
     if (tenantError || !newTenant) {
       console.error("Failed to create tenant:", tenantError);
-      throw new Error("Failed to initialize workspace");
+      // Check for specific error like missing column
+      if (tenantError?.code === "42703") { // undefined_column
+         throw new Error("Database schema mismatch. Please contact support.");
+      }
+      throw new Error(`Failed to initialize workspace: ${tenantError?.message || "Unknown error"}`);
     }
 
     tenantId = newTenant.id;

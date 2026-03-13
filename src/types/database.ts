@@ -67,6 +67,8 @@ export interface DBTenant {
     kyc_verified_at?: string;
     username?: string;
     business_type?: string;
+    property_count?: number;
+    platforms?: string[];
 }
 
 export interface DBNode {

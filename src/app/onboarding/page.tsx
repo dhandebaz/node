@@ -5,7 +5,6 @@ import { BusinessTypeCard } from "@/components/onboarding/BusinessTypeCard";
 import { BusinessDetailsForm } from "@/components/onboarding/BusinessDetailsForm";
 import { completeOnboarding } from "@/app/actions/onboarding";
 import { BusinessType } from "@/types";
-import { Logo } from "@/components/ui/Logo";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
@@ -14,6 +13,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<"business_type" | "details" | "processing" | "timeout">("business_type");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [selectedBusinessType, setSelectedBusinessType] = useState<BusinessType | null>(null);
   const [progress, setProgress] = useState(0);
 
@@ -67,6 +67,7 @@ export default function OnboardingPage() {
     try {
       console.log("Starting onboarding submission...", details); // Debug log
       setLoading(true);
+      setError(null);
       const result = await completeOnboarding(selectedBusinessType!, details);
       console.log("Submission result:", result); // Debug log
       
@@ -75,9 +76,12 @@ export default function OnboardingPage() {
           startProcessing();
       } else {
           console.error("Submission failed but no error thrown");
+          setError("Submission failed. Please try again.");
+          setLoading(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Submission error:", error);
+      setError(error?.message || "Something went wrong. Please try again.");
       setLoading(false);
     }
   };
@@ -108,8 +112,7 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-brand-deep-red text-brand-bone selection:bg-brand-bone/20 font-sans bg-grid-pattern flex flex-col">
       {/* Header */}
-      <div className="p-6 md:p-8 flex justify-between items-center">
-        <Logo className="w-8 h-8 md:w-10 md:h-10" />
+      <div className="p-6 md:p-8 flex justify-end items-center">
         <div className="text-xs font-bold uppercase tracking-widest opacity-60">
             {step === 'processing' || step === 'timeout' ? 'Finalizing...' : `Setup Step ${step === 'business_type' ? '1' : '2'} of 2`}
         </div>
@@ -171,6 +174,12 @@ export default function OnboardingPage() {
                 <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-tight mb-2">Almost Done</h1>
                 <p className="text-brand-bone/60">Tell us a bit more about your operations.</p>
               </div>
+              
+              {error && (
+                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-200 text-sm">
+                  {error}
+                </div>
+              )}
               
               <div className="bg-brand-bone/5 border border-brand-bone/10 rounded-3xl p-8 backdrop-blur-sm">
                   <BusinessDetailsForm 

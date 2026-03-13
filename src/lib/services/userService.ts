@@ -364,7 +364,7 @@ function mapDbUserToAppUser(dbUser: DBUser): User {
     status: {
       account: (dbUser.status as AccountStatus) || "active",
       kyc: (dbUser.kyc_status as KYCStatus) || "not_started",
-      onboarding: dbUser.onboarding_status === 'completed' ? 'completed' : 'pending',
+      onboarding: dbUser.onboarding_status === 'complete' ? 'completed' : 'pending',
       kycDocuments: Array.isArray(metadata.kycDocuments) ? metadata.kycDocuments : []
     },
     roles: {
