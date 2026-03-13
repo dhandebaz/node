@@ -58,6 +58,7 @@ export default async function CustomerLayout({
           tenantName={profile.tenant?.name || profile.profile?.fullName || "My Business"}
           userEmail={profile.identity.email}
           userAvatar={undefined} // Add avatar URL if available in profile
+          credits={kaisaCredits}
         />
 
         {/* Main Content - Adjusted for fixed header */}

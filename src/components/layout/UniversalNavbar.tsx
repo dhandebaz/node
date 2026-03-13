@@ -22,6 +22,7 @@ interface UniversalNavbarProps {
   tenantName?: string;
   userEmail?: string;
   userAvatar?: string;
+  credits?: any; // To avoid type issues for now, or import KaisaCreditUsage
 }
 
 const NAV_ITEMS = [
@@ -31,7 +32,7 @@ const NAV_ITEMS = [
   { label: "Integrations", href: "/dashboard/ai/integrations", icon: Puzzle },
 ];
 
-export function UniversalNavbar({ tenantName, userEmail, userAvatar }: UniversalNavbarProps) {
+export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits }: UniversalNavbarProps) {
   const pathname = usePathname();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
