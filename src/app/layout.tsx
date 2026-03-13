@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Alfa_Slab_One } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/components/providers";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +34,7 @@ export default async function RootLayout({
       >
         <Providers>
           {children}
+          <Toaster />
         </Providers>
       </body>
     </html>

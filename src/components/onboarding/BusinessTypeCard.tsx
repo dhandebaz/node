@@ -20,9 +20,12 @@ export function BusinessTypeCard({
 }: BusinessTypeCardProps) {
   return (
     <button
+      type="button"
       onClick={onSelect}
+      aria-pressed={selected}
+      aria-label={`Select ${title} business type`}
       className={cn(
-        "group relative overflow-hidden rounded-2xl border bg-zinc-900 p-6 text-left transition-all hover:scale-[1.02]",
+        "group relative overflow-hidden rounded-2xl border bg-zinc-900 p-6 text-left transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950",
         selected 
           ? "border-blue-500 bg-blue-500/10 ring-1 ring-blue-500" 
           : "border-white/10 hover:border-white/20"

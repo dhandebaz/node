@@ -7,6 +7,7 @@ import { getSession } from "@/lib/auth/session";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { User } from "@/types/user";
 import { DBTenant } from "@/types/database";
+import { BusinessType } from "@/types";
 
 // Helper to get current user or throw
 async function getCurrentUser(): Promise<User> {
@@ -65,7 +66,7 @@ async function getCurrentUser(): Promise<User> {
         name: tenantData.name,
         ownerUserId: tenantData.owner_user_id,
         createdAt: tenantData.created_at,
-        businessType: tenantData.business_type,
+        businessType: tenantData.business_type as BusinessType | undefined,
         earlyAccess: tenantData.early_access,
         is_memory_enabled: tenantData.is_memory_enabled,
         is_branding_enabled: tenantData.is_branding_enabled,

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { useEffect } from "react";
+import { AlertTriangle, RefreshCcw } from "lucide-react";
+import { Logo } from "@/components/ui/Logo";
 
 export default function GlobalError({
   error,
@@ -12,52 +12,48 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    console.error("Global Error Boundary caught error:", error);
   }, [error]);
 
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-brand-deep-red text-brand-bone flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-brand-bone/20">
-        <div className="w-full max-w-md text-center relative z-10">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="w-20 h-20 bg-brand-bone/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-brand-bone/20 backdrop-blur-sm"
-          >
-            <AlertTriangle className="w-10 h-10 text-brand-bone" />
-          </motion.div>
+    <html>
+      <body className="bg-black text-white font-sans min-h-screen flex flex-col items-center justify-center p-6">
+        <div className="max-w-md w-full text-center space-y-8">
+          <div className="flex justify-center">
+            <Logo className="w-16 h-16" />
+          </div>
+          
+          <div className="bg-red-500/10 border border-red-500/20 p-8 rounded-3xl backdrop-blur-sm space-y-6">
+            <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto text-red-500">
+                <AlertTriangle size={32} />
+            </div>
+            
+            <div className="space-y-2">
+                <h1 className="text-2xl font-bold uppercase tracking-tight text-white">System Malfunction</h1>
+                <p className="text-zinc-400">
+                    Something went wrong within the Nodebase core. Our engineers have been notified.
+                </p>
+            </div>
 
-          <motion.h2
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl font-bold mb-4 uppercase tracking-tight"
-          >
-            Something went wrong!
-          </motion.h2>
+            <div className="text-xs font-mono text-zinc-600 bg-black/50 p-4 rounded-lg overflow-x-auto">
+                {error.message || "Unknown Error"}
+                {error.digest && <div className="mt-1 text-zinc-700">Ref: {error.digest}</div>}
+            </div>
 
-          <motion.p
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="mb-8 text-brand-bone/70 text-lg font-light"
-          >
-            We apologize for the inconvenience. An unexpected error has occurred.
-          </motion.p>
-
-          <motion.button
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            onClick={() => reset()}
-            className="inline-flex items-center gap-2 px-8 py-3 bg-brand-bone text-brand-deep-red rounded-full hover:bg-white transition-all font-bold uppercase tracking-wider text-sm shadow-lg hover:shadow-xl hover:scale-105"
-          >
-            <RefreshCw className="w-4 h-4" />
-            Try again
-          </motion.button>
+            <button
+                onClick={reset}
+                className="w-full bg-white text-black font-bold py-3 rounded-xl uppercase tracking-wider hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2"
+            >
+                <RefreshCcw size={18} />
+                Reinitialize System
+            </button>
+          </div>
+          
+          <div className="text-xs text-zinc-600 uppercase tracking-widest">
+            Nodebase Recovery Mode
+          </div>
         </div>
       </body>
     </html>
   );
 }
-

@@ -8,6 +8,8 @@ import { BusinessType } from "@/types";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, CheckCircle2, Loader2, Sparkles } from "lucide-react";
+import { Confetti } from "@/components/ui/Confetti";
+import { toast } from "sonner";
 
 const SETUP_STEPS = [
     { id: 1, label: "Initializing secure workspace" },
@@ -21,7 +23,6 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<"business_type" | "details" | "processing" | "timeout">("business_type");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedBusinessType, setSelectedBusinessType] = useState<BusinessType | null>(null);
   
   // Progress state
@@ -92,7 +93,6 @@ export default function OnboardingPage() {
     try {
       console.log("Starting onboarding submission...", details); 
       setLoading(true);
-      setError(null);
       const result = await completeOnboarding(selectedBusinessType!, details);
       console.log("Submission result:", result); 
       
@@ -101,12 +101,12 @@ export default function OnboardingPage() {
           startProcessing();
       } else {
           console.error("Submission failed but no error thrown");
-          setError("Submission failed. Please try again.");
+          toast.error("Submission failed. Please try again.");
           setLoading(false);
       }
     } catch (error: any) {
       console.error("Submission error:", error);
-      setError(error?.message || "Something went wrong. Please try again.");
+      toast.error(error?.message || "Something went wrong. Please try again.");
       setLoading(false);
     }
   };
@@ -136,6 +136,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-brand-deep-red text-brand-bone selection:bg-brand-bone/20 font-sans bg-grid-pattern flex flex-col">
+      <Confetti active={step === "processing" && progress === 100} />
       {/* Header */}
       <div className="p-6 md:p-8 flex justify-end items-center">
         <div className="text-xs font-bold uppercase tracking-widest opacity-60">
@@ -207,13 +208,6 @@ export default function OnboardingPage() {
                 <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-tight mb-2">Almost Done</h1>
                 <p className="text-brand-bone/60">Tell us a bit more about your operations.</p>
               </div>
-              
-              {error && (
-                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-200 text-sm flex items-center gap-2">
-                  <AlertTriangle size={16} />
-                  {error}
-                </div>
-              )}
               
               <div className="bg-brand-bone/5 border border-brand-bone/10 rounded-3xl p-8 backdrop-blur-sm">
                   <BusinessDetailsForm 

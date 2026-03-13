@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { Loader2, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 import { BusinessType } from "@/types";
+import { businessDetailsSchema } from "@/lib/validations/onboarding";
 
 interface BusinessDetailsFormProps {
   businessType: BusinessType;
@@ -12,10 +14,34 @@ interface BusinessDetailsFormProps {
   loading: boolean;
 }
 
+const STORAGE_KEY = "onboarding_business_details";
+
 export function BusinessDetailsForm({ businessType, onSubmit, loading }: BusinessDetailsFormProps) {
   const [propertyCount, setPropertyCount] = useState<number>(1);
   const [platforms, setPlatforms] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load from local storage
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.propertyCount) setPropertyCount(parsed.propertyCount);
+        if (parsed.platforms) setPlatforms(parsed.platforms);
+      } catch (e) {
+        console.error("Failed to load saved form state", e);
+      }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Save to local storage
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ propertyCount, platforms }));
+    }
+  }, [propertyCount, platforms, isLoaded]);
 
   // Configure questions based on persona
   const getQuestionConfig = () => {
@@ -80,7 +106,6 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
   const config = getQuestionConfig();
 
   const togglePlatform = (id: string) => {
-    setError(null);
     setPlatforms(prev => 
       prev.includes(id) 
         ? prev.filter(p => p !== id)
@@ -90,18 +115,22 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (propertyCount < 1) {
-        setError("Please enter a valid number.");
-        return;
-    }
-    if (platforms.length === 0) {
-        setError("Please select at least one platform.");
-        return;
+    
+    const result = businessDetailsSchema.safeParse({ propertyCount, platforms });
+
+    if (!result.success) {
+      toast.error(result.error.errors[0].message);
+      return;
     }
     
-    console.log("Submitting form with:", { propertyCount, platforms }); // Debug log
-    onSubmit({ propertyCount, platforms });
+    // Clear storage on valid submit (optimistic)
+    localStorage.removeItem(STORAGE_KEY);
+    
+    console.log("Submitting form with:", result.data); // Debug log
+    onSubmit(result.data);
   };
+
+  if (!isLoaded) return null; // Prevent hydration mismatch
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -115,7 +144,6 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
           value={propertyCount}
           onChange={(e) => {
             setPropertyCount(parseInt(e.target.value));
-            setError(null);
           }}
           className="w-full bg-zinc-900 border border-white/10 rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-lg"
           required
@@ -150,13 +178,6 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
           ))}
         </div>
       </div>
-
-      {error && (
-        <div className="flex items-center gap-2 text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20 animate-in fade-in slide-in-from-top-2">
-            <AlertCircle size={16} />
-            <span className="text-sm font-medium">{error}</span>
-        </div>
-      )}
 
       <button
         type="submit"

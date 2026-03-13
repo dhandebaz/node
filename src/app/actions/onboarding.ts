@@ -9,6 +9,7 @@ import { cookies } from "next/headers";
 import { BusinessType } from "@/types";
 import { ControlService } from "@/lib/services/controlService";
 import { ReferralService } from "@/lib/services/referralService";
+import { businessDetailsSchema } from "@/lib/validations/onboarding";
 
 export async function completeOnboarding(
   businessType: BusinessType,
@@ -16,6 +17,14 @@ export async function completeOnboarding(
 ) {
   // Check Global Kill Switch for Signups
   await ControlService.checkAction(null, "signup");
+
+  // Validate inputs
+  if (details) {
+    const result = businessDetailsSchema.safeParse(details);
+    if (!result.success) {
+        throw new Error(`Validation Error: ${result.error.errors[0].message}`);
+    }
+  }
 
   const supabase = await getSupabaseServer();
   const admin = await getSupabaseAdmin();
