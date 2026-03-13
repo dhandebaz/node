@@ -99,6 +99,7 @@ export async function getCustomerProfile() {
   const user = await getCurrentUser();
   return {
     identity: user.identity,
+    profile: user.profile, // Ensure profile is included
     status: user.status,
     roles: user.roles,
     products: user.products,
