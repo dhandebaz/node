@@ -57,7 +57,7 @@ export default async function CustomerLayout({
         <UniversalNavbar 
           tenantName={profile.tenant?.name || profile.profile?.fullName || "My Business"}
           userEmail={profile.identity.email}
-          userAvatar={undefined} // Add avatar URL if available in profile
+          userAvatar={profile.profile?.avatarUrl}
           credits={kaisaCredits}
           isKaisaUser={profile.roles.isKaisaUser}
         />
