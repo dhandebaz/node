@@ -1520,7 +1520,7 @@ export default function InboxPage() {
                 <Label className="text-white">Select Listing</Label>
                 <Select 
                   value={smartLinkForm.listingId} 
-                  onValueChange={(v) => setSmartLinkData({...smartLinkForm, listingId: v})}
+                  onValueChange={(v: string) => setSmartLinkData({...smartLinkForm, listingId: v})}
                 >
                   <SelectTrigger className="bg-black/20 border-white/10 text-white">
                     <SelectValue placeholder="Select Listing" />
