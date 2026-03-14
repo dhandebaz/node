@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
 // Standard client for authenticated user actions (Respects RLS)
@@ -28,8 +29,6 @@ export async function getSupabaseServer() {
 
 // Admin client for system actions (Bypasses RLS)
 export async function getSupabaseAdmin() {
-  const cookieStore = await cookies();
-
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "https://placeholder.supabase.co";
   
   // Try standard service role key first, then fallback to project-specific prefixed one
@@ -46,20 +45,11 @@ export async function getSupabaseAdmin() {
     console.log("[Supabase Admin] Initializing with service role key (length: " + key.length + ")");
   }
 
-  return createServerClient(url, key, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
-        } catch {
-          // Handled by middleware
-        }
-      },
-    },
+  // Use standard createClient for admin/system actions to ensure RLS bypass
+  return createClient(url, key, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
   });
 }
