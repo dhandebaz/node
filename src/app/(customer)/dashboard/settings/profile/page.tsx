@@ -1,28 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { SessionExpiredCard } from "@/components/customer/SessionExpiredCard";
+import { fetchWithAuth } from "@/lib/api/fetcher";
+import { DownloadSignedAgreementButton } from "@/components/dashboard/settings/DownloadSignedAgreementButton";
 
 export default function ProfileSettingsPage() {
   const { host } = useAuthStore();
-  const [kycStatus, setKycStatus] = useState<"not_started" | "pending" | "verified">("not_started");
-  const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
+  const [kycStatus, setKycStatus] = useState<string>("not_started");
+  const [loading, setLoading] = useState(true);
 
   if (!host) {
     return <SessionExpiredCard />;
   }
 
-  const handleKycSubmit = async () => {
-    setIsSaving(true);
-    setMessage(null);
-    setTimeout(() => {
-      setKycStatus("pending");
-      setIsSaving(false);
-      setMessage("KYC submitted. Verification will start once the service is active.");
-    }, 500);
-  };
+  useEffect(() => {
+    setLoading(true);
+    fetchWithAuth<{ tenant?: { kyc_status?: string | null } }>("/api/host/me", { cache: "no-store" })
+      .then((data) => {
+        setKycStatus(data?.tenant?.kyc_status || "not_started");
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="space-y-8 pb-24 md:pb-0">
@@ -49,41 +51,33 @@ export default function ProfileSettingsPage() {
         <div>
           <div className="text-sm font-semibold text-white">KYC Verification</div>
           <div className="text-xs text-white/50 mt-2">
-            Applies once AI is active. Uploads are stored locally for now.
+            Verification documents are stored securely for compliance.
           </div>
         </div>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
             <div className="text-xs text-white/50 uppercase tracking-wider">Status</div>
-            <div className="text-white mt-2 capitalize">{kycStatus.replace("_", " ")}</div>
+            <div className="text-white mt-2 capitalize">{loading ? "loading" : String(kycStatus).replaceAll("_", " ")}</div>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <div className="text-xs text-white/50 uppercase tracking-wider">ID Document</div>
-            <div className="text-white mt-2">Pending upload</div>
+            <div className="text-xs text-white/50 uppercase tracking-wider">Agreement</div>
+            <div className="text-white mt-2">{kycStatus === "verified" ? "Signed" : "Pending"}</div>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <div className="text-xs text-white/50 uppercase tracking-wider">Address Proof</div>
-            <div className="text-white mt-2">Pending upload</div>
+            <div className="text-xs text-white/50 uppercase tracking-wider">Storage</div>
+            <div className="text-white mt-2">Encrypted</div>
           </div>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <div className="text-xs text-white/50 uppercase tracking-wider">Upload ID</div>
-            <input type="file" className="w-full text-xs text-white/70" />
-          </div>
-          <div className="space-y-2">
-            <div className="text-xs text-white/50 uppercase tracking-wider">Upload Address Proof</div>
-            <input type="file" className="w-full text-xs text-white/70" />
-          </div>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => router.push("/dashboard/verification")}
+            className="px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold"
+            type="button"
+          >
+            {kycStatus === "verified" ? "View verification" : "Start verification"}
+          </button>
+          {kycStatus === "verified" ? <DownloadSignedAgreementButton /> : null}
         </div>
-        {message && <div className="text-xs text-white/60">{message}</div>}
-        <button
-          onClick={handleKycSubmit}
-          disabled={isSaving}
-          className="px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold disabled:opacity-60"
-        >
-          {isSaving ? "Submitting..." : "Submit KYC"}
-        </button>
       </div>
     </div>
   );

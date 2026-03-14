@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { tenantId, extractedData, documentPath } = body;
+    const { tenantId, extractedData, documentPath, documentId } = body;
     const resolvedTenantId: string =
       (typeof tenantId === "string" && tenantId ? tenantId : null) ||
       (await requireActiveTenant());
@@ -47,6 +47,17 @@ export async function POST(req: Request) {
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    if (typeof documentId === "string" && documentId) {
+      const { error: docError } = await admin
+        .from("kyc_documents")
+        .update({ status: "verified" })
+        .eq("id", documentId)
+        .eq("tenant_id", resolvedTenantId);
+      if (docError) {
+        return NextResponse.json({ error: docError.message }, { status: 500 });
+      }
     }
 
     return NextResponse.json({ success: true });

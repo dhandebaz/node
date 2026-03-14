@@ -104,6 +104,7 @@ export default function VerificationPage() {
   const [kycFile, setKycFile] = useState<File | null>(null);
   const [extractedData, setExtractedData] = useState<any>(null);
   const [kycDocPath, setKycDocPath] = useState("");
+  const [kycDocumentId, setKycDocumentId] = useState<string>("");
 
   // Step 3 State
   const [signature, setSignature] = useState("");
@@ -160,7 +161,7 @@ export default function VerificationPage() {
       formData.append("file", file);
 
       try {
-        const data = await fetchWithAuth<{ success: boolean; extractedData?: any; filePath?: string; error?: string }>(
+        const data = await fetchWithAuth<{ success: boolean; extractedData?: any; filePath?: string; documentId?: string; error?: string }>(
           "/api/kyc/upload",
           {
             method: "POST",
@@ -170,6 +171,7 @@ export default function VerificationPage() {
         if (data.success) {
           setExtractedData(data.extractedData);
           setKycDocPath(data.filePath || "");
+          setKycDocumentId(data.documentId || "");
         } else {
           toast.error(data.error);
         }
@@ -189,6 +191,7 @@ export default function VerificationPage() {
         body: JSON.stringify({
           extractedData,
           documentPath: kycDocPath,
+          documentId: kycDocumentId || undefined,
         }),
       });
       setStep(3);
@@ -377,10 +380,13 @@ export default function VerificationPage() {
         <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 space-y-6">
           <h2 className="text-xl font-bold">Legal Agreement</h2>
           <div className="bg-white text-black p-6 rounded-lg h-64 overflow-y-auto text-sm font-serif">
-            <h3 className="font-bold text-lg mb-4">Zero-Liability Agreement</h3>
-            <p className="mb-4">Between Nodebase and {details.name}...</p>
-            <p className="mb-4">By signing this document, the Business agrees to the Terms of Service.</p>
-            <p>Nodebase is not liable for any operational losses.</p>
+            <h3 className="font-bold text-lg mb-4">Zero-Liability & Platform Terms Acknowledgement</h3>
+            <p className="mb-3">This document will be generated specifically for:</p>
+            <p className="mb-3"><strong>Business:</strong> {details.name || "—"}</p>
+            <p className="mb-3"><strong>Address:</strong> {details.address || "—"}</p>
+            <p className="mb-3"><strong>PAN/GSTIN:</strong> {details.taxId ? details.taxId.toUpperCase() : "Not provided"}</p>
+            <p className="mb-3">By signing, you authorize Nodebase to generate a signed PDF record and store it securely for compliance.</p>
+            <p><strong>Governing law:</strong> India (configurable).</p>
           </div>
           
           <div className="space-y-2">

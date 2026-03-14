@@ -5,37 +5,85 @@ import { useEffect, useState } from "react";
 import { 
   GitMerge, 
   Plus, 
-  Play, 
   Trash2, 
-  MoreVertical, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle,
   Loader2,
   Zap,
-  ArrowRight,
-  Settings2,
-  MessageSquare,
-  UserCheck,
-  Frown
+  Settings2
 } from "lucide-react";
 import { getFlowsAction, deleteFlowAction, saveFlowAction } from "@/app/actions/flows";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+
+type TriggerType = "message_received" | "booking_confirmed" | "payment_failed" | "manual_trigger";
+type FlowStatus = "active" | "draft" | "archived";
+
+type KaisaFlow = {
+  id: string;
+  name: string;
+  description?: string | null;
+  trigger_type: TriggerType;
+  status: FlowStatus;
+  nodes: unknown[];
+  edges: unknown[];
+  priority: number;
+  created_at?: string;
+  updated_at?: string;
+};
+
+type DraftFlow = Omit<KaisaFlow, "id"> & { id?: string };
+
+const FLOW_TEMPLATES: Array<Pick<DraftFlow, "name" | "description" | "trigger_type" | "nodes" | "edges" | "priority">> = [
+  {
+    name: "Escalate angry guests",
+    description: "If message looks angry, pause AI and notify a human.",
+    trigger_type: "message_received",
+    nodes: [
+      { id: "start", type: "trigger", label: "Message received" },
+      { id: "sentiment", type: "check", label: "Sentiment is negative" },
+      { id: "handover", type: "action", label: "Handover to human" },
+    ],
+    edges: [
+      { from: "start", to: "sentiment" },
+      { from: "sentiment", to: "handover", when: "true" },
+    ],
+    priority: 50,
+  },
+  {
+    name: "Auto-reply to check-in time",
+    description: "Reply instantly when someone asks about check-in time.",
+    trigger_type: "message_received",
+    nodes: [
+      { id: "start", type: "trigger", label: "Message received" },
+      { id: "match", type: "check", label: "Contains 'check-in'" },
+      { id: "reply", type: "action", label: "Send policy reply" },
+    ],
+    edges: [
+      { from: "start", to: "match" },
+      { from: "match", to: "reply", when: "true" },
+    ],
+    priority: 10,
+  },
+];
 
 export default function FlowsPage() {
   const [loading, setLoading] = useState(true);
-  const [flows, setFlows] = useState<any[]>([]);
+  const [flows, setFlows] = useState<KaisaFlow[]>([]);
   const [showEditor, setShowEditor] = useState(false);
-  const [editingFlow, setEditingFlow] = useState<any>(null);
+  const [editingFlow, setEditingFlow] = useState<DraftFlow | null>(null);
+  const [nodesJson, setNodesJson] = useState("[]");
+  const [edgesJson, setEdgesJson] = useState("[]");
+  const [saving, setSaving] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
 
   const fetchData = async () => {
     try {
       const data = await getFlowsAction();
-      setFlows(data);
+      setFlows(data as KaisaFlow[]);
     } catch (e) {
       toast.error("Failed to load flows");
     } finally {
@@ -67,6 +115,70 @@ export default function FlowsPage() {
     }
   };
 
+  const openEditor = (flow: DraftFlow) => {
+    setEditingFlow(flow);
+    setNodesJson(JSON.stringify(flow.nodes || [], null, 2));
+    setEdgesJson(JSON.stringify(flow.edges || [], null, 2));
+    setShowTemplates(false);
+    setShowEditor(true);
+  };
+
+  const createNewFlow = () => {
+    openEditor({
+      name: "New Flow",
+      description: "",
+      trigger_type: "message_received",
+      status: "draft",
+      nodes: [],
+      edges: [],
+      priority: 0,
+    });
+  };
+
+  const applyTemplate = (template: (typeof FLOW_TEMPLATES)[number]) => {
+    openEditor({
+      name: template.name,
+      description: template.description || "",
+      trigger_type: template.trigger_type,
+      status: "draft",
+      nodes: template.nodes,
+      edges: template.edges,
+      priority: template.priority,
+    });
+  };
+
+  const saveEditedFlow = async () => {
+    if (!editingFlow) return;
+    let parsedNodes: unknown[] = [];
+    let parsedEdges: unknown[] = [];
+    try {
+      const n = JSON.parse(nodesJson || "[]");
+      const e = JSON.parse(edgesJson || "[]");
+      parsedNodes = Array.isArray(n) ? n : [];
+      parsedEdges = Array.isArray(e) ? e : [];
+    } catch {
+      toast.error("Nodes/Edges JSON is invalid");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await saveFlowAction({
+        ...editingFlow,
+        nodes: parsedNodes,
+        edges: parsedEdges,
+      });
+      toast.success("Flow saved");
+      setShowEditor(false);
+      setEditingFlow(null);
+      await fetchData();
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to save");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
@@ -90,7 +202,7 @@ export default function FlowsPage() {
           </p>
         </div>
         <Button 
-          onClick={() => { setEditingFlow({ name: "New Flow", trigger_type: "message_received", status: "draft", nodes: [], edges: [] }); setShowEditor(true); }}
+          onClick={createNewFlow}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 rounded-full"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -109,9 +221,33 @@ export default function FlowsPage() {
               Custom flows allow you to intercept messages. For example: "If message contains 'booking', notify me immediately."
             </p>
           </div>
-          <Button variant="outline" onClick={() => {}} className="border-white/10 text-white hover:bg-white/5">
-            View Templates
-          </Button>
+          <div className="flex flex-col items-center gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setShowTemplates(true)}
+              className="border-white/10 text-white hover:bg-white/5"
+            >
+              View Templates
+            </Button>
+            {showTemplates ? (
+              <div className="w-full max-w-xl grid grid-cols-1 gap-3 text-left">
+                {FLOW_TEMPLATES.map((t) => (
+                  <button
+                    key={t.name}
+                    type="button"
+                    onClick={() => applyTemplate(t)}
+                    className="bg-zinc-950 border border-zinc-800 rounded-xl p-4 hover:border-blue-500/40 transition-colors"
+                  >
+                    <div className="text-white font-semibold">{t.name}</div>
+                    <div className="text-xs text-white/40 mt-1">{t.description}</div>
+                    <div className="text-[10px] text-white/30 mt-2 uppercase tracking-widest">
+                      Trigger: {t.trigger_type.replaceAll("_", " ")} • Priority: {t.priority}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -140,8 +276,14 @@ export default function FlowsPage() {
                     <span>Trigger: {flow.trigger_type.replace("_", " ")}</span>
                   </div>
                   <div className="flex items-center gap-3 text-xs text-white/60">
-                    <Clock className="w-3 h-3 text-zinc-500" />
-                    <span>Last run: Never</span>
+                    <Zap className="w-3 h-3 text-zinc-500" />
+                    <span>
+                      Nodes: {Array.isArray(flow.nodes) ? flow.nodes.length : 0} • Edges:{" "}
+                      {Array.isArray(flow.edges) ? flow.edges.length : 0} • Priority: {flow.priority ?? 0}
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-white/30 uppercase tracking-widest">
+                    Updated: {flow.updated_at ? new Date(flow.updated_at).toLocaleString() : "—"}
                   </div>
                 </div>
 
@@ -150,7 +292,7 @@ export default function FlowsPage() {
                     variant="ghost" 
                     size="sm" 
                     className="flex-1 text-zinc-400 hover:text-white hover:bg-white/5 text-xs font-bold"
-                    onClick={() => { setEditingFlow(flow); setShowEditor(true); }}
+                    onClick={() => openEditor(flow)}
                   >
                     <Settings2 className="w-3 h-3 mr-2" />
                     Edit Logic
@@ -176,63 +318,110 @@ export default function FlowsPage() {
           <Card className="w-full max-w-2xl bg-zinc-900 border-white/10 shadow-2xl">
             <CardHeader className="border-b border-white/5">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-white">Edit Flow: {editingFlow?.name}</CardTitle>
+                <CardTitle className="text-white">{editingFlow?.id ? "Edit Flow" : "Create Flow"}</CardTitle>
                 <Button variant="ghost" size="sm" onClick={() => setShowEditor(false)} className="text-white/40 hover:text-white">Close</Button>
               </div>
             </CardHeader>
-            <CardContent className="p-8 space-y-8">
-               <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400">
-                      <Zap className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Trigger</div>
-                      <div className="text-sm text-white font-medium">When a new message is received</div>
-                    </div>
-                  </div>
+            <CardContent className="p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Name</div>
+                  <Input
+                    value={editingFlow?.name || ""}
+                    onChange={(e) => setEditingFlow((prev) => (prev ? { ...prev, name: e.target.value } : prev))}
+                    className="bg-zinc-950 border-white/10 text-white placeholder:text-white/30"
+                    placeholder="e.g. Escalate angry guests"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Trigger</div>
+                  <select
+                    value={editingFlow?.trigger_type || "message_received"}
+                    onChange={(e) =>
+                      setEditingFlow((prev) =>
+                        prev ? { ...prev, trigger_type: e.target.value as TriggerType } : prev
+                      )
+                    }
+                    className="h-10 w-full rounded-md bg-zinc-950 border border-white/10 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                  >
+                    <option value="message_received">Message received</option>
+                    <option value="booking_confirmed">Booking confirmed</option>
+                    <option value="payment_failed">Payment failed</option>
+                    <option value="manual_trigger">Manual trigger</option>
+                  </select>
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Description</div>
+                  <Textarea
+                    value={editingFlow?.description || ""}
+                    onChange={(e) =>
+                      setEditingFlow((prev) => (prev ? { ...prev, description: e.target.value } : prev))
+                    }
+                    className="bg-zinc-950 border-white/10 text-white placeholder:text-white/30"
+                    placeholder="What does this flow do?"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Status</div>
+                  <select
+                    value={editingFlow?.status || "draft"}
+                    onChange={(e) =>
+                      setEditingFlow((prev) => (prev ? { ...prev, status: e.target.value as FlowStatus } : prev))
+                    }
+                    className="h-10 w-full rounded-md bg-zinc-950 border border-white/10 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="active">Active</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Priority</div>
+                  <Input
+                    type="number"
+                    value={String(editingFlow?.priority ?? 0)}
+                    onChange={(e) =>
+                      setEditingFlow((prev) =>
+                        prev ? { ...prev, priority: Number(e.target.value || 0) } : prev
+                      )
+                    }
+                    className="bg-zinc-950 border-white/10 text-white placeholder:text-white/30"
+                  />
+                </div>
+              </div>
 
-                  <div className="ml-5 border-l-2 border-dashed border-zinc-800 py-4 pl-8 space-y-6">
-                    {/* Condition or Sentiment Check */}
-                    <div className="relative">
-                      <div className="absolute -left-[41px] top-1/2 -translate-y-1/2 w-4 h-4 bg-zinc-900 border-2 border-zinc-800 rounded-full" />
-                      <div className="bg-white/5 border border-white/5 rounded-xl p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Frown className="w-4 h-4 text-red-400" />
-                          <div className="text-xs text-white/80">IF <span className="font-bold text-white">Sentiment</span> is <span className="font-bold text-white">"Negative or Angry"</span></div>
-                        </div>
-                        <Button variant="ghost" size="sm" className="text-[10px] text-zinc-500 font-bold uppercase">Change</Button>
-                      </div>
-                    </div>
+              <div className="space-y-2">
+                <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Nodes (JSON)</div>
+                <Textarea
+                  value={nodesJson}
+                  onChange={(e) => setNodesJson(e.target.value)}
+                  className="bg-zinc-950 border-white/10 text-white font-mono text-xs"
+                  rows={8}
+                />
+              </div>
 
-                    <div className="flex items-center gap-2 text-zinc-700 ml-4">
-                      <ArrowRight className="w-4 h-4" />
-                      <span className="text-[10px] font-bold uppercase tracking-tighter">Then</span>
-                    </div>
+              <div className="space-y-2">
+                <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Edges (JSON)</div>
+                <Textarea
+                  value={edgesJson}
+                  onChange={(e) => setEdgesJson(e.target.value)}
+                  className="bg-zinc-950 border-white/10 text-white font-mono text-xs"
+                  rows={8}
+                />
+              </div>
 
-                    {/* Action */}
-                    <div className="relative">
-                      <div className="absolute -left-[41px] top-1/2 -translate-y-1/2 w-4 h-4 bg-zinc-900 border-2 border-zinc-800 rounded-full" />
-                      <div className="bg-blue-500/5 border border-blue-500/20 rounded-xl p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <UserCheck className="w-4 h-4 text-blue-400" />
-                          <div className="text-xs text-white/80 font-medium">Handover to Human & Pause AI</div>
-                        </div>
-                        <Button variant="ghost" size="sm" className="text-[10px] text-blue-400 font-bold uppercase">Change</Button>
-                      </div>
-                    </div>
-                  </div>
-               </div>
-
-               <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
-                  <Button variant="ghost" onClick={() => setShowEditor(false)} className="text-zinc-500 font-bold">Discard</Button>
-                  <Button onClick={async () => {
-                    await saveFlowAction(editingFlow);
-                    toast.success("Flow logic saved!");
-                    setShowEditor(false);
-                    fetchData();
-                  }} className="bg-white text-black hover:bg-zinc-200 font-bold">Save Changes</Button>
-               </div>
+              <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
+                <Button variant="ghost" onClick={() => setShowEditor(false)} className="text-zinc-500 font-bold">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={saveEditedFlow}
+                  disabled={saving || !editingFlow?.name}
+                  className="bg-white text-black hover:bg-zinc-200 font-bold"
+                >
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Flow"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

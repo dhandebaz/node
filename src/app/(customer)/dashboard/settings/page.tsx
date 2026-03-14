@@ -5,6 +5,7 @@ import { KYCVerificationForm } from "@/components/dashboard/settings/KYCVerifica
 import { ComplianceHubCard } from "@/components/dashboard/settings/ComplianceHubCard";
 import { BusinessProfileSettings } from "@/components/dashboard/settings/BusinessProfileSettings";
 import { TeamManagement } from "@/components/dashboard/settings/TeamManagement";
+import { DownloadSignedAgreementButton } from "@/components/dashboard/settings/DownloadSignedAgreementButton";
 import { redirect } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
@@ -107,6 +108,9 @@ export default async function CustomerSettingsPage() {
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                       <span>PAN Verified ({tenant.pan_number})</span>
                   </div>
+               </div>
+               <div className="mt-6">
+                 <DownloadSignedAgreementButton />
                </div>
             </div>
           </div>

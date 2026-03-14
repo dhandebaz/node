@@ -153,6 +153,20 @@ export default function AdminCustomerDetailPage() {
   const [walletAdjustment, setWalletAdjustment] = useState(0);
   const [walletReason, setWalletReason] = useState("");
   const [updating, setUpdating] = useState(false);
+  const [agreements, setAgreements] = useState<
+    Array<{
+      id: string;
+      version: string;
+      file_path: string;
+      sha256: string;
+      signed_at: string;
+      signer_email: string | null;
+      signer_ip: string | null;
+      filename: string;
+      url: string | null;
+    }>
+  >([]);
+  const [agreementsLoading, setAgreementsLoading] = useState(false);
 
   const loadCustomer = () => {
     if (!id) return;
@@ -169,6 +183,16 @@ export default function AdminCustomerDetailPage() {
   useEffect(() => {
     loadCustomer();
   }, [id]);
+
+  useEffect(() => {
+    if (activeTab !== "legal") return;
+    if (!data?.tenantId) return;
+    setAgreementsLoading(true);
+    fetchJson<{ agreements: typeof agreements }>(`/api/admin/tenants/${data.tenantId}/agreements`)
+      .then((payload) => setAgreements(payload.agreements || []))
+      .catch((err) => setError(err.message))
+      .finally(() => setAgreementsLoading(false));
+  }, [activeTab, data?.tenantId]);
 
   const toggleStatus = async () => {
     if (!data) return;
@@ -265,9 +289,79 @@ export default function AdminCustomerDetailPage() {
         <button className={tabClass("wallet")} onClick={() => setActiveTab("wallet")}>Wallet & Usage</button>
         <button className={tabClass("integrations")} onClick={() => setActiveTab("integrations")}>Integrations</button>
         <button className={tabClass("controls")} onClick={() => setActiveTab("controls")}>Controls</button>
+        <button className={tabClass("legal")} onClick={() => setActiveTab("legal")}>Legal</button>
         <button className={tabClass("overrides")} onClick={() => setActiveTab("overrides")}>Overrides</button>
         <button className={tabClass("activity")} onClick={() => setActiveTab("activity")}>Activity Logs</button>
       </div>
+
+      {activeTab === "legal" && (
+        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-white">Signed Agreements</h3>
+              <p className="text-sm text-zinc-400">Generated per tenant with signer audit trail.</p>
+            </div>
+            <div className="text-xs text-zinc-500">
+              Tenant: {data.tenantId || "—"}
+            </div>
+          </div>
+
+          {!data.tenantId ? (
+            <div className="text-sm text-zinc-400">No tenant linked to this customer.</div>
+          ) : agreementsLoading ? (
+            <div className="flex items-center gap-2 text-sm text-zinc-400">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Loading agreements…
+            </div>
+          ) : agreements.length === 0 ? (
+            <div className="text-sm text-zinc-400">No agreements found.</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-zinc-500 border-b border-zinc-800">
+                    <th className="py-2 pr-4 font-medium">Signed At</th>
+                    <th className="py-2 pr-4 font-medium">Version</th>
+                    <th className="py-2 pr-4 font-medium">Signer</th>
+                    <th className="py-2 pr-4 font-medium">SHA-256</th>
+                    <th className="py-2 pr-4 font-medium">File</th>
+                    <th className="py-2 pr-0 font-medium">Download</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {agreements.map((a) => (
+                    <tr key={a.id} className="border-b border-zinc-800/60 text-zinc-300">
+                      <td className="py-3 pr-4 whitespace-nowrap">
+                        {a.signed_at ? new Date(a.signed_at).toLocaleString() : "—"}
+                      </td>
+                      <td className="py-3 pr-4 whitespace-nowrap">{a.version}</td>
+                      <td className="py-3 pr-4 whitespace-nowrap">{a.signer_email || "—"}</td>
+                      <td className="py-3 pr-4 font-mono text-xs">
+                        {a.sha256 ? `${a.sha256.slice(0, 10)}…${a.sha256.slice(-8)}` : "—"}
+                      </td>
+                      <td className="py-3 pr-4 whitespace-nowrap">{a.filename}</td>
+                      <td className="py-3 pr-0 whitespace-nowrap">
+                        {a.url ? (
+                          <a
+                            href={a.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-xs font-semibold px-3 py-1 rounded bg-zinc-950 border border-zinc-800 hover:bg-zinc-900 inline-flex"
+                          >
+                            Download
+                          </a>
+                        ) : (
+                          <span className="text-xs text-zinc-500">Unavailable</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       {activeTab === "overrides" && (
         <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-6">
