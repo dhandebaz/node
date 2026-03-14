@@ -16,8 +16,15 @@ import { SubscriptionStatus } from "@/types/billing";
 // We'll make a simple client wrapper for the buttons to handle loading states if needed, 
 // or just use Server Actions directly in forms.
 
-export default async function SubscriptionDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function SubscriptionDetailsPage({ 
+  params,
+  searchParams
+}: { 
+  params: Promise<{ id: string }>,
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
   const { id } = await params;
+  await searchParams;
   const { subscriptions } = await getBillingOverview();
   const subscription = subscriptions.find(s => s.id === id);
 

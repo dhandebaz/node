@@ -22,8 +22,15 @@ import { notFound } from "next/navigation";
 
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
-export default async function BookingConfirmationPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function BookingConfirmationPage({ 
+  params,
+  searchParams
+}: { 
+  params: Promise<{ id: string }>,
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
   const { id } = await params;
+  await searchParams;
   const supabaseAdmin = await getSupabaseAdmin();
 
   const { data: booking, error } = await supabaseAdmin

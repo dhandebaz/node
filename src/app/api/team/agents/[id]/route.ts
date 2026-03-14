@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const tenantId = await requireActiveTenant();
     const body = await request.json();
     const supabase = await getSupabaseServer();
@@ -15,7 +16,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         ...body,
         updated_at: new Date().toISOString()
       })
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("tenant_id", tenantId)
       .select()
       .single();
@@ -27,15 +28,16 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const tenantId = await requireActiveTenant();
     const supabase = await getSupabaseServer();
 
     const { error } = await supabase
       .from("team_agents")
       .delete()
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("tenant_id", tenantId);
 
     if (error) throw error;

@@ -25,3 +25,24 @@ export async function createBookingLinkAction(params: {
     expiresAt: result.expires_at
   };
 }
+
+export async function updateHostUPIAction(upiId: string, payeeName: string) {
+  const tenantId = await requireActiveTenant();
+  const supabase = await (await import('@/lib/supabase/server')).getSupabaseServer();
+
+  const { error } = await supabase
+    .from('tenants')
+    .update({ 
+      upi_id: upiId,
+      name: payeeName // Using 'name' as payee name for now
+    })
+    .eq('id', tenantId);
+
+  if (error) {
+    console.error("Failed to update UPI settings", error);
+    throw new Error("Failed to update UPI settings");
+  }
+
+  revalidatePath('/dashboard/billing');
+  return { success: true };
+}

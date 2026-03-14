@@ -20,8 +20,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { GuestCheckoutFlow } from "@/components/public/GuestCheckoutFlow";
 
-export default async function PublicCheckoutPage({ params }: { params: { id: string } }) {
-  const link = await PaymentLinkService.getLinkDetails(params.id);
+export default async function PublicCheckoutPage({ 
+  params, 
+  searchParams 
+}: { 
+  params: Promise<{ id: string }>,
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const { id } = await params;
+  await searchParams; // Await to satisfy Next.js 15+
+  const link = await PaymentLinkService.getLinkDetails(id);
 
   if (!link) {
     notFound();
