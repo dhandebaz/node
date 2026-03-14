@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TrendingUp, Save, Loader2, Sparkles, AlertCircle } from "lucide-react";
+import { TrendingUp, Save, Loader2, Sparkles, AlertCircle, Zap } from "lucide-react";
 import { generatePriceSuggestionsAction } from "@/app/actions/revenue";
 import { toast } from "sonner";
 
@@ -81,7 +81,7 @@ export function DynamicPricingCard({ listingId, initialSettings }: DynamicPricin
             <Label className="text-white text-xs uppercase tracking-wider">Strategy</Label>
             <Select 
               value={settings.strategy} 
-              onValueChange={(v) => setSettings({...settings, strategy: v})}
+              onValueChange={(v: string) => setSettings({...settings, strategy: v})}
               disabled={!settings.enabled}
             >
               <SelectTrigger className="bg-black/20 border-white/10 text-white">

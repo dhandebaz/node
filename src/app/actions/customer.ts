@@ -9,6 +9,7 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { User } from "@/types/user";
 import { DBTenant } from "@/types/database";
 import { BusinessType } from "@/types";
+import { revalidatePath } from "next/cache";
 
 // Helper to get current user or throw
 async function getCurrentUser(): Promise<User> {

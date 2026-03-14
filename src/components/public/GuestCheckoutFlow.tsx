@@ -64,9 +64,10 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
         const result = await extractKycDataAction(base64, file.type, true);
         
         if (result.success && result.details) {
+          const details = result.details;
           setFormData(prev => ({ 
             ...prev, 
-            idNumber: result.details.idNumber || "",
+            idNumber: details.idNumber || "",
             documentId: result.documentId || "" 
           }));
           toast.success("ID details verified by AI!");

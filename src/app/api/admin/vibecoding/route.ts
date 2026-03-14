@@ -27,6 +27,7 @@ export async function POST(req: Request) {
     const result = await aiService.stream({
       provider: provider as AIProvider,
       model: model as AIModel,
+      tenantId: 'system', // Admin-level vibecoding doesn't use tenant RAG
       messages,
       system: system,
       apiKey: apiKey,

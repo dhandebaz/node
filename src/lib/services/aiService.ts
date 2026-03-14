@@ -56,7 +56,9 @@ export class AIService {
     // 2. Fetch Agent Instructions if applicable
     let agentContext = "";
     if (agentId) {
-      const { data: agent } = await (await import('@/lib/supabase/server')).getSupabaseAdmin()
+      const { getSupabaseAdmin } = await import('@/lib/supabase/server');
+      const supabaseAdmin = await getSupabaseAdmin();
+      const { data: agent } = await supabaseAdmin
         .from('team_agents')
         .select('name, role, instructions, personality')
         .eq('id', agentId)
@@ -90,7 +92,7 @@ export class AIService {
     const aiModel = this.getModel(provider, model, apiKey);
 
     // Get the last user message for RAG query
-    const lastUserMessage = messages?.filter(m => m.role === 'user').pop()?.content || prompt || "";
+    const lastUserMessage = messages?.filter(m => m.role === 'user').pop()?.parts?.map(p => p.type === 'text' ? p.text : '').join(' ') || prompt || "";
     
     // 1. Fetch Knowledge from RAG
     const knowledge = await KnowledgeService.queryKnowledge(tenantId, lastUserMessage);
@@ -98,7 +100,9 @@ export class AIService {
     // 2. Fetch Agent Instructions if applicable
     let agentContext = "";
     if (agentId) {
-      const { data: agent } = await (await import('@/lib/supabase/server')).getSupabaseAdmin()
+      const { getSupabaseAdmin } = await import('@/lib/supabase/server');
+      const supabaseAdmin = await getSupabaseAdmin();
+      const { data: agent } = await supabaseAdmin
         .from('team_agents')
         .select('name, role, instructions, personality')
         .eq('id', agentId)

@@ -88,21 +88,24 @@ SelectContent.displayName = "SelectContent"
 
 const SelectItem = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { value: string }
->(({ className, children, value, ...props }, ref) => {
+  React.HTMLAttributes<HTMLDivElement> & { value: string; disabled?: boolean }
+>(({ className, children, value, disabled, ...props }, ref) => {
   const { value: selectedValue, onValueChange, setOpen } = React.useContext(SelectContext)!
   const isSelected = selectedValue === value
 
   return (
     <div
       ref={ref}
+      data-disabled={disabled}
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-accent hover:text-accent-foreground",
+        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 hover:bg-accent hover:text-accent-foreground",
         className
       )}
       onClick={() => {
-        onValueChange?.(value)
-        setOpen(false)
+        if (!disabled && onValueChange) {
+          onValueChange(value)
+          setOpen(false)
+        }
       }}
       {...props}
     >

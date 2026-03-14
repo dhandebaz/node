@@ -91,10 +91,10 @@ export function VoiceAgentSettings({ tenantId }: VoiceAgentSettingsProps) {
       <CardContent className="space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label className="text-white">Voice Provider</Label>
+            <Label className="text-white">Provider</Label>
             <Select 
               value={agent?.provider || "vapi"} 
-              onValueChange={(v: any) => setAgent(prev => ({ ...prev, provider: v }))}
+              onValueChange={(v: string) => setAgent(prev => ({ ...prev, provider: v as any }))}
             >
               <SelectTrigger className="bg-black/20 border-white/10 text-white">
                 <SelectValue placeholder="Select Provider" />
@@ -126,7 +126,7 @@ export function VoiceAgentSettings({ tenantId }: VoiceAgentSettingsProps) {
           <Label className="text-white">Voice Identity</Label>
           <Select 
             value={agent?.voiceId || "jennifer"} 
-            onValueChange={(v) => setAgent(prev => ({ ...prev, voiceId: v }))}
+            onValueChange={(v: string) => setAgent(prev => ({ ...prev, voiceId: v }))}
           >
             <SelectTrigger className="bg-black/20 border-white/10 text-white">
               <SelectValue placeholder="Select Voice" />

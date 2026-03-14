@@ -164,6 +164,8 @@ export class GrowthService {
       conversation = newConv;
     }
 
+    if (!conversation) throw new Error('Failed to create or find conversation');
+
     // 2. Record the message in the DB
     const { error: msgError } = await supabase
       .from('messages')

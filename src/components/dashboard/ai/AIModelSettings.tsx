@@ -80,7 +80,7 @@ export function AIModelSettings({ initialSettings }: AIModelSettingsProps) {
             <Label className="text-white">Model</Label>
             <Select 
               value={settings.model} 
-              onValueChange={(v) => setSettings({...settings, model: v})}
+              onValueChange={(v: string) => setSettings({...settings, model: v})}
             >
               <SelectTrigger className="bg-black/20 border-white/10 text-white">
                 <SelectValue placeholder="Select Model" />
