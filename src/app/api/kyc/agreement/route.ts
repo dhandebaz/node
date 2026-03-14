@@ -71,7 +71,6 @@ export async function POST(req: Request) {
         legal_agreement_path: storagePath,
         kyc_status: "verified",
         kyc_verified_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
       })
       .eq("id", resolvedTenantId);
 

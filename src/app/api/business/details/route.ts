@@ -51,8 +51,7 @@ export async function POST(req: Request) {
         tax_id: normalizedTaxId || null,
         address,
         phone,
-        timezone,
-        updated_at: new Date().toISOString()
+        timezone
       })
       .eq("id", resolvedTenantId);
 

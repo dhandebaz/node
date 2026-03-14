@@ -41,8 +41,7 @@ export async function POST(req: Request) {
       .update({
         kyc_extracted_data: extractedData,
         kyc_document_path: documentPath,
-        kyc_status: "pending", // Still need to sign agreement
-        updated_at: new Date().toISOString()
+        kyc_status: "pending" // Still need to sign agreement
       })
       .eq("id", resolvedTenantId);
 
