@@ -12,13 +12,16 @@ export class AppError extends Error {
     public code: ErrorCode;
     public statusCode: number;
     public details?: any;
+    public isOperational: boolean;
 
-    constructor(code: ErrorCode, message: string, details?: any) {
+    constructor(code: ErrorCode, message: string, details?: any, isOperational: boolean = true) {
         super(message);
         this.name = "AppError";
         this.code = code;
         this.details = details;
+        this.isOperational = isOperational;
         this.statusCode = this.getStatusCode(code);
+        Error.captureStackTrace(this, this.constructor);
     }
 
     private getStatusCode(code: ErrorCode): number {

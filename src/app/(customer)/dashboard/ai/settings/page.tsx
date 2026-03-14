@@ -71,7 +71,7 @@ export default function AISettingsPage() {
         </Card>
 
         {/* AI Model & BYOK Settings */}
-        <AIModelSettings initialSettings={tenant?.ai_settings as any} />
+        <AIModelSettings initialSettings={tenant?.ai_settings} />
 
         {/* Knowledge Base (RAG 2.0) */}
         <AIKnowledgeBase />

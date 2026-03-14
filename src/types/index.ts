@@ -17,6 +17,15 @@ export interface Tenant {
   phone?: string;
   timezone?: string;
   username?: string;
+  ai_settings?: {
+    provider: 'google' | 'anthropic' | 'openai';
+    model: string;
+    apiKey: string | null;
+    customInstructions?: string | null;
+    tone?: 'friendly' | 'professional' | 'concise' | 'humorous';
+  };
+  business_qr_url?: string;
+  upi_id?: string;
 }
 
 export type BusinessType = 
