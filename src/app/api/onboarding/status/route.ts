@@ -15,7 +15,7 @@ export async function GET() {
     const [accountRes, membershipRes] = await Promise.all([
       supabase
         .from("accounts")
-        .select("onboarding_status, tenant_id")
+        .select("onboarding_status, tenant_id, business_type")
         .eq("user_id", user.id)
         .maybeSingle(),
       supabase
