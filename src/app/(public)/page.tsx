@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 const fadeInUp = {
@@ -56,7 +56,7 @@ export default function Home() {
               <div className="flex flex-col items-start justify-end">
                 <Link 
                   href="/login"
-                  className="group flex items-center gap-4 text-2xl font-semibold uppercase tracking-tight hover:gap-6 transition-all bg-white text-black px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105"
+                  className="group flex items-center gap-4 text-2xl font-semibold uppercase tracking-tight hover:gap-6 transition-all skeuo-button text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105"
                 >
                   Hire an AI <ArrowRight className="w-6 h-6" />
                 </Link>
@@ -93,7 +93,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
             {/* Host AI */}
-            <div className="group border border-brand-bone/20 p-6 hover:bg-brand-bone/5 transition-colors relative flex flex-col">
+            <div className="group skeuo-card p-6 transition-colors relative flex flex-col">
                <div className="h-12 w-12 bg-blue-500/20 rounded-full mb-6 flex items-center justify-center border border-blue-500/30">
                  <span className="text-2xl">🏠</span>
                </div>
@@ -109,7 +109,7 @@ export default function Home() {
             </div>
 
             {/* Dukan AI */}
-            <div className="group border border-brand-bone/20 p-6 hover:bg-brand-bone/5 transition-colors relative flex flex-col">
+            <div className="group skeuo-card p-6 transition-colors relative flex flex-col">
                <div className="h-12 w-12 bg-green-500/20 rounded-full mb-6 flex items-center justify-center border border-green-500/30">
                  <span className="text-2xl">🛍️</span>
                </div>
@@ -125,7 +125,7 @@ export default function Home() {
             </div>
 
             {/* Nurse AI */}
-            <div className="group border border-brand-bone/20 p-6 hover:bg-brand-bone/5 transition-colors relative flex flex-col">
+            <div className="group skeuo-card p-6 transition-colors relative flex flex-col">
                <div className="h-12 w-12 bg-red-500/20 rounded-full mb-6 flex items-center justify-center border border-red-500/30">
                  <span className="text-2xl">🩺</span>
                </div>
@@ -141,7 +141,7 @@ export default function Home() {
             </div>
 
             {/* Thrift AI */}
-            <div className="group border border-brand-bone/20 p-6 hover:bg-brand-bone/5 transition-colors relative flex flex-col">
+            <div className="group skeuo-card p-6 transition-colors relative flex flex-col">
                <div className="h-12 w-12 bg-purple-500/20 rounded-full mb-6 flex items-center justify-center border border-purple-500/30">
                  <span className="text-2xl">👗</span>
                </div>
@@ -187,7 +187,7 @@ export default function Home() {
                </ul>
              </div>
              <div className="flex items-center justify-center">
-               <div className="w-full aspect-square bg-brand-bone/5 border border-brand-bone/20 rounded-3xl flex items-center justify-center p-8">
+               <div className="w-full aspect-square skeuo-inset flex items-center justify-center p-8">
                  <div className="text-center">
                    <p className="text-6xl font-bold mb-2">24/7</p>
                    <p className="text-xl uppercase tracking-widest opacity-60">Operations</p>
@@ -206,7 +206,7 @@ export default function Home() {
           </h2>
           <Link 
             href="/login"
-            className="inline-flex items-center gap-4 text-xl font-bold uppercase tracking-tight bg-white text-black px-10 py-5 rounded-full hover:scale-105 transition-transform"
+            className="inline-flex items-center gap-4 text-xl font-bold uppercase tracking-tight skeuo-button text-white px-10 py-5 rounded-full hover:scale-105 transition-transform"
           >
             Get Started Now
           </Link>

@@ -113,6 +113,80 @@
     background-size: 20px 20px;
     background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
   }
+
+  /* Skeuomorphic Utilities */
+  .skeuo-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.1),
+      0 10px 20px rgba(0, 0, 0, 0.4),
+      0 2px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skeuo-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.05), transparent 50%);
+    border-radius: inherit;
+  }
+
+  .skeuo-button {
+    background: linear-gradient(to bottom, #EB445A, #BF2C40);
+    border: 1px solid #FF5F73;
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .skeuo-button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .skeuo-button:active {
+    transform: translateY(1px);
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.3),
+      0 1px 2px rgba(0, 0, 0, 0.2);
+    filter: brightness(0.9);
+  }
+
+  .skeuo-inset {
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.4),
+      0 1px 0 rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 0.75rem;
+  }
+
+  .skeuo-progress-bg {
+    background: #1a1a1a;
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.5),
+      0 1px 0 rgba(255, 255, 255, 0.05);
+    border-radius: 2rem;
+    padding: 2px;
+  }
+
+  .skeuo-progress-fill {
+    background: linear-gradient(to bottom, #EB445A, #BF2C40);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 1px 2px rgba(0, 0, 0, 0.2);
+    border-radius: inherit;
+  }
 }
 
 /* Global Scrollbar Overrides - Minimal/Hidden */

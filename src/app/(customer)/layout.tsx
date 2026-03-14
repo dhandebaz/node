@@ -7,6 +7,7 @@ import { KaisaCreditUsage } from "@/types/kaisa";
 import { FailureBanner } from "@/components/ui/FailureBanner";
 import { StoreInitializer } from "@/components/dashboard/StoreInitializer";
 import { EarlyAccessFeedback } from "@/components/dashboard/EarlyAccessFeedback";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 
 export const dynamic = "force-dynamic";
 
@@ -61,15 +62,20 @@ export default async function CustomerLayout({
           isKaisaUser={profile.roles.isKaisaUser}
         />
 
-        {/* Main Content - Adjusted for fixed header */}
-        <main className="pt-20 min-h-screen pb-24 md:pb-0 transition-all duration-300">
-          <div className="max-w-7xl mx-auto p-6 md:p-10">
-            <FailureBanner />
-            <VerificationGate kycStatus={profile.tenant?.kyc_status || 'not_started'}>
-              {children}
-            </VerificationGate>
-          </div>
-        </main>
+        <div className="flex">
+          {/* Sidebar Navigation (Desktop) */}
+          <DashboardSidebar />
+
+          {/* Main Content - Adjusted for fixed header and sidebar */}
+          <main className="flex-1 pt-20 min-h-screen pb-24 md:pb-0 transition-all duration-300 md:pl-[var(--sidebar-width,0px)]">
+            <div className="max-w-7xl mx-auto p-6 md:p-10">
+              <FailureBanner />
+              <VerificationGate kycStatus={profile.tenant?.kyc_status || 'not_started'}>
+                {children}
+              </VerificationGate>
+            </div>
+          </main>
+        </div>
         
         {/* Early Access Feedback (Only for Beta Users) */}
         {profile.tenant?.earlyAccess && (
@@ -77,9 +83,9 @@ export default async function CustomerLayout({
         )}
       </div>
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     // If we catch a redirect, let it pass
-    if (error?.message === "NEXT_REDIRECT") {
+    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
         throw error;
     }
     

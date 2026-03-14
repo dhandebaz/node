@@ -1,67 +1,81 @@
-import jsPDF from "jspdf";
-import { Invoice } from "@/types/billing";
+import { jsPDF } from "jspdf";
+import { format } from "date-fns";
+import { DBInvoice, DBTenant } from "@/types/database";
 
-export const invoiceService = {
-  generatePDF(invoice: Invoice): Blob {
+export class InvoiceService {
+  static async generatePDF(invoice: DBInvoice, tenant: DBTenant): Promise<Blob> {
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
 
-    // Header
-    doc.setFontSize(20);
-    doc.text("INVOICE", 150, 20);
-    
+    // Header - Brand
+    doc.setFontSize(24);
+    doc.setTextColor(235, 68, 90); // Brand Red
+    doc.text("NODEBASE", margin, margin + 10);
+
+    // Invoice Info
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Invoice #: ${invoice.id.slice(0, 8).toUpperCase()}`, margin, margin + 25);
+    doc.text(`Date: ${format(new Date(invoice.created_at), "PPP")}`, margin, margin + 30);
+    doc.text(`Status: ${invoice.status.toUpperCase()}`, margin, margin + 35);
+
+    // Business Details (From)
+    doc.setTextColor(0);
     doc.setFontSize(12);
-    doc.text("Nodebase AI", 20, 20);
+    doc.text("From:", margin, margin + 50);
     doc.setFontSize(10);
-    doc.text("123 Tech Park, Bangalore", 20, 26);
-    doc.text("India - 560001", 20, 32);
+    doc.text("Antigravity Labs Private Limited", margin, margin + 55);
+    doc.text("HSR Layout, Bangalore", margin, margin + 60);
+    doc.text("Karnataka, India - 560102", margin, margin + 65);
 
-    // Details
+    // Client Details (To)
+    doc.setFontSize(12);
+    const rightCol = pageWidth - margin - 60;
+    doc.text("Bill To:", rightCol, margin + 50);
     doc.setFontSize(10);
-    doc.text(`Invoice ID: ${invoice.id}`, 150, 40);
-    doc.text(`Date: ${new Date(invoice.date).toLocaleDateString()}`, 150, 46);
-    doc.text(`Status: ${invoice.status.toUpperCase()}`, 150, 52);
+    doc.text(tenant.name || "Valued Customer", rightCol, margin + 55);
+    doc.text(tenant.business_type?.replace(/_/g, " ") || "Business", rightCol, margin + 60);
 
-    // Bill To
-    doc.text("Bill To:", 20, 60);
-    doc.setFont("helvetica", "bold");
-    doc.text(invoice.billingDetails.name, 20, 66);
-    doc.setFont("helvetica", "normal");
-    if (invoice.billingDetails.address) {
-        doc.text(invoice.billingDetails.address, 20, 72);
-    }
-    if (invoice.billingDetails.taxId) {
-        doc.text(`GSTIN: ${invoice.billingDetails.taxId}`, 20, 78);
-    }
+    // Table Header
+    const tableTop = margin + 80;
+    doc.setFillColor(245, 245, 245);
+    doc.rect(margin, tableTop, pageWidth - (margin * 2), 10, "F");
+    doc.setFontSize(10);
+    doc.setTextColor(0);
+    doc.text("Description", margin + 5, tableTop + 7);
+    doc.text("Amount", pageWidth - margin - 25, tableTop + 7);
 
-    // Items Table
-    let y = 100;
-    doc.setFillColor(240, 240, 240);
-    doc.rect(20, y - 5, 170, 10, "F");
-    doc.setFont("helvetica", "bold");
-    doc.text("Description", 25, y + 2);
-    doc.text("Amount", 160, y + 2);
-    
-    y += 10;
-    doc.setFont("helvetica", "normal");
-    
-    invoice.items.forEach(item => {
-        doc.text(item.description, 25, y + 2);
-        doc.text(`${invoice.currency} ${item.amount}`, 160, y + 2);
-        y += 10;
-    });
+    // Table Content
+    doc.text(`Description: ${invoice.items?.[0]?.description || "Subscription Plan"}`, margin + 5, tableTop + 20);
+    doc.text(`₹${invoice.amount.toFixed(2)}`, pageWidth - margin - 25, tableTop + 20);
 
     // Total
-    y += 10;
-    doc.line(20, y, 190, y);
-    y += 10;
-    doc.setFont("helvetica", "bold");
-    doc.text("Total", 120, y);
-    doc.text(`${invoice.currency} ${invoice.amount}`, 160, y);
+    const totalTop = tableTop + 40;
+    doc.setDrawColor(200);
+    doc.line(margin, totalTop - 5, pageWidth - margin, totalTop - 5);
+    doc.setFontSize(14);
+    doc.text("Total Paid:", margin + 5, totalTop + 5);
+    doc.text(`₹${invoice.amount.toFixed(2)}`, pageWidth - margin - 25, totalTop + 5);
 
     // Footer
     doc.setFontSize(8);
-    doc.text("Thank you for your business.", 20, 280);
-    
+    doc.setTextColor(150);
+    const footerText = "Thank you for using Nodebase. For any queries, contact support@nodebase.ai";
+    const textWidth = doc.getTextWidth(footerText);
+    doc.text(footerText, (pageWidth - textWidth) / 2, doc.internal.pageSize.getHeight() - 20);
+
     return doc.output("blob");
   }
-};
+
+  static downloadBlob(blob: Blob, filename: string) {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+}

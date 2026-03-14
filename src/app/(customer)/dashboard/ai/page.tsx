@@ -8,14 +8,13 @@ import {
   Home, 
   Calendar, 
   Activity, 
-  ArrowRight, 
   Plus,
   AlertTriangle,
-  Zap
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
-import { FailureBanner } from "@/components/ui/FailureBanner";
 import { redirect } from "next/navigation";
+import { OnboardingChecklist } from "@/components/dashboard/OnboardingChecklist";
 
 export const dynamic = 'force-dynamic';
 
@@ -32,6 +31,7 @@ export default async function AIDashboardPage() {
     { count: listingCount },
     { count: bookingCount },
     { count: messageCount },
+    { count: integrationCount },
     { data: recentActivity }
   ] = await Promise.all([
     WalletService.getBalance(tenantId),
@@ -39,6 +39,7 @@ export default async function AIDashboardPage() {
     supabase.from('listings').select('*', { count: 'exact', head: true }).eq('tenant_id', tenantId),
     supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('tenant_id', tenantId),
     supabase.from('messages').select('*', { count: 'exact', head: true }).eq('tenant_id', tenantId).eq('direction', 'outbound'),
+    supabase.from('listing_integrations').select('*', { count: 'exact', head: true }).in('listing_id', (await supabase.from('listings').select('id').eq('tenant_id', tenantId)).data?.map(l => l.id) || []),
     supabase.from('audit_events')
       .select('*')
       .eq('tenant_id', tenantId)
@@ -54,7 +55,7 @@ export default async function AIDashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white mb-1">Overview</h1>
-          <p className="text-zinc-400">Welcome back, {tenant?.name}. Here's what's happening.</p>
+          <p className="text-zinc-400">Welcome back, {tenant?.name}. Here&apos;s what&apos;s happening.</p>
         </div>
         <div className="flex items-center gap-3">
             <Link 
@@ -66,6 +67,15 @@ export default async function AIDashboardPage() {
             </Link>
         </div>
       </div>
+
+      <OnboardingChecklist 
+        stats={{
+          listingCount: listingCount || 0,
+          walletBalance: walletBalance || 0,
+          isAiEnabled: !!tenant?.is_ai_enabled && flags['ai_global_enabled'] !== false,
+          integrationCount: integrationCount || 0
+        }}
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -138,7 +148,7 @@ export default async function AIDashboardPage() {
                     </div>
                 ) : (
                     <div className="divide-y divide-zinc-800/50">
-                        {recentActivity.map((activity: any) => {
+                        {recentActivity.map((activity: { id: string; event_type?: string; actor_type?: string; created_at?: string }) => {
                           const eventType = String(activity?.event_type ?? "");
                           const actorType = String(activity?.actor_type ?? "");
                           const createdAt = activity?.created_at ? new Date(activity.created_at).toLocaleString() : "";

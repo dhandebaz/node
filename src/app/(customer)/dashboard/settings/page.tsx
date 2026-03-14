@@ -3,6 +3,8 @@ import { getCustomerProfile } from "@/app/actions/customer";
 import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
 import { KYCVerificationForm } from "@/components/dashboard/settings/KYCVerificationForm";
 import { ComplianceHubCard } from "@/components/dashboard/settings/ComplianceHubCard";
+import { BusinessProfileSettings } from "@/components/dashboard/settings/BusinessProfileSettings";
+import { TeamManagement } from "@/components/dashboard/settings/TeamManagement";
 import { redirect } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
@@ -23,6 +25,10 @@ export default async function CustomerSettingsPage() {
       </div>
 
       <div className="grid gap-8">
+        <BusinessProfileSettings tenant={tenant} />
+        
+        <TeamManagement />
+
         {/* Profile Section */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
           <div className="p-6 border-b border-zinc-800 flex items-center gap-4">

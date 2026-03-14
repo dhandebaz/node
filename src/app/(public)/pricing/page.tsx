@@ -34,8 +34,8 @@ export default function PricingPage() {
          
          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
            {/* Base Subscription */}
-           <div className="p-8 rounded-3xl border-2 border-brand-bone bg-brand-bone/10 relative overflow-hidden shadow-2xl">
-              <div className="absolute top-0 right-0 bg-brand-bone text-brand-deep-red px-4 py-1 font-bold text-xs uppercase">
+           <div className="p-8 skeuo-card relative overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 bg-brand-bone text-brand-deep-red px-4 py-1 font-bold text-xs uppercase z-10">
                 All Access
               </div>
               <h2 className="text-2xl font-bold uppercase tracking-widest mb-4">Base Platform</h2>
@@ -72,15 +72,15 @@ export default function PricingPage() {
                 </li>
               </ul>
 
-              <Link href="/login" className="block w-full text-center bg-brand-bone text-brand-deep-red font-bold py-4 rounded-full uppercase tracking-wider hover:bg-white transition-colors text-lg">
+              <Link href="/login" className="block w-full text-center skeuo-button text-white font-bold py-4 rounded-full uppercase tracking-wider hover:bg-white transition-colors text-lg">
                 Start Free Trial
               </Link>
               <p className="text-center text-sm opacity-50 mt-4">7-day free trial. No credit card required.</p>
            </div>
 
            {/* Usage Costs */}
-           <div className="p-8 rounded-3xl border border-brand-bone/20 bg-brand-bone/5">
-              <h2 className="text-2xl font-bold uppercase tracking-widest mb-4">Usage Costs</h2>
+           <div className="p-8 skeuo-inset">
+              <h2 className="text-2xl font-bold uppercase tracking-widest mb-4 font-mono">Usage Costs</h2>
               <p className="text-xl opacity-80 mb-8">Pay only for what you use.</p>
               
               <div className="space-y-8">
@@ -114,7 +114,7 @@ export default function PricingPage() {
                    </div>
                 </div>
 
-                <div className="bg-brand-bone/5 p-6 rounded-xl border border-brand-bone/10">
+                <div className="skeuo-inset p-6 bg-brand-bone/5 border border-brand-bone/10">
                    <div className="flex gap-3 items-center mb-2">
                       <HelpCircle className="w-5 h-5 opacity-60" />
                       <h4 className="font-bold uppercase tracking-wide text-sm">How it works</h4>
@@ -132,19 +132,19 @@ export default function PricingPage() {
      <section className="py-24 px-6 text-center">
         <h2 className="text-3xl font-bold uppercase tracking-tight mb-8">Common Questions</h2>
         <div className="max-w-3xl mx-auto grid gap-8 text-left">
-           <div className="bg-brand-bone/5 p-6 rounded-xl border border-brand-bone/10">
+           <div className="skeuo-inset p-6 bg-brand-bone/5 border border-brand-bone/10">
               <h3 className="font-bold text-lg mb-2">Is this the official WhatsApp Business API?</h3>
               <p className="opacity-70">No. This integration is WAHA-based (Linked Devices). It runs a session on your VPS and connects via QR.</p>
            </div>
-           <div className="bg-brand-bone/5 p-6 rounded-xl border border-brand-bone/10">
+           <div className="skeuo-inset p-6 bg-brand-bone/5 border border-brand-bone/10">
               <h3 className="font-bold text-lg mb-2">What happens if I run out of balance?</h3>
               <p className="opacity-70">The AI will stop replying. You will get a notification to top up. You can manually reply to customers in the meantime.</p>
            </div>
-           <div className="bg-brand-bone/5 p-6 rounded-xl border border-brand-bone/10">
+           <div className="skeuo-inset p-6 bg-brand-bone/5 border border-brand-bone/10">
               <h3 className="font-bold text-lg mb-2">Can I set a spending limit?</h3>
               <p className="opacity-70">Yes, you can set a daily or monthly budget in your dashboard to control costs.</p>
            </div>
-           <div className="bg-brand-bone/5 p-6 rounded-xl border border-brand-bone/10">
+           <div className="skeuo-inset p-6 bg-brand-bone/5 border border-brand-bone/10">
               <h3 className="font-bold text-lg mb-2">Is there a setup fee?</h3>
               <p className="opacity-70">No. Setup is free and takes less than 2 minutes.</p>
            </div>

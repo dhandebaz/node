@@ -63,8 +63,8 @@ export function KaisaVerificationOverlay({ isVisible, onComplete, documentType }
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 text-white">
+      <div className="w-full max-w-lg skeuo-card overflow-hidden shadow-2xl relative">
         {/* Animated Scanner Bar */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-brand-accent)] to-transparent animate-scan" />
 
@@ -76,8 +76,8 @@ export function KaisaVerificationOverlay({ isVisible, onComplete, documentType }
                 <Brain className="w-6 h-6 text-[var(--color-brand-accent)]" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-[var(--color-brand-headline)] tracking-wide">NODEBASE CORE</h3>
-                <p className="text-xs text-[var(--color-brand-accent)] font-mono">VISION ENGINE ACTIVE</p>
+                <h3 className="text-xl font-bold text-white tracking-wide">KAISA CORE</h3>
+                <p className="text-xs text-brand-red font-mono">VISION ENGINE ACTIVE</p>
               </div>
             </div>
             <div className="text-right">
@@ -89,7 +89,7 @@ export function KaisaVerificationOverlay({ isVisible, onComplete, documentType }
           </div>
 
           {/* Central Visualization */}
-          <div className="relative h-48 bg-zinc-900/50 rounded-lg border border-zinc-800 mb-6 flex items-center justify-center overflow-hidden">
+          <div className="relative h-48 skeuo-inset bg-zinc-900/50 mb-6 flex items-center justify-center overflow-hidden">
              {/* Grid Background */}
              <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
              
@@ -121,7 +121,7 @@ export function KaisaVerificationOverlay({ isVisible, onComplete, documentType }
           </div>
 
           {/* Terminal Logs */}
-          <div className="bg-black rounded-lg border border-zinc-800 p-4 h-48 overflow-y-auto font-mono text-xs custom-scrollbar">
+          <div className="skeuo-inset bg-black p-4 h-48 overflow-y-auto font-mono text-xs custom-scrollbar">
             <div className="flex items-center gap-2 text-zinc-500 mb-2 border-b border-zinc-900 pb-2">
                 <Terminal className="w-3 h-3" />
                 <span>SYSTEM LOGS</span>
