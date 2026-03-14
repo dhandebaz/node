@@ -1,6 +1,7 @@
 
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
+import { AppError, ErrorCode } from "@/lib/errors";
 
 export class PaymentLinkService {
   /**
@@ -14,6 +15,10 @@ export class PaymentLinkService {
     expiresInMinutes?: number;
     metadata?: any;
   }) {
+    if (params.amount < 0) {
+      throw new AppError(ErrorCode.BAD_REQUEST, "Payment amount cannot be negative");
+    }
+
     const supabase = await getSupabaseServer();
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + (params.expiresInMinutes || 60));
@@ -33,8 +38,8 @@ export class PaymentLinkService {
       .single();
 
     if (error) {
-      log.error("Failed to create payment link", error);
-      throw error;
+      log.error("Failed to create payment link", error, { tenantId: params.tenantId });
+      throw new AppError(ErrorCode.INTERNAL_ERROR, "Failed to generate payment link");
     }
 
     // In a real system, we'd also create a Razorpay/Stripe order here

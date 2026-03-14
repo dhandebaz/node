@@ -2,6 +2,7 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
 import { revalidatePath } from "next/cache";
+import { AppError, ErrorCode } from "@/lib/errors";
 
 export interface GrowthOpportunity {
   listingId: string;
@@ -16,14 +17,23 @@ export class GrowthService {
    * Scan for availability gaps in the next X days.
    */
   static async scanAvailabilityGaps(tenantId: string, horizonDays: number = 30): Promise<GrowthOpportunity[]> {
+    if (horizonDays < 1 || horizonDays > 365) {
+      throw new AppError(ErrorCode.BAD_REQUEST, "Horizon days must be between 1 and 365");
+    }
+
     const supabase = await getSupabaseServer();
     
     // 1. Fetch Listings
-    const { data: listings } = await supabase
+    const { data: listings, error: listingError } = await supabase
       .from("listings")
       .select("id, title")
       .eq("tenant_id", tenantId)
       .eq("status", "active");
+
+    if (listingError) {
+      log.error("Failed to fetch listings for growth scan", listingError, { tenantId });
+      throw new AppError(ErrorCode.INTERNAL_ERROR, "Failed to scan listings");
+    }
 
     if (!listings || listings.length === 0) return [];
 

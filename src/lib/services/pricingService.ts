@@ -1,4 +1,6 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { AppError, ErrorCode } from "@/lib/errors";
+import { log } from "@/lib/logger";
 
 export interface PricingRules {
   per_1k_tokens: number;
@@ -58,7 +60,10 @@ export class PricingService {
         updated_at: new Date().toISOString()
       });
 
-    if (error) throw new Error("Failed to update pricing rules: " + error.message);
+    if (error) {
+       log.error("Failed to update pricing rules", error);
+       throw new AppError(ErrorCode.INTERNAL_ERROR, "Failed to update pricing rules");
+    }
     
     return updated;
   }

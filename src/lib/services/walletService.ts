@@ -1,5 +1,6 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
+import { AppError, ErrorCode } from "@/lib/errors";
 
 export class WalletService {
   /**
@@ -13,7 +14,12 @@ export class WalletService {
       .eq("tenant_id", tenantId)
       .single();
 
-    if (error || !data) return 0;
+    if (error || !data) {
+      if (error && error.code !== 'PGRST116') { // PGRST116 is not found, which is fine for default 0
+        log.error("Failed to fetch wallet balance", error, { tenantId });
+      }
+      return 0;
+    }
     return Number(data.balance);
   }
 
@@ -56,10 +62,11 @@ export class WalletService {
 
       if (errorCode === '23514' || errorCode === 'P0001') {
          log.warn(`Wallet deduction blocked for tenant ${tenantId} due to insufficient funds.`);
+         throw new AppError(ErrorCode.BAD_REQUEST, "Insufficient wallet balance", { tenantId, required: amount });
       } else {
          log.error("Failed to deduct credits (RPC)", { error: errorMsg, code: errorCode, tenantId });
+         throw new AppError(ErrorCode.INTERNAL_ERROR, "Failed to process credit deduction");
       }
-      return false;
     }
 
     return true;
