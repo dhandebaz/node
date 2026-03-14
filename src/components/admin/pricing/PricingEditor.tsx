@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { updatePricingAction } from "@/app/actions/admin";
 import { toast } from "sonner";
 import { Save, Loader2, Sparkles } from "lucide-react";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 interface PricingConfig {
   ai_monthly_price: number;
@@ -33,13 +33,10 @@ export function PricingEditor({ config }: { config: any }) {
       // So we should probably use the API route directly here for clarity or update the action.
       // Let's use fetch for the route as explicitly mentioned in step 4 context.
       
-      const res = await fetch("/api/admin/pricing/update", {
+      await fetchWithAuth("/api/admin/pricing/update", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(pricing)
       });
-
-      if (!res.ok) throw new Error("Failed to update");
 
       toast.success("AI SaaS Pricing updated");
     } catch (error) {

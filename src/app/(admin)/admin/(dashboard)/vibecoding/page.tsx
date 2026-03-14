@@ -5,6 +5,8 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Send, Settings, Terminal, Server, Key, Cpu, Sparkles, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { fetchWithAuth } from "@/lib/api/fetcher";
+import { getCsrfToken } from "@/lib/api/csrf";
 
 type AIProvider = 'google' | 'anthropic';
 type AIModel = 'gemini-1.5-flash' | 'gemini-1.5-pro' | 'claude-3-opus-20240229' | 'claude-3-sonnet-20240229' | 'claude-3-haiku-20240307';
@@ -29,8 +31,10 @@ export default function VibecodingPage() {
   const [execError, setExecError] = useState<string | null>(null);
   const [chatInput, setChatInput] = useState("");
 
+  const csrf = getCsrfToken();
   const transport = new DefaultChatTransport({
     api: "/api/admin/vibecoding",
+    headers: (csrf ? { "x-csrf-token": csrf } : undefined) as any,
     body: {
       provider,
       model,
@@ -60,15 +64,14 @@ export default function VibecodingPage() {
     }
     setExecRunning(true);
     try {
-      const res = await fetch("/api/admin/vibecoding/execute", {
+      const json = await fetchWithAuth<
+        | { success: true; result: { stdout: string; stderr: string; exitCode: number } }
+        | { error: string }
+      >("/api/admin/vibecoding/execute", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: execCode, language: execLanguage }),
       });
-      const json = (await res.json()) as
-        | { success: true; result: { stdout: string; stderr: string; exitCode: number } }
-        | { error: string };
-      if (!res.ok || "error" in json) {
+      if ("error" in json) {
         setExecError("error" in json ? json.error : "Execution failed");
         return;
       }

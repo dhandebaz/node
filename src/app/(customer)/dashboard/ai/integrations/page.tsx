@@ -19,6 +19,7 @@ import { useDashboardStore } from "@/store/useDashboardStore";
 import { getBusinessLabels, getPersonaCapabilities } from "@/lib/business-context";
 import { toast } from "sonner";
 import { WhatsAppBYONCard } from "@/components/dashboard/integrations/WhatsAppBYONCard";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 interface GoogleIntegrationStatus {
   status: "connected" | "disconnected" | "expired" | "error";
@@ -133,8 +134,7 @@ export default function ListingIntegrationsPage() {
     
     setIsConnectingGoogle(true);
     try {
-      const res = await fetch("/api/integrations/google/connect", { method: "POST" });
-      const data = await res.json();
+      const data = await fetchWithAuth<{ url?: string }>("/api/integrations/google/connect", { method: "POST" });
       
       if (data.url) {
         window.location.href = data.url;
@@ -153,7 +153,7 @@ export default function ListingIntegrationsPage() {
 
     try {
       setIsLoading(true);
-      await fetch("/api/integrations/google/disconnect", { method: "POST" });
+      await fetchWithAuth("/api/integrations/google/disconnect", { method: "POST" });
       toast.success("Disconnected successfully");
       fetchGoogleStatus();
     } catch (error) {
@@ -167,13 +167,15 @@ export default function ListingIntegrationsPage() {
     
     setIsConnectingWhatsApp(true);
     try {
-      const res = await fetch("/api/integrations/whatsapp/connect", { method: "POST" });
-      if (res.ok) {
+      const data = await fetchWithAuth<{ success?: boolean; error?: string; status?: string; qrUrl?: string }>(
+        "/api/integrations/whatsapp/connect",
+        { method: "POST" }
+      );
+      if (data?.error) {
+        toast.error(data.error || "Failed to connect WhatsApp");
+      } else {
         toast.success("WhatsApp connected successfully");
         fetchWhatsappStatus();
-      } else {
-        const data = await res.json();
-        toast.error(data.error || "Failed to connect WhatsApp");
       }
     } catch (error) {
       toast.error("An error occurred");
@@ -187,7 +189,7 @@ export default function ListingIntegrationsPage() {
 
     try {
       setIsLoading(true);
-      await fetch("/api/integrations/whatsapp/disconnect", { method: "POST" });
+      await fetchWithAuth("/api/integrations/whatsapp/disconnect", { method: "POST" });
       toast.success("Disconnected successfully");
       fetchWhatsappStatus();
     } catch (error) {
@@ -201,13 +203,14 @@ export default function ListingIntegrationsPage() {
     
     setIsConnectingInstagram(true);
     try {
-      const res = await fetch("/api/integrations/instagram/connect", { method: "POST" });
-      if (res.ok) {
+      const data = await fetchWithAuth<{ success?: boolean; error?: string }>("/api/integrations/instagram/connect", {
+        method: "POST",
+      });
+      if (data?.error) {
+        toast.error(data.error || "Failed to connect Instagram");
+      } else {
         toast.success("Instagram connected successfully");
         fetchInstagramStatus();
-      } else {
-        const data = await res.json();
-        toast.error(data.error || "Failed to connect Instagram");
       }
     } catch (error) {
       toast.error("An error occurred");
@@ -221,7 +224,7 @@ export default function ListingIntegrationsPage() {
 
     try {
       setIsLoading(true);
-      await fetch("/api/integrations/instagram/disconnect", { method: "POST" });
+      await fetchWithAuth("/api/integrations/instagram/disconnect", { method: "POST" });
       toast.success("Disconnected successfully");
       fetchInstagramStatus();
     } catch (error) {

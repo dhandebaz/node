@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { Loader2, Wallet } from "lucide-react";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 type Transaction = {
   id: string;
@@ -52,16 +53,14 @@ export default function AdminUsagePage() {
     
     setAdjusting(true);
     try {
-      const res = await fetch("/api/admin/wallet/adjust", {
+      await fetchWithAuth("/api/admin/wallet/adjust", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tenant_id: adjustTenantId,
           amount: Number(adjustAmount),
           reason: adjustReason
         })
       });
-      if (!res.ok) throw new Error("Failed");
       
       setAdjustTenantId("");
       setAdjustAmount("");

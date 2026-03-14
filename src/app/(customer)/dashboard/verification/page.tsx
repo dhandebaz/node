@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 import { getCustomerProfile } from "@/app/actions/customer"; // We can't use server action directly in useEffect easily, better to fetch via API or pass as props. But this is a client page. I'll fetch via API or assume user context.
 
 // Simple Signature Canvas
@@ -139,15 +140,10 @@ export default function VerificationPage() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/business/details", {
+      await fetchWithAuth("/api/business/details", {
         method: "POST",
         body: JSON.stringify({ ...details, taxId: normalizedTaxId, tenantId }),
-        headers: { "Content-Type": "application/json" }
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.error || "Failed to save details");
-      }
       setStep(2);
     } catch (error) {
       toast.error((error as Error)?.message || "Error saving details");
@@ -167,14 +163,16 @@ export default function VerificationPage() {
       formData.append("tenantId", tenantId);
 
       try {
-        const res = await fetch("/api/kyc/upload", {
-          method: "POST",
-          body: formData
-        });
-        const data = await res.json();
+        const data = await fetchWithAuth<{ success: boolean; extractedData?: any; filePath?: string; error?: string }>(
+          "/api/kyc/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
         if (data.success) {
           setExtractedData(data.extractedData);
-          setKycDocPath(data.filePath);
+          setKycDocPath(data.filePath || "");
         } else {
           toast.error(data.error);
         }
@@ -189,16 +187,14 @@ export default function VerificationPage() {
   const handleKYCConfirm = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/kyc/confirm", {
+      await fetchWithAuth("/api/kyc/confirm", {
         method: "POST",
         body: JSON.stringify({
           tenantId,
           extractedData,
-          documentPath: kycDocPath
+          documentPath: kycDocPath,
         }),
-        headers: { "Content-Type": "application/json" }
       });
-      if (!res.ok) throw new Error("Failed to confirm KYC");
       setStep(3);
     } catch (error) {
       toast.error("Error confirming KYC");
@@ -214,15 +210,13 @@ export default function VerificationPage() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/kyc/agreement", {
+      const data = await fetchWithAuth<{ success: boolean; error?: string }>("/api/kyc/agreement", {
         method: "POST",
         body: JSON.stringify({
           tenantId,
-          signatureBase64: signature
+          signatureBase64: signature,
         }),
-        headers: { "Content-Type": "application/json" }
       });
-      const data = await res.json();
       if (data.success) {
         toast.success("Verification Complete!");
         // Step 4: One-time Public Username (Redirect or Modal?)

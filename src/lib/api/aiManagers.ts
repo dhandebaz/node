@@ -1,4 +1,5 @@
 import { AiManager, PublicPricingItem, PricingEstimateResult } from "@/types/ai-managers";
+import { getCsrfToken } from "@/lib/api/csrf";
 
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
@@ -24,9 +25,10 @@ export async function fetchPublicPricing(): Promise<PublicPricingItem[]> {
 }
 
 export async function updateAdminPricing(slug: string, baseMonthlyPrice: number, status: "active" | "disabled") {
+  const csrf = getCsrfToken();
   const response = await fetch("/api/admin/pricing/update", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(csrf ? { "x-csrf-token": csrf } : {}) },
     body: JSON.stringify({ slug, baseMonthlyPrice, status })
   });
   return handleResponse(response);

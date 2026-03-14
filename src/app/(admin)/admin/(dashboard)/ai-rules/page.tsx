@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { AlertTriangle, Loader2, RefreshCw } from "lucide-react";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 type AIRule = {
   ruleId: string;
@@ -56,15 +57,10 @@ export default function AdminAiRulesPage() {
     try {
       setSaving(true);
       setMessage(null);
-      const response = await fetch("/api/admin/ai-rules/update", {
+      const data = await fetchWithAuth<{ rules?: AIRule[] }>("/api/admin/ai-rules/update", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rules })
       });
-      if (!response.ok) {
-        throw new Error("Unable to update rules.");
-      }
-      const data = await response.json();
       setRules(data.rules || rules);
       setMessage("Rules updated.");
     } catch (err: any) {

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2, ArrowLeft } from "lucide-react";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 type CustomerDetail = {
   profile: {
@@ -42,12 +43,7 @@ type CustomerDetail = {
 };
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url, { cache: "no-store" });
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload?.error || "Request failed");
-  }
-  return response.json();
+  return fetchWithAuth<T>(url, { cache: "no-store" });
 }
 
 function OverrideForm({ type, label, placeholder, onSuccess }: { type: string, label: string, placeholder: string, onSuccess: () => void }) {
@@ -64,16 +60,10 @@ function OverrideForm({ type, label, placeholder, onSuccess }: { type: string, l
     setMessage(null);
     
     try {
-      const response = await fetch("/api/admin/overrides", {
+      await fetchWithAuth("/api/admin/overrides", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type, id, reason })
       });
-      
-      if (!response.ok) {
-        const payload = await response.json().catch(() => ({}));
-        throw new Error(payload?.error || "Action failed");
-      }
       
       setMessage({ text: "Success", type: "success" });
       setId("");
@@ -185,15 +175,10 @@ export default function AdminCustomerDetailPage() {
     const nextStatus = data.aiManager.status === "active" ? "paused" : "active";
     setUpdating(true);
     try {
-      const response = await fetch(`/api/admin/customers/${id}/status`, {
+      await fetchWithAuth(`/api/admin/customers/${id}/status`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: nextStatus })
       });
-      if (!response.ok) {
-        const payload = await response.json().catch(() => ({}));
-        throw new Error(payload?.error || "Failed to update status");
-      }
       loadCustomer();
     } catch (err: any) {
       setError(err.message || "Failed to update");
@@ -206,15 +191,10 @@ export default function AdminCustomerDetailPage() {
     if (!data || !walletAdjustment) return;
     setUpdating(true);
     try {
-      const response = await fetch(`/api/admin/customers/${id}/wallet`, {
+      await fetchWithAuth(`/api/admin/customers/${id}/wallet`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: walletAdjustment, reason: walletReason })
       });
-      if (!response.ok) {
-        const payload = await response.json().catch(() => ({}));
-        throw new Error(payload?.error || "Failed to adjust wallet");
-      }
       setWalletAdjustment(0);
       setWalletReason("");
       loadCustomer();
@@ -234,15 +214,10 @@ export default function AdminCustomerDetailPage() {
 
     setUpdating(true);
     try {
-      const response = await fetch(`/api/admin/tenants/${data.tenantId}/control`, {
+      await fetchWithAuth(`/api/admin/tenants/${data.tenantId}/control`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ control, value: !currentValue, reason })
       });
-      if (!response.ok) {
-        const payload = await response.json().catch(() => ({}));
-        throw new Error(payload?.error || "Failed to update control");
-      }
       loadCustomer();
     } catch (err: any) {
       setError(err.message || "Failed to update");

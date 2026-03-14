@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { Loader2, UploadCloud, ShieldCheck } from "lucide-react";
+import { getCsrfToken } from "@/lib/api/csrf";
 
 type UploadInfo = {
   id: string;
@@ -78,9 +79,11 @@ export default function GuestIdUploadPage() {
       if (backFile) {
         formData.append("backImage", backFile);
       }
+      const csrf = getCsrfToken();
       const response = await fetch("/api/guest-id/upload", {
         method: "POST",
-        body: formData
+        headers: csrf ? { "x-csrf-token": csrf } : undefined,
+        body: formData,
       });
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));

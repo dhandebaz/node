@@ -16,6 +16,8 @@ export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const method = request.method;
 
+  const csrfTokenForSession = request.cookies.get("nodebase-csrf-token")?.value || crypto.randomUUID();
+
   // ==========================================
   // 0. Security Hardening (CSRF & Rate Limit)
   // ==========================================
@@ -69,6 +71,12 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
+  response.cookies.set("nodebase-csrf-token", csrfTokenForSession, {
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+
   // ==========================================
   // 2. Security Checks (CSRF & Impersonation)
   // ==========================================
@@ -77,8 +85,11 @@ export async function proxy(request: NextRequest) {
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method) && pathname.startsWith("/api")) {
     if (!pathname.includes("/webhooks") && !pathname.includes("/webhook")) {
       const csrfToken = request.headers.get("x-csrf-token");
-      if (!csrfToken && process.env.NODE_ENV === "production") {
-        return NextResponse.json({ error: "Missing CSRF token" }, { status: 403 });
+      const cookieToken = request.cookies.get("nodebase-csrf-token")?.value || csrfTokenForSession;
+      if (process.env.NODE_ENV === "production") {
+        if (!csrfToken || !cookieToken || csrfToken !== cookieToken) {
+          return NextResponse.json({ error: "Missing CSRF token" }, { status: 403 });
+        }
       }
     }
   }

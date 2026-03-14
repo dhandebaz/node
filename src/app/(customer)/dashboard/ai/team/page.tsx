@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 export default function TeamPage() {
   const [loading, setLoading] = useState(true);
@@ -49,11 +50,9 @@ export default function TeamPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to remove this agent?")) return;
     try {
-      const res = await fetch(`/api/team/agents/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        toast.success("Agent removed");
-        fetchAgents();
-      }
+      await fetchWithAuth(`/api/team/agents/${id}`, { method: "DELETE" });
+      toast.success("Agent removed");
+      fetchAgents();
     } catch (e) {
       toast.error("Delete failed");
     }

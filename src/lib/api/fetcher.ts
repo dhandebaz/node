@@ -1,5 +1,6 @@
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { SessionExpiredError } from "@/lib/api/errors";
+import { getCsrfToken } from "@/lib/api/csrf";
 
 type FetchOptions = RequestInit & { retry?: boolean };
 
@@ -8,13 +9,24 @@ export async function fetchWithAuth<T>(url: string, options: FetchOptions = {}):
   const { data } = await supabase.auth.getSession();
   const accessToken = data.session?.access_token;
 
+  const method = (options.method || "GET").toUpperCase();
+  const isFormDataBody = typeof FormData !== "undefined" && options.body instanceof FormData;
+
+  const headers = new Headers(options.headers);
+  if (!isFormDataBody && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+  const csrf = getCsrfToken();
+  if (csrf && ["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
+    headers.set("x-csrf-token", csrf);
+  }
+  if (accessToken) {
+    headers.set("Authorization", `Bearer ${accessToken}`);
+  }
+
   const response = await fetch(url, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
-    }
+    headers
   });
 
   if (response.status === 401) {

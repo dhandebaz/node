@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Send, User, Phone, MessageSquare, Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import { useParams } from "next/navigation";
+import { getCsrfToken } from "@/lib/api/csrf";
 
 // Types
 type Message = {
@@ -93,9 +94,13 @@ export default function PublicChatPage() {
 
     setLoading(true);
     try {
+        const csrf = getCsrfToken();
         const res = await fetch("/api/chat/init", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              ...(csrf ? { "x-csrf-token": csrf } : {})
+            },
             body: JSON.stringify({ businessId, name, phone })
         });
         
@@ -122,9 +127,13 @@ export default function PublicChatPage() {
     if (!session) return;
     
     try {
+        const csrf = getCsrfToken();
         const res = await fetch("/api/chat/send", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              ...(csrf ? { "x-csrf-token": csrf } : {})
+            },
             body: JSON.stringify({
                 conversationId: session.conversationId,
                 content,

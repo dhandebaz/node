@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 export function AIKnowledgeBase() {
   const [loading, setLoading] = useState(true);
@@ -66,17 +67,12 @@ export function AIKnowledgeBase() {
     formData.append('file', file);
 
     try {
-      const res = await fetch("/api/knowledge/upload", {
+      await fetchWithAuth("/api/knowledge/upload", {
         method: "POST",
         body: formData
       });
-
-      if (res.ok) {
-        toast.success("Document uploaded and processing...");
-        fetchDocuments();
-      } else {
-        throw new Error("Upload failed");
-      }
+      toast.success("Document uploaded and processing...");
+      fetchDocuments();
     } catch (error) {
       toast.error("Failed to upload document");
     } finally {
@@ -88,11 +84,9 @@ export function AIKnowledgeBase() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this document and its knowledge?")) return;
     try {
-      const res = await fetch(`/api/knowledge/documents/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setDocuments(prev => prev.filter(d => d.id !== id));
-        toast.success("Document removed");
-      }
+      await fetchWithAuth(`/api/knowledge/documents/${id}`, { method: "DELETE" });
+      setDocuments(prev => prev.filter(d => d.id !== id));
+      toast.success("Document removed");
     } catch (e) {
       toast.error("Delete failed");
     }

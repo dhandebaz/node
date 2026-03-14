@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 export function ICalSyncCard({ listingId }: { listingId: string }) {
   const [platform, setPlatform] = useState("airbnb");
@@ -18,17 +19,10 @@ export function ICalSyncCard({ listingId }: { listingId: string }) {
     setMessage(null);
 
     try {
-      const response = await fetch(`/api/listings/${listingId}/sync/import`, {
+      await fetchWithAuth(`/api/listings/${listingId}/sync/import`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ platform, url }),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to sync calendar");
-      }
 
       setMessage({ type: "success", text: "Calendar synced successfully!" });
       setUrl("");

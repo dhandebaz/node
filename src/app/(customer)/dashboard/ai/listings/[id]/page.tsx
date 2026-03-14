@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ICalSyncCard } from "@/components/listings/ICalSyncCard";
 import { DynamicPricingCard } from "@/components/listings/DynamicPricingCard";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 const platformLabels: Record<ListingPlatform, string> = {
   airbnb: "Airbnb",
@@ -111,15 +112,10 @@ export default function ListingDetailPage() {
     if (!url) return;
     setSyncing(platform);
     try {
-      const res = await fetch(`/api/listings/${listingId}/sync/import`, {
+      const data = await fetchWithAuth<{ count?: number }>(`/api/listings/${listingId}/sync/import`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ platform, url })
       });
-      
-      if (!res.ok) throw new Error("Sync failed");
-      
-      const data = await res.json();
       toast.success(`Synced ${data.count || 0} bookings from ${platformLabels[platform]}`);
       
       // Reload integrations to get updated status/time

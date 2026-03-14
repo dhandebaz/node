@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Mic, Phone, Save, Loader2, Play, Pause, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { VoiceAgent } from "@/types/omnichannel";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 interface VoiceAgentSettingsProps {
   tenantId: string;
@@ -43,15 +44,11 @@ export function VoiceAgentSettings({ tenantId }: VoiceAgentSettingsProps) {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch("/api/voice/agent", {
+      await fetchWithAuth("/api/voice/agent", {
         method: "POST",
-        body: JSON.stringify({ ...agent, tenantId })
+        body: JSON.stringify({ ...agent, tenantId }),
       });
-      if (res.ok) {
-        toast.success("Voice agent settings updated");
-      } else {
-        throw new Error("Failed to save");
-      }
+      toast.success("Voice agent settings updated");
     } catch (error) {
       toast.error("Failed to save voice agent settings");
     } finally {

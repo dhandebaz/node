@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { Loader2, X } from "lucide-react";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 type ManagerRow = {
   slug: string;
@@ -14,12 +15,7 @@ type ManagerRow = {
 };
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url, { cache: "no-store" });
-  if (!response.ok) {
-    const payload = await response.json().catch(() => ({}));
-    throw new Error(payload?.error || "Request failed");
-  }
-  return response.json();
+  return fetchWithAuth<T>(url, { cache: "no-store" });
 }
 
 export default function AdminAiManagersPage() {
@@ -48,19 +44,14 @@ export default function AdminAiManagersPage() {
     if (!selected) return;
     setSaving(true);
     try {
-      const response = await fetch("/api/admin/ai-managers/update", {
+      await fetchWithAuth("/api/admin/ai-managers/update", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           slug: selected.slug,
           baseMonthlyPrice: selected.baseMonthlyPrice,
           status: selected.status
         })
       });
-      if (!response.ok) {
-        const payload = await response.json().catch(() => ({}));
-        throw new Error(payload?.error || "Failed to save");
-      }
       setSelected(null);
       loadManagers();
     } catch (err: any) {

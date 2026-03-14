@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { SessionExpiredOverlay } from "@/components/auth/SessionExpiredOverlay";
 import type { User, AuthChangeEvent, Session } from "@supabase/supabase-js";
+import { getCsrfToken } from "@/lib/api/csrf";
 
 type UserRole = "customer" | "business" | "admin" | "superadmin";
 type SessionStatus = "loading" | "authenticated" | "unauthenticated" | "expired";
@@ -32,7 +33,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setRole(null);
     // Clear the tenant cookie via server route
     try {
-      await fetch("/api/auth/tenant-cookie/clear", { method: "POST" });
+      const csrf = getCsrfToken();
+      await fetch("/api/auth/tenant-cookie/clear", {
+        method: "POST",
+        headers: csrf ? { "x-csrf-token": csrf } : undefined,
+      });
     } catch {}
     
     setSessionStatus("unauthenticated");

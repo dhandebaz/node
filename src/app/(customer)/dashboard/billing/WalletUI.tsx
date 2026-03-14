@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Wallet, TrendingDown, TrendingUp, CreditCard, History, X, Loader2 } from "lucide-react";
 import Script from "next/script";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
 interface WalletTransaction {
   id: string;
@@ -34,14 +35,13 @@ export function WalletUI({ initialBalance, history, usage24h, plan, isPaused, pa
       setLoading(true);
       
       // 1. Create Order
-      const res = await fetch("/api/billing/top-up/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: topUpAmount })
-      });
-      
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const data = await fetchWithAuth<{ keyId: string; amount: number; currency: string; orderId: string; error?: string }>(
+        "/api/billing/top-up/create",
+        {
+          method: "POST",
+          body: JSON.stringify({ amount: topUpAmount }),
+        }
+      );
 
       // 2. Open Razorpay
       const options = {
@@ -54,9 +54,8 @@ export function WalletUI({ initialBalance, history, usage24h, plan, isPaused, pa
         handler: async function (response: any) {
           try {
             // 3. Verify Payment
-            const verifyRes = await fetch("/api/billing/top-up/verify", {
+            await fetchWithAuth("/api/billing/top-up/verify", {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
@@ -64,8 +63,6 @@ export function WalletUI({ initialBalance, history, usage24h, plan, isPaused, pa
                 credits: topUpAmount
               })
             });
-
-            if (!verifyRes.ok) throw new Error("Verification failed");
 
             // Success
             alert("Credits added successfully!");
@@ -95,12 +92,10 @@ export function WalletUI({ initialBalance, history, usage24h, plan, isPaused, pa
   const handleUpgrade = async (newPlan: string) => {
     try {
       setLoading(true);
-      const res = await fetch("/api/billing/subscribe", {
+      const data = await fetchWithAuth<{ keyId: string; subscriptionId: string; error?: string }>("/api/billing/subscribe", {
         method: "POST",
         body: JSON.stringify({ plan: newPlan })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
       
       const options = {
         key: data.keyId,
