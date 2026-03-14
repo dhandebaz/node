@@ -4,6 +4,13 @@ export function getSupabaseAdmin() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "https://placeholder.supabase.co";
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder";
 
+  if (supabaseUrl.includes("placeholder")) {
+    console.error("[Supabase Admin Utility] CRITICAL: SUPABASE_URL is not configured.");
+  }
+  if (supabaseServiceKey === "placeholder") {
+    console.error("[Supabase Admin Utility] CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not configured.");
+  }
+
   return createClient(supabaseUrl, supabaseServiceKey, {
     auth: {
       autoRefreshToken: false,

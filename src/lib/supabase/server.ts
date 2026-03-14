@@ -37,6 +37,15 @@ export async function getSupabaseAdmin() {
               process.env.nodebase_SUPABASE_SERVICE_ROLE_KEY || 
               "placeholder";
 
+  if (url.includes("placeholder")) {
+    console.error("[Supabase Admin] CRITICAL: SUPABASE_URL is not configured.");
+  }
+  if (key === "placeholder") {
+    console.error("[Supabase Admin] CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not configured.");
+  } else {
+    console.log("[Supabase Admin] Initializing with service role key (length: " + key.length + ")");
+  }
+
   return createServerClient(url, key, {
     cookies: {
       getAll() {
