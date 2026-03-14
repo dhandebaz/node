@@ -153,7 +153,8 @@ export async function completeOnboarding(
         product_type: "ai_employee",
         business_type: businessType,
         onboarding_status: "complete",
-        tenant_id: tenantId, // Link account to tenant
+        tenant_id: tenantId, 
+        onboarding_milestones: ["business_details"], // Add this
         updated_at: new Date().toISOString()
       })
       .eq("user_id", user.id);
@@ -167,7 +168,8 @@ export async function completeOnboarding(
         product_type: "ai_employee",
         business_type: businessType,
         onboarding_status: "complete",
-        tenant_id: tenantId // Link account to tenant
+        tenant_id: tenantId,
+        onboarding_milestones: ["business_details"] // Add this
       });
     error = insertError;
   }
@@ -202,7 +204,33 @@ export async function completeOnboarding(
       .eq("id", kaisaAccount.id);
   }
 
-  revalidatePath("/", "layout");
+  return { success: true };
+}
+
+export async function completeMilestone(milestoneId: string) {
+  const supabase = await getSupabaseServer();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("Unauthorized");
+
+  const admin = await getSupabaseAdmin();
+  const { data: account } = await admin
+    .from("accounts")
+    .select("onboarding_milestones")
+    .eq("user_id", user.id)
+    .single();
+
+  const currentMilestones = (account?.onboarding_milestones as string[]) || [];
   
+  if (!currentMilestones.includes(milestoneId)) {
+    const newMilestones = [...currentMilestones, milestoneId];
+    await admin
+      .from("accounts")
+      .update({ onboarding_milestones: newMilestones })
+      .eq("user_id", user.id);
+    
+    revalidatePath("/dashboard/ai");
+  }
+
   return { success: true };
 }

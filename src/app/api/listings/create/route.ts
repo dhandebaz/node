@@ -77,6 +77,17 @@ export async function POST(request: Request) {
   // Check for referral reward (first listing created)
   await ReferralService.checkAndReward(tenantId);
 
+  // Mark Onboarding Milestones
+  const { data: account } = await supabase.from("accounts").select("onboarding_milestones").eq("tenant_id", tenantId).single();
+  const currentMilestones = (account?.onboarding_milestones as string[]) || [];
+  const newMilestones = new Set(currentMilestones);
+  newMilestones.add("first_listing");
+  if (integrations.length > 0) newMilestones.add("connect_integration");
+  
+  if (newMilestones.size > currentMilestones.length) {
+    await supabase.from("accounts").update({ onboarding_milestones: Array.from(newMilestones) }).eq("tenant_id", tenantId);
+  }
+
   return NextResponse.json({
     id: listingId,
     userId: session.userId,

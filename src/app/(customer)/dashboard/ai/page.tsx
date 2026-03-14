@@ -32,7 +32,8 @@ export default async function AIDashboardPage() {
     { count: bookingCount },
     { count: messageCount },
     { count: integrationCount },
-    { data: recentActivity }
+    { data: recentActivity },
+    { data: accountData }
   ] = await Promise.all([
     WalletService.getBalance(tenantId),
     ControlService.getSystemFlags(),
@@ -44,8 +45,11 @@ export default async function AIDashboardPage() {
       .select('*')
       .eq('tenant_id', tenantId)
       .order('created_at', { ascending: false })
-      .limit(5)
+      .limit(5),
+    supabase.from('accounts').select('onboarding_milestones').eq('tenant_id', tenantId).maybeSingle()
   ]);
+
+  const milestones = (accountData?.onboarding_milestones as string[]) || [];
 
   const isAiPaused = !tenant?.is_ai_enabled || flags['ai_global_enabled'] === false;
 
@@ -75,6 +79,7 @@ export default async function AIDashboardPage() {
           isAiEnabled: !!tenant?.is_ai_enabled && flags['ai_global_enabled'] !== false,
           integrationCount: integrationCount || 0
         }}
+        milestones={milestones}
       />
 
       {/* Stats Grid */}

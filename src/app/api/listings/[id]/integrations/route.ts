@@ -143,6 +143,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       
       // Log connection state changes
       if (newStatus === 'connected' && oldStatus !== 'connected') {
+        const { completeMilestone } = await import("@/app/actions/onboarding");
+        await completeMilestone("connect_integration");
+        
         await logEvent({
           tenant_id: tenantId,
           actor_type: 'user',

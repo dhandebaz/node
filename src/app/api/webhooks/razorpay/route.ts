@@ -280,6 +280,15 @@ export async function POST(request: Request) {
           // Resolve payment failures
           await FailureService.resolveFailure(tenantId, 'razorpay', 'payment');
 
+          // Mark Onboarding Milestones
+          const { data: account } = await supabase.from("accounts").select("onboarding_milestones").eq("tenant_id", tenantId).single();
+          const currentMilestones = (account?.onboarding_milestones as string[]) || [];
+          if (!currentMilestones.includes("add_credits")) {
+            await supabase.from("accounts").update({ 
+               onboarding_milestones: [...currentMilestones, "add_credits"] 
+            }).eq("tenant_id", tenantId);
+          }
+
           await logEvent({
             tenant_id: tenantId,
             actor_type: 'system',

@@ -13,9 +13,10 @@ interface OnboardingChecklistProps {
     isAiEnabled: boolean;
     integrationCount: number;
   };
+  milestones?: string[];
 }
 
-export function OnboardingChecklist({ stats }: OnboardingChecklistProps) {
+export function OnboardingChecklist({ stats, milestones = [] }: OnboardingChecklistProps) {
   const steps = useMemo(() => [
     {
       id: "business_details",
@@ -49,10 +50,10 @@ export function OnboardingChecklist({ stats }: OnboardingChecklistProps) {
       id: "enable_ai",
       title: "Enable AI Employee",
       description: "Turn on your AI to start managing tasks.",
-      completed: stats.isAiEnabled,
+      completed: stats.isAiEnabled || milestones.includes("enable_ai"),
       href: "/dashboard/ai/settings",
     },
-  ], [stats]);
+  ], [stats, milestones]);
 
   const completedCount = steps.filter(s => s.completed).length;
   const progress = (completedCount / steps.length) * 100;

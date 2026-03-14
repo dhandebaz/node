@@ -1,5 +1,7 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+
 import { useAuthStore } from "@/store/useAuthStore";
 import { useDashboardStore } from "@/store/useDashboardStore";
 import { getBusinessLabels, getPersonaAIDefaults } from "@/lib/business-context";
@@ -39,6 +41,32 @@ export default function AISettingsPage() {
       </div>
 
       <div className="grid gap-6">
+        {/* Master AI Toggle */}
+        <Card className="bg-zinc-900 border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.05)]">
+           <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-zinc-800/50">
+              <div className="space-y-1">
+                 <div className="flex items-center gap-2">
+                    <Zap className={cn("w-5 h-5", tenant?.is_ai_enabled ? "text-emerald-500" : "text-zinc-500")} />
+                    <CardTitle className="text-white">AI Employee Activation</CardTitle>
+                 </div>
+                 <CardDescription className="text-zinc-400">
+                    Switch your AI Employee on or off. When off, Kaisa will not reply to any customers.
+                 </CardDescription>
+              </div>
+              <Switch 
+                checked={tenant?.is_ai_enabled ?? false} 
+                onCheckedChange={async (checked) => {
+                   try {
+                      const { toggleAiAction } = await import("@/app/actions/ai-status");
+                      await toggleAiAction(checked);
+                   } catch (e) {
+                      console.error("Failed to toggle AI", e);
+                   }
+                }}
+              />
+           </CardHeader>
+        </Card>
+
         {/* Memory Settings */}
         <AIMemorySettings initialEnabled={tenant?.is_memory_enabled ?? false} />
 
