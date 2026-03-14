@@ -104,9 +104,10 @@ export default function OnboardingPage() {
           toast.error("Submission failed. Please try again.");
           setLoading(false);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Submission error:", error);
-      toast.error(error?.message || "Something went wrong. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong. Please try again.";
+      toast.error(errorMessage);
       setLoading(false);
     }
   };
@@ -135,7 +136,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-deep-red text-brand-bone selection:bg-brand-bone/20 font-sans bg-grid-pattern flex flex-col">
+    <>
       <Confetti active={step === "processing" && progress === 100} />
       {/* Header */}
       <div className="p-6 md:p-8 flex justify-end items-center">
@@ -161,7 +162,7 @@ export default function OnboardingPage() {
                     Who are you hiring for?
                 </h1>
                 <p className="text-xl text-brand-bone/60 max-w-2xl mx-auto">
-                    Select your business model to configure your AI Employee's training data.
+                    Select your business model to configure your AI Employee&apos;s training data.
                 </p>
               </div>
 
@@ -237,7 +238,7 @@ export default function OnboardingPage() {
                     <Sparkles size={32} className="animate-pulse" />
                 </motion.div>
                 <h2 className="text-2xl font-bold uppercase tracking-tight">Setting up your workspace</h2>
-                <p className="text-brand-bone/60">Hold tight! We're configuring your AI employee.</p>
+                <p className="text-brand-bone/60">Hold tight! We&apos;re configuring your AI employee.</p>
               </div>
               
               <div className="space-y-3 text-left bg-brand-bone/5 p-6 rounded-2xl border border-brand-bone/10 backdrop-blur-sm">
@@ -284,7 +285,7 @@ export default function OnboardingPage() {
                </div>
                <h3 className="text-xl font-bold uppercase tracking-tight mb-2">Setup Timeout</h3>
                <p className="text-brand-bone/60 mb-8">
-                 It's taking longer than expected to configure your workspace. You can retry or contact support.
+                 It&apos;s taking longer than expected to configure your workspace. You can retry or contact support.
                </p>
                <div className="flex gap-4 justify-center">
                  <button 
@@ -306,9 +307,9 @@ export default function OnboardingPage() {
         </div>
       </div>
       
-      <div className="fixed bottom-6 left-0 right-0 text-center text-xs text-brand-bone/30 uppercase tracking-widest">
-        Need help? <a href="mailto:support@nodebase.com" className="text-brand-bone/60 hover:text-brand-bone underline transition-colors">Contact Support</a>
+      <div className="fixed bottom-6 left-0 right-0 text-center text-xs text-brand-bone/30 uppercase tracking-widest pointer-events-none">
+        Need help? <a href="mailto:support@nodebase.com" className="text-brand-bone/60 hover:text-brand-bone underline transition-colors pointer-events-auto">Contact Support</a>
       </div>
-    </div>
+    </>
   );
 }

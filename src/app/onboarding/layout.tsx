@@ -13,13 +13,13 @@ export default async function OnboardingLayout({
   const name = user?.user_metadata?.full_name || "My Business";
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-brand-deep-red text-brand-bone selection:bg-brand-bone/20 font-sans bg-grid-pattern flex flex-col">
       <UniversalNavbar 
         tenantName={name}
         userEmail={user?.email}
         userAvatar={user?.user_metadata?.avatar_url}
       />
-      <div className="pt-20"> {/* Add padding for fixed navbar */}
+      <div className="pt-16 flex-1 flex flex-col">
         {children}
       </div>
     </div>

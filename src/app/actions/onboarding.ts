@@ -2,7 +2,6 @@
 
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -57,10 +56,7 @@ export async function completeOnboarding(
       .from("tenants")
       .update({ 
         business_type: businessType,
-        ...(details ? { 
-          property_count: details.propertyCount,
-          platforms: details.platforms 
-        } : {})
+        // Omitted property_count and platforms as columns do not exist
       })
       .eq("id", tenantId);
 
@@ -81,10 +77,6 @@ export async function completeOnboarding(
         name: tenantName,
         owner_user_id: user.id,
         business_type: businessType,
-        ...(details ? { 
-          property_count: details.propertyCount,
-          platforms: details.platforms 
-        } : {})
       })
       .select("id")
       .single();
