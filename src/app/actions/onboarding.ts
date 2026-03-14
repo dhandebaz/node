@@ -180,6 +180,16 @@ export async function completeOnboarding(
   }
   
   console.log(`[Onboarding] User ${user.id} selected ai_employee. Tenant ${tenantId} active.`);
+  
+  // 3.5. Update User Metadata (Sync for Middleware/Client)
+  try {
+    await admin.auth.admin.updateUserById(user.id, {
+      user_metadata: { onboarding_status: "complete" }
+    });
+  } catch (e) {
+    console.error("Failed to sync onboarding_status to user_metadata:", e);
+    // Non-blocking but good to have
+  }
 
   // 4. Legacy/Compatibility: Ensure kaisa_account exists for AI Employee
   try {
@@ -226,6 +236,11 @@ export async function completeOnboarding(
     console.error("[Onboarding] Unexpected error during kaisa_account sync:", kaisaErr);
     // Continue despite legacy errors
   }
+
+  // Revalidate essential paths to clear server-side cache
+  revalidatePath("/", "layout");
+  revalidatePath("/dashboard", "layout");
+  revalidatePath("/(customer)", "layout");
 
   return { success: true };
 }

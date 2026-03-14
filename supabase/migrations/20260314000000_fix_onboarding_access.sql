@@ -40,3 +40,18 @@ DO $$ BEGIN
         UPDATE public.kaisa_accounts SET role = 'manager' WHERE role IS NULL;
     END IF;
 END $$;
+
+-- 3. Accounts Table: Fix missing columns
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                   WHERE table_name = 'accounts' AND column_name = 'business_type') THEN
+        ALTER TABLE public.accounts ADD COLUMN business_type TEXT CHECK (business_type IN ('airbnb_host', 'kirana_store', 'doctor_clinic', 'thrift_store'));
+    END IF;
+END $$;
+
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                   WHERE table_name = 'accounts' AND column_name = 'status') THEN
+        ALTER TABLE public.accounts ADD COLUMN status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'paused', 'suspended'));
+    END IF;
+END $$;

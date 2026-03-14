@@ -32,6 +32,24 @@ export default function OnboardingPage() {
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
   const pollInterval = useRef<NodeJS.Timeout | null>(null);
 
+  // Check if user is already onboarded on mount
+  useEffect(() => {
+    async function checkStatus() {
+      try {
+        const res = await fetch("/api/onboarding/status");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === "ready") {
+            router.push("/dashboard/ai");
+          }
+        }
+      } catch (e) {
+        console.error("Mount check error:", e);
+      }
+    }
+    checkStatus();
+  }, [router]);
+
   const handleBusinessTypeSelect = (type: BusinessType) => {
     setSelectedBusinessType(type);
     setStep("details");

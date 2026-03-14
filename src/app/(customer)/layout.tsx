@@ -22,10 +22,12 @@ export default async function CustomerLayout({
     // Onboarding Check
     // Note: Middleware handles basic routing, but this double-check ensures data integrity
     if (profile.status.onboarding !== 'completed') {
+      console.log(`[CustomerLayout] Redirecting to onboarding: status is ${profile.status.onboarding}`);
       redirect('/onboarding');
     }
     
     if (!profile.tenant && !profile.roles.isAdmin) {
+      console.log(`[CustomerLayout] Redirecting to onboarding: tenant is missing and user is not admin`);
       redirect('/onboarding');
     }
 
