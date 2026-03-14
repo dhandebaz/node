@@ -1,6 +1,8 @@
 
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
 import { BillingPlan, Subscription, Invoice, PaymentMethod } from "@/types/billing";
+import { DBBillingPlan, DBSubscription, DBInvoice, DBPaymentMethod } from "@/types/database";
+
 
 export const billingService = {
   async getPlans(product?: 'kaisa' | 'space'): Promise<BillingPlan[]> {
@@ -36,7 +38,7 @@ export const billingService = {
       .select("*")
       .eq("user_id", userId);
       
-    if (error) return [];
+    if (error || !data) return [];
     return data.map(mapDbSubToAppSub);
   },
 
@@ -175,53 +177,54 @@ export const billingService = {
 };
 
 // Mappers
-function mapDbPlanToAppPlan(db: any): BillingPlan {
+function mapDbPlanToAppPlan(db: DBBillingPlan): BillingPlan {
     return {
         id: db.id,
         name: db.name,
         description: db.description,
         price: Number(db.price),
         currency: db.currency,
-        interval: db.interval,
-        product: db.product,
+        interval: db.interval as BillingPlan['interval'],
+        product: db.product as BillingPlan['product'],
         features: db.features || [],
-        type: db.type
+        type: db.type as BillingPlan['type']
     };
 }
 
-function mapDbSubToAppSub(db: any): Subscription {
+function mapDbSubToAppSub(db: DBSubscription): Subscription {
     return {
         id: db.id,
         userId: db.user_id,
         planId: db.plan_id,
-        status: db.status,
+        status: db.status as Subscription['status'],
         currentPeriodStart: db.current_period_start,
         currentPeriodEnd: db.current_period_end,
         cancelAtPeriodEnd: db.cancel_at_period_end,
-        metadata: db.metadata
+        metadata: db.metadata as Record<string, unknown> | undefined
     };
 }
 
-function mapDbInvoiceToAppInvoice(db: any): Invoice {
+function mapDbInvoiceToAppInvoice(db: DBInvoice): Invoice {
     return {
         id: db.id,
         userId: db.user_id,
         subscriptionId: db.subscription_id,
         amount: Number(db.amount),
         currency: db.currency,
-        status: db.status,
+        status: db.status as Invoice['status'],
         date: db.date,
         items: db.items || [],
-        billingDetails: db.billing_details || {}
+        billingDetails: (db.billing_details as Invoice['billingDetails']) || { name: '' }
     };
 }
 
-function mapDbPmToAppPm(db: any): PaymentMethod {
+function mapDbPmToAppPm(db: DBPaymentMethod): PaymentMethod {
     return {
         id: db.id,
-        type: db.type,
+        type: db.type as PaymentMethod['type'],
         last4: db.last4,
         brand: db.brand,
         isDefault: db.is_default
     };
 }
+

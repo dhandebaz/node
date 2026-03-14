@@ -324,13 +324,13 @@ export const userService = {
       return [];
     }
 
-    return (data || []).map((logItem: any) => ({
-      id: logItem.id,
-      adminId: logItem.actor_id || "SYSTEM",
-      targetUserId: logItem.entity_id,
-      actionType: logItem.event_type as any,
-      details: logItem.metadata?.details || "",
-      timestamp: logItem.created_at
+    return (data || []).map((logItem: Record<string, unknown>) => ({
+      id: logItem.id as string,
+      adminId: (logItem.actor_id as string) || "SYSTEM",
+      targetUserId: logItem.entity_id as string,
+      actionType: logItem.event_type as "status_change" | "kyc_decision" | "tag_update" | "note_added",
+      details: (logItem.metadata as { details?: string })?.details || "",
+      timestamp: logItem.created_at as string
     }));
   }
 };
@@ -365,7 +365,14 @@ function mapDbUserToAppUser(dbUser: DBUser): User {
       account: (dbUser.status as AccountStatus) || "active",
       kyc: (dbUser.kyc_status as KYCStatus) || "not_started",
       onboarding: dbUser.onboarding_status === 'complete' ? 'completed' : 'pending',
-      kycDocuments: Array.isArray(metadata.kycDocuments) ? metadata.kycDocuments : []
+      kycDocuments: Array.isArray(metadata.kycDocuments) 
+        ? metadata.kycDocuments.map(doc => ({
+            type: (doc.type === "AADHAAR" ? "AADHAAR" : "PAN"),
+            fileUrl: doc.url || "",
+            verified: doc.status === "verified",
+            verifiedAt: doc.status === "verified" ? doc.uploadedAt : undefined
+          }))
+        : []
     },
     roles: {
       isKaisaUser,
@@ -385,13 +392,17 @@ function mapDbUserToAppUser(dbUser: DBUser): User {
       businessType: "airbnb_host" // Default
     } : undefined,
     products: {
-      kaisa: isKaisaUser && kaisaAccount ? {
-        businessType: (kaisaAccount as any).business_type || 'hospitality', // Default
-        tenantId: (dbUser as any).tenant_id || rawProfile?.id,
-        activeModules: (kaisaAccount as any).active_modules || [],
-        role: (kaisaAccount as any).role || 'owner', // Default
-        status: (kaisaAccount.status as any) || 'active',
-      } : undefined,
+      kaisa: isKaisaUser && kaisaAccount ? (() => {
+        const ka = kaisaAccount as unknown as Record<string, unknown>;
+        const du = dbUser as unknown as Record<string, unknown>;
+        return {
+          businessType: (ka.business_type as string) || 'hospitality', // Default
+          tenantId: (du.tenant_id as string) || rawProfile?.id,
+          activeModules: (ka.active_modules as string[]) || [],
+          role: (ka.role as "owner" | "manager" | "co-founder") || 'owner', // Default
+          status: (ka.status as "active" | "paused") || 'active',
+        };
+      })() : undefined,
     },
   };
 }

@@ -17,7 +17,7 @@ export async function proxy(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
+          cookiesToSet.forEach(({ name, value }) => {
             request.cookies.set(name, value);
           });
           response = NextResponse.next({
@@ -34,18 +34,79 @@ export async function proxy(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
+  const pathname = request.nextUrl.pathname;
 
-  // Protected Routes
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+  // ==========================================
+  // 1. Protected Customer Routes
+  // ==========================================
+  if (pathname.startsWith("/dashboard")) {
     if (!user) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
-  // Auth Routes (Login/Signup)
-  if (request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/signup")) {
-    if (user) {
+  // ==========================================
+  // 2. Admin Route Protection
+  // ==========================================
+  if (pathname.startsWith("/admin")) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    // Check admin role from user metadata
+    const role = user.user_metadata?.role as string | undefined;
+    const isAdmin = role === "admin" || role === "superadmin";
+
+    if (!isAdmin) {
+      // Non-admin users get redirected to customer dashboard
       return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+  }
+
+  // ==========================================
+  // 3. Auth Routes (Login/Signup) - Redirect if already logged in
+  // ==========================================
+  if (pathname.startsWith("/login") || pathname.startsWith("/signup")) {
+    if (user) {
+      // Admins go to admin dashboard, others to customer
+      const role = user.user_metadata?.role as string | undefined;
+      const isAdmin = role === "admin" || role === "superadmin";
+      const target = isAdmin ? "/admin/dashboard" : "/dashboard";
+      return NextResponse.redirect(new URL(target, request.url));
+    }
+  }
+
+  // ==========================================
+  // 4. Onboarding Gate - Redirect to onboarding if not complete
+  // ==========================================
+  if (pathname.startsWith("/dashboard") && user) {
+    // Skip for admin users and API routes
+    const role = user.user_metadata?.role as string | undefined;
+    const isAdmin = role === "admin" || role === "superadmin";
+
+    if (!isAdmin && !pathname.startsWith("/dashboard/verification")) {
+      // Check onboarding via user metadata (lightweight check)
+      const onboardingComplete = user.user_metadata?.onboarding_status === "complete";
+      if (!onboardingComplete && !pathname.startsWith("/onboarding")) {
+        // Let the layout handle the actual redirect with full DB check
+        // This is a lightweight hint only
+      }
+    }
+  }
+
+  // ==========================================
+  // 5. API Route Protection
+  // ==========================================
+  if (pathname.startsWith("/api/admin") && !pathname.startsWith("/api/admin/webhooks")) {
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const role = user.user_metadata?.role as string | undefined;
+    const isAdmin = role === "admin" || role === "superadmin";
+
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
   }
 
@@ -59,7 +120,7 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public folder
+     * - public folder assets
      */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
