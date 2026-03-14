@@ -52,8 +52,13 @@ function MetricCard({ title, value, change, icon: Icon, description, color }: Me
   );
 }
 
-export default async function AIInsightsPage({ searchParams }: { searchParams: { range?: string } }) {
-  const range = (searchParams.range || '7d') as TimeRange;
+export default async function AIInsightsPage({ 
+  searchParams 
+}: { 
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }> 
+}) {
+  const params = await searchParams;
+  const range = (params.range as string || '7d') as TimeRange;
   const tenantId = await getActiveTenantId();
   if (!tenantId) redirect("/onboarding");
   

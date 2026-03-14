@@ -11,7 +11,7 @@ export class InvoiceService {
     // Header - Brand
     doc.setFontSize(24);
     doc.setTextColor(235, 68, 90); // Brand Red
-    doc.text("NODEBASE", margin, margin + 10);
+    doc.text("KAISA", margin, margin + 10);
 
     // Invoice Info
     doc.setFontSize(10);
@@ -61,7 +61,7 @@ export class InvoiceService {
     // Footer
     doc.setFontSize(8);
     doc.setTextColor(150);
-    const footerText = "Thank you for using Nodebase. For any queries, contact support@nodebase.ai";
+    const footerText = "Thank you for using Kaisa. For any queries, contact support@nodebase.ai";
     const textWidth = doc.getTextWidth(footerText);
     doc.text(footerText, (pageWidth - textWidth) / 2, doc.internal.pageSize.getHeight() - 20);
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { logEvent } from "@/lib/events";
+import { log } from "@/lib/logger";
 import { EVENT_TYPES } from "@/types/events";
 
 type Payload = {
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
       .single();
 
     if (fetchError || !payment) {
-      console.error("Payment webhook error: Payment not found", paymentId);
+      log.error("Payment webhook error: Payment not found", fetchError, { paymentId });
       return NextResponse.json({ error: "Payment not found" }, { status: 404 });
     }
 
@@ -144,7 +145,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    return NextResponse.json({ error: error?.message || "Failed to handle webhook" }, { status: 500 });
+  } catch (error: unknown) {
+    log.error("Payment webhook handling failed", error as Error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

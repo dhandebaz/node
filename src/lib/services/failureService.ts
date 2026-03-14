@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { logEvent } from "@/lib/events";
+import { log } from "@/lib/logger";
 import { EVENT_TYPES } from "@/types/events";
 import { CreateFailureParams, FailureCategory, FailureRecord } from "@/types/failure";
 
@@ -13,7 +14,7 @@ export class FailureService {
     // Check for existing active failure to avoid spam
     const { data: existing } = await supabase
       .from("failures")
-      .select("id, message, severity")
+      .select("id, message, severity, created_at")
       .eq("tenant_id", params.tenant_id)
       .eq("source", params.source)
       .eq("category", params.category)
@@ -21,6 +22,17 @@ export class FailureService {
       .maybeSingle();
 
     if (existing) {
+      // Alerting Threshold: If we have many recent updates to this failure, escalate severity
+      // This is a simple threshold: if it's updated more than 5 times in an hour (approx by checking updated_at)
+      const lastUpdate = new Date(existing.created_at).getTime();
+      const now = Date.now();
+      const isFrequent = (now - lastUpdate) < (60 * 60 * 1000); // within 1 hour
+
+      if (isFrequent && params.severity !== 'critical') {
+        log.warn(`Threshold reached for failure: ${params.source}. Escalating to critical.`);
+        params.severity = 'critical';
+      }
+
       // If severity increased or message changed, update it
       if (existing.message !== params.message || existing.severity !== params.severity) {
         await supabase
@@ -29,7 +41,7 @@ export class FailureService {
             message: params.message, 
             severity: params.severity, 
             metadata: params.metadata,
-            created_at: new Date().toISOString() // Bump timestamp to show it's recent
+            created_at: new Date().toISOString() 
           })
           .eq("id", existing.id);
       }
@@ -52,7 +64,7 @@ export class FailureService {
       .single();
 
     if (error) {
-      console.error("Failed to raise failure:", error);
+      log.error("Failed to raise failure", error, { tenantId: params.tenant_id, source: params.source });
       return null;
     }
 

@@ -1,4 +1,5 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { log } from "@/lib/logger";
 
 export class WalletService {
   /**
@@ -32,7 +33,7 @@ export class WalletService {
     tenantId: string, 
     amount: number, 
     actionType: string, 
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ): Promise<boolean> {
     const supabase = await getSupabaseServer();
     
@@ -55,9 +56,9 @@ export class WalletService {
     if (error) {
       // Check for check_violation (code 23514) which implies negative balance attempt
       if (error.code === '23514') {
-         console.warn(`Wallet deduction blocked for tenant ${tenantId} due to insufficient funds (constraint violation).`);
+         log.warn(`Wallet deduction blocked for tenant ${tenantId} due to insufficient funds (constraint violation).`);
       } else {
-         console.error("Failed to deduct credits:", error);
+         log.error("Failed to deduct credits", error, { tenantId });
       }
       return false;
     }
@@ -81,7 +82,7 @@ export class WalletService {
   /**
    * Top up wallet (Admin or Payment Webhook).
    */
-  static async topUp(tenantId: string, amount: number, description: string = "Top Up", metadata: Record<string, any> = {}): Promise<boolean> {
+  static async topUp(tenantId: string, amount: number, description: string = "Top Up", metadata: Record<string, unknown> = {}): Promise<boolean> {
     const supabase = await getSupabaseServer();
 
     // Idempotency check: Prevent double crediting for same payment
@@ -96,7 +97,7 @@ export class WalletService {
             .maybeSingle();
         
         if (existing) {
-            console.log(`Duplicate top-up skipped for paymentId: ${metadata.paymentId}`);
+            log.info(`Duplicate top-up skipped`, { paymentId: metadata.paymentId, tenantId });
             return true;
         }
     }
@@ -112,7 +113,7 @@ export class WalletService {
       });
 
     if (error) {
-      console.error("Failed to top up wallet:", error);
+      log.error("Failed to top up wallet", error, { tenantId, amount });
       return false;
     }
     return true;
@@ -134,7 +135,7 @@ export class WalletService {
       });
 
     if (error) {
-      console.error("Failed to adjust balance:", error);
+      log.error("Failed to adjust balance", error, { tenantId, amount, reason });
       return false;
     }
     return true;
@@ -143,7 +144,7 @@ export class WalletService {
   /**
    * Generic credit addition (Internal)
    */
-  static async addCredits(tenantId: string, amount: number, type: string, metadata: Record<string, any> = {}): Promise<boolean> {
+  static async addCredits(tenantId: string, amount: number, type: string, metadata: Record<string, unknown> = {}): Promise<boolean> {
     const supabase = await getSupabaseServer();
     const { error } = await supabase.from("wallet_transactions").insert({
         tenant_id: tenantId,
@@ -153,7 +154,7 @@ export class WalletService {
         metadata
     });
     if (error) {
-        console.error("Failed to add credits:", error);
+        log.error("Failed to add credits", error, { tenantId, amount, type });
         return false;
     }
     return true;

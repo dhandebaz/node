@@ -1,6 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
+// Simple in-memory rate limiting for Edge/Middleware (per instance)
+const rateLimit = new Map<string, { count: number; start: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS = 60; // 1 request per second average
+
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -8,6 +13,35 @@ export async function proxy(request: NextRequest) {
     },
   });
 
+  const pathname = request.nextUrl.pathname;
+  const method = request.method;
+
+  // ==========================================
+  // 0. Security Hardening (CSRF & Rate Limit)
+  // ==========================================
+  
+  // Basic Rate Limiting for Auth/Payment routes
+  if (pathname.startsWith("/api/wallet") || pathname.startsWith("/login") || pathname.startsWith("/signup")) {
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const now = Date.now();
+    const windowStart = now - RATE_LIMIT_WINDOW;
+    
+    let stats = rateLimit.get(ip);
+    if (!stats || stats.start < windowStart) {
+      stats = { count: 1, start: now };
+    } else {
+      stats.count++;
+    }
+    rateLimit.set(ip, stats);
+
+    if (stats.count > MAX_REQUESTS) {
+      return NextResponse.json({ error: "Too many requests. Please slow down." }, { status: 429 });
+    }
+  }
+
+  // ==========================================
+  // 1. Supabase Initialization
+  // ==========================================
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -34,7 +68,36 @@ export async function proxy(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  const pathname = request.nextUrl.pathname;
+
+  // ==========================================
+  // 2. Security Checks (CSRF & Impersonation)
+  // ==========================================
+  
+  // CSRF Protection for mutating API routes
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(method) && pathname.startsWith("/api")) {
+    if (!pathname.includes("/webhooks") && !pathname.includes("/webhook")) {
+      const csrfToken = request.headers.get("x-csrf-token");
+      if (!csrfToken && process.env.NODE_ENV === "production") {
+        return NextResponse.json({ error: "Missing CSRF token" }, { status: 403 });
+      }
+    }
+  }
+
+  // Handle User Impersonation
+  const impersonateTenantId = request.cookies.get("nodebase-impersonate-tenant-id")?.value;
+  if (impersonateTenantId && user) {
+    const role = user.user_metadata?.role as string | undefined;
+    const isAdmin = role === "admin" || role === "superadmin";
+    
+    if (!isAdmin) {
+      // Security: Clear the impersonation cookie if a non-admin tries to use it
+      response.cookies.delete("nodebase-impersonate-tenant-id");
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    
+    // Admin is impersonating: Log it if needed (once per session logic could go here)
+    // The getActiveTenantId will pick up the cookie automatically now.
+  }
 
   // ==========================================
   // 1. Protected Customer Routes

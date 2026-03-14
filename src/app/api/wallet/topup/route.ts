@@ -2,17 +2,15 @@ import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { logEvent } from "@/lib/events";
+import { log } from "@/lib/logger";
+import { topUpSchema, parseOrThrow } from "@/lib/validation/api-validation";
 import { EVENT_TYPES } from "@/types/events";
 
 export async function POST(request: Request) {
   try {
     const tenantId = await requireActiveTenant();
     const body = await request.json();
-    const amount = Number(body?.amount || 0);
-
-    if (!Number.isFinite(amount) || amount <= 0) {
-      return NextResponse.json({ error: "Invalid top up amount" }, { status: 400 });
-    }
+    const { amount } = parseOrThrow(topUpSchema, body);
 
     const supabase = await getSupabaseServer();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -81,7 +79,12 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ balance: nextBalance });
-  } catch (error: any) {
-    return NextResponse.json({ error: error?.message || "Top up failed" }, { status: 500 });
+  } catch (error: unknown) {
+    log.error("Top up route failed", error as Error);
+    const message = error instanceof Error ? error.message : "Top up failed";
+    return NextResponse.json({ 
+      error: message,
+      details: process.env.NODE_ENV === 'development' ? error : undefined
+    }, { status: message.includes("Validation") ? 400 : 500 });
   }
 }

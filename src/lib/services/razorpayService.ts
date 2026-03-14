@@ -1,5 +1,6 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
+import { log } from '@/lib/logger';
 
 export class RazorpayService {
   private static instance: Razorpay;
@@ -28,7 +29,7 @@ export class RazorpayService {
     };
     reference_id: string;
     callback_url: string;
-    notes?: Record<string, any>;
+    notes?: Record<string, unknown>;
   }) {
     const instance = this.getInstance();
 
@@ -58,7 +59,7 @@ export class RazorpayService {
       });
       return paymentLink;
     } catch (error) {
-      console.error('Razorpay Create Payment Link Error:', error);
+      log.error('Razorpay Create Payment Link Error', error, { tenantId, referenceId: options.reference_id });
       // Fallback for development
       if (process.env.NODE_ENV === 'development') {
           return {
@@ -74,7 +75,7 @@ export class RazorpayService {
   /**
    * Create a new order for top-up
    */
-  static async createOrder(tenantId: string, options: { amount: number, currency: string, receipt: string, notes?: Record<string, any> }) {
+  static async createOrder(tenantId: string, options: { amount: number, currency: string, receipt: string, notes?: Record<string, unknown> }) {
     const instance = this.getInstance();
     
     const orderOptions = {
@@ -92,7 +93,7 @@ export class RazorpayService {
       const order = await instance.orders.create(orderOptions);
       return order;
     } catch (error) {
-      console.error('Razorpay Create Order Error:', error);
+      log.error('Razorpay Create Order Error', error, { tenantId, receipt: options.receipt });
       throw new Error('Failed to create payment order');
     }
   }
@@ -136,7 +137,7 @@ export class RazorpayService {
       });
       return subscription;
     } catch (error) {
-      console.error('Razorpay Create Subscription Error:', error);
+      log.error('Razorpay Create Subscription Error', error, { tenantId, planId });
       // Fallback for development if plan doesn't exist
       if (process.env.NODE_ENV === 'development') {
           return {
