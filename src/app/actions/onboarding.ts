@@ -182,26 +182,49 @@ export async function completeOnboarding(
   console.log(`[Onboarding] User ${user.id} selected ai_employee. Tenant ${tenantId} active.`);
 
   // 4. Legacy/Compatibility: Ensure kaisa_account exists for AI Employee
-  const { data: kaisaAccount } = await admin
-    .from("kaisa_accounts")
-    .select("*")
-    .eq("user_id", user.id)
-    .maybeSingle();
-  
-  if (!kaisaAccount) {
-    console.log(`[Onboarding] Creating default kaisa_account for ${user.id}`);
-    await admin.from("kaisa_accounts").insert({
-        user_id: user.id,
-        tenant_id: tenantId, // Link to tenant
-        status: "active",
-        business_type: businessType
-    });
-  } else {
-    // Update existing if needed
-    await admin
+  try {
+    const { data: kaisaAccount, error: kaisaQueryError } = await admin
       .from("kaisa_accounts")
-      .update({ tenant_id: tenantId, business_type: businessType })
-      .eq("id", kaisaAccount.id);
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    
+    if (kaisaQueryError) {
+      console.error("[Onboarding] Error querying kaisa_accounts:", kaisaQueryError);
+      // We continue but log it - if it's missing, the next insert might fail but we'll catch it
+    }
+    
+    if (!kaisaAccount) {
+      console.log(`[Onboarding] Creating default kaisa_account for ${user.id}`);
+      const { error: kaisaInsertError } = await admin.from("kaisa_accounts").insert({
+          user_id: user.id,
+          tenant_id: tenantId, 
+          status: "active",
+          business_type: businessType,
+          role: "manager" // Default role as required by schema
+      });
+      if (kaisaInsertError) {
+        console.error("[Onboarding] Failed to create kaisa_account:", kaisaInsertError);
+        // This is a non-critical legacy sync, we might want to continue, but let's at least log it
+      }
+    } else {
+      // Update existing if needed
+      const { error: kaisaUpdateError } = await admin
+        .from("kaisa_accounts")
+        .update({ 
+          tenant_id: tenantId, 
+          business_type: businessType,
+          role: kaisaAccount.role || "manager"
+        })
+        .eq("id", kaisaAccount.id);
+      
+      if (kaisaUpdateError) {
+        console.error("[Onboarding] Failed to update kaisa_account:", kaisaUpdateError);
+      }
+    }
+  } catch (kaisaErr) {
+    console.error("[Onboarding] Unexpected error during kaisa_account sync:", kaisaErr);
+    // Continue despite legacy errors
   }
 
   return { success: true };

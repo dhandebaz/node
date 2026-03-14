@@ -26,7 +26,8 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-brand-red border-t border-white/20 pt-24 pb-12 text-white">
+    <footer className="bg-brand-red border-t border-white/10 pt-24 pb-12 text-white relative overflow-hidden bg-grid-pattern">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-24">
           <div className="space-y-6">
@@ -86,13 +87,13 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs font-bold uppercase tracking-widest opacity-40">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40">
             {t("footer.rights")}
           </p>
           <div className="flex items-center gap-6">
-             <span className="text-xs font-bold uppercase tracking-widest opacity-60 flex items-center gap-2">
-                <span className="w-2 h-2 bg-white rounded-full"></span>
-                System Normal
+             <span className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60 flex items-center gap-2 skeuo-inset px-4 py-1.5 bg-white/5 border-white/10">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]"></span>
+                System Operational
              </span>
           </div>
         </div>

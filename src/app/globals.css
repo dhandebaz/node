@@ -161,6 +161,31 @@
       0 1px 2px rgba(0, 0, 0, 0.2);
     filter: brightness(0.9);
   }
+  .skeuo-button-white {
+    background: linear-gradient(to bottom, #FFFFFF, #f0f0f0);
+    border: 1px solid #e0e0e0;
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    color: var(--color-brand-red);
+  }
+
+  .skeuo-button-white:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .skeuo-button-white:active {
+    transform: translateY(1px);
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.1),
+      0 1px 2px rgba(0, 0, 0, 0.05);
+  }
 
   .skeuo-inset {
     background: rgba(0, 0, 0, 0.2);

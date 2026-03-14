@@ -106,10 +106,12 @@ function LoginContent() {
   const isLoading = authLoading || localLoading;
 
   return (
-    <div className="min-h-screen bg-brand-deep-red flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-grid-pattern relative overflow-hidden font-sans text-brand-bone selection:bg-brand-bone/20">
+    <div className="min-h-screen bg-brand-red flex flex-col justify-center py-12 px-6 lg:px-8 bg-grid-pattern relative overflow-hidden font-sans text-brand-bone selection:bg-brand-bone/20 selection:text-white">
       
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-black/40 to-transparent pointer-events-none" />
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-brand-bone/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-black/40 rounded-full blur-[120px] pointer-events-none" />
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -132,9 +134,11 @@ function LoginContent() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
-        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
+        className="mt-12 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
       >
-        <div className="bg-brand-bone/10 backdrop-blur-md py-8 px-4 shadow-2xl border border-brand-bone/20 sm:rounded-3xl sm:px-10">
+        <div className="bg-white/[0.03] backdrop-blur-2xl py-12 px-10 shadow-[0_40px_100px_rgba(0,0,0,0.6)] border border-white/10 sm:rounded-[2.5rem] skeuo-card">
+          
+          <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           
           {showSuccess ? (
             <div className="text-center py-12">
@@ -172,7 +176,7 @@ function LoginContent() {
                 <button
                   onClick={() => signInWithOAuth('google')}
                   disabled={isLoading}
-                  className="w-full flex justify-center items-center gap-3 py-3 px-4 rounded-xl shadow-sm bg-white text-black text-sm font-bold uppercase tracking-wider hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-bone transition-all transform hover:scale-[1.02]"
+                  className="w-full flex justify-center items-center gap-4 py-4 px-4 rounded-2xl skeuo-button-white text-brand-red text-xs font-bold uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
                 >
                   {isLoading ? (
                     <Loader2 className="animate-spin h-5 w-5" />
@@ -223,9 +227,9 @@ function LoginContent() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold uppercase tracking-wider text-brand-deep-red bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-bone transition-all transform hover:scale-[1.02]"
+                    className="w-full flex justify-center py-4 px-4 border border-white/10 rounded-2xl shadow-xl text-xs font-bold uppercase tracking-[0.2em] text-white skeuo-button hover:scale-[1.02] active:scale-[0.98] transition-all"
                   >
-                    {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "Continue"}
+                    {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : "Request Access"}
                   </button>
                 </form>
               ) : (

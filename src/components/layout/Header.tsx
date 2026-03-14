@@ -45,8 +45,8 @@ export function Header({ user }: HeaderProps) {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-red border-b border-white/20 backdrop-blur-md">
-      <div className="w-full px-6 h-16 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-red/80 border-b border-white/10 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+      <div className="w-full px-6 h-20 flex items-center justify-between max-w-7xl mx-auto">
         
         {/* Left: Logo */}
         <Link href="/" className="block hover:scale-105 transition-transform duration-200">
@@ -74,7 +74,7 @@ export function Header({ user }: HeaderProps) {
            ) : (
              <Link 
                href="/dashboard/ai"
-               className="bg-white text-[var(--color-brand-red)] hover:bg-gray-100 px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-colors"
+               className="skeuo-button text-white px-8 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider transition-all"
              >
                Go to Dashboard
              </Link>
@@ -96,14 +96,14 @@ export function Header({ user }: HeaderProps) {
             <div className="relative">
               <button 
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition-colors text-white"
+                className="flex items-center gap-2 skeuo-inset bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full transition-all text-white border-white/10"
                 aria-expanded={userMenuOpen}
                 aria-haspopup="true"
               >
-                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                   <UserIcon className="w-4 h-4" />
+                <div className="w-6 h-6 rounded-full bg-brand-bone/20 flex items-center justify-center border border-white/20">
+                   <UserIcon className="w-3 h-3" />
                 </div>
-                <span className="text-sm font-medium hidden sm:block max-w-[100px] truncate">
+                <span className="text-xs font-bold uppercase tracking-widest hidden sm:block max-w-[100px] truncate">
                   {displayUser?.name?.split(' ')[0]}
                 </span>
               </button>

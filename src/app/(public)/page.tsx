@@ -22,7 +22,7 @@ import { MockChatInterface } from "@/components/ui/MockChatInterface";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-brand-red text-brand-bone selection:bg-brand-bone/20 overflow-x-hidden font-sans bg-grid-pattern">
+    <div className="flex flex-col min-h-screen bg-brand-red text-brand-bone selection:bg-brand-bone/20 overflow-x-hidden font-sans bg-grid-pattern selection:text-white">
       
       {/* HERO SECTION */}
       <section className="min-h-[90vh] flex flex-col justify-center px-6 pt-32 pb-16 relative border-b border-brand-bone/20 z-10">
@@ -53,14 +53,23 @@ export default function Home() {
                   Autonomous AI agents that handle your customer support, direct bookings, and daily operations 24/7.
                 </p>
               </div>
-              <div className="flex flex-col items-start justify-end">
+              <div className="flex flex-col items-start">
                 <Link 
                   href="/login"
-                  className="group flex items-center gap-4 text-2xl font-semibold uppercase tracking-tight hover:gap-6 transition-all skeuo-button text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105"
+                  className="group flex items-center gap-4 text-2xl font-bold uppercase tracking-tight skeuo-button text-white px-10 py-5 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:scale-105 active:scale-95 transition-all"
                 >
-                  Hire an AI <ArrowRight className="w-6 h-6" />
+                  Hire an AI <ArrowRight className="w-7 h-7 group-hover:translate-x-2 transition-transform" />
                 </Link>
-                <p className="text-sm text-white/50 mt-4 uppercase tracking-wider">No credit card required • Free Trial</p>
+                <div className="flex items-center gap-2 mt-6 opacity-60">
+                   <div className="flex -space-x-2">
+                      {[1,2,3,4].map(i => (
+                        <div key={i} className="w-8 h-8 rounded-full border-2 border-brand-red bg-zinc-800 flex items-center justify-center text-[10px] font-bold">
+                           U{i}
+                        </div>
+                      ))}
+                   </div>
+                   <p className="text-[10px] uppercase tracking-widest font-bold ml-2">500+ Businesses Already Hiring</p>
+                </div>
               </div>
             </motion.div>
           </motion.div>
@@ -92,69 +101,69 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            {/* Host AI */}
-            <div className="group skeuo-card p-6 transition-colors relative flex flex-col">
-               <div className="h-12 w-12 bg-blue-500/20 rounded-full mb-6 flex items-center justify-center border border-blue-500/30">
-                 <span className="text-2xl">🏠</span>
-               </div>
-               <h3 className="text-2xl font-bold uppercase tracking-tight mb-2">Host AI</h3>
-               <p className="text-brand-bone/70 mb-8 min-h-[3rem] text-sm">
-                 For Airbnb hosts & property managers. Handles bookings & guest inquiries.
-               </p>
-               <div className="mt-auto">
-                 <Link href="/employees/host-ai" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider border-b border-brand-bone/30 pb-1 group-hover:border-brand-bone transition-colors">
-                   View Details <ArrowRight className="w-4 h-4" />
-                 </Link>
-               </div>
-            </div>
+             {/* Host AI */}
+             <div className="group skeuo-card p-8 transition-all hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] relative flex flex-col border-white/5 bg-white/[0.03]">
+                <div className="h-16 w-16 bg-blue-500/10 rounded-2xl mb-8 flex items-center justify-center border border-blue-500/20 skeuo-inset shadow-inner">
+                  <span className="text-3xl">🏠</span>
+                </div>
+                <h3 className="text-3xl font-bold uppercase tracking-tight mb-3">Host AI</h3>
+                <p className="text-brand-bone/60 mb-10 min-h-[3rem] text-sm leading-relaxed">
+                  For Airbnb hosts & property managers. Autonomous guest communication & booking sync.
+                </p>
+                <div className="mt-auto">
+                  <Link href="/employees/host-ai" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] border-b-2 border-white/10 pb-2 group-hover:border-white transition-all text-white/70 group-hover:text-white">
+                    Explore Details <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+             </div>
 
-            {/* Dukan AI */}
-            <div className="group skeuo-card p-6 transition-colors relative flex flex-col">
-               <div className="h-12 w-12 bg-green-500/20 rounded-full mb-6 flex items-center justify-center border border-green-500/30">
-                 <span className="text-2xl">🛍️</span>
-               </div>
-               <h3 className="text-2xl font-bold uppercase tracking-tight mb-2">Dukan AI</h3>
-               <p className="text-brand-bone/70 mb-8 min-h-[3rem] text-sm">
-                 For local Kirana & WhatsApp selling. Automates orders & inventory.
-               </p>
-               <div className="mt-auto">
-                 <Link href="/employees/dukan-ai" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider border-b border-brand-bone/30 pb-1 group-hover:border-brand-bone transition-colors">
-                   View Details <ArrowRight className="w-4 h-4" />
-                 </Link>
-               </div>
-            </div>
+             {/* Dukan AI */}
+             <div className="group skeuo-card p-8 transition-all hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] relative flex flex-col border-white/5 bg-white/[0.03]">
+                <div className="h-16 w-16 bg-green-500/10 rounded-2xl mb-8 flex items-center justify-center border border-green-500/20 skeuo-inset shadow-inner">
+                  <span className="text-3xl">🛍️</span>
+                </div>
+                <h3 className="text-3xl font-bold uppercase tracking-tight mb-3">Dukan AI</h3>
+                <p className="text-brand-bone/60 mb-10 min-h-[3rem] text-sm leading-relaxed">
+                  For local Kirana & WhatsApp selling. Automate orders, inventory & payments 24/7.
+                </p>
+                <div className="mt-auto">
+                  <Link href="/employees/dukan-ai" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] border-b-2 border-white/10 pb-2 group-hover:border-white transition-all text-white/70 group-hover:text-white">
+                    Explore Details <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+             </div>
 
-            {/* Nurse AI */}
-            <div className="group skeuo-card p-6 transition-colors relative flex flex-col">
-               <div className="h-12 w-12 bg-red-500/20 rounded-full mb-6 flex items-center justify-center border border-red-500/30">
-                 <span className="text-2xl">🩺</span>
-               </div>
-               <h3 className="text-2xl font-bold uppercase tracking-tight mb-2">Nurse AI</h3>
-               <p className="text-brand-bone/70 mb-8 min-h-[3rem] text-sm">
-                 For clinics & doctors. Manages appointments & patient follow-ups.
-               </p>
-               <div className="mt-auto">
-                 <Link href="/employees/nurse-ai" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider border-b border-brand-bone/30 pb-1 group-hover:border-brand-bone transition-colors">
-                   View Details <ArrowRight className="w-4 h-4" />
-                 </Link>
-               </div>
-            </div>
+             {/* Nurse AI */}
+             <div className="group skeuo-card p-8 transition-all hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] relative flex flex-col border-white/5 bg-white/[0.03]">
+                <div className="h-16 w-16 bg-red-500/10 rounded-2xl mb-8 flex items-center justify-center border border-red-500/20 skeuo-inset shadow-inner">
+                  <span className="text-3xl">🩺</span>
+                </div>
+                <h3 className="text-3xl font-bold uppercase tracking-tight mb-3">Nurse AI</h3>
+                <p className="text-brand-bone/60 mb-10 min-h-[3rem] text-sm leading-relaxed">
+                  For clinics & doctors. Professional appointment scheduling & patient follow-ups.
+                </p>
+                <div className="mt-auto">
+                  <Link href="/employees/nurse-ai" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] border-b-2 border-white/10 pb-2 group-hover:border-white transition-all text-white/70 group-hover:text-white">
+                    Explore Details <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+             </div>
 
-            {/* Thrift AI */}
-            <div className="group skeuo-card p-6 transition-colors relative flex flex-col">
-               <div className="h-12 w-12 bg-purple-500/20 rounded-full mb-6 flex items-center justify-center border border-purple-500/30">
-                 <span className="text-2xl">👗</span>
-               </div>
-               <h3 className="text-2xl font-bold uppercase tracking-tight mb-2">Thrift AI</h3>
-               <p className="text-brand-bone/70 mb-8 min-h-[3rem] text-sm">
-                 For Instagram thrift stores. Handles DMs, payments & shipping.
-               </p>
-               <div className="mt-auto">
-                 <Link href="/employees/thrift-ai" className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider border-b border-brand-bone/30 pb-1 group-hover:border-brand-bone transition-colors">
-                   View Details <ArrowRight className="w-4 h-4" />
-                 </Link>
-               </div>
-            </div>
+             {/* Thrift AI */}
+             <div className="group skeuo-card p-8 transition-all hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] relative flex flex-col border-white/5 bg-white/[0.03]">
+                <div className="h-16 w-16 bg-purple-500/10 rounded-2xl mb-8 flex items-center justify-center border border-purple-500/20 skeuo-inset shadow-inner">
+                  <span className="text-3xl">👗</span>
+                </div>
+                <h3 className="text-3xl font-bold uppercase tracking-tight mb-3">Thrift AI</h3>
+                <p className="text-brand-bone/60 mb-10 min-h-[3rem] text-sm leading-relaxed">
+                  For Instagram sellers. Automated DM commerce, payment links & order tracking.
+                </p>
+                <div className="mt-auto">
+                  <Link href="/employees/thrift-ai" className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] border-b-2 border-white/10 pb-2 group-hover:border-white transition-all text-white/70 group-hover:text-white">
+                    Explore Details <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+             </div>
 
           </div>
         </motion.div>
@@ -165,33 +174,34 @@ export default function Home() {
         <div className="max-w-7xl mx-auto w-full">
            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
              <div>
-               <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tight mb-6">
+               <h2 className="text-5xl md:text-6xl font-bold uppercase tracking-tighter mb-8 leading-[0.9]">
                  Built for India.<br />Built for Scale.
                </h2>
-               <p className="text-xl text-brand-bone/80 leading-relaxed mb-8">
-                 Nodebase provides the intelligent infrastructure that powers the next generation of Indian businesses. From local shops to growing startups.
+               <p className="text-xl text-brand-bone/60 leading-relaxed mb-12 max-w-lg">
+                 Nodebase provides the intelligent infrastructure that powers the next generation of Indian businesses. From local shops to global startups.
                </p>
-               <ul className="space-y-4">
-                 <li className="flex items-center gap-4">
-                   <CheckCircle2 className="w-6 h-6 text-green-400" />
-                   <span className="text-lg font-bold uppercase tracking-wide">Instant Setup (Under 2 mins)</span>
-                 </li>
-                 <li className="flex items-center gap-4">
-                   <CheckCircle2 className="w-6 h-6 text-green-400" />
-                   <span className="text-lg font-bold uppercase tracking-wide">WhatsApp First Integration</span>
-                 </li>
-                 <li className="flex items-center gap-4">
-                   <CheckCircle2 className="w-6 h-6 text-green-400" />
-                   <span className="text-lg font-bold uppercase tracking-wide">Pay-as-you-grow Pricing</span>
-                 </li>
+               <ul className="space-y-6">
+                 {[
+                   "Instant Setup (Under 2 mins)",
+                   "WhatsApp First Integration",
+                   "Pay-as-you-grow Pricing"
+                 ].map((text, i) => (
+                   <li key={i} className="flex items-center gap-4 group">
+                     <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center skeuo-inset border-white/10 group-hover:bg-green-500/20 transition-all">
+                       <CheckCircle2 className="w-3 h-3 text-green-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                     </div>
+                     <span className="text-xs font-bold uppercase tracking-[0.2em] opacity-70 group-hover:opacity-100 transition-opacity">{text}</span>
+                   </li>
+                 ))}
                </ul>
              </div>
              <div className="flex items-center justify-center">
-               <div className="w-full aspect-square skeuo-inset flex items-center justify-center p-8">
-                 <div className="text-center">
-                   <p className="text-6xl font-bold mb-2">24/7</p>
-                   <p className="text-xl uppercase tracking-widest opacity-60">Operations</p>
-                 </div>
+               <div className="w-full max-w-md aspect-square skeuo-inset flex items-center justify-center p-12 bg-black/20 border-white/5 shadow-2xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand-red/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="text-center relative z-10">
+                    <p className="text-8xl font-bold mb-4 tracking-tighter">24/7</p>
+                    <p className="text-xs uppercase tracking-[0.5em] opacity-40 font-bold">Autonomous Operations</p>
+                  </div>
                </div>
              </div>
            </div>
@@ -199,17 +209,19 @@ export default function Home() {
       </section>
 
       {/* SECTION 4: CTA */}
-      <section className="py-32 px-6 border-t border-brand-bone/20 text-center bg-brand-deep-red">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-display-large uppercase tracking-tighter mb-8">
+      <section className="py-40 px-6 border-t border-white/10 text-center bg-brand-deep-red relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-20" />
+        <div className="max-w-4xl mx-auto relative z-10">
+          <h2 className="text-display-huge uppercase tracking-tighter mb-12 leading-[0.8] font-bold">
             Ready to hire your<br />first AI employee?
           </h2>
           <Link 
             href="/login"
-            className="inline-flex items-center gap-4 text-xl font-bold uppercase tracking-tight skeuo-button text-white px-10 py-5 rounded-full hover:scale-105 transition-transform"
+            className="inline-flex items-center gap-6 text-2xl font-bold uppercase tracking-tight skeuo-button text-white px-12 py-6 rounded-full shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:scale-105 active:scale-95 transition-all"
           >
-            Get Started Now
+            Get Started Fast <ArrowRight className="w-8 h-8" />
           </Link>
+          <p className="mt-8 text-[10px] uppercase tracking-[0.3em] opacity-40 font-bold">No Credit Card Required • Hire in 2 Minutes</p>
         </div>
       </section>
 
