@@ -1,9 +1,9 @@
 'use server';
 
 import { requireActiveTenant } from "@/lib/auth/tenant";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
 import { geminiService } from "@/lib/services/geminiService";
-import { getCurrentUser } from "@/lib/auth/session";
+import { getSession } from "@/lib/auth/session";
 
 export async function extractKycDataAction(fileBase64: string, mimeType: string, isPublic: boolean = false) {
   const supabase = isPublic ? await getSupabaseAdmin() : await getSupabaseServer();
@@ -13,8 +13,9 @@ export async function extractKycDataAction(fileBase64: string, mimeType: string,
 
   if (!isPublic) {
     tenantId = await requireActiveTenant();
-    const user = await getCurrentUser();
-    userId = user.identity.id;
+    const session = await getSession();
+    if (!session?.userId) throw new Error("Unauthorized: No session");
+    userId = session.userId;
   }
 
   // 1. Process with Gemini Vision

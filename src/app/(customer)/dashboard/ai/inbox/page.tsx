@@ -21,7 +21,9 @@ import {
   Send,
   User,
   X,
-  Facebook
+  Facebook,
+  Zap,
+  Sparkles
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchWithAuth } from "@/lib/api/fetcher";
@@ -33,6 +35,16 @@ import Link from "next/link";
 import { getBusinessLabels } from "@/lib/business-context";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import { toggleAIPauseAction, sendManualMessageAction } from "@/app/actions/inbox";
 import { createBookingLinkAction } from "@/app/actions/payments";
 import { toast } from "sonner";
