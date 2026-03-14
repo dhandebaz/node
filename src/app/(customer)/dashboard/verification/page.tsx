@@ -85,13 +85,19 @@ export default function VerificationPage() {
   const [loading, setLoading] = useState(false);
   const [tenantId, setTenantId] = useState("");
 
+  const resolveDefaultTimezone = (phone?: string) => {
+    const safePhone = (phone || "").replace(/\s+/g, "");
+    if (safePhone.startsWith("+91") || safePhone.startsWith("91")) return "Asia/Kolkata";
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  };
+
   // Step 1 State
   const [details, setDetails] = useState({
     name: "",
     taxId: "",
     address: "",
     phone: "",
-    timezone: "Asia/Kolkata"
+    timezone: resolveDefaultTimezone()
   });
 
   // Step 2 State
@@ -110,7 +116,10 @@ export default function VerificationPage() {
         setDetails(prev => ({
           ...prev,
           name: data.tenant.name || "",
-          phone: data.user?.phone || ""
+          phone: data.user?.phone || "",
+          address: data.tenant.address || "",
+          taxId: data.tenant.tax_id || "",
+          timezone: data.tenant.timezone || resolveDefaultTimezone(data.user?.phone || "")
         }));
       }
     });
@@ -118,17 +127,30 @@ export default function VerificationPage() {
 
   const handleDetailsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const normalizedTaxId = details.taxId.trim().toUpperCase();
+    if (normalizedTaxId) {
+      const isPan = /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(normalizedTaxId);
+      const isGstin = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(normalizedTaxId);
+      if (!isPan && !isGstin) {
+        toast.error("PAN/GSTIN invalid. Example PAN: ABCDE1234F, GSTIN: 07ABCDE1234F1Z5");
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       const res = await fetch("/api/business/details", {
         method: "POST",
-        body: JSON.stringify({ ...details, tenantId }),
+        body: JSON.stringify({ ...details, taxId: normalizedTaxId, tenantId }),
         headers: { "Content-Type": "application/json" }
       });
-      if (!res.ok) throw new Error("Failed to save details");
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Failed to save details");
+      }
       setStep(2);
     } catch (error) {
-      toast.error("Error saving details");
+      toast.error((error as Error)?.message || "Error saving details");
     } finally {
       setLoading(false);
     }
@@ -268,14 +290,16 @@ export default function VerificationPage() {
                 value={details.name} 
                 onChange={e => setDetails({...details, name: e.target.value})}
                 required 
+                className="bg-zinc-950 border-white/10 text-white placeholder:text-white/40"
               />
             </div>
             <div className="grid gap-2">
-              <Label>Tax ID / GSTIN</Label>
+              <Label>PAN / GSTIN (Optional)</Label>
               <Input 
                 value={details.taxId} 
                 onChange={e => setDetails({...details, taxId: e.target.value})}
-                required 
+                placeholder="ABCDE1234F or 07ABCDE1234F1Z5"
+                className="bg-zinc-950 border-white/10 text-white placeholder:text-white/40"
               />
             </div>
             <div className="grid gap-2">
@@ -284,6 +308,7 @@ export default function VerificationPage() {
                 value={details.address} 
                 onChange={e => setDetails({...details, address: e.target.value})}
                 required 
+                className="bg-zinc-950 border-white/10 text-white placeholder:text-white/40"
               />
             </div>
             <div className="grid gap-2">
@@ -292,6 +317,7 @@ export default function VerificationPage() {
                 value={details.phone} 
                 onChange={e => setDetails({...details, phone: e.target.value})}
                 required 
+                className="bg-zinc-950 border-white/10 text-white placeholder:text-white/40"
               />
             </div>
             <div className="grid gap-2">
@@ -300,6 +326,7 @@ export default function VerificationPage() {
                 value={details.timezone} 
                 onChange={e => setDetails({...details, timezone: e.target.value})}
                 required 
+                className="bg-zinc-950 border-white/10 text-white placeholder:text-white/40"
               />
             </div>
             <Button type="submit" disabled={loading} className="w-full">

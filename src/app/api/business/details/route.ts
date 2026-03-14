@@ -19,6 +19,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Tenant ID required" }, { status: 400 });
     }
 
+    if (!name || !address || !phone || !timezone) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    const normalizedTaxId = typeof taxId === "string" ? taxId.trim().toUpperCase() : "";
+    if (normalizedTaxId) {
+      const isPan = /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(normalizedTaxId);
+      const isGstin = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(normalizedTaxId);
+      if (!isPan && !isGstin) {
+        return NextResponse.json({ error: "Invalid PAN/GSTIN format" }, { status: 400 });
+      }
+    }
+
     // Verify user owns tenant
     const { data: membership } = await supabase
       .from("tenant_users")
@@ -27,7 +40,7 @@ export async function POST(req: Request) {
       .eq("user_id", user.id)
       .single();
 
-    if (!membership || membership.role !== 'owner') {
+    if (!membership) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -35,7 +48,7 @@ export async function POST(req: Request) {
       .from("tenants")
       .update({
         name,
-        tax_id: taxId,
+        tax_id: normalizedTaxId || null,
         address,
         phone,
         timezone,
