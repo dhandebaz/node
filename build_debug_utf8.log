@@ -1,0 +1,39 @@
+﻿
+> node@0.1.0 prebuild
+> npm run verify
+
+
+> node@0.1.0 verify
+> node scripts/check-env.js
+
+
+[32mΓ£à All required environment variables are present.
+[0m
+
+> node@0.1.0 build
+> next build
+
+node.exe : Γ¿» Unable 
+to acquire lock at C:\U
+sers\hudav\Documents\tr
+ae_projects\node\.next\
+lock, is another 
+instance of next build 
+running?
+At C:\Program Files\nod
+ejs\npm.ps1:29 char:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (Γ¿» Unable to   
+  a... build runnin    
+g?:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+  Suggestion: If you intended to restart next build, terminate the other process, and then try again.

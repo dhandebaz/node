@@ -22,7 +22,7 @@ export async function completeOnboarding(
   if (details) {
     const result = businessDetailsSchema.safeParse(details);
     if (!result.success) {
-        throw new Error(`Validation Error: ${result.error.errors[0].message}`);
+        throw new Error(`Validation Error: ${result.error.issues[0]?.message || "Invalid input"}`);
     }
   }
 

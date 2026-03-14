@@ -119,7 +119,7 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
     const result = businessDetailsSchema.safeParse({ propertyCount, platforms });
 
     if (!result.success) {
-      toast.error(result.error.errors[0].message);
+      toast.error(result.error.issues[0]?.message || "Invalid input");
       return;
     }
     
