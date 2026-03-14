@@ -102,6 +102,7 @@ export async function updateSession(request: NextRequest) {
 
   // Check Cookie first (Fast path)
   let tenantId = request.cookies.get('nodebase-tenant-id')?.value
+  let membershipData = null
 
   // If no cookie, check DB (Source of Truth)
   if (!tenantId) {
@@ -114,6 +115,7 @@ export async function updateSession(request: NextRequest) {
     
     if (membership && membership.tenant_id) {
       tenantId = membership.tenant_id
+      membershipData = membership
       // Persist to cookie for next request
       response.cookies.set('nodebase-tenant-id', membership.tenant_id, {
         path: '/',
@@ -130,7 +132,21 @@ export async function updateSession(request: NextRequest) {
   if (tenantId) {
     // User HAS a tenant -> Enforce Dashboard
     if (isOnboardingRoute || path === '/login' || path === '/') {
-      return NextResponse.redirect(new URL('/dashboard/ai', request.url))
+      const url = new URL('/dashboard/ai', request.url)
+      const redirectResponse = NextResponse.redirect(url)
+      
+      // CRITICAL: When redirecting, we MUST copy over any cookies set on our 'response' object
+      // or they will be lost during the redirect.
+      // We set the cookie if it was just found in the DB
+      redirectResponse.cookies.set('nodebase-tenant-id', tenantId, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 30 // 30 days
+      })
+      
+      return redirectResponse
     }
     // Allow dashboard access
     return response

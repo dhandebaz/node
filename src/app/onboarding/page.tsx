@@ -5,11 +5,12 @@ import { BusinessTypeCard } from "@/components/onboarding/BusinessTypeCard";
 import { BusinessDetailsForm } from "@/components/onboarding/BusinessDetailsForm";
 import { completeOnboarding } from "@/app/actions/onboarding";
 import { BusinessType } from "@/types";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, CheckCircle2, Loader2, Sparkles } from "lucide-react";
 import { Confetti } from "@/components/ui/Confetti";
 import { toast } from "sonner";
+import { Suspense } from "react";
 
 const SETUP_STEPS = [
     { id: 1, label: "Initializing secure workspace" },
@@ -19,9 +20,14 @@ const SETUP_STEPS = [
     { id: 5, label: "Finalizing setup" },
 ];
 
-export default function OnboardingPage() {
+function OnboardingContent() {
   const router = useRouter();
-  const [step, setStep] = useState<"business_type" | "details" | "processing" | "timeout">("business_type");
+  const searchParams = useSearchParams();
+  const initialStep = searchParams.get("step") as any;
+  
+  const [step, setStep] = useState<"business_type" | "details" | "processing" | "timeout">(
+    initialStep || "business_type"
+  );
   const [loading, setLoading] = useState(false);
   const [selectedBusinessType, setSelectedBusinessType] = useState<BusinessType | null>(null);
   
@@ -329,5 +335,17 @@ export default function OnboardingPage() {
         Need help? <a href="mailto:support@nodebase.com" className="text-brand-bone/60 hover:text-brand-bone underline transition-colors pointer-events-auto">Contact Support</a>
       </div>
     </>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={
+        <div className="flex-1 flex items-center justify-center">
+            <Loader2 className="animate-spin text-brand-bone" size={32} />
+        </div>
+    }>
+      <OnboardingContent />
+    </Suspense>
   );
 }

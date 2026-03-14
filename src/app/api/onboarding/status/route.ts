@@ -10,21 +10,48 @@ export async function GET() {
       return NextResponse.json({ status: "unauthorized" }, { status: 401 });
     }
 
-    const { data: account, error } = await supabase
-      .from("accounts")
-      .select("onboarding_status")
-      .eq("user_id", user.id)
-      .single();
+    // Check both account status AND actual tenant membership
+    // This prevents redirect loops where account says complete but no tenant exists
+    const [accountRes, membershipRes] = await Promise.all([
+      supabase
+        .from("accounts")
+        .select("onboarding_status, tenant_id")
+        .eq("user_id", user.id)
+        .maybeSingle(),
+      supabase
+        .from("tenant_users")
+        .select("tenant_id")
+        .eq("user_id", user.id)
+        .maybeSingle()
+    ]);
 
-    if (error) {
-      return NextResponse.json({ status: "error", message: error.message }, { status: 500 });
+    if (accountRes.error) {
+      return NextResponse.json({ status: "error", message: accountRes.error.message }, { status: 500 });
     }
 
-    // Map DB status to API status
-    // 'complete' in DB -> 'ready' for client
-    const status = account?.onboarding_status === "complete" ? "ready" : "processing";
+    const account = accountRes.data;
+    const membership = membershipRes.data;
 
-    return NextResponse.json({ status });
+    // A user is only "ready" if:
+    // 1. Their account status is 'complete'
+    // 2. They have a valid tenant membership
+    // 3. They have a selected business type (critical for AI logic)
+    const isReady = 
+      account?.onboarding_status === "complete" && 
+      (membership?.tenant_id || account?.tenant_id) &&
+      (account?.business_type);
+
+    const status = isReady ? "ready" : "processing";
+
+    return NextResponse.json({ 
+      status,
+      debug: process.env.NODE_ENV === 'development' ? {
+        hasAccount: !!account,
+        onboardingStatus: account?.onboarding_status,
+        hasMembership: !!membership,
+        tenantId: membership?.tenant_id || account?.tenant_id
+      } : undefined
+    });
   } catch (error) {
     return NextResponse.json({ status: "error" }, { status: 500 });
   }
