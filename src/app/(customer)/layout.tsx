@@ -32,7 +32,9 @@ export default async function CustomerLayout({
     }
 
     // Business Type Check for AI Employees
-    if (profile.roles.isKaisaUser && !profile.products.kaisa?.businessType) {
+    const resolvedBusinessType =
+      profile.products.kaisa?.businessType || profile.tenant?.businessType;
+    if (profile.roles.isKaisaUser && !resolvedBusinessType) {
         redirect('/onboarding?step=business_type');
     }
 

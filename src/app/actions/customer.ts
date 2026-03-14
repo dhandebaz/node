@@ -115,7 +115,10 @@ async function getCurrentUser(): Promise<User> {
     products: isKaisaUser
       ? {
           kaisa: {
-            businessType: (tenant?.businessType as string | undefined) || "",
+            businessType:
+              (onboardingStatus.businessType as string | null) ||
+              (tenant?.businessType as string | undefined) ||
+              "",
             tenantId: tenant?.id,
             activeModules: [],
             role: "manager",
