@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 export async function POST(req: Request) {
   try {
@@ -14,10 +15,9 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { name, taxId, address, phone, timezone, tenantId } = body;
-
-    if (!tenantId) {
-      return NextResponse.json({ error: "Tenant ID required" }, { status: 400 });
-    }
+    const resolvedTenantId: string =
+      (typeof tenantId === "string" && tenantId ? tenantId : null) ||
+      (await requireActiveTenant());
 
     if (!name || !address || !phone || !timezone) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     const { data: membership } = await supabase
       .from("tenant_users")
       .select("role")
-      .eq("tenant_id", tenantId)
+      .eq("tenant_id", resolvedTenantId)
       .eq("user_id", user.id)
       .single();
 
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         timezone,
         updated_at: new Date().toISOString()
       })
-      .eq("id", tenantId);
+      .eq("id", resolvedTenantId);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -62,6 +62,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
+    if (String(error?.message || "").includes("Active Tenant Context Missing")) {
+      return NextResponse.json({ error: "Tenant ID required" }, { status: 400 });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

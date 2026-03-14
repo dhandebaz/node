@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { jsPDF } from "jspdf";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 export async function POST(req: Request) {
   try {
@@ -15,16 +16,19 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { tenantId, signatureBase64 } = body;
+    const resolvedTenantId: string =
+      (typeof tenantId === "string" && tenantId ? tenantId : null) ||
+      (await requireActiveTenant());
 
-    if (!tenantId || !signatureBase64) {
-      return NextResponse.json({ error: "Tenant ID and Signature required" }, { status: 400 });
+    if (!signatureBase64) {
+      return NextResponse.json({ error: "Signature required" }, { status: 400 });
     }
 
     // Get Tenant Details for PDF
     const { data: tenant } = await supabase
       .from("tenants")
       .select("name, address, tax_id")
-      .eq("id", tenantId)
+      .eq("id", resolvedTenantId)
       .single();
 
     if (!tenant) {
@@ -55,7 +59,7 @@ export async function POST(req: Request) {
     
     const pdfBuffer = doc.output("arraybuffer");
     const filename = `tos-${crypto.randomUUID()}.pdf`;
-    const storagePath = `/legal/${tenantId}/${filename}`;
+    const storagePath = `/legal/${resolvedTenantId}/${filename}`;
 
     // Mock Storage Upload (Assume success and path is valid)
     // await storage.upload(storagePath, pdfBuffer);
@@ -69,18 +73,21 @@ export async function POST(req: Request) {
         kyc_verified_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
-      .eq("id", tenantId);
+      .eq("id", resolvedTenantId);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     // Fire Webhook (Mock)
-    console.log(`[Webhook] Account verified for tenant ${tenantId}`);
+    console.log(`[Webhook] Account verified for tenant ${resolvedTenantId}`);
 
     return NextResponse.json({ success: true, redirectUrl: "/dashboard" });
   } catch (error: any) {
     console.error("Agreement error:", error);
+    if (String(error?.message || "").includes("Active Tenant Context Missing")) {
+      return NextResponse.json({ error: "Tenant ID required" }, { status: 400 });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

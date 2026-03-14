@@ -84,7 +84,6 @@ export default function VerificationPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [tenantId, setTenantId] = useState("");
 
   const resolveDefaultTimezone = (phone?: string) => {
     const safePhone = (phone || "").replace(/\s+/g, "");
@@ -113,7 +112,6 @@ export default function VerificationPage() {
   useEffect(() => {
     fetch("/api/host/me").then(res => res.json()).then(data => {
       if (data.tenant) {
-        setTenantId(data.tenant.id);
         setDetails(prev => ({
           ...prev,
           name: data.tenant.name || "",
@@ -142,7 +140,7 @@ export default function VerificationPage() {
     try {
       await fetchWithAuth("/api/business/details", {
         method: "POST",
-        body: JSON.stringify({ ...details, taxId: normalizedTaxId, tenantId }),
+        body: JSON.stringify({ ...details, taxId: normalizedTaxId }),
       });
       setStep(2);
     } catch (error) {
@@ -160,7 +158,6 @@ export default function VerificationPage() {
       
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("tenantId", tenantId);
 
       try {
         const data = await fetchWithAuth<{ success: boolean; extractedData?: any; filePath?: string; error?: string }>(
@@ -190,7 +187,6 @@ export default function VerificationPage() {
       await fetchWithAuth("/api/kyc/confirm", {
         method: "POST",
         body: JSON.stringify({
-          tenantId,
           extractedData,
           documentPath: kycDocPath,
         }),
@@ -213,7 +209,6 @@ export default function VerificationPage() {
       const data = await fetchWithAuth<{ success: boolean; error?: string }>("/api/kyc/agreement", {
         method: "POST",
         body: JSON.stringify({
-          tenantId,
           signatureBase64: signature,
         }),
       });

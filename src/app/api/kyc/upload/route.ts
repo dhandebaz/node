@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 export async function POST(req: Request) {
   try {
@@ -12,10 +13,13 @@ export async function POST(req: Request) {
 
     const formData = await req.formData();
     const file = formData.get("file") as File;
-    const tenantId = formData.get("tenantId") as string;
+    const tenantIdFromBody = formData.get("tenantId") as string | null;
+    const tenantId =
+      (typeof tenantIdFromBody === "string" && tenantIdFromBody ? tenantIdFromBody : null) ||
+      (await requireActiveTenant());
 
-    if (!file || !tenantId) {
-      return NextResponse.json({ error: "File and Tenant ID required" }, { status: 400 });
+    if (!file) {
+      return NextResponse.json({ error: "File required" }, { status: 400 });
     }
 
     // Mock Upload Logic
@@ -40,6 +44,9 @@ export async function POST(req: Request) {
     });
   } catch (error: any) {
     console.error("Upload error:", error);
+    if (String(error?.message || "").includes("Active Tenant Context Missing")) {
+      return NextResponse.json({ error: "Tenant ID required" }, { status: 400 });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
