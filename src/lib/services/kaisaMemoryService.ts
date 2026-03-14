@@ -1,50 +1,36 @@
 
 import { KaisaMemory, MemoryType, LearningStats } from "@/types/kaisa-learning";
-
-// Mock Data
-let memories: KaisaMemory[] = [
-  {
-    id: "mem_001",
-    userId: "USR-001",
-    type: "preference",
-    source: "explicit",
-    description: "Prefer WhatsApp for urgent guest communications",
-    confidence: 1.0,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5).toISOString(), // 5 days ago
-    lastUsedAt: new Date().toISOString(),
-    status: "active",
-    moduleId: "frontdesk"
-  },
-  {
-    id: "mem_002",
-    userId: "USR-001",
-    type: "correction",
-    source: "explicit",
-    description: "Do not auto-confirm bookings from 'TravelStay' agency without approval",
-    confidence: 1.0,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
-    lastUsedAt: new Date().toISOString(),
-    status: "active",
-    moduleId: "frontdesk"
-  },
-  {
-    id: "mem_003",
-    userId: "USR-001",
-    type: "process",
-    source: "inferred",
-    description: "Send billing reminders at 10:00 AM local time",
-    confidence: 0.85,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 10).toISOString(),
-    status: "pending_confirmation",
-    moduleId: "billing"
-  }
-];
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { log } from "@/lib/logger";
 
 export const kaisaMemoryService = {
   async getMemories(userId: string): Promise<KaisaMemory[]> {
-    // Simulate DB delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return memories.filter(m => m.userId === userId && m.status !== 'archived');
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+      .from("kaisa_memories")
+      .select("*")
+      .eq("user_id", userId)
+      .neq("status", "archived")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      log.error(`Error fetching memories for user ${userId}`, error);
+      return [];
+    }
+
+    return data.map((m: any) => ({
+      id: m.id,
+      userId: m.user_id,
+      type: m.type as MemoryType,
+      source: m.source,
+      description: m.description,
+      confidence: Number(m.confidence),
+      createdAt: m.created_at,
+      lastUsedAt: m.last_used_at,
+      status: m.status,
+      moduleId: m.module_id,
+      metadata: m.metadata
+    }));
   },
 
   async getStats(userId: string): Promise<LearningStats> {
@@ -73,32 +59,92 @@ export const kaisaMemoryService = {
   },
 
   async addMemory(memory: Omit<KaisaMemory, "id" | "createdAt" | "status">): Promise<KaisaMemory> {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const newMemory: KaisaMemory = {
-      ...memory,
-      id: `mem_${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      status: "active"
+    const supabase = await getSupabaseServer();
+    
+    // Resolve tenant_id for the user
+    const { data: membership } = await supabase
+      .from("tenant_users")
+      .select("tenant_id")
+      .eq("user_id", memory.userId)
+      .maybeSingle();
+
+    if (!membership?.tenant_id) {
+      throw new Error("User has no active workspace to store memory");
+    }
+
+    const { data, error } = await supabase
+      .from("kaisa_memories")
+      .insert({
+        tenant_id: membership.tenant_id,
+        user_id: memory.userId,
+        type: memory.type,
+        source: memory.source,
+        description: memory.description,
+        confidence: memory.confidence,
+        status: "active",
+        module_id: memory.moduleId,
+        metadata: memory.metadata
+      })
+      .select("*")
+      .single();
+
+    if (error) {
+      log.error("Failed to add Kaisa memory", error);
+      throw new Error("Failed to store memory");
+    }
+
+    return {
+      id: data.id,
+      userId: data.user_id,
+      type: data.type as MemoryType,
+      source: data.source,
+      description: data.description,
+      confidence: Number(data.confidence),
+      createdAt: data.created_at,
+      lastUsedAt: data.last_used_at,
+      status: data.status,
+      moduleId: data.module_id,
+      metadata: data.metadata
     };
-    memories.unshift(newMemory);
-    return newMemory;
   },
 
   async updateStatus(id: string, status: KaisaMemory['status']): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = memories.findIndex(m => m.id === id);
-    if (index !== -1) {
-      memories[index].status = status;
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
+      .from("kaisa_memories")
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq("id", id);
+
+    if (error) {
+      log.error(`Failed to update memory status for ${id}`, error);
+      throw new Error("Failed to update status");
     }
   },
 
   async deleteMemory(id: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    memories = memories.filter(m => m.id !== id);
+    const supabase = await getSupabaseServer();
+    // Prefer archiving over hard deletion for AI context
+    const { error } = await supabase
+      .from("kaisa_memories")
+      .update({ status: "archived", updated_at: new Date().toISOString() })
+      .eq("id", id);
+
+    if (error) {
+      log.error(`Failed to delete memory ${id}`, error);
+      throw new Error("Failed to delete memory");
+    }
   },
 
   async resetLearning(userId: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    memories = memories.filter(m => m.userId !== userId);
+    const supabase = await getSupabaseServer();
+    const { error } = await supabase
+      .from("kaisa_memories")
+      .update({ status: "archived", updated_at: new Date().toISOString() })
+      .eq("user_id", userId);
+
+    if (error) {
+      log.error(`Failed to reset learning for user ${userId}`, error);
+      throw new Error("Failed to reset learning");
+    }
   }
 };

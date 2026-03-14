@@ -79,6 +79,55 @@ export const geminiService = {
     }
   },
 
+  async generateEmbedding(text: string): Promise<number[]> {
+    try {
+      const settings = await settingsService.getSettings();
+      const apiKey = settings.api.geminiApiKey;
+      if (!apiKey) throw new Error("Gemini API key is not configured");
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "embedding-004" });
+      const result = await model.embedContent(text);
+      return Array.from(result.embedding.values);
+    } catch (error: any) {
+      console.error("Gemini Embedding Error:", error);
+      throw error;
+    }
+  },
+
+  async analyzeSentiment(text: string): Promise<{ sentiment: 'positive' | 'neutral' | 'negative' | 'angry', score: number }> {
+    try {
+      const settings = await settingsService.getSettings();
+      const apiKey = settings.api.geminiApiKey;
+      if (!apiKey) throw new Error("Gemini API key is not configured");
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      const prompt = `
+        Analyze the sentiment of the following text from a guest to a business owner.
+        Classify it as one of: positive, neutral, negative, angry.
+        Also provide a confidence score between 0 and 1.
+        
+        Text: "${text}"
+        
+        Return ONLY a JSON object: { "sentiment": "...", "score": 0.0 }
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const json = JSON.parse(response.text().replace(/```json|```/g, "").trim());
+      
+      return {
+        sentiment: json.sentiment,
+        score: json.score
+      };
+    } catch (error) {
+      console.error("Sentiment analysis failed", error);
+      return { sentiment: 'neutral', score: 0.5 };
+    }
+  },
+
   async generateReply(context: {
     message: string;
     listingName: string;
@@ -88,6 +137,7 @@ export const geminiService = {
     previousMessages?: { role: string; content: string }[];
     role?: string;
     instructions?: string;
+    knowledgeContext?: string; // NEW: Context from RAG
   }): Promise<{ content: string; usage: { totalTokens: number } }> {
     try {
       const settings = await settingsService.getSettings();
@@ -98,11 +148,19 @@ export const geminiService = {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       const role = context.role || "AI assistant";
-      const customInstructions = context.instructions || "Your goal is to be helpful, professional, and concise.";
+      const systemPrompt = `
+        You are ${role} for "${context.listingName}" in ${context.city}.
+        ${context.instructions ? `\nCustom Instructions: ${context.instructions}` : ""}
+        ${context.knowledgeContext ? `\n\nSpecific Knowledge (RAG): ${context.knowledgeContext}` : ""}
+        
+        Use the specific knowledge provided to answer guest questions accurately. 
+        If the information is not in the knowledge context or calendar, politely state that you'll check with the host.
+
+        CRITICAL: If the user is asking to book, or seems ready to book, mention that you can generate a secure Direct Booking link for them to confirm dates and pay instantly.
+      `;
 
       const prompt = `
-        You are Kaisa, an ${role} for "${context.listingName}" in ${context.city}.
-        ${customInstructions}
+        ${systemPrompt}
         
         Context:
         - Guest Name: ${context.guestName}

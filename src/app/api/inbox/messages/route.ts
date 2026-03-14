@@ -14,30 +14,28 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Missing conversationId" }, { status: 400 });
   }
 
-  // Handle mock IDs gracefully by returning empty (or could keep mock data if needed for demo)
-  if (!conversationId.includes(":")) {
-      return NextResponse.json({ messages: [] });
+  // Support both legacy (listingId:guestId) and new (UUID) conversation IDs
+  let query = supabase.from("messages").select("*");
+  
+  if (conversationId.includes(":")) {
+    const [listingId, guestId] = conversationId.split(":");
+    query = query.eq("listing_id", listingId).eq("guest_id", guestId);
+  } else {
+    query = query.eq("conversation_id", conversationId);
   }
 
-  const [listingId, guestId] = conversationId.split(":");
-
-  const { data: messages, error } = await supabase
-      .from("messages")
-      .select("*")
-      .eq("listing_id", listingId)
-      .eq("guest_id", guestId)
-      .order("timestamp", { ascending: true });
+  const { data: messages, error } = await query.order("created_at", { ascending: true });
 
   if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
   
   const formatted = messages.map((m: any) => ({
       id: m.id,
       conversationId,
-      senderType: m.direction === 'inbound' ? 'customer' : 'human',
+      senderType: m.direction === 'inbound' ? 'customer' : (m.sender_id === 'ai_assistant' ? 'ai' : 'human'),
       content: m.content,
-      timestamp: m.timestamp,
+      timestamp: m.created_at || m.timestamp,
       channel: m.channel
   }));
 

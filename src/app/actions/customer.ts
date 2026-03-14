@@ -3,6 +3,7 @@
 import { userService } from "@/lib/services/userService";
 import { kaisaService } from "@/lib/services/kaisaService";
 import { supportService } from "@/lib/services/supportService";
+import { OnboardingService } from "@/lib/services/onboardingService";
 import { getSession } from "@/lib/auth/session";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { User } from "@/types/user";
@@ -81,7 +82,10 @@ async function getCurrentUser(): Promise<User> {
   const authRole = String(authUser.user_metadata?.role || "customer");
   const isAdmin = authRole === "admin" || authRole === "superadmin";
   const isKaisaUser = !!kaisaAccount || account?.product_type === "ai_employee";
-  const onboarding = account?.onboarding_status === "complete" ? "completed" : "pending";
+  
+  // Robust Onboarding Check (Consistent with API/Middleware)
+  const onboardingStatus = await OnboardingService.getStatus(authUser.id);
+  const onboarding = onboardingStatus.isComplete ? "completed" : "pending";
 
   return {
     identity: {
@@ -224,4 +228,79 @@ export async function createTicketAction(subject: string, product: "ai_employee"
     message,
     timestamp: new Date().toISOString()
   });
+}
+
+// --- Settings Actions ---
+
+export async function updateTenantProfileAction(updates: {
+  name?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+}) {
+  const user = await getCurrentUser();
+  if (!user.tenant?.id) throw new Error("No active workspace found");
+
+  const supabase = await getSupabaseServer();
+  
+  const { error } = await supabase
+    .from("tenants")
+    .update({
+      name: updates.name,
+      address: updates.address,
+      phone: updates.phone,
+      // website: updates.website, // If column exists, add it. For now, following schema from migrations
+    })
+    .eq("id", user.tenant.id);
+
+  if (error) {
+    console.error("Failed to update tenant profile:", error);
+    throw new Error("Failed to save changes");
+  }
+
+  revalidatePath("/dashboard/ai/settings");
+  return { success: true };
+}
+
+export async function updateAiSettingsAction(updates: {
+  provider?: string;
+  model?: string;
+  apiKey?: string;
+  customInstructions?: string;
+  tone?: string;
+}) {
+  const user = await getCurrentUser();
+  if (!user.tenant?.id) throw new Error("No active workspace found");
+
+  const supabase = await getSupabaseServer();
+  
+  // 1. Get current settings
+  const { data: tenant } = await supabase
+    .from("tenants")
+    .select("ai_settings")
+    .eq("id", user.tenant.id)
+    .single();
+
+  const currentSettings = tenant?.ai_settings || {};
+  const newSettings = {
+    ...currentSettings,
+    ...updates
+  };
+
+  // 2. Update settings
+  const { error } = await supabase
+    .from("tenants")
+    .update({
+      ai_settings: newSettings
+    })
+    .eq("id", user.tenant.id);
+
+  if (error) {
+    console.error("Failed to update AI settings:", error);
+    throw new Error("Failed to save AI configuration");
+  }
+
+  revalidatePath("/dashboard/ai/settings");
+  return { success: true };
 }

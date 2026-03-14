@@ -3,6 +3,7 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { geminiService } from "@/lib/services/geminiService";
 import { ControlService } from "@/lib/services/controlService";
 import { wahaService } from "@/lib/services/wahaService";
+import { FlowService } from "@/lib/services/flowService";
 
 export async function POST(request: Request) {
   try {
@@ -88,6 +89,18 @@ export async function POST(request: Request) {
       amount: 1,
       description: "WhatsApp AI Reply",
     });
+
+    // Visual Flow Execution (Custom Logic Interception)
+    const flowResults = await FlowService.executeTrigger(tenantId, 'message_received', {
+      content: text,
+      sender: sender,
+      isGroup: sender.endsWith('@g.us')
+    });
+
+    // If a flow halted the execution, we stop here (e.g. it handled the reply or did a handover)
+    if (flowResults?.some(r => r.halted)) {
+      return NextResponse.json({ success: true, flow_handled: true });
+    }
 
     // Generate AI Reply
     const { data: tenant } = await supabase

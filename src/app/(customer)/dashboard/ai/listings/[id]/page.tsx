@@ -8,6 +8,7 @@ import { listingsApi } from "@/lib/api/listings";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ICalSyncCard } from "@/components/listings/ICalSyncCard";
+import { DynamicPricingCard } from "@/components/listings/DynamicPricingCard";
 
 const platformLabels: Record<ListingPlatform, string> = {
   airbnb: "Airbnb",
@@ -19,7 +20,7 @@ export default function ListingDetailPage() {
   const params = useParams();
   const router = useRouter();
   const listingId = params?.id as string;
-  const [tab, setTab] = useState<"overview" | "calendar" | "messages">("overview");
+  const [tab, setTab] = useState<"overview" | "calendar" | "messages" | "pricing">("overview");
   const [listing, setListing] = useState<Listing | null>(null);
   const [integrations, setIntegrations] = useState<ListingIntegration[]>([]);
   const [calendar, setCalendar] = useState<ListingCalendar | null>(null);
@@ -153,6 +154,7 @@ export default function ListingDetailPage() {
         {[
           { id: "overview", label: "Overview" },
           { id: "calendar", label: "Calendar Sync" },
+          { id: "pricing", label: "Dynamic Pricing" },
           { id: "messages", label: "Messages" }
         ].map((item) => (
           <button
@@ -323,6 +325,22 @@ export default function ListingDetailPage() {
                  {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                  Save All Changes
                </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {tab === "pricing" && (
+        <div className="space-y-6">
+          <DynamicPricingCard 
+            listingId={listingId} 
+            initialSettings={(listing as any).dynamic_pricing_settings} 
+          />
+          
+          <div className="dashboard-surface p-6 space-y-4">
+            <div className="text-sm font-semibold text-white">Price History</div>
+            <div className="text-xs text-white/40 italic">
+              Enable dynamic pricing to start tracking historical adjustments.
             </div>
           </div>
         </div>

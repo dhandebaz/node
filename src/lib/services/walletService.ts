@@ -27,54 +27,40 @@ export class WalletService {
 
   /**
    * Deduct credits from wallet.
-   * This creates a negative transaction which triggers the balance update via DB trigger.
+   * This uses an RPC function to ensure atomic recording of transaction and usage event.
    */
   static async deductCredits(
     tenantId: string, 
     amount: number, 
     actionType: string, 
-    metadata: Record<string, unknown> = {}
+    metadata: Record<string, any> = {}
   ): Promise<boolean> {
     const supabase = await getSupabaseServer();
     
-    // Ensure amount is positive for the input, we negate it for the transaction
+    // Ensure amount is negative for the transaction (deduction)
     const deduction = Math.abs(amount) * -1;
 
-    const { error } = await supabase
-      .from("wallet_transactions")
-      .insert({
-        tenant_id: tenantId,
-        amount: deduction,
-        type: "ai_usage",
-        description: `Usage: ${actionType}`,
-        metadata: {
-          action_type: actionType,
-          ...metadata
-        }
-      });
+    // Use RPC for atomic operation
+    const { data, error } = await supabase.rpc('record_ai_usage_v1', {
+      p_tenant_id: tenantId,
+      p_amount: deduction,
+      p_action_type: actionType,
+      p_model: metadata.model || 'unknown',
+      p_tokens_used: metadata.tokens || 0,
+      p_metadata: metadata
+    });
 
-    if (error) {
-      // Check for check_violation (code 23514) which implies negative balance attempt
-      if (error.code === '23514') {
-         log.warn(`Wallet deduction blocked for tenant ${tenantId} due to insufficient funds (constraint violation).`);
+    if (error || !data?.success) {
+      const errorMsg = error?.message || data?.error || 'Unknown error';
+      const errorCode = error?.code || data?.code;
+
+      if (errorCode === '23514' || errorCode === 'P0001') {
+         log.warn(`Wallet deduction blocked for tenant ${tenantId} due to insufficient funds.`);
       } else {
-         log.error("Failed to deduct credits", error, { tenantId });
+         log.error("Failed to deduct credits (RPC)", { error: errorMsg, code: errorCode, tenantId });
       }
       return false;
     }
-
-    // Strict Requirement Part 3: Emit usage event
-    // We log this *after* successful deduction to ensure we only track paid usage.
-    // For blocked usage, the caller should log an audit event (which they do).
-    // This table is for "Usage Events" as defined in Part 3.
-    await supabase.from("ai_usage_events").insert({
-        tenant_id: tenantId,
-        action_type: actionType,
-        tokens_used: metadata.tokens || 0,
-        credits_deducted: Math.abs(deduction),
-        model: metadata.model || 'unknown',
-        metadata: metadata
-    });
 
     return true;
   }

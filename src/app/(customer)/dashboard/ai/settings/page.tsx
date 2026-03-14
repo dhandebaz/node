@@ -18,6 +18,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AIMemorySettings } from "@/components/dashboard/ai/AIMemorySettings";
 import { AIBrandingSettings } from "@/components/dashboard/ai/AIBrandingSettings";
+import { AIModelSettings } from "@/components/dashboard/ai/AIModelSettings";
+import { VoiceAgentSettings } from "@/components/dashboard/ai/VoiceAgentSettings";
+import { AIKnowledgeBase } from "@/components/dashboard/ai/AIKnowledgeBase";
 
 export default function AISettingsPage() {
   const { host } = useAuthStore();
@@ -66,6 +69,15 @@ export default function AISettingsPage() {
               />
            </CardHeader>
         </Card>
+
+        {/* AI Model & BYOK Settings */}
+        <AIModelSettings initialSettings={tenant?.ai_settings as any} />
+
+        {/* Knowledge Base (RAG 2.0) */}
+        <AIKnowledgeBase />
+
+        {/* Voice Agent Settings */}
+        <VoiceAgentSettings tenantId={tenant?.id || ""} />
 
         {/* Memory Settings */}
         <AIMemorySettings initialEnabled={tenant?.is_memory_enabled ?? false} />

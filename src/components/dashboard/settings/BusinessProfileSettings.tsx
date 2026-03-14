@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Building2, Upload, Save, Globe, MapPin, Phone, Mail } from "lucide-react";
 import { DBTenant } from "@/types/database";
+import { updateTenantProfileAction } from "@/app/actions/customer";
+import { toast } from "sonner";
 
 interface BusinessProfileSettingsProps {
   tenant: DBTenant;
@@ -13,17 +15,31 @@ export function BusinessProfileSettings({ tenant }: BusinessProfileSettingsProps
   const [formData, setFormData] = useState({
     name: tenant.name || "",
     business_type: tenant.business_type || "",
-    address: "", // Placeholder as it might not be in DB yet
-    website: "",
-    contact_email: "",
-    contact_phone: "",
+    address: (tenant as any).address || "", 
+    website: (tenant as any).website || "",
+    contact_email: (tenant as any).email || "",
+    contact_phone: (tenant as any).phone || "",
   });
 
   const handleSave = async () => {
     setIsSaving(true);
-    // TODO: Implement server action to update tenant profile
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSaving(false);
+    try {
+      const result = await updateTenantProfileAction({
+        name: formData.name,
+        address: formData.address,
+        phone: formData.contact_phone,
+        email: formData.contact_email,
+        website: formData.website,
+      });
+      
+      if (result.success) {
+        toast.success("Business profile updated successfully");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update profile");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (

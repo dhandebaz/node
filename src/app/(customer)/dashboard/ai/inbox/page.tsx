@@ -15,6 +15,7 @@ import {
   Loader2,
   MessageCircle,
   MessageSquare,
+  Mic,
   RefreshCw,
   Search,
   Send,
@@ -33,39 +34,22 @@ import { getBusinessLabels } from "@/lib/business-context";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toggleAIPauseAction, sendManualMessageAction } from "@/app/actions/inbox";
+import { createBookingLinkAction } from "@/app/actions/payments";
 import { toast } from "sonner";
 
 type Conversation = {
   id: string;
   customerName: string | null;
   customerPhone: string | null;
-  channel: "whatsapp" | "instagram" | "messenger" | "web";
+  channel: "whatsapp" | "instagram" | "messenger" | "web" | "voice";
   lastMessage: string;
   lastMessageAt: string;
   unreadCount: number;
   manager: { slug: string; name: string };
   status: "draft" | "payment_pending" | "paid" | "scheduled" | "open";
   bookingId?: string | null;
-  // Assuming the API returns guestId or we can use id if it matches guestId. 
-  // Wait, Conversation ID might be different from Guest ID.
-  // Let's assume conversation.id is NOT guestId.
-  // But we need guestId for the actions. 
-  // Let's check loadConversations or types. 
-  // If the API doesn't return guestId, we might need to add it to the type and API.
-  // The user prompt says: "toggleAIPauseAction(guestId: string...)"
-  // I will assume conversation has a guestId field or I can use conversation.id if it maps 1:1.
-  // Looking at the provided types, Conversation doesn't have guestId explicitly, but has customerName/Phone.
-  // I'll add guestId to the type here for now, assuming the API returns it or I can fetch it.
-  // Actually, let's look at `loadConversations`... it fetches /api/inbox/conversations.
-  // If the API doesn't return guestId, I'll have trouble.
-  // However, usually conversation ID is linked to guest.
-  // Let's assume for this task that conversation object has guestId.
-  // If not, I'll need to fetch it.
-  // Wait, the prompt says "Open src/app/(customer)/dashboard/ai/inbox/page.tsx... Add a UI toggle..."
-  // It implies I should use what's available.
-  // I'll add `guestId: string` to Conversation type and assume it's populated.
-  guestId?: string; // Add guestId to Conversation type if not present in API response, or fetch it.
-  aiPaused?: boolean; // We also need this state from the conversation list
+  guestId?: string; 
+  aiPaused?: boolean; 
 };
 
 type ConversationMessage = {
@@ -115,21 +99,24 @@ const channelIcon = {
   whatsapp: MessageCircle,
   instagram: Instagram,
   messenger: Facebook,
-  web: Globe
+  web: Globe,
+  voice: Mic
 };
 
 const channelLabel: Record<Conversation["channel"], string> = {
   whatsapp: "WhatsApp",
   instagram: "Instagram",
   messenger: "Messenger",
-  web: "Web chat"
+  web: "Web chat",
+  voice: "Phone call"
 };
 
 const channelConstraint: Record<Conversation["channel"], string> = {
   whatsapp: "Templates required for outbound messages",
   instagram: "Replies appear in DMs",
   messenger: "Replies appear in Messenger",
-  web: "Instant web chat"
+  web: "Instant web chat",
+  voice: "Voice transcription & recording"
 };
 
 const formatTime = (value: string) =>
@@ -213,6 +200,15 @@ export default function InboxPage() {
   const [idRequestMessage, setIdRequestMessage] = useState<string | null>(null);
   const [idRequesting, setIdRequesting] = useState(false);
   const [idBookingId, setIdBookingId] = useState<string>("");
+
+  const [showSmartLinkModal, setShowSmartLinkModal] = useState(false);
+  const [smartLinkLoading, setSmartLinkLoading] = useState(false);
+  const [smartLinkForm, setSmartLinkData] = useState({
+    amount: "",
+    listingId: "",
+    startDate: "",
+    endDate: ""
+  });
 
   useEffect(() => {
     loadListings();
@@ -623,6 +619,38 @@ export default function InboxPage() {
     setPaymentSent(true);
   };
 
+  const handleCreateSmartLink = async () => {
+    if (!selectedConversationId || !smartLinkForm.amount || !smartLinkForm.listingId) {
+      toast.error("Please fill in the amount and listing");
+      return;
+    }
+
+    try {
+      setSmartLinkLoading(true);
+      const result = await createBookingLinkAction({
+        conversationId: selectedConversationId,
+        listingId: smartLinkForm.listingId,
+        amount: Number(smartLinkForm.amount),
+        metadata: {
+          startDate: smartLinkForm.startDate,
+          endDate: smartLinkForm.endDate
+        }
+      });
+
+      if (result.success) {
+        const listingName = listings.find(l => l.id === smartLinkForm.listingId)?.name || "Listing";
+        const message = `I've generated a secure booking link for you for "${listingName}". You can complete your payment here: ${result.checkoutUrl}`;
+        setReplyText(message);
+        setShowSmartLinkModal(false);
+        toast.success("Booking link generated!");
+      }
+    } catch (error) {
+      toast.error("Failed to generate booking link");
+    } finally {
+      setSmartLinkLoading(false);
+    }
+  };
+
   const showEmptyState = !loadingList && filteredConversations.length === 0 && !listError;
   const showThread = selectedConversationId !== null;
 
@@ -835,6 +863,20 @@ export default function InboxPage() {
                         />
                       </div>
                     </div>
+                  <button
+                    onClick={() => {
+                      setSmartLinkData({
+                        amount: "",
+                        listingId: listings[0]?.id || "",
+                        startDate: "",
+                        endDate: ""
+                      });
+                      setShowSmartLinkModal(true);
+                    }}
+                    className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+                  >
+                    Send booking link
+                  </button>
                   <button
                     onClick={openPaymentModal}
                   className="text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 text-white/80 hover:border-white/50"
@@ -1440,6 +1482,89 @@ export default function InboxPage() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Smart Booking Link Modal */}
+      {showSmartLinkModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-md bg-zinc-900 border-white/10 shadow-2xl">
+            <CardHeader className="border-b border-white/5">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-white text-lg flex items-center gap-2">
+                  <Zap className="text-emerald-500 w-5 h-5" />
+                  Generate Smart Link
+                </CardTitle>
+                <Button variant="ghost" size="sm" onClick={() => setShowSmartLinkModal(false)} className="text-white/40 hover:text-white">
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              <CardDescription>
+                Create a temporary checkout link for this guest.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <div className="space-y-2">
+                <Label className="text-white">Select Listing</Label>
+                <Select 
+                  value={smartLinkForm.listingId} 
+                  onValueChange={(v) => setSmartLinkData({...smartLinkForm, listingId: v})}
+                >
+                  <SelectTrigger className="bg-black/20 border-white/10 text-white">
+                    <SelectValue placeholder="Select Listing" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-900 border-white/10 text-white">
+                    {listings.map(l => (
+                      <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-white">Amount (₹)</Label>
+                <Input 
+                  type="number"
+                  placeholder="e.g. 2500"
+                  value={smartLinkForm.amount}
+                  onChange={(e) => setSmartLinkData({...smartLinkForm, amount: e.target.value})}
+                  className="bg-black/20 border-white/10 text-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-white">Check-in</Label>
+                  <Input 
+                    type="date"
+                    value={smartLinkForm.startDate}
+                    onChange={(e) => setSmartLinkData({...smartLinkForm, startDate: e.target.value})}
+                    className="bg-black/20 border-white/10 text-white"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-white">Check-out</Label>
+                  <Input 
+                    type="date"
+                    value={smartLinkForm.endDate}
+                    onChange={(e) => setSmartLinkData({...smartLinkForm, endDate: e.target.value})}
+                    className="bg-black/20 border-white/10 text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-white/5">
+                <Button 
+                  onClick={handleCreateSmartLink} 
+                  disabled={smartLinkLoading}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+                >
+                  {smartLinkLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                  Generate & Insert Link
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

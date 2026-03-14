@@ -9,6 +9,7 @@ import { BusinessType } from "@/types";
 import { ControlService } from "@/lib/services/controlService";
 import { ReferralService } from "@/lib/services/referralService";
 import { businessDetailsSchema } from "@/lib/validations/onboarding";
+import { OnboardingService } from "@/lib/services/onboardingService";
 
 export async function completeOnboarding(
   businessType: BusinessType,
@@ -135,113 +136,11 @@ export async function completeOnboarding(
     maxAge: 60 * 60 * 24 * 30 // 30 days
   });
 
-  // 3. Update/Create Account Status
-  // Check if account exists
-  const { data: existingAccount } = await admin
-    .from("accounts")
-    .select("*")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  let error;
-
-  if (existingAccount) {
-    // Update existing
-    const { error: updateError } = await admin
-      .from("accounts")
-      .update({
-        product_type: "ai_employee",
-        business_type: businessType,
-        onboarding_status: "complete",
-        tenant_id: tenantId, 
-        onboarding_milestones: ["business_details"], // Add this
-        updated_at: new Date().toISOString()
-      })
-      .eq("user_id", user.id);
-    error = updateError;
-  } else {
-    // Insert new
-    const { error: insertError } = await admin
-      .from("accounts")
-      .insert({
-        user_id: user.id,
-        product_type: "ai_employee",
-        business_type: businessType,
-        onboarding_status: "complete",
-        tenant_id: tenantId,
-        onboarding_milestones: ["business_details"] // Add this
-      });
-    error = insertError;
-  }
-
-  if (error) {
-    console.error("Onboarding error:", error);
-    throw new Error("Failed to save selection");
-  }
+  // 3. Finalize Onboarding via Service
+  await OnboardingService.finalizeOnboarding(user.id, tenantId, businessType);
   
-  console.log(`[Onboarding] User ${user.id} selected ai_employee. Tenant ${tenantId} active.`);
+  console.log(`[Onboarding] User ${user.id} finalized for ${businessType}. Tenant ${tenantId} active.`);
   
-  // 3.5. Update User Metadata (Sync for Middleware/Client)
-  try {
-    await admin.auth.admin.updateUserById(user.id, {
-      user_metadata: { onboarding_status: "complete" }
-    });
-  } catch (e) {
-    console.error("Failed to sync onboarding_status to user_metadata:", e);
-    // Non-blocking but good to have
-  }
-
-  // 4. Legacy/Compatibility: Ensure kaisa_account exists for AI Employee
-  try {
-    const { data: kaisaAccount, error: kaisaQueryError } = await admin
-      .from("kaisa_accounts")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    
-    if (kaisaQueryError) {
-      console.error("[Onboarding] Error querying kaisa_accounts:", kaisaQueryError);
-      // We continue but log it - if it's missing, the next insert might fail but we'll catch it
-    }
-    
-    if (!kaisaAccount) {
-      console.log(`[Onboarding] Creating default kaisa_account for ${user.id}`);
-      const { error: kaisaInsertError } = await admin.from("kaisa_accounts").insert({
-          user_id: user.id,
-          tenant_id: tenantId, 
-          status: "active",
-          business_type: businessType,
-          role: "manager" // Default role as required by schema
-      });
-      if (kaisaInsertError) {
-        console.error("[Onboarding] Failed to create kaisa_account:", kaisaInsertError);
-        // This is a non-critical legacy sync, we might want to continue, but let's at least log it
-      }
-    } else {
-      // Update existing if needed
-      const { error: kaisaUpdateError } = await admin
-        .from("kaisa_accounts")
-        .update({ 
-          tenant_id: tenantId, 
-          business_type: businessType,
-          role: kaisaAccount.role || "manager"
-        })
-        .eq("id", kaisaAccount.id);
-      
-      if (kaisaUpdateError) {
-        console.error("[Onboarding] Failed to update kaisa_account:", kaisaUpdateError);
-      }
-    }
-  } catch (kaisaErr) {
-    console.error("[Onboarding] Unexpected error during kaisa_account sync:", kaisaErr);
-    // Continue despite legacy errors
-  }
-
-  // Revalidate essential paths to clear server-side cache
-  revalidatePath("/", "layout");
-  revalidatePath("/dashboard", "layout");
-  revalidatePath("/(customer)", "layout");
-
   return { success: true };
 }
 

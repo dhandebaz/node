@@ -13,46 +13,39 @@ export async function GET(request: Request) {
 
     const tenantId = await requireActiveTenant();
 
-    // Fetch recent messages to construct conversations
-    // We fetch messages linked to listings owned by the user
-    const { data: messages, error } = await supabase
-      .from("messages")
-      .select("*, guests(name, phone)")
+    // Fetch from the new unified conversations table
+    const { data: conversations, error } = await supabase
+      .from("conversations")
+      .select("*")
       .eq("tenant_id", tenantId)
-      .order("timestamp", { ascending: false })
-      .limit(100);
+      .order("last_message_at", { ascending: false });
 
     if (error) throw error;
 
-    const conversationMap = new Map();
+    // Map to the format expected by the frontend
+    const mappedConversations = conversations?.map((conv: any) => ({
+      id: conv.id,
+      customerName: conv.contact_name || "Guest",
+      customerPhone: conv.external_id || null,
+      channel: conv.channel,
+      lastMessage: conv.metadata?.last_message_preview || "No messages",
+      lastMessageAt: conv.last_message_at,
+      unreadCount: conv.metadata?.unread_count || 0,
+      manager: { slug: "kaisa-ai", name: "Kaisa AI" },
+      status: conv.status || "open",
+      bookingId: conv.metadata?.booking_id || null,
+      guestId: conv.metadata?.guest_id || null,
+      aiPaused: conv.metadata?.ai_paused || false
+    }));
 
-    messages?.forEach((msg: any) => {
-        const key = `${msg.listing_id}:${msg.guest_id}`;
-        
-        if (!conversationMap.has(key)) {
-            const guest = Array.isArray(msg.guests) ? msg.guests[0] : msg.guests;
-            
-            conversationMap.set(key, {
-                id: key,
-                customerName: guest?.name || "Guest",
-                customerPhone: guest?.phone || null,
-                channel: msg.channel,
-                lastMessage: msg.content,
-                lastMessageAt: msg.timestamp,
-                unreadCount: !msg.is_read && msg.direction === 'inbound' ? 1 : 0,
-                manager: { slug: "host-ai", name: "Host AI" }, // Placeholder, could be derived from listing
-                status: "open", 
-                bookingId: null 
-            });
-        } else {
-            const conv = conversationMap.get(key);
-            if (!msg.is_read && msg.direction === 'inbound') {
-                conv.unreadCount += 1;
-            }
-        }
+    return NextResponse.json({ 
+      conversations: mappedConversations || [],
+      meta: {
+        walletStatus: "healthy", // TODO: Real wallet check
+        integrationStatus: "connected", // TODO: Real integration check
+        channelErrors: []
+      }
     });
-
-    return NextResponse.json(Array.from(conversationMap.values()));
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
