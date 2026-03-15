@@ -1,10 +1,48 @@
-"use client"
+"use client";
 
-import { Toaster as Sonner } from "sonner"
+import React, { useEffect } from "react";
+import { Toaster as Sonner, toast } from "sonner";
 
-type ToasterProps = React.ComponentProps<typeof Sonner>
+type ToasterProps = React.ComponentProps<typeof Sonner>;
 
 const Toaster = ({ ...props }: ToasterProps) => {
+  useEffect(() => {
+    if ((toast as any)._patched) return;
+    (toast as any)._patched = true;
+
+    const originalSuccess = toast.success;
+    const originalError = toast.error;
+    const recent = new Map<
+      string,
+      { count: number; id: string | number; timer: NodeJS.Timeout }
+    >();
+
+    const dedupe = (originalFn: any, msg: any, options?: any) => {
+      if (typeof msg !== "string") return originalFn(msg, options);
+
+      const existing = recent.get(msg);
+      if (existing) {
+        existing.count += 1;
+        clearTimeout(existing.timer);
+        existing.timer = setTimeout(() => recent.delete(msg), 2000);
+        return originalFn(`${msg} (${existing.count})`, {
+          ...options,
+          id: existing.id,
+        });
+      }
+
+      const id = originalFn(msg, options);
+      const timer = setTimeout(() => recent.delete(msg), 2000);
+      recent.set(msg, { count: 1, id, timer });
+      return id;
+    };
+
+    toast.success = (msg: any, options: any) =>
+      dedupe(originalSuccess, msg, options);
+    toast.error = (msg: any, options: any) =>
+      dedupe(originalError, msg, options);
+  }, []);
+
   return (
     <Sonner
       theme="dark"
@@ -22,7 +60,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }}
       {...props}
     />
-  )
-}
+  );
+};
 
-export { Toaster }
+export { Toaster };

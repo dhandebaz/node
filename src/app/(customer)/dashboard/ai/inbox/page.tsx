@@ -30,7 +30,8 @@ import {
   EyeOff,
   Building,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, timeAgo } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 import { fetchWithAuth } from "@/lib/api/fetcher";
 import { SessionExpiredCard } from "@/components/customer/SessionExpiredCard";
 import { SessionExpiredError } from "@/lib/api/errors";
@@ -150,18 +151,6 @@ const channelConstraint: Record<Conversation["channel"], string> = {
   web: "Instant web chat",
   voice: "Voice transcription & recording",
 };
-
-const formatTime = (value: string) =>
-  new Date(value).toLocaleString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-
-const formatDate = (value: string) =>
-  new Date(value).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-  });
 
 export default function InboxPage() {
   const { tenant } = useDashboardStore();
@@ -1038,8 +1027,20 @@ export default function InboxPage() {
 
         <div className="flex-1 overflow-y-auto">
           {loadingList && (
-            <div className="h-full flex items-center justify-center text-white/40">
-              <Loader2 className="w-5 h-5 animate-spin mr-2" /> Loading inbox...
+            <div className="divide-y divide-white/5">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex items-start gap-3 p-4">
+                  <Skeleton className="w-10 h-10 rounded-lg bg-white/5 flex-shrink-0" />
+                  <div className="space-y-2 flex-1">
+                    <div className="flex justify-between">
+                      <Skeleton className="w-24 h-4 bg-white/5" />
+                      <Skeleton className="w-12 h-3 bg-white/5" />
+                    </div>
+                    <Skeleton className="w-full h-3 bg-white/5" />
+                    <Skeleton className="w-16 h-3 bg-white/5 mt-2" />
+                  </div>
+                </div>
+              ))}
             </div>
           )}
           {listError && (
@@ -1126,7 +1127,7 @@ export default function InboxPage() {
                           </div>
                         </div>
                         <div className="text-[10px] text-white/40 whitespace-nowrap">
-                          {formatDate(conversation.lastMessageAt)}
+                          {timeAgo(conversation.lastMessageAt)}
                         </div>
                       </div>
                       <div className="mt-2 text-xs text-white/60 line-clamp-2">
@@ -1312,7 +1313,7 @@ export default function InboxPage() {
                 </button>
                 <div className="flex items-center gap-2 text-[10px] text-white/40">
                   <Calendar className="w-4 h-4" />
-                  {formatDate(selectedConversation.lastMessageAt)}
+                  {timeAgo(selectedConversation.lastMessageAt)}
                 </div>
               </div>
             </div>
@@ -1340,15 +1341,20 @@ export default function InboxPage() {
                         </div>
                       )}
                       {loadingContext && (
-                        <div className="text-xs text-white/40 flex items-center gap-2">
-                          <Loader2 className="w-3 h-3 animate-spin" /> Updating
-                          context...
+                        <div className="space-y-3">
+                          <Skeleton className="w-24 h-3 bg-white/5" />
+                          <div className="grid grid-cols-2 gap-2">
+                            <Skeleton className="h-16 bg-white/5 rounded-lg" />
+                            <Skeleton className="h-16 bg-white/5 rounded-lg" />
+                            <Skeleton className="h-16 bg-white/5 rounded-lg" />
+                            <Skeleton className="h-16 bg-white/5 rounded-lg" />
+                          </div>
                         </div>
                       )}
                       {context && (
                         <div className="space-y-3">
                           <div className="text-xs text-white/40">
-                            Updated {formatTime(context.updatedAt)}
+                            Updated {timeAgo(context.updatedAt)}
                           </div>
                           <div className="grid grid-cols-2 gap-2 text-xs">
                             {context.fields.map((field) => (
@@ -1429,9 +1435,34 @@ export default function InboxPage() {
 
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--color-dashboard-surface)]">
                   {loadingThread && (
-                    <div className="text-sm text-white/40 flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" /> Loading
-                      messages...
+                    <div className="space-y-4">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className={cn(
+                            "flex gap-3 max-w-[85%]",
+                            i % 2 === 0 ? "ml-auto flex-row-reverse" : "",
+                          )}
+                        >
+                          <Skeleton className="w-8 h-8 rounded-full bg-white/5 flex-shrink-0" />
+                          <div className="space-y-1 w-full">
+                            <Skeleton
+                              className={cn(
+                                "h-16 bg-white/5 rounded-2xl",
+                                i % 2 === 0
+                                  ? "rounded-tr-none ml-auto w-3/4"
+                                  : "rounded-tl-none w-2/3",
+                              )}
+                            />
+                            <Skeleton
+                              className={cn(
+                                "h-3 w-12 bg-white/5 mt-1",
+                                i % 2 === 0 ? "ml-auto" : "",
+                              )}
+                            />
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
                   {threadError && (
@@ -1498,7 +1529,7 @@ export default function InboxPage() {
                                 : "text-white/40 justify-end mr-1",
                             )}
                           >
-                            <span>{formatTime(message.timestamp)}</span>
+                            <span>{timeAgo(message.timestamp)}</span>
                             <span>
                               {isAi
                                 ? "AI"
@@ -1618,9 +1649,13 @@ export default function InboxPage() {
                   </button>
                 </div>
                 {loadingContext && (
-                  <div className="text-xs text-white/40 flex items-center gap-2">
-                    <Loader2 className="w-3 h-3 animate-spin" /> Updating
-                    context...
+                  <div className="space-y-3">
+                    <Skeleton className="w-24 h-3 bg-white/5" />
+                    <div className="space-y-3">
+                      <Skeleton className="h-16 bg-white/5 rounded-lg w-full" />
+                      <Skeleton className="h-16 bg-white/5 rounded-lg w-full" />
+                      <Skeleton className="h-16 bg-white/5 rounded-lg w-full" />
+                    </div>
                   </div>
                 )}
                 {contextError && (
@@ -1629,7 +1664,7 @@ export default function InboxPage() {
                 {context && (
                   <>
                     <div className="text-[10px] text-white/40">
-                      Updated {formatTime(context.updatedAt)}
+                      Updated {timeAgo(context.updatedAt)}
                     </div>
                     <div className="grid grid-cols-1 gap-3 text-xs">
                       {context.fields.map((field) => (

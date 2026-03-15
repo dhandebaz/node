@@ -8,6 +8,7 @@ import { FailureBanner } from "@/components/ui/FailureBanner";
 import { StoreInitializer } from "@/components/dashboard/StoreInitializer";
 import { EarlyAccessFeedback } from "@/components/dashboard/EarlyAccessFeedback";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
 export const dynamic = "force-dynamic";
 
@@ -18,48 +19,54 @@ export default async function CustomerLayout({
 }) {
   try {
     const profile = await getCustomerProfile();
-    
+
     // Onboarding Check
     // Note: Middleware handles basic routing, but this double-check ensures data integrity
-    if (profile.status.onboarding !== 'completed') {
-      console.log(`[CustomerLayout] Redirecting to onboarding: status is ${profile.status.onboarding}`);
-      redirect('/onboarding');
+    if (profile.status.onboarding !== "completed") {
+      console.log(
+        `[CustomerLayout] Redirecting to onboarding: status is ${profile.status.onboarding}`,
+      );
+      redirect("/onboarding");
     }
-    
+
     if (!profile.tenant && !profile.roles.isAdmin) {
-      console.log(`[CustomerLayout] Redirecting to onboarding: tenant is missing and user is not admin`);
-      redirect('/onboarding');
+      console.log(
+        `[CustomerLayout] Redirecting to onboarding: tenant is missing and user is not admin`,
+      );
+      redirect("/onboarding");
     }
 
     // Business Type Check for AI Employees
     const resolvedBusinessType =
       profile.products.kaisa?.businessType || profile.tenant?.businessType;
     if (profile.roles.isKaisaUser && !resolvedBusinessType) {
-        redirect('/onboarding?step=business_type');
+      redirect("/onboarding?step=business_type");
     }
 
     let kaisaCredits: KaisaCreditUsage | null = null;
 
     if (profile.roles.isKaisaUser) {
-        try {
-            // Safe fetch - don't block UI if this fails
-            // Optimization: Pass tenant ID to avoid redundant DB lookup
-            kaisaCredits = await kaisaService.getCreditUsage(
-                profile.identity.id, 
-                profile.tenant?.id
-            );
-        } catch (e) {
-            console.error("Failed to fetch kaisa credits for layout", e);
-        }
+      try {
+        // Safe fetch - don't block UI if this fails
+        // Optimization: Pass tenant ID to avoid redundant DB lookup
+        kaisaCredits = await kaisaService.getCreditUsage(
+          profile.identity.id,
+          profile.tenant?.id,
+        );
+      } catch (e) {
+        console.error("Failed to fetch kaisa credits for layout", e);
+      }
     }
 
     return (
       <div className="min-h-screen bg-[#0A0A0A] text-zinc-100 selection:bg-[var(--color-brand-red)] selection:text-white font-sans">
         <StoreInitializer tenant={profile.tenant} />
-        
+
         {/* Universal Top Navigation */}
-        <UniversalNavbar 
-          tenantName={profile.tenant?.name || profile.profile?.fullName || "My Business"}
+        <UniversalNavbar
+          tenantName={
+            profile.tenant?.name || profile.profile?.fullName || "My Business"
+          }
           userEmail={profile.identity.email}
           userAvatar={undefined} // Add avatar URL if available in profile
           credits={kaisaCredits}
@@ -74,25 +81,27 @@ export default async function CustomerLayout({
           <main className="flex-1 pt-20 min-h-screen pb-24 md:pb-0 transition-all duration-300 md:pl-[var(--sidebar-width,0px)]">
             <div className="max-w-7xl mx-auto p-6 md:p-10">
               <FailureBanner />
-              <VerificationGate kycStatus={profile.tenant?.kyc_status || 'not_started'}>
+              <VerificationGate
+                kycStatus={profile.tenant?.kyc_status || "not_started"}
+              >
                 {children}
               </VerificationGate>
             </div>
           </main>
         </div>
-        
+
         {/* Early Access Feedback (Only for Beta Users) */}
-        {profile.tenant?.earlyAccess && (
-           <EarlyAccessFeedback />
-        )}
+        {profile.tenant?.earlyAccess && <EarlyAccessFeedback />}
+
+        <MobileBottomNav />
       </div>
     );
   } catch (error: unknown) {
     // If we catch a redirect, let it pass
     if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-        throw error;
+      throw error;
     }
-    
+
     console.error("Layout Error - Redirecting to login:", error);
     redirect("/login");
   }

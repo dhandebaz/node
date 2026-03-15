@@ -7,15 +7,23 @@ import { SessionExpiredCard } from "@/components/customer/SessionExpiredCard";
 import { SessionExpiredError } from "@/lib/api/errors";
 import { ListingIntegration, ListingPlatform, ListingType } from "@/types";
 import { useDashboardStore } from "@/store/useDashboardStore";
-import { getBusinessLabels, getPersonaCapabilities } from "@/lib/business-context";
+import {
+  getBusinessLabels,
+  getPersonaCapabilities,
+} from "@/lib/business-context";
 
 const platformLabels: Record<ListingPlatform, string> = {
   airbnb: "Airbnb",
   booking: "Booking.com",
-  mmt: "MakeMyTrip / GoIbibo"
+  mmt: "MakeMyTrip / GoIbibo",
 };
 
-const listingTypes: ListingType[] = ["Apartment", "Villa", "Homestay", "Guest House"];
+const listingTypes: ListingType[] = [
+  "Apartment",
+  "Villa",
+  "Homestay",
+  "Guest House",
+];
 
 export default function AddListingPage() {
   const router = useRouter();
@@ -23,17 +31,23 @@ export default function AddListingPage() {
   const labels = getBusinessLabels(tenant?.businessType);
   const capabilities = getPersonaCapabilities(tenant?.businessType);
   const [step, setStep] = useState(1);
-  const [listingId] = useState(() => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `local-${Date.now()}`));
+  const [listingId] = useState(() =>
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `local-${Date.now()}`,
+  );
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
   const [type, setType] = useState<ListingType>("Homestay");
   const [timezone, setTimezone] = useState("Asia/Kolkata");
   const [internalNotes, setInternalNotes] = useState("");
   const [platforms, setPlatforms] = useState<ListingPlatform[]>([]);
-  const [externalIcalUrls, setExternalIcalUrls] = useState<Record<ListingPlatform, string>>({
+  const [externalIcalUrls, setExternalIcalUrls] = useState<
+    Record<ListingPlatform, string>
+  >({
     airbnb: "",
     booking: "",
-    mmt: ""
+    mmt: "",
   });
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -55,7 +69,11 @@ export default function AddListingPage() {
   }, [listingId]);
 
   const togglePlatform = (platform: ListingPlatform) => {
-    setPlatforms((prev) => (prev.includes(platform) ? prev.filter((p) => p !== platform) : [...prev, platform]));
+    setPlatforms((prev) =>
+      prev.includes(platform)
+        ? prev.filter((p) => p !== platform)
+        : [...prev, platform],
+    );
   };
 
   const nextStep = () => {
@@ -88,7 +106,7 @@ export default function AddListingPage() {
       platform,
       externalIcalUrl: externalIcalUrls[platform] || null,
       lastSyncedAt: null,
-      status: externalIcalUrls[platform] ? "connected" : "not_connected"
+      status: externalIcalUrls[platform] ? "connected" : "not_connected",
     }));
     try {
       setSaving(true);
@@ -104,16 +122,20 @@ export default function AddListingPage() {
           status: integrations.length > 0 ? "active" : "incomplete",
           internalNotes: internalNotes.trim() || null,
           createdAt: new Date().toISOString(),
-          platformsConnected: integrations.filter((i) => i.externalIcalUrl).map((i) => i.platform),
-          calendarSyncStatus: integrations.some((i) => i.externalIcalUrl) ? "never_synced" : "not_connected",
-          nodebaseIcalUrl
+          platformsConnected: integrations
+            .filter((i) => i.externalIcalUrl)
+            .map((i) => i.platform),
+          calendarSyncStatus: integrations.some((i) => i.externalIcalUrl)
+            ? "never_synced"
+            : "not_connected",
+          nodebaseIcalUrl,
         },
-        integrations
+        integrations,
       };
 
       await fetchWithAuth("/api/listings/create", {
         method: "POST",
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       router.push("/dashboard/ai/listings");
     } catch (error) {
@@ -133,8 +155,13 @@ export default function AddListingPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-8 pb-24 md:pb-0">
       <div>
-        <h1 className="text-2xl font-bold text-white mb-1">Add {labels.listing}</h1>
-        <p className="text-white/60 text-sm">Step-by-step setup for your {labels.listing.toLowerCase()} and calendar sync.</p>
+        <h1 className="text-2xl font-bold text-white mb-1">
+          Add {labels.listing}
+        </h1>
+        <p className="text-white/60 text-sm">
+          Step-by-step setup for your {labels.listing.toLowerCase()} and
+          calendar sync.
+        </p>
       </div>
 
       <div className="dashboard-surface p-6 space-y-6">
@@ -143,9 +170,13 @@ export default function AddListingPage() {
           {capabilities.calendar && (
             <>
               <span>•</span>
-              <span className={step >= 2 ? "text-white" : ""}>2. External Platforms</span>
+              <span className={step >= 2 ? "text-white" : ""}>
+                2. External Platforms
+              </span>
               <span>•</span>
-              <span className={step >= 3 ? "text-white" : ""}>3. Nodebase Calendar</span>
+              <span className={step >= 3 ? "text-white" : ""}>
+                3. Nodebase Calendar
+              </span>
             </>
           )}
           <span>•</span>
@@ -156,7 +187,9 @@ export default function AddListingPage() {
           <div className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <div className="text-xs text-white/50 uppercase tracking-wider">{labels.listing} name</div>
+                <div className="text-xs text-white/50 uppercase tracking-wider">
+                  {labels.listing} name
+                </div>
                 <input
                   value={name}
                   onChange={(event) => setName(event.target.value)}
@@ -165,8 +198,9 @@ export default function AddListingPage() {
               </div>
               <div className="space-y-2">
                 <div className="text-xs text-white/50 uppercase tracking-wider">
-                  {tenant?.businessType === 'kirana_store' || tenant?.businessType === 'thrift_store' 
-                    ? "Address / Delivery Area" 
+                  {tenant?.businessType === "kirana_store" ||
+                  tenant?.businessType === "thrift_store"
+                    ? "Address / Delivery Area"
                     : "City"}
                 </div>
                 <input
@@ -176,10 +210,14 @@ export default function AddListingPage() {
                 />
               </div>
               <div className="space-y-2">
-                <div className="text-xs text-white/50 uppercase tracking-wider">{labels.listing} type</div>
+                <div className="text-xs text-white/50 uppercase tracking-wider">
+                  {labels.listing} type
+                </div>
                 <select
                   value={type}
-                  onChange={(event) => setType(event.target.value as ListingType)}
+                  onChange={(event) =>
+                    setType(event.target.value as ListingType)
+                  }
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
                 >
                   {listingTypes.map((option) => (
@@ -190,7 +228,9 @@ export default function AddListingPage() {
                 </select>
               </div>
               <div className="space-y-2">
-                <div className="text-xs text-white/50 uppercase tracking-wider">Timezone</div>
+                <div className="text-xs text-white/50 uppercase tracking-wider">
+                  Timezone
+                </div>
                 <input
                   value={timezone}
                   onChange={(event) => setTimezone(event.target.value)}
@@ -199,7 +239,9 @@ export default function AddListingPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <div className="text-xs text-white/50 uppercase tracking-wider">Internal notes (optional)</div>
+              <div className="text-xs text-white/50 uppercase tracking-wider">
+                Internal notes (optional)
+              </div>
               <textarea
                 value={internalNotes}
                 onChange={(event) => setInternalNotes(event.target.value)}
@@ -212,21 +254,31 @@ export default function AddListingPage() {
         {step === 2 && (
           <div className="space-y-5">
             <div>
-              <h2 className="text-lg font-semibold text-white">Where is this {labels.listing.toLowerCase()} listed?</h2>
-              <p className="text-sm text-white/60">Choose any platform where {labels.customers.toLowerCase()} can book this {labels.listing.toLowerCase()}.</p>
+              <h2 className="text-lg font-semibold text-white">
+                Where is this {labels.listing.toLowerCase()} listed?
+              </h2>
+              <p className="text-sm text-white/60">
+                Choose any platform where {labels.customers.toLowerCase()} can
+                book this {labels.listing.toLowerCase()}.
+              </p>
             </div>
             <div className="space-y-3">
-              {(Object.keys(platformLabels) as ListingPlatform[]).map((platform) => (
-                <label key={platform} className="flex items-center gap-3 text-sm text-white/80">
-                  <input
-                    type="checkbox"
-                    checked={platforms.includes(platform)}
-                    onChange={() => togglePlatform(platform)}
-                    className="h-4 w-4 rounded border-white/30 bg-white/10"
-                  />
-                  {platformLabels[platform]}
-                </label>
-              ))}
+              {(Object.keys(platformLabels) as ListingPlatform[]).map(
+                (platform) => (
+                  <label
+                    key={platform}
+                    className="flex items-center gap-3 text-sm text-white/80"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={platforms.includes(platform)}
+                      onChange={() => togglePlatform(platform)}
+                      className="h-4 w-4 rounded border-white/30 bg-white/10"
+                    />
+                    {platformLabels[platform]}
+                  </label>
+                ),
+              )}
             </div>
             {platforms.map((platform) => (
               <div key={platform} className="space-y-2">
@@ -236,7 +288,10 @@ export default function AddListingPage() {
                 <input
                   value={externalIcalUrls[platform]}
                   onChange={(event) =>
-                    setExternalIcalUrls((prev) => ({ ...prev, [platform]: event.target.value }))
+                    setExternalIcalUrls((prev) => ({
+                      ...prev,
+                      [platform]: event.target.value,
+                    }))
                   }
                   placeholder="https://example.com/calendar.ics"
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
@@ -252,9 +307,12 @@ export default function AddListingPage() {
         {step === 3 && (
           <div className="space-y-4">
             <div>
-              <h2 className="text-lg font-semibold text-white">Nodebase calendar link</h2>
+              <h2 className="text-lg font-semibold text-white">
+                Nodebase calendar link
+              </h2>
               <p className="text-sm text-white/60">
-                Copy this link and paste it into Airbnb or Booking.com to sync bookings from Nodebase.
+                Copy this link and paste it into Airbnb or Booking.com to sync
+                bookings from Nodebase.
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -276,7 +334,8 @@ export default function AddListingPage() {
               </button>
             </div>
             <div className="text-xs text-white/50">
-              This enables two-way sync: external bookings → Nodebase, Nodebase bookings → external platforms.
+              This enables two-way sync: external bookings → Nodebase, Nodebase
+              bookings → external platforms.
             </div>
           </div>
         )}
@@ -286,22 +345,38 @@ export default function AddListingPage() {
             <h2 className="text-lg font-semibold text-white">Review</h2>
             <div className="grid gap-4 text-sm text-white/70">
               <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-white/40">{labels.listing}</div>
-                <div className="text-white font-semibold">{name || `Untitled ${labels.listing.toLowerCase()}`}</div>
-                <div>{city || "City not set"} · {type}</div>
+                <div className="text-xs uppercase tracking-widest text-white/40">
+                  {labels.listing}
+                </div>
+                <div className="text-white font-semibold">
+                  {name || `Untitled ${labels.listing.toLowerCase()}`}
+                </div>
+                <div>
+                  {city || "City not set"} · {type}
+                </div>
                 <div>{timezone}</div>
               </div>
               <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-white/40">Platforms</div>
+                <div className="text-xs uppercase tracking-widest text-white/40">
+                  Platforms
+                </div>
                 {platforms.length === 0 ? (
                   <div>No platforms linked yet.</div>
                 ) : (
-                  <div>{platforms.map((platform) => platformLabels[platform]).join(", ")}</div>
+                  <div>
+                    {platforms
+                      .map((platform) => platformLabels[platform])
+                      .join(", ")}
+                  </div>
                 )}
               </div>
               <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-white/40">Nodebase calendar link</div>
-                <div className="text-xs text-white/70 break-all">{nodebaseIcalUrl}</div>
+                <div className="text-xs uppercase tracking-widest text-white/40">
+                  Nodebase calendar link
+                </div>
+                <div className="text-xs text-white/70 break-all">
+                  {nodebaseIcalUrl}
+                </div>
               </div>
             </div>
           </div>
@@ -309,7 +384,7 @@ export default function AddListingPage() {
 
         {message && <div className="text-xs text-white/60">{message}</div>}
 
-        <div className="flex flex-wrap gap-3 justify-between">
+        <div className="flex flex-wrap gap-3 justify-between sticky bottom-0 bg-[#0A0A0A]/90 backdrop-blur py-4 border-t border-white/10 z-20 mt-4">
           <button
             onClick={prevStep}
             className="px-4 py-2 rounded-lg border border-white/20 text-white text-sm font-semibold"

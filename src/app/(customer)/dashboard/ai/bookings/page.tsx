@@ -4,12 +4,24 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchWithAuth } from "@/lib/api/fetcher";
 import { paymentsApi } from "@/lib/api/payments";
 import { BookingRecord, PaymentRecord } from "@/types";
-import { Calendar, ExternalLink, Loader2, Plus, X, ShieldCheck, ShieldAlert, Shield } from "lucide-react";
+import {
+  Calendar,
+  ExternalLink,
+  Plus,
+  X,
+  ShieldCheck,
+  ShieldAlert,
+  Shield,
+} from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useDashboardStore } from "@/store/useDashboardStore";
-import { getBusinessLabels, getPersonaCapabilities } from "@/lib/business-context";
+import {
+  getBusinessLabels,
+  getPersonaCapabilities,
+} from "@/lib/business-context";
 import { BookingActivityTimeline } from "@/components/dashboard/BookingActivityTimeline";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type BookingDetail = {
   booking: BookingRecord;
@@ -25,8 +37,8 @@ export default function BookingsPage() {
   const { tenant } = useDashboardStore();
   const labels = getBusinessLabels(tenant?.businessType);
   const capabilities = getPersonaCapabilities(tenant?.businessType);
-  const isDoctor = tenant?.businessType === 'doctor_clinic';
-  const isKirana = tenant?.businessType === 'kirana_store';
+  const isDoctor = tenant?.businessType === "doctor_clinic";
+  const isKirana = tenant?.businessType === "kirana_store";
 
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
   const [listings, setListings] = useState<ListingSummary[]>([]);
@@ -35,7 +47,9 @@ export default function BookingsPage() {
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<BookingRecord["status"] | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    BookingRecord["status"] | "all"
+  >("all");
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentForm, setPaymentForm] = useState({
     listingId: "",
@@ -45,7 +59,7 @@ export default function BookingsPage() {
     amount: "",
     checkIn: "",
     checkOut: "",
-    notes: ""
+    notes: "",
   });
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
   const [paymentMessage, setPaymentMessage] = useState("");
@@ -57,7 +71,9 @@ export default function BookingsPage() {
   const [idMessage, setIdMessage] = useState<string | null>(null);
   const [idRequestMessage, setIdRequestMessage] = useState<string | null>(null);
   const [showIdModal, setShowIdModal] = useState(false);
-  const [idType, setIdType] = useState<"aadhaar" | "passport" | "driving_license" | "voter_id" | "any">("aadhaar");
+  const [idType, setIdType] = useState<
+    "aadhaar" | "passport" | "driving_license" | "voter_id" | "any"
+  >("aadhaar");
   const [idNote, setIdNote] = useState("");
   const [idUploadUrl, setIdUploadUrl] = useState<string | null>(null);
   const [reviewLoading, setReviewLoading] = useState(false);
@@ -70,7 +86,7 @@ export default function BookingsPage() {
       setError(null);
       const [bookingData, listingData] = await Promise.all([
         fetchWithAuth<BookingRecord[]>("/api/bookings"),
-        fetchWithAuth<ListingSummary[]>("/api/listings")
+        fetchWithAuth<ListingSummary[]>("/api/listings"),
       ]);
       setBookings(bookingData || []);
       setListings(listingData || []);
@@ -97,7 +113,9 @@ export default function BookingsPage() {
       setRejectReason("");
       if (data?.booking?.id) {
         setIdLoading(true);
-        const idData = await fetchWithAuth(`/api/guest-id/${data.booking.id}`).catch(() => null);
+        const idData = await fetchWithAuth(
+          `/api/guest-id/${data.booking.id}`,
+        ).catch(() => null);
         setIdRecord(idData);
         setIdLoading(false);
       }
@@ -120,27 +138,64 @@ export default function BookingsPage() {
 
   const statusDisplay = (status: string) => {
     if (status === "confirmed" || status === "paid") {
-      if (isKirana) return { label: "Packed", text: "text-emerald-400", badge: "bg-emerald-500/10 text-emerald-300" };
-      if (isDoctor) return { label: "Scheduled", text: "text-blue-400", badge: "bg-blue-500/10 text-blue-300" };
-      return { label: "Confirmed", text: "text-green-400", badge: "bg-green-500/10 text-green-300" };
+      if (isKirana)
+        return {
+          label: "Packed",
+          text: "text-emerald-400",
+          badge: "bg-emerald-500/10 text-emerald-300",
+        };
+      if (isDoctor)
+        return {
+          label: "Scheduled",
+          text: "text-blue-400",
+          badge: "bg-blue-500/10 text-blue-300",
+        };
+      return {
+        label: "Confirmed",
+        text: "text-green-400",
+        badge: "bg-green-500/10 text-green-300",
+      };
     }
     if (status === "payment_pending" || status === "pending") {
-      return { label: "Payment Pending", text: "text-amber-300", badge: "bg-amber-500/10 text-amber-300" };
+      return {
+        label: "Payment Pending",
+        text: "text-amber-300",
+        badge: "bg-amber-500/10 text-amber-300",
+      };
     }
     if (status === "draft") {
-      return { label: "Draft", text: "text-white/50", badge: "bg-white/5 text-white/50" };
+      return {
+        label: "Draft",
+        text: "text-white/50",
+        badge: "bg-white/5 text-white/50",
+      };
     }
     if (status === "cancelled" || status === "refunded") {
-      return { label: status.charAt(0).toUpperCase() + status.slice(1).replace("_", " "), text: "text-red-300", badge: "bg-red-500/10 text-red-300" };
+      return {
+        label:
+          status.charAt(0).toUpperCase() + status.slice(1).replace("_", " "),
+        text: "text-red-300",
+        badge: "bg-red-500/10 text-red-300",
+      };
     }
     if (status === "blocked") {
-      return { label: "Blocked", text: "text-blue-300", badge: "bg-blue-500/10 text-blue-300" };
+      return {
+        label: "Blocked",
+        text: "text-blue-300",
+        badge: "bg-blue-500/10 text-blue-300",
+      };
     }
-    return { label: status, text: "text-white/60", badge: "bg-white/5 text-white/60" };
+    return {
+      label: status,
+      text: "text-white/60",
+      badge: "bg-white/5 text-white/60",
+    };
   };
 
   const filteredBookings = useMemo(() => {
-    return bookings.filter((booking) => (statusFilter === "all" ? true : booking.status === statusFilter));
+    return bookings.filter((booking) =>
+      statusFilter === "all" ? true : booking.status === statusFilter,
+    );
   }, [bookings, statusFilter]);
 
   const openPaymentModal = () => {
@@ -153,7 +208,7 @@ export default function BookingsPage() {
       amount: "",
       checkIn: "",
       checkOut: "",
-      notes: ""
+      notes: "",
     });
     setPaymentLink(null);
     setPaymentMessage("");
@@ -162,7 +217,13 @@ export default function BookingsPage() {
   };
 
   const handleCreatePaymentLink = async () => {
-    if (!paymentForm.listingId || !paymentForm.guestName || !paymentForm.amount || !paymentForm.checkIn || !paymentForm.checkOut) {
+    if (
+      !paymentForm.listingId ||
+      !paymentForm.guestName ||
+      !paymentForm.amount ||
+      !paymentForm.checkIn ||
+      !paymentForm.checkOut
+    ) {
       setPaymentError("Fill all required fields.");
       return;
     }
@@ -177,10 +238,12 @@ export default function BookingsPage() {
         amount: Number(paymentForm.amount),
         checkIn: paymentForm.checkIn,
         checkOut: paymentForm.checkOut,
-        notes: paymentForm.notes.trim() || null
+        notes: paymentForm.notes.trim() || null,
       };
       const data = await paymentsApi.createPaymentLink(payload);
-      const listingName = listings.find((l) => l.id === paymentForm.listingId)?.name || labels.listing;
+      const listingName =
+        listings.find((l) => l.id === paymentForm.listingId)?.name ||
+        labels.listing;
       const message = `${labels.booking} for ${listingName} (${paymentForm.checkIn}–${paymentForm.checkOut}) is pending. Please pay ₹${Number(paymentForm.amount).toLocaleString("en-IN")} here: ${data.paymentLink}`;
       setPaymentLink(data.paymentLink);
       setPaymentMessage(message);
@@ -194,7 +257,9 @@ export default function BookingsPage() {
 
   const handleCancelBooking = async () => {
     if (!detail?.booking?.id) return;
-    await fetchWithAuth(`/api/bookings/${detail.booking.id}/cancel`, { method: "POST" });
+    await fetchWithAuth(`/api/bookings/${detail.booking.id}/cancel`, {
+      method: "POST",
+    });
     await loadBookings();
     await loadDetail(detail.booking.id);
   };
@@ -220,17 +285,23 @@ export default function BookingsPage() {
     try {
       setRequestingId(true);
       setIdMessage(null);
-      const response = await fetchWithAuth<{ bookingId: string; uploadUrl: string; message: string }>("/api/guest-id/request", {
+      const response = await fetchWithAuth<{
+        bookingId: string;
+        uploadUrl: string;
+        message: string;
+      }>("/api/guest-id/request", {
         method: "POST",
         body: JSON.stringify({
           bookingId: detail.booking.id,
           idType,
-          message: idNote.trim() || null
-        })
+          message: idNote.trim() || null,
+        }),
       });
       setIdUploadUrl(response.uploadUrl);
       setIdRequestMessage(response.message);
-      setIdMessage(`Upload link generated. Share with the ${labels.customer.toLowerCase()}.`);
+      setIdMessage(
+        `Upload link generated. Share with the ${labels.customer.toLowerCase()}.`,
+      );
       await loadBookings();
       await loadDetail(detail.booking.id);
     } catch (error: any) {
@@ -244,7 +315,9 @@ export default function BookingsPage() {
     if (!idRecord?.id || !detail?.booking?.id) return;
     try {
       setReviewLoading(true);
-      await fetchWithAuth(`/api/guest-id/approve/${idRecord.id}`, { method: "POST" });
+      await fetchWithAuth(`/api/guest-id/approve/${idRecord.id}`, {
+        method: "POST",
+      });
       await loadBookings();
       await loadDetail(detail.booking.id);
     } finally {
@@ -258,7 +331,9 @@ export default function BookingsPage() {
       setReviewLoading(true);
       await fetchWithAuth(`/api/guest-id/reject/${idRecord.id}`, {
         method: "POST",
-        body: JSON.stringify({ reason: rejectReason.trim() || "Please upload a clearer ID image." })
+        body: JSON.stringify({
+          reason: rejectReason.trim() || "Please upload a clearer ID image.",
+        }),
       });
       setRejectReason("");
       await loadBookings();
@@ -269,7 +344,7 @@ export default function BookingsPage() {
   };
 
   const formatDate = (value: string) => format(parseISO(value), "d MMM yyyy");
-  
+
   const formatBookingDate = (value: string) => {
     if (!value) return "";
     try {
@@ -286,8 +361,13 @@ export default function BookingsPage() {
     <div className="space-y-6 pb-24 md:pb-0">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white uppercase tracking-tight">{labels.bookings}</h1>
-          <p className="text-sm text-white/50">Track direct and OTA {labels.bookings.toLowerCase()} with payment status.</p>
+          <h1 className="text-2xl font-bold text-white uppercase tracking-tight">
+            {labels.bookings}
+          </h1>
+          <p className="text-sm text-white/50">
+            Track direct and OTA {labels.bookings.toLowerCase()} with payment
+            status.
+          </p>
         </div>
         <button
           onClick={openPaymentModal}
@@ -299,13 +379,24 @@ export default function BookingsPage() {
       </div>
 
       <div className="flex flex-wrap gap-2 text-xs text-white/70">
-        {(["all", "draft", "payment_pending", "confirmed", "cancelled", "refunded"] as const).map((status) => (
+        {(
+          [
+            "all",
+            "draft",
+            "payment_pending",
+            "confirmed",
+            "cancelled",
+            "refunded",
+          ] as const
+        ).map((status) => (
           <button
             key={status}
             onClick={() => setStatusFilter(status)}
             className={cn(
               "px-3 py-1.5 rounded-full border",
-              statusFilter === status ? "border-white/60 text-white" : "border-white/10 text-white/60"
+              statusFilter === status
+                ? "border-white/60 text-white"
+                : "border-white/10 text-white/60",
             )}
           >
             {status === "all" ? "All status" : status.replace("_", " ")}
@@ -314,20 +405,72 @@ export default function BookingsPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1.3fr_1fr] gap-6">
-        <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl overflow-hidden">
-          <div className="p-4 border-b border-white/10 flex items-center justify-between">
-            <div className="text-sm font-semibold text-white">{labels.bookings} list</div>
-            {loading && <Loader2 className="w-4 h-4 animate-spin text-white/40" />}
+        <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl overflow-hidden flex flex-col h-[70vh]">
+          <div className="p-4 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[var(--color-dashboard-surface)]/95 backdrop-blur z-10">
+            <div className="text-sm font-semibold text-white">
+              {labels.bookings} list
+            </div>
           </div>
-          {error && (
-            <div className="p-6 text-sm text-white/50">{error}</div>
+          {error && <div className="p-6 text-sm text-white/50">{error}</div>}
+
+          {loading && (
+            <div className="p-4 space-y-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between border-b border-white/5 pb-4"
+                >
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-32 bg-white/5" />
+                    <Skeleton className="h-3 w-24 bg-white/5" />
+                    <Skeleton className="h-3 w-40 bg-white/5" />
+                  </div>
+                  <div className="space-y-2 flex flex-col items-end">
+                    <Skeleton className="h-4 w-16 bg-white/5" />
+                    <Skeleton className="h-4 w-20 bg-white/5 rounded-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
+
           {!loading && !error && filteredBookings.length === 0 && (
-            <div className="p-6 text-sm text-white/50">No {labels.bookings.toLowerCase()} found.</div>
+            <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-white/10 rounded-xl bg-white/5 mt-4 mx-6">
+              <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  className="w-6 h-6 text-white/40"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-white mb-1">
+                No {labels.bookings.toLowerCase()} found
+              </h3>
+              <p className="text-sm text-white/50 mb-6 max-w-sm">
+                Get started by creating your first manual{" "}
+                {labels.booking.toLowerCase()} or wait for guests to book.
+              </p>
+              <a
+                href="/dashboard/ai/bookings/new"
+                className="inline-flex items-center justify-center px-4 py-2 bg-white text-black font-semibold rounded-lg text-sm hover:bg-zinc-200 transition-colors"
+              >
+                Create {labels.booking}
+              </a>
+            </div>
           )}
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-white/5 overflow-y-auto flex-1">
             {filteredBookings.map((booking) => {
-              const listingName = listings.find((l) => l.id === booking.listing_id)?.name || labels.listing;
+              const listingName =
+                listings.find((l) => l.id === booking.listing_id)?.name ||
+                labels.listing;
               const statusMeta = statusDisplay(booking.status);
               return (
                 <button
@@ -335,21 +478,30 @@ export default function BookingsPage() {
                   onClick={() => setSelectedId(booking.id)}
                   className={cn(
                     "w-full text-left px-4 py-4 hover:bg-white/5 transition-colors border-l-2",
-                    selectedId === booking.id ? "bg-white/5 border-[var(--color-brand-red)]" : "border-transparent"
+                    selectedId === booking.id
+                      ? "bg-white/5 border-[var(--color-brand-red)]"
+                      : "border-transparent",
                   )}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="space-y-1">
-                      <div className="text-sm font-semibold text-white">{booking.guest_name}</div>
+                      <div className="text-sm font-semibold text-white">
+                        {booking.guest_name}
+                      </div>
                       <div className="text-xs text-white/40">{listingName}</div>
                       <div className="text-xs text-white/50 flex items-center gap-2">
                         <Calendar className="w-3 h-3" />
-                        {formatBookingDate(booking.check_in)} → {formatBookingDate(booking.check_out)}
+                        {formatBookingDate(booking.check_in)} →{" "}
+                        {formatBookingDate(booking.check_out)}
                       </div>
                     </div>
                     <div className="text-right space-y-2">
-                      <div className="text-sm font-semibold text-white">₹{Number(booking.amount || 0).toLocaleString("en-IN")}</div>
-                      <div className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${statusMeta.badge}`}>
+                      <div className="text-sm font-semibold text-white">
+                        ₹{Number(booking.amount || 0).toLocaleString("en-IN")}
+                      </div>
+                      <div
+                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${statusMeta.badge}`}
+                      >
                         {statusMeta.label}
                       </div>
                       {capabilities.id_verification && (
@@ -357,7 +509,9 @@ export default function BookingsPage() {
                           ID {idStatusLabel(booking.id_status)}
                         </div>
                       )}
-                      <div className="text-[10px] text-white/40 uppercase tracking-wider">{booking.source || "direct"}</div>
+                      <div className="text-[10px] text-white/40 uppercase tracking-wider">
+                        {booking.source || "direct"}
+                      </div>
                     </div>
                   </div>
                 </button>
@@ -367,43 +521,79 @@ export default function BookingsPage() {
         </div>
 
         <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl p-4 space-y-4">
-          <div className="text-sm font-semibold text-white">{labels.booking} detail</div>
+          <div className="text-sm font-semibold text-white">
+            {labels.booking} detail
+          </div>
           {detailLoading && (
-            <div className="flex items-center gap-2 text-sm text-white/50">
-              <Loader2 className="w-4 h-4 animate-spin" /> Loading {labels.booking.toLowerCase()}...
+            <div className="space-y-6 animate-pulse">
+              <div className="space-y-2">
+                <Skeleton className="h-6 w-48 bg-white/5" />
+                <Skeleton className="h-4 w-32 bg-white/5" />
+                <Skeleton className="h-4 w-40 bg-white/5" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Skeleton className="h-16 bg-white/5 rounded-lg" />
+                <Skeleton className="h-16 bg-white/5 rounded-lg" />
+                <Skeleton className="h-16 bg-white/5 rounded-lg" />
+                <Skeleton className="h-16 bg-white/5 rounded-lg" />
+              </div>
+              <Skeleton className="h-24 bg-white/5 rounded-lg" />
+              <div className="flex gap-2">
+                <Skeleton className="h-8 w-24 bg-white/5 rounded-full" />
+                <Skeleton className="h-8 w-32 bg-white/5 rounded-full" />
+              </div>
             </div>
           )}
           {!detailLoading && !detail && (
-            <div className="text-sm text-white/50">Select a {labels.booking.toLowerCase()} to view details.</div>
+            <div className="text-sm text-white/50">
+              Select a {labels.booking.toLowerCase()} to view details.
+            </div>
           )}
           {detail?.booking && (
             <div className="space-y-4">
               <div className="space-y-1">
-                <div className="text-lg font-semibold text-white">{detail.booking.guest_name}</div>
-                <div className="text-xs text-white/50">{detail.booking.guest_contact || "No contact provided"}</div>
+                <div className="text-lg font-semibold text-white">
+                  {detail.booking.guest_name}
+                </div>
                 <div className="text-xs text-white/50">
-                  {formatBookingDate(detail.booking.check_in)} → {formatBookingDate(detail.booking.check_out)}
+                  {detail.booking.guest_contact || "No contact provided"}
+                </div>
+                <div className="text-xs text-white/50">
+                  {formatBookingDate(detail.booking.check_in)} →{" "}
+                  {formatBookingDate(detail.booking.check_out)}
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                   <div className="text-white/40">Amount</div>
-                  <div className="text-white mt-1">₹{Number(detail.booking.amount || 0).toLocaleString("en-IN")}</div>
+                  <div className="text-white mt-1">
+                    ₹
+                    {Number(detail.booking.amount || 0).toLocaleString("en-IN")}
+                  </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                   <div className="text-white/40">Status</div>
-                  <div className={cn("mt-1", statusDisplay(detail.booking.status).text)}>
+                  <div
+                    className={cn(
+                      "mt-1",
+                      statusDisplay(detail.booking.status).text,
+                    )}
+                  >
                     {statusDisplay(detail.booking.status).label}
                   </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                   <div className="text-white/40">Payment</div>
-                  <div className="text-white mt-1">{detail.payment?.status || "not created"}</div>
+                  <div className="text-white mt-1">
+                    {detail.payment?.status || "not created"}
+                  </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-lg p-3">
                   <div className="text-white/40">Source</div>
-                  <div className="text-white mt-1">{detail.booking.source || "direct"}</div>
+                  <div className="text-white mt-1">
+                    {detail.booking.source || "direct"}
+                  </div>
                 </div>
               </div>
 
@@ -443,7 +633,9 @@ export default function BookingsPage() {
                   <div>
                     <div className="text-xs text-white/40">ID Verification</div>
                     <div className="text-sm text-white">
-                      {capabilities.id_verification ? idStatusLabel((detail.booking as any).id_status) : "Not required"}
+                      {capabilities.id_verification
+                        ? idStatusLabel((detail.booking as any).id_status)
+                        : "Not required"}
                     </div>
                   </div>
                   {capabilities.id_verification && (
@@ -457,21 +649,29 @@ export default function BookingsPage() {
                 </div>
 
                 {idLoading && (
-                  <div className="text-xs text-white/50 flex items-center gap-2">
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                    Loading ID...
+                  <div className="space-y-3">
+                    <Skeleton className="h-4 w-24 bg-white/5" />
+                    <div className="grid grid-cols-2 gap-3">
+                      <Skeleton className="h-40 bg-white/5 rounded-lg" />
+                      <Skeleton className="h-40 bg-white/5 rounded-lg" />
+                    </div>
                   </div>
                 )}
 
                 {idRecord && (
                   <div className="space-y-2">
-                    <div className="text-xs text-white/50">Type: {idRecord.id_type}</div>
+                    <div className="text-xs text-white/50">
+                      Type: {idRecord.id_type}
+                    </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="relative border border-white/10 rounded-lg overflow-hidden">
                         <img
                           src={`/api/guest-id/${idRecord.id}/image?side=front`}
                           alt="Front ID"
-                          className={cn("w-full h-40 object-cover", blurred && "blur-sm")}
+                          className={cn(
+                            "w-full h-40 object-cover",
+                            blurred && "blur-sm",
+                          )}
                         />
                       </div>
                       <div className="relative border border-white/10 rounded-lg overflow-hidden">
@@ -479,7 +679,10 @@ export default function BookingsPage() {
                           <img
                             src={`/api/guest-id/${idRecord.id}/image?side=back`}
                             alt="Back ID"
-                            className={cn("w-full h-40 object-cover", blurred && "blur-sm")}
+                            className={cn(
+                              "w-full h-40 object-cover",
+                              blurred && "blur-sm",
+                            )}
                           />
                         ) : (
                           <div className="min-h-[160px] bg-black/20 flex items-center justify-center text-xs text-white/40">
@@ -518,7 +721,9 @@ export default function BookingsPage() {
                         </button>
                       </div>
                       {idRecord.rejection_reason && (
-                        <div className="text-[10px] text-white/40">Last rejection: {idRecord.rejection_reason}</div>
+                        <div className="text-[10px] text-white/40">
+                          Last rejection: {idRecord.rejection_reason}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -536,7 +741,9 @@ export default function BookingsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
           <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl w-full max-w-2xl overflow-hidden">
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
-              <div className="text-sm font-semibold text-white">Create {labels.booking.toLowerCase()} payment link</div>
+              <div className="text-sm font-semibold text-white">
+                Create {labels.booking.toLowerCase()} payment link
+              </div>
               <button
                 onClick={() => setShowPaymentModal(false)}
                 className="p-2 hover:bg-white/5 rounded-full text-white/60"
@@ -547,13 +754,22 @@ export default function BookingsPage() {
             <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">{labels.listing}</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    {labels.listing}
+                  </label>
                   <select
                     value={paymentForm.listingId}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, listingId: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        listingId: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   >
-                    <option value="">Select {labels.listing.toLowerCase()}</option>
+                    <option value="">
+                      Select {labels.listing.toLowerCase()}
+                    </option>
                     {listings.map((listing) => (
                       <option key={listing.id} value={listing.id}>
                         {listing.name}
@@ -562,70 +778,119 @@ export default function BookingsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Amount</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Amount
+                  </label>
                   <input
                     type="number"
                     value={paymentForm.amount}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, amount: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        amount: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="Amount in INR"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">{labels.customer} name</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    {labels.customer} name
+                  </label>
                   <input
                     type="text"
                     value={paymentForm.guestName}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, guestName: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        guestName: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder={`${labels.customer} name`}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">{labels.customer} phone</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    {labels.customer} phone
+                  </label>
                   <input
                     type="tel"
                     value={paymentForm.guestPhone}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, guestPhone: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        guestPhone: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="+91 90000 00000"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">{labels.customer} email</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    {labels.customer} email
+                  </label>
                   <input
                     type="email"
                     value={paymentForm.guestEmail}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, guestEmail: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        guestEmail: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="email@example.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Check-in</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Check-in
+                  </label>
                   <input
                     type="date"
                     value={paymentForm.checkIn}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, checkIn: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        checkIn: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Check-out</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Check-out
+                  </label>
                   <input
                     type="date"
                     value={paymentForm.checkOut}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, checkOut: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        checkOut: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-white/60 mb-1">Notes (optional)</label>
+                <label className="block text-xs font-semibold text-white/60 mb-1">
+                  Notes (optional)
+                </label>
                 <textarea
                   value={paymentForm.notes}
-                  onChange={(event) => setPaymentForm((prev) => ({ ...prev, notes: event.target.value }))}
+                  onChange={(event) =>
+                    setPaymentForm((prev) => ({
+                      ...prev,
+                      notes: event.target.value,
+                    }))
+                  }
                   className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
                   placeholder={`Add any notes for the ${labels.customer.toLowerCase()}`}
                 />
@@ -633,8 +898,12 @@ export default function BookingsPage() {
 
               {paymentLink && (
                 <div className="space-y-3 border border-white/10 rounded-xl p-4 bg-white/5">
-                  <div className="text-xs font-semibold text-white/70 uppercase tracking-wider">Payment link</div>
-                  <div className="text-sm text-white break-all">{paymentLink}</div>
+                  <div className="text-xs font-semibold text-white/70 uppercase tracking-wider">
+                    Payment link
+                  </div>
+                  <div className="text-sm text-white break-all">
+                    {paymentLink}
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     <a
                       href={`https://wa.me/?text=${encodeURIComponent(paymentMessage)}`}
@@ -678,7 +947,11 @@ export default function BookingsPage() {
                   disabled={paymentLoading}
                   className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg text-xs font-semibold disabled:opacity-60"
                 >
-                  {paymentLoading ? "Generating..." : paymentLink ? "Generate again" : "Generate payment link"}
+                  {paymentLoading
+                    ? "Generating..."
+                    : paymentLink
+                      ? "Generate again"
+                      : "Generate payment link"}
                 </button>
               </div>
             </div>
@@ -691,7 +964,10 @@ export default function BookingsPage() {
           <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden">
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
               <div className="text-sm font-semibold text-white">Request ID</div>
-              <button onClick={() => setShowIdModal(false)} className="p-2 hover:bg-white/5 rounded-full text-white/60">
+              <button
+                onClick={() => setShowIdModal(false)}
+                className="p-2 hover:bg-white/5 rounded-full text-white/60"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -711,7 +987,9 @@ export default function BookingsPage() {
                 </select>
               </div>
               <div>
-                <div className="text-xs text-white/40 mb-1">Message (optional)</div>
+                <div className="text-xs text-white/40 mb-1">
+                  Message (optional)
+                </div>
                 <textarea
                   value={idNote}
                   onChange={(e) => setIdNote(e.target.value)}
@@ -729,12 +1007,19 @@ export default function BookingsPage() {
                   Message: {idRequestMessage}
                 </div>
               )}
-              {idMessage && <div className="text-xs text-white/60">{idMessage}</div>}
+              {idMessage && (
+                <div className="text-xs text-white/60">{idMessage}</div>
+              )}
             </div>
             <div className="p-4 border-t border-white/10 flex items-center justify-between">
-              <div className="text-[10px] text-white/40">Nodebase will store IDs securely.</div>
+              <div className="text-[10px] text-white/40">
+                Nodebase will store IDs securely.
+              </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => setShowIdModal(false)} className="px-3 py-1.5 text-xs text-white/60 hover:text-white">
+                <button
+                  onClick={() => setShowIdModal(false)}
+                  className="px-3 py-1.5 text-xs text-white/60 hover:text-white"
+                >
                   Close
                 </button>
                 <button

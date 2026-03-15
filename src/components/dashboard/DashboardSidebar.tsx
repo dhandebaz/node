@@ -4,18 +4,18 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { 
-  LayoutDashboard, 
-  MessageSquare, 
-  Calendar, 
-  CalendarDays, 
-  Briefcase, 
-  BarChart3, 
-  Settings, 
+import {
+  LayoutDashboard,
+  MessageSquare,
+  Calendar,
+  CalendarDays,
+  Briefcase,
+  BarChart3,
+  Settings,
   Puzzle,
   ChevronLeft,
   ChevronRight,
-  CreditCard
+  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
@@ -28,18 +28,30 @@ interface SidebarItemProps {
   collapsed: boolean;
 }
 
-function SidebarItem({ icon: Icon, label, href, active, collapsed }: SidebarItemProps) {
+function SidebarItem({
+  icon: Icon,
+  label,
+  href,
+  active,
+  collapsed,
+}: SidebarItemProps) {
   return (
     <Link
       href={href}
+      prefetch={true}
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group relative",
-        active 
-          ? "skeuo-card bg-brand-red text-white border-transparent" 
-          : "text-zinc-400 hover:text-white hover:bg-white/5"
+        active
+          ? "skeuo-card bg-brand-red text-white border-transparent"
+          : "text-zinc-400 hover:text-white hover:bg-white/5",
       )}
     >
-      <Icon className={cn("w-5 h-5 shrink-0", active ? "text-white" : "text-zinc-400 group-hover:text-white")} />
+      <Icon
+        className={cn(
+          "w-5 h-5 shrink-0",
+          active ? "text-white" : "text-zinc-400 group-hover:text-white",
+        )}
+      />
       {!collapsed && (
         <span className="text-sm font-medium whitespace-nowrap overflow-hidden transition-all duration-300">
           {label}
@@ -93,7 +105,7 @@ export function DashboardSidebar() {
       animate={{ width: isCollapsed ? 80 : 260 }}
       className={cn(
         "fixed left-0 top-0 bottom-0 z-40 bg-[#0A0A0A] border-r border-white/5 flex flex-col transition-all duration-300 ease-in-out",
-        "pt-20 pb-6" // Offset for top navbar
+        "pt-20 pb-6", // Offset for top navbar
       )}
     >
       {/* Toggle Button */}
@@ -107,10 +119,14 @@ export function DashboardSidebar() {
       {/* Internal Navigation */}
       <div className="flex-1 px-4 space-y-2 overflow-y-auto no-scrollbar">
         <div className="mb-4 px-2">
-            {!isCollapsed && <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Main Menu</div>}
-            {isCollapsed && <div className="h-px bg-white/5 my-4" />}
+          {!isCollapsed && (
+            <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+              Main Menu
+            </div>
+          )}
+          {isCollapsed && <div className="h-px bg-white/5 my-4" />}
         </div>
-        
+
         {menuItems.map((item) => (
           <SidebarItem
             key={item.href}

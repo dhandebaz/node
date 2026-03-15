@@ -37,12 +37,43 @@ export default function AISettingsPage() {
   const aiDefaults = getPersonaAIDefaults(tenant?.businessType);
   const [tone, setTone] = useState<AITone>("friendly");
   const [customInstructions, setCustomInstructions] = useState("");
-  const [isSavingVoice, setIsSavingVoice] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
+    "idle",
+  );
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    setTone(tenant?.ai_settings?.tone || "friendly");
-    setCustomInstructions(tenant?.ai_settings?.customInstructions || "");
-  }, [tenant?.ai_settings?.tone, tenant?.ai_settings?.customInstructions]);
+    if (tenant) {
+      setTone(tenant.ai_settings?.tone || "friendly");
+      setCustomInstructions(tenant.ai_settings?.customInstructions || "");
+      setIsLoaded(true);
+    }
+  }, [tenant]);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    if (
+      tone === (tenant?.ai_settings?.tone || "friendly") &&
+      customInstructions === (tenant?.ai_settings?.customInstructions || "")
+    ) {
+      return;
+    }
+
+    setSaveStatus("saving");
+    const timer = setTimeout(async () => {
+      try {
+        await updateAiSettingsAction({ tone, customInstructions });
+        setSaveStatus("saved");
+        setTimeout(() => setSaveStatus("idle"), 2000);
+      } catch (error: any) {
+        toast.error(error?.message || "Failed to save settings");
+        setSaveStatus("idle");
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [tone, customInstructions, isLoaded, tenant]);
 
   if (!host) {
     return (
@@ -122,17 +153,28 @@ export default function AISettingsPage() {
         {/* Tone of Voice */}
         <Card className="bg-[var(--color-dashboard-surface)] border-white/10">
           <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
-                <MessageSquare className="w-5 h-5" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
+                  <MessageSquare className="w-5 h-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-white">
+                    How should Kaisa AI talk to {labels.customers.toLowerCase()}
+                    ?
+                  </CardTitle>
+                  <CardDescription className="text-white/50">
+                    Set the personality of your AI ({aiDefaults.role}).
+                  </CardDescription>
+                </div>
               </div>
-              <div>
-                <CardTitle className="text-white">
-                  How should Kaisa AI talk to {labels.customers.toLowerCase()}?
-                </CardTitle>
-                <CardDescription className="text-white/50">
-                  Set the personality of your AI ({aiDefaults.role}).
-                </CardDescription>
+              <div className="text-xs font-medium h-6 flex items-center justify-end sm:justify-start">
+                {saveStatus === "saving" && (
+                  <span className="text-zinc-400 animate-pulse">Saving...</span>
+                )}
+                {saveStatus === "saved" && (
+                  <span className="text-emerald-400">Saved</span>
+                )}
               </div>
             </div>
           </CardHeader>
@@ -190,34 +232,6 @@ export default function AISettingsPage() {
                 onChange={(event) => setCustomInstructions(event.target.value)}
                 className="bg-black/20 border-white/10 text-white placeholder:text-white/20 min-h-[100px]"
               />
-              <div className="mt-4 flex justify-end">
-                <Button
-                  onClick={async () => {
-                    setIsSavingVoice(true);
-                    try {
-                      await updateAiSettingsAction({
-                        tone,
-                        customInstructions,
-                      });
-                      toast.success("Kaisa behavior updated");
-                    } catch (error: any) {
-                      toast.error(
-                        error?.message || "Failed to update Kaisa behavior",
-                      );
-                    } finally {
-                      setIsSavingVoice(false);
-                    }
-                  }}
-                  disabled={isSavingVoice}
-                  className="bg-white text-black hover:bg-zinc-200 font-bold px-6"
-                >
-                  {isSavingVoice ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    "Save Kaisa Behavior"
-                  )}
-                </Button>
-              </div>
             </div>
           </CardContent>
         </Card>
