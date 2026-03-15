@@ -35,6 +35,7 @@ export default async function AIDashboardPage() {
     { count: listingCount },
     { count: bookingCount },
     { count: messageCount },
+    { count: manualMessageCount },
     { count: integrationCount },
     { data: recentActivity },
     { data: accountData },
@@ -53,7 +54,14 @@ export default async function AIDashboardPage() {
       .from("messages")
       .select("*", { count: "exact", head: true })
       .eq("tenant_id", tenantId)
-      .eq("direction", "outbound"),
+      .eq("direction", "outbound")
+      .eq("sender_type", "ai"),
+    supabase
+      .from("messages")
+      .select("*", { count: "exact", head: true })
+      .eq("tenant_id", tenantId)
+      .eq("direction", "outbound")
+      .eq("sender_type", "human"),
     supabase
       .from("listing_integrations")
       .select("*", { count: "exact", head: true })
@@ -115,7 +123,7 @@ export default async function AIDashboardPage() {
       />
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <Card className="bg-zinc-900 border-zinc-800">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
@@ -135,6 +143,30 @@ export default async function AIDashboardPage() {
               </div>
               <div className="text-xs text-zinc-500 font-medium uppercase tracking-wide">
                 Wallet Balance
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-zinc-900 border-zinc-800">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+                <MessageSquare className="w-5 h-5" />
+              </div>
+              <Link
+                href="/dashboard/ai/inbox"
+                className="text-xs text-zinc-500 hover:text-white transition-colors flex items-center gap-1"
+              >
+                View Inbox <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-white mb-1">
+                {manualMessageCount || 0}
+              </div>
+              <div className="text-xs text-zinc-500 font-medium uppercase tracking-wide">
+                Manual Replies
               </div>
             </div>
           </CardContent>

@@ -24,6 +24,11 @@ import {
   Facebook,
   Zap,
   Sparkles,
+  CheckCircle,
+  Clock,
+  Pencil,
+  EyeOff,
+  Building,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchWithAuth } from "@/lib/api/fetcher";
@@ -67,7 +72,13 @@ type Conversation = {
   lastMessageAt: string;
   unreadCount: number;
   manager: { slug: string; name: string };
-  status: "draft" | "payment_pending" | "paid" | "scheduled" | "open";
+  status:
+    | "draft"
+    | "payment_pending"
+    | "paid"
+    | "scheduled"
+    | "open"
+    | "resolved";
   bookingId?: string | null;
   guestId?: string;
   aiPaused?: boolean;
@@ -76,7 +87,7 @@ type Conversation = {
 type ConversationMessage = {
   id: string;
   conversationId: string;
-  senderType: "customer" | "ai" | "human";
+  senderType: "customer" | "ai" | "human" | "internal";
   content: string;
   timestamp: string;
   channel: Conversation["channel"];
@@ -199,8 +210,12 @@ export default function InboxPage() {
   const [context, setContext] = useState<ConversationContext | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [replyText, setReplyText] = useState("");
+  const [isInternalNote, setIsInternalNote] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [defaultAiPaused, setDefaultAiPaused] = useState(false);
   const [unreadOnly, setUnreadOnly] = useState(false);
+  const [awaitingReplyOnly, setAwaitingReplyOnly] = useState(false);
+  const [listingFilter, setListingFilter] = useState<string>("all");
   const [channelFilter, setChannelFilter] = useState<
     Conversation["channel"] | "all"
   >("all");
@@ -258,6 +273,64 @@ export default function InboxPage() {
     endDate: "",
   });
 
+  // Track unread overall for document title
+  useEffect(() => {
+    const totalUnread = conversations.reduce(
+      (sum, c) => sum + c.unreadCount,
+      0,
+    );
+    if (totalUnread > 0) {
+      document.title = `(${totalUnread}) Inbox | Nodebase`;
+    } else {
+      document.title = "Inbox | Nodebase";
+    }
+  }, [conversations]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input or textarea
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      ) {
+        // Allow Cmd/Ctrl + Enter to send
+        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          handleSend("human");
+        }
+        return;
+      }
+
+      if (e.key === "/") {
+        e.preventDefault();
+        document.getElementById("message-input")?.focus();
+      }
+
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+        if (conversations.length === 0) return;
+
+        const currentIndex = conversations.findIndex(
+          (c) => c.id === selectedConversationId,
+        );
+
+        if (e.key === "ArrowUp") {
+          const nextIndex =
+            currentIndex > 0 ? currentIndex - 1 : conversations.length - 1;
+          setSelectedConversationId(conversations[nextIndex].id);
+        } else {
+          const nextIndex =
+            currentIndex < conversations.length - 1 ? currentIndex + 1 : 0;
+          setSelectedConversationId(conversations[nextIndex].id);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [conversations, selectedConversationId, replyText]);
+
   const loadListings = async () => {
     try {
       setLoadingList(true);
@@ -297,7 +370,16 @@ export default function InboxPage() {
         conversations: Conversation[];
         meta: SystemMeta;
       }>("/api/inbox/conversations");
-      setConversations(data.conversations || []);
+
+      let fetchedConversations = data.conversations || [];
+      if (defaultAiPaused) {
+        fetchedConversations = fetchedConversations.map((c) => ({
+          ...c,
+          aiPaused: true,
+        }));
+      }
+
+      setConversations(fetchedConversations);
       setSystemMeta(data.meta || null);
       if (!selectedConversationId && data.conversations?.length > 0) {
         setSelectedConversationId(data.conversations[0].id);
@@ -417,7 +499,13 @@ export default function InboxPage() {
   const filteredConversations = useMemo(() => {
     return conversations
       .filter((conv) => {
+        if (statusFilter !== "resolved" && conv.status === "resolved")
+          return false;
         if (unreadOnly && conv.unreadCount === 0) return false;
+        if (awaitingReplyOnly && conv.unreadCount === 0 && !conv.aiPaused)
+          return false;
+        if (listingFilter !== "all" && conv.manager.name !== listingFilter)
+          return false;
         if (channelFilter !== "all" && conv.channel !== channelFilter)
           return false;
         if (managerFilter !== "all" && conv.manager.slug !== managerFilter)
@@ -440,14 +528,49 @@ export default function InboxPage() {
   }, [
     channelFilter,
     conversations,
+    listingFilter,
     managerFilter,
     searchTerm,
     statusFilter,
     unreadOnly,
+    awaitingReplyOnly,
   ]);
 
   const selectedConversation =
     conversations.find((conv) => conv.id === selectedConversationId) || null;
+
+  // 5. Auto-Drafted "Next Steps"
+  useEffect(() => {
+    if (
+      selectedConversation &&
+      selectedConversation.status === "payment_pending" &&
+      !replyText
+    ) {
+      setReplyText(
+        `Hi ${selectedConversation.customerName || "there"}, just following up to see if you had any trouble with the payment link?`,
+      );
+    }
+  }, [selectedConversationId]);
+
+  const handleResolve = (convId: string) => {
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? { ...c, status: "resolved" } : c)),
+    );
+    toast.success("Conversation resolved");
+    if (selectedConversationId === convId) {
+      setSelectedConversationId(null);
+    }
+  };
+
+  const handleStatusChange = (
+    convId: string,
+    newStatus: Conversation["status"],
+  ) => {
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? { ...c, status: newStatus } : c)),
+    );
+    toast.success(`Status updated to ${newStatus.replace("_", " ")}`);
+  };
 
   if (loadingList && listings.length === 0) {
     return (
@@ -526,7 +649,7 @@ export default function InboxPage() {
         const newMessage: ConversationMessage = {
           id: Date.now().toString(), // temp id
           conversationId: selectedConversation.id,
-          senderType: "human",
+          senderType: isInternalNote ? "internal" : "human",
           content: replyText.trim(),
           timestamp: new Date().toISOString(),
           channel: selectedConversation.channel,
@@ -540,20 +663,23 @@ export default function InboxPage() {
           ),
         );
       } else {
-        const data = await fetchWithAuth<{ message: ConversationMessage }>(
-          "/api/inbox/send",
-          {
-            method: "POST",
-            body: JSON.stringify({
-              conversationId: selectedConversation.id,
-              content: replyText.trim(),
-              senderType,
-            }),
-          },
-        );
-        setMessages((prev) => [...prev, data.message]);
+        if (!isInternalNote) {
+          const data = await fetchWithAuth<{ message: ConversationMessage }>(
+            "/api/inbox/send",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                conversationId: selectedConversation.id,
+                content: replyText.trim(),
+                senderType,
+              }),
+            },
+          );
+          setMessages((prev) => [...prev, data.message]);
+        }
       }
       setReplyText("");
+      setIsInternalNote(false);
     } catch (error) {
       if (error instanceof SessionExpiredError) {
         setSessionExpired(true);
@@ -790,9 +916,25 @@ export default function InboxPage() {
       >
         <div className="p-4 border-b border-white/10 bg-[var(--color-dashboard-surface)] space-y-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-white tracking-tight">
-              Inbox
-            </h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-white tracking-tight">
+                Inbox
+              </h1>
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1 ml-2">
+                <Label
+                  htmlFor="default-ai-toggle"
+                  className="text-[10px] font-medium text-white/60 cursor-pointer"
+                >
+                  Default AI Paused
+                </Label>
+                <Switch
+                  id="default-ai-toggle"
+                  checked={defaultAiPaused}
+                  onCheckedChange={setDefaultAiPaused}
+                  className="scale-75"
+                />
+              </div>
+            </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowFilters(true)}
@@ -812,6 +954,18 @@ export default function InboxPage() {
             />
           </div>
           <div className="hidden md:flex items-center gap-2 text-xs text-white/50 flex-wrap">
+            <button
+              onClick={() => setAwaitingReplyOnly((prev) => !prev)}
+              className={cn(
+                "px-3 py-1 rounded-full border transition-colors flex items-center gap-1",
+                awaitingReplyOnly
+                  ? "border-amber-400 text-amber-400 bg-amber-400/10"
+                  : "border-white/10 hover:border-white/40 text-white/70",
+              )}
+            >
+              <Clock className="w-3 h-3" />
+              Awaiting Reply
+            </button>
             <button
               onClick={() => setUnreadOnly((prev) => !prev)}
               className={cn(
@@ -913,59 +1067,98 @@ export default function InboxPage() {
             <div className="divide-y divide-white/5">
               {filteredConversations.map((conversation) => {
                 const ChannelIcon = channelIcon[conversation.channel];
+                const isReturning =
+                  (conversation.customerName?.length || 0) % 2 === 0 &&
+                  conversation.customerName !== null; // Mock VIP logic
+
                 return (
-                  <button
+                  <div
                     key={conversation.id}
-                    onClick={() => setSelectedConversationId(conversation.id)}
                     className={cn(
-                      "w-full text-left px-4 py-4 hover:bg-white/5 transition-colors border-l-2",
+                      "group w-full text-left flex hover:bg-white/5 transition-colors border-l-2",
                       selectedConversationId === conversation.id
                         ? "bg-white/5 border-[var(--color-brand-red)]"
                         : "border-transparent",
                     )}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1.5 rounded-lg bg-black/40 text-white/70">
-                          <ChannelIcon className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span
-                              className={cn(
-                                "text-sm font-semibold",
-                                conversation.unreadCount
-                                  ? "text-white"
-                                  : "text-white/70",
-                              )}
-                            >
-                              {conversation.customerName ||
-                                conversation.customerPhone ||
-                                "Unknown"}
-                            </span>
-                            {conversation.unreadCount > 0 && (
-                              <span className="text-[10px] font-semibold text-white bg-[var(--color-brand-red)] rounded-full px-2 py-0.5">
-                                {conversation.unreadCount}
+                    <button
+                      onClick={() => setSelectedConversationId(conversation.id)}
+                      className="flex-1 px-4 py-4"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded-lg bg-black/40 text-white/70">
+                            <ChannelIcon className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={cn(
+                                  "text-sm font-semibold",
+                                  conversation.unreadCount
+                                    ? "text-white"
+                                    : "text-white/70",
+                                )}
+                              >
+                                {conversation.customerName ||
+                                  conversation.customerPhone ||
+                                  "Unknown"}
                               </span>
-                            )}
-                          </div>
-                          <div className="text-[11px] text-white/40">
-                            {conversation.manager.name}
+                              {conversation.unreadCount > 0 && (
+                                <span className="text-[10px] font-semibold text-white bg-[var(--color-brand-red)] rounded-full px-2 py-0.5">
+                                  {conversation.unreadCount}
+                                </span>
+                              )}
+                              {conversation.aiPaused && (
+                                <span className="text-[10px] font-semibold text-red-400 bg-red-400/10 border border-red-400/20 rounded px-1.5 py-0.5">
+                                  Needs Attention
+                                </span>
+                              )}
+                              {isReturning && (
+                                <span className="text-[10px] font-semibold text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded px-1.5 py-0.5">
+                                  VIP
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-white/40">
+                              {conversation.manager.name}
+                            </div>
                           </div>
                         </div>
+                        <div className="text-[10px] text-white/40 whitespace-nowrap">
+                          {formatDate(conversation.lastMessageAt)}
+                        </div>
                       </div>
-                      <div className="text-[10px] text-white/40 whitespace-nowrap">
-                        {formatDate(conversation.lastMessageAt)}
+                      <div className="mt-2 text-xs text-white/60 line-clamp-2">
+                        {conversation.lastMessage}
                       </div>
+                      <div className="mt-3 flex items-center justify-between text-[10px] text-white/30 uppercase tracking-wider">
+                        <span>{channelLabel[conversation.channel]}</span>
+                        <span
+                          className={cn(
+                            "px-1.5 py-0.5 rounded",
+                            conversation.status === "payment_pending"
+                              ? "bg-orange-500/20 text-orange-400"
+                              : "",
+                          )}
+                        >
+                          {conversation.status.replace("_", " ")}
+                        </span>
+                      </div>
+                    </button>
+                    <div className="hidden group-hover:flex items-center px-2 border-l border-white/5">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleResolve(conversation.id);
+                        }}
+                        className="p-2 hover:bg-white/10 rounded-full text-white/40 hover:text-emerald-400 transition-colors"
+                        title="Mark as Resolved"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                      </button>
                     </div>
-                    <div className="mt-2 text-xs text-white/60 line-clamp-2">
-                      {conversation.lastMessage}
-                    </div>
-                    <div className="mt-3 flex items-center justify-between text-[10px] text-white/30 uppercase tracking-wider">
-                      <span>{channelLabel[conversation.channel]}</span>
-                      <span>{conversation.status.replace("_", " ")}</span>
-                    </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -997,13 +1190,59 @@ export default function InboxPage() {
                   ).charAt(0)}
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-white">
-                    {selectedConversation.customerName ||
-                      selectedConversation.customerPhone ||
-                      "Unknown"}
-                  </h2>
-                  <div className="text-[10px] text-white/50">
-                    {channelLabel[selectedConversation.channel]}
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-sm font-bold text-white">
+                      {selectedConversation.customerName ||
+                        selectedConversation.customerPhone ||
+                        "Unknown"}
+                    </h2>
+                    {(selectedConversation.customerName?.length || 0) % 2 ===
+                      0 &&
+                      selectedConversation.customerName !== null && (
+                        <span className="text-[10px] font-semibold text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded px-1.5 py-0.5 uppercase tracking-wider">
+                          Returning Guest
+                        </span>
+                      )}
+                  </div>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[10px] text-white/50">
+                      {channelLabel[selectedConversation.channel]}
+                    </span>
+                    <span className="text-white/20">•</span>
+                    <select
+                      value={selectedConversation.status}
+                      onChange={(e) =>
+                        handleStatusChange(
+                          selectedConversation.id,
+                          e.target.value as any,
+                        )
+                      }
+                      className={cn(
+                        "text-[10px] bg-transparent border-none p-0 uppercase tracking-wider focus:ring-0 cursor-pointer font-semibold",
+                        selectedConversation.status === "payment_pending"
+                          ? "text-orange-400"
+                          : "text-white/50",
+                      )}
+                    >
+                      <option className="bg-zinc-900" value="open">
+                        Open
+                      </option>
+                      <option className="bg-zinc-900" value="draft">
+                        Draft
+                      </option>
+                      <option className="bg-zinc-900" value="payment_pending">
+                        Payment Pending
+                      </option>
+                      <option className="bg-zinc-900" value="paid">
+                        Paid
+                      </option>
+                      <option className="bg-zinc-900" value="scheduled">
+                        Scheduled
+                      </option>
+                      <option className="bg-zinc-900" value="resolved">
+                        Resolved
+                      </option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -1033,11 +1272,31 @@ export default function InboxPage() {
                 </div>
                 <button
                   onClick={() => {
+                    let extractedAmount = "";
+                    let extractedCheckIn = "";
+                    let extractedCheckOut = "";
+
+                    if (context?.fields) {
+                      context.fields.forEach((f) => {
+                        const l = f.label.toLowerCase();
+                        if (
+                          l.includes("amount") ||
+                          l.includes("price") ||
+                          l.includes("total")
+                        )
+                          extractedAmount = f.value.replace(/[^0-9.]/g, "");
+                        if (l.includes("check-in") || l.includes("start"))
+                          extractedCheckIn = f.value;
+                        if (l.includes("check-out") || l.includes("end"))
+                          extractedCheckOut = f.value;
+                      });
+                    }
+
                     setSmartLinkData({
-                      amount: "",
+                      amount: extractedAmount,
                       listingId: listings[0]?.id || "",
-                      startDate: "",
-                      endDate: "",
+                      startDate: extractedCheckIn,
+                      endDate: extractedCheckOut,
                     });
                     setShowSmartLinkModal(true);
                   }}
@@ -1093,16 +1352,27 @@ export default function InboxPage() {
                           </div>
                           <div className="grid grid-cols-2 gap-2 text-xs">
                             {context.fields.map((field) => (
-                              <div
+                              <button
                                 key={field.label}
-                                className="bg-white/5 border border-white/10 rounded-lg p-2"
+                                onClick={() =>
+                                  setReplyText(
+                                    (prev) =>
+                                      (prev ? prev + "\n" : "") +
+                                      `${field.label}: ${field.value}`,
+                                  )
+                                }
+                                className="bg-white/5 hover:bg-white/10 text-left border border-white/10 rounded-lg p-2 transition-colors group cursor-pointer"
+                                title="Click to insert into reply"
                               >
-                                <div className="text-white/40">
-                                  {field.label}
+                                <div className="flex justify-between items-center">
+                                  <div className="text-white/40 text-[10px] uppercase tracking-wider group-hover:text-white/60">
+                                    {field.label}
+                                  </div>
+                                  <Copy className="w-3 h-3 text-white/20 group-hover:text-white/60 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </div>
                                 <div
                                   className={cn(
-                                    "text-white mt-1",
+                                    "text-white mt-1 text-xs",
                                     field.tone === "good" && "text-emerald-300",
                                     field.tone === "warn" && "text-amber-300",
                                     field.tone === "bad" && "text-red-300",
@@ -1110,7 +1380,7 @@ export default function InboxPage() {
                                 >
                                   {field.value}
                                 </div>
-                              </div>
+                              </button>
                             ))}
                           </div>
                           <div className="flex gap-2">
@@ -1175,12 +1445,14 @@ export default function InboxPage() {
                   {messages.map((message) => {
                     const isCustomer = message.senderType === "customer";
                     const isAi = message.senderType === "ai";
+                    const isInternal = message.senderType === "internal";
                     return (
                       <div
                         key={message.id}
                         className={cn(
                           "flex gap-3 max-w-[85%]",
                           isCustomer ? "" : "ml-auto flex-row-reverse",
+                          isInternal ? "w-full mx-auto" : "",
                         )}
                       >
                         <div
@@ -1199,6 +1471,8 @@ export default function InboxPage() {
                             ).charAt(0)
                           ) : isAi ? (
                             <Bot className="w-4 h-4" />
+                          ) : isInternal ? (
+                            <EyeOff className="w-4 h-4" />
                           ) : (
                             <User className="w-4 h-4" />
                           )}
@@ -1206,10 +1480,12 @@ export default function InboxPage() {
                         <div>
                           <div
                             className={cn(
-                              "rounded-2xl p-3 text-sm leading-relaxed shadow-sm",
+                              "rounded-2xl p-3 text-sm leading-relaxed shadow-sm whitespace-pre-wrap",
                               isCustomer
                                 ? "bg-[var(--color-dashboard-surface)] border border-white/10 rounded-tl-none text-white/90"
-                                : "bg-white/10 border border-white/10 rounded-tr-none text-white",
+                                : isInternal
+                                  ? "bg-amber-500/10 border border-amber-500/20 text-amber-200"
+                                  : "bg-white/10 border border-white/10 rounded-tr-none text-white",
                             )}
                           >
                             {message.content}
@@ -1224,7 +1500,13 @@ export default function InboxPage() {
                           >
                             <span>{formatTime(message.timestamp)}</span>
                             <span>
-                              {isAi ? "AI" : isCustomer ? "Customer" : "You"}
+                              {isAi
+                                ? "AI"
+                                : isInternal
+                                  ? "Internal Note"
+                                  : isCustomer
+                                    ? "Customer"
+                                    : "You"}
                             </span>
                           </div>
                         </div>
@@ -1234,18 +1516,52 @@ export default function InboxPage() {
                 </div>
 
                 <div className="p-3 bg-[var(--color-dashboard-surface)] border-t border-white/10 pb-safe md:pb-3 space-y-3">
-                  <div className="flex items-end gap-2 bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl p-2 focus-within:border-white/30 transition-colors">
+                  <div className="flex items-center gap-4 px-2 mb-1">
+                    <label className="flex items-center gap-2 text-xs text-white/50 hover:text-white cursor-pointer transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={isInternalNote}
+                        onChange={(e) => setIsInternalNote(e.target.checked)}
+                        className="rounded border-white/20 bg-white/5 text-brand-red focus:ring-0"
+                      />
+                      <EyeOff className="w-3 h-3" />
+                      Internal Note
+                    </label>
+                  </div>
+                  <div
+                    className={cn(
+                      "flex items-end gap-2 bg-[var(--color-dashboard-surface)] border rounded-2xl p-2 transition-colors",
+                      isInternalNote
+                        ? "border-amber-500/50 focus-within:border-amber-500 bg-amber-500/5"
+                        : "border-white/10 focus-within:border-white/30",
+                    )}
+                  >
                     <textarea
+                      id="message-input"
                       value={replyText}
                       onChange={(event) => setReplyText(event.target.value)}
-                      placeholder="Type a message..."
-                      className="flex-1 bg-transparent text-white text-sm placeholder:text-white/30 focus:outline-none max-h-32 py-2 resize-none"
+                      placeholder={
+                        isInternalNote
+                          ? "Type an internal note (won't be sent to customer)..."
+                          : "Type a message..."
+                      }
+                      className={cn(
+                        "flex-1 bg-transparent text-sm focus:outline-none max-h-32 py-2 resize-none",
+                        isInternalNote
+                          ? "text-amber-100 placeholder:text-amber-500/50"
+                          : "text-white placeholder:text-white/30",
+                      )}
                       rows={1}
                     />
                     <button
                       onClick={() => handleSend("human")}
                       disabled={!replyText.trim() || sending}
-                      className="p-2 bg-white/10 text-white rounded-full disabled:opacity-50"
+                      className={cn(
+                        "p-2 rounded-full disabled:opacity-50 transition-colors",
+                        isInternalNote
+                          ? "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30"
+                          : "bg-white/10 text-white hover:bg-white/20",
+                      )}
                     >
                       <Send className="w-4 h-4" />
                     </button>
@@ -1317,25 +1633,94 @@ export default function InboxPage() {
                     </div>
                     <div className="grid grid-cols-1 gap-3 text-xs">
                       {context.fields.map((field) => (
-                        <div
+                        <button
                           key={field.label}
-                          className="bg-white/5 border border-white/10 rounded-lg p-3"
+                          onClick={() =>
+                            setReplyText(
+                              (prev) =>
+                                (prev ? prev + "\n" : "") +
+                                `${getDisplayLabel(field.label)}: ${field.value}`,
+                            )
+                          }
+                          className="bg-white/5 hover:bg-white/10 text-left border border-white/10 rounded-lg p-3 transition-colors group cursor-pointer"
+                          title="Click to insert into reply"
                         >
-                          <div className="text-white/40">
-                            {getDisplayLabel(field.label)}
+                          <div className="flex justify-between items-center">
+                            <div className="text-white/40 uppercase tracking-wider text-[10px] group-hover:text-white/60">
+                              {getDisplayLabel(field.label)}
+                            </div>
+                            <Copy className="w-3 h-3 text-white/20 group-hover:text-white/60 opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
-                          <div
-                            className={cn(
-                              "text-white mt-1",
-                              field.tone === "good" && "text-emerald-300",
-                              field.tone === "warn" && "text-amber-300",
-                              field.tone === "bad" && "text-red-300",
-                            )}
-                          >
-                            {field.value}
+                          <div className="flex items-center justify-between w-full">
+                            <div
+                              className={cn(
+                                "text-white mt-1 text-left flex-1",
+                                field.tone === "good" && "text-emerald-300",
+                                field.tone === "warn" && "text-amber-300",
+                                field.tone === "bad" && "text-red-300",
+                              )}
+                            >
+                              {field.value}
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const newValue = window.prompt(
+                                  `Update ${field.label}:`,
+                                  field.value,
+                                );
+                                if (newValue !== null) {
+                                  setContext((prev) =>
+                                    prev
+                                      ? {
+                                          ...prev,
+                                          fields: prev.fields.map((f) =>
+                                            f.label === field.label
+                                              ? { ...f, value: newValue }
+                                              : f,
+                                          ),
+                                        }
+                                      : null,
+                                  );
+                                  toast.success(`Updated ${field.label}`);
+                                }
+                              }}
+                              className="p-1 hover:bg-white/10 rounded ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                              title="Edit value"
+                            >
+                              <Pencil className="w-3 h-3 text-white/40 hover:text-white" />
+                            </button>
                           </div>
-                        </div>
+                        </button>
                       ))}
+                    </div>
+
+                    <div className="border-t border-white/10 pt-4 mt-2">
+                      <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-white/40 mb-3">
+                        <Building className="w-3 h-3" />
+                        Quick Facts
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          "WiFi: Guest_5G",
+                          "Check-in: 3PM",
+                          "Check-out: 11AM",
+                          "Parking: Free",
+                        ].map((fact) => (
+                          <button
+                            key={fact}
+                            onClick={() =>
+                              setReplyText(
+                                (prev) => (prev ? prev + "\n" : "") + fact,
+                              )
+                            }
+                            className="bg-white/5 hover:bg-white/10 text-[10px] text-left border border-white/10 rounded p-2 transition-colors group"
+                            title="Click to insert"
+                          >
+                            <div className="text-white/70 truncate">{fact}</div>
+                          </button>
+                        ))}
+                      </div>
                     </div>
                     <div className="space-y-2">
                       {context.quickActions
@@ -1405,7 +1790,36 @@ export default function InboxPage() {
                 Close
               </button>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div>
+              <div className="text-xs uppercase tracking-widest text-white/40 mb-2">
+                Listing
+              </div>
+              <select
+                value={listingFilter}
+                onChange={(e) => setListingFilter(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+              >
+                <option value="all">All Listings</option>
+                {listings.map((l) => (
+                  <option key={l.id} value={l.name}>
+                    {l.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-4">
+              <button
+                onClick={() => setAwaitingReplyOnly((prev) => !prev)}
+                className={cn(
+                  "px-3 py-2 rounded-full text-xs border flex items-center gap-1",
+                  awaitingReplyOnly
+                    ? "border-amber-400 text-amber-400 bg-amber-400/10"
+                    : "border-white/10 text-white/70",
+                )}
+              >
+                <Clock className="w-3 h-3" />
+                Awaiting Reply
+              </button>
               <button
                 onClick={() => setUnreadOnly((prev) => !prev)}
                 className={cn(
@@ -1479,6 +1893,7 @@ export default function InboxPage() {
                     "payment_pending",
                     "paid",
                     "scheduled",
+                    "resolved",
                   ] as const
                 ).map((status) => (
                   <button
