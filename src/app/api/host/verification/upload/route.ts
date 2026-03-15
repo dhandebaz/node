@@ -1,7 +1,26 @@
 import { NextResponse } from "next/server";
-import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
+import { maskAadhaar } from "@/lib/services/kycService";
 import { geminiService } from "@/lib/services/geminiService";
+import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
+
+function normalizeDocumentNumber(
+  documentType: string,
+  value: string | null | undefined,
+): string {
+  const rawValue = value?.trim();
+  if (!rawValue) return "";
+
+  if (documentType === "AADHAAR") {
+    return maskAadhaar(rawValue) ?? "";
+  }
+
+  if (documentType === "PAN") {
+    return rawValue.toUpperCase();
+  }
+
+  return rawValue;
+}
 
 export async function POST(req: Request) {
   try {
@@ -29,8 +48,8 @@ export async function POST(req: Request) {
 
     const arrayBuffer = await file.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString("base64");
-
     const verification = await geminiService.verifyDocument(base64, file.type);
+
     if (!verification.isValid) {
       return NextResponse.json(
         {
@@ -73,7 +92,10 @@ export async function POST(req: Request) {
     const extractedData = {
       name: verification.details?.name || "",
       dob: verification.details?.dob || "",
-      document_number: verification.details?.idNumber || "",
+      document_number: normalizeDocumentNumber(
+        verification.documentType,
+        verification.details?.idNumber,
+      ),
       address: verification.details?.address || "",
       document_type: verification.documentType,
       confidence: verification.confidence,
@@ -106,7 +128,9 @@ export async function POST(req: Request) {
       documentId: doc?.id || null,
     });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Internal Server Error";
+    const message =
+      error instanceof Error ? error.message : "Internal Server Error";
+
     if (message.includes("Active Tenant Context Missing")) {
       return NextResponse.json({ error: "Tenant ID required" }, { status: 400 });
     }

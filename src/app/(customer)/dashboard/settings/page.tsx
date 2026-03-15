@@ -27,6 +27,16 @@ export default async function CustomerSettingsPage() {
 
   if (!tenant) return null;
 
+  const verificationDetails = [
+    tenant.aadhaar_number
+      ? `Aadhaar verified (${tenant.aadhaar_number})`
+      : null,
+    tenant.pan_number ? `PAN verified (${tenant.pan_number})` : null,
+    tenant.tax_id && tenant.tax_id !== tenant.pan_number
+      ? `Tax ID on file (${tenant.tax_id})`
+      : null,
+  ].filter(Boolean) as string[];
+
   return (
     <div className="space-y-8">
       <div>
@@ -125,15 +135,20 @@ export default async function CustomerSettingsPage() {
                   </div>
                 </div>
               </div>
-              <div className="grid md:grid-cols-2 gap-4 text-sm text-zinc-500">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  <span>Aadhaar Verified ({tenant.aadhaar_number})</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
-                  <span>PAN Verified ({tenant.pan_number})</span>
-                </div>
+              <div className="grid gap-4 text-sm text-zinc-500 md:grid-cols-2">
+                {verificationDetails.length > 0 ? (
+                  verificationDetails.map((detail) => (
+                    <div key={detail} className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      <span>{detail}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    <span>Verification documents are on file.</span>
+                  </div>
+                )}
               </div>
               <div className="mt-6">
                 <DownloadSignedAgreementButton />

@@ -21,7 +21,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { tenantId, signatureBase64 } = body;
     const resolvedTenantId =
-      (typeof tenantId === "string" && tenantId) || (await requireActiveTenant());
+      (typeof tenantId === "string" && tenantId) ||
+      (await requireActiveTenant());
 
     if (!signatureBase64) {
       return NextResponse.json({ error: "Signature required" }, { status: 400 });
@@ -131,8 +132,7 @@ export async function POST(req: Request) {
       doc.text("Signature image could not be embedded.", marginX, y + 18);
     }
 
-    const pdfBuffer = doc.output("arraybuffer");
-    const pdfBytes = Buffer.from(pdfBuffer);
+    const pdfBytes = Buffer.from(doc.output("arraybuffer"));
     const sha256 = createHash("sha256").update(pdfBytes).digest("hex");
     const filename = `agreement-${agreementVersion}-${crypto.randomUUID()}.pdf`;
     const storagePath = `legal/${resolvedTenantId}/${filename}`;
@@ -164,7 +164,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: tenantError.message }, { status: 500 });
     }
 
-    const { error: insertError } = await admin
+    const { error: agreementError } = await admin
       .from("tenant_legal_agreements")
       .insert({
         tenant_id: resolvedTenantId,
@@ -177,16 +177,18 @@ export async function POST(req: Request) {
         signer_user_agent: signerUserAgent,
       });
 
-    if (insertError) {
+    if (agreementError) {
       return NextResponse.json(
-        { error: insertError.message || "Failed to record agreement" },
+        { error: agreementError.message || "Failed to record agreement" },
         { status: 500 },
       );
     }
 
     return NextResponse.json({ success: true, redirectUrl: "/dashboard" });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Internal Server Error";
+    const message =
+      error instanceof Error ? error.message : "Internal Server Error";
+
     if (message.includes("Active Tenant Context Missing")) {
       return NextResponse.json({ error: "Tenant ID required" }, { status: 400 });
     }
