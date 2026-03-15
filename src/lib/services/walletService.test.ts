@@ -24,14 +24,18 @@ const mockFrom = vi.fn((table?: string) => ({
 }));
 
 vi.mock("@/lib/supabase/server", () => ({
-  getSupabaseServer: vi.fn(() => Promise.resolve({
-    from: mockFrom,
-    rpc: mockRpc,
-  })),
-  getSupabaseAdmin: vi.fn(() => Promise.resolve({
-    from: mockFrom,
-    rpc: mockRpc,
-  })),
+  getSupabaseServer: vi.fn(() =>
+    Promise.resolve({
+      from: mockFrom,
+      rpc: mockRpc,
+    }),
+  ),
+  getSupabaseAdmin: vi.fn(() =>
+    Promise.resolve({
+      from: mockFrom,
+      rpc: mockRpc,
+    }),
+  ),
 }));
 
 // Mock logger to prevent spam during tests
@@ -50,27 +54,36 @@ describe("WalletService", () => {
 
   describe("getBalance", () => {
     it("should return balance as a number when record exists", async () => {
-      mockSingle.mockResolvedValueOnce({ data: { balance: 150.50 }, error: null });
-      
+      mockSingle.mockResolvedValueOnce({
+        data: { balance: 150.5 },
+        error: null,
+      });
+
       const balance = await WalletService.getBalance("tenant-123");
-      
-      expect(balance).toBe(150.50);
+
+      expect(balance).toBe(150.5);
       expect(mockFrom).toHaveBeenCalledWith("wallets");
     });
 
     it("should return 0 and not throw when record is missing (PGRST116)", async () => {
-      mockSingle.mockResolvedValueOnce({ data: null, error: { code: 'PGRST116', message: 'Not found' } });
-      
+      mockSingle.mockResolvedValueOnce({
+        data: null,
+        error: { code: "PGRST116", message: "Not found" },
+      });
+
       const balance = await WalletService.getBalance("tenant-123");
-      
+
       expect(balance).toBe(0);
     });
 
     it("should return 0 when other database error occurs", async () => {
-      mockSingle.mockResolvedValueOnce({ data: null, error: { code: 'OTHER', message: 'DB Error' } });
-      
+      mockSingle.mockResolvedValueOnce({
+        data: null,
+        error: { code: "OTHER", message: "DB Error" },
+      });
+
       const balance = await WalletService.getBalance("tenant-123");
-      
+
       expect(balance).toBe(0);
     });
   });
@@ -78,67 +91,76 @@ describe("WalletService", () => {
   describe("deductCredits", () => {
     it("should call record_ai_usage_v1 RPC with correct parameters", async () => {
       mockRpc.mockResolvedValueOnce({ data: { success: true }, error: null });
-      
+
       const result = await WalletService.deductCredits(
-        "tenant-123", 
-        10, 
-        "ai_reply", 
-        { model: "gemini-1.5" }
+        "tenant-123",
+        10,
+        "ai_reply",
+        { model: "gemini-1.5" },
       );
-      
+
       expect(result).toBe(true);
-      expect(mockRpc).toHaveBeenCalledWith('record_ai_usage_v1', expect.objectContaining({
-        p_tenant_id: "tenant-123",
-        p_amount: -10, // Deduction should be negative
-        p_action_type: "ai_reply",
-      }));
+      expect(mockRpc).toHaveBeenCalledWith(
+        "record_ai_usage_v1",
+        expect.objectContaining({
+          p_tenant_id: "tenant-123",
+          p_amount: -10, // Deduction should be negative
+          p_action_type: "ai_reply",
+        }),
+      );
     });
 
     it("should throw AppError with BAD_REQUEST when insufficient funds (error code 23514)", async () => {
-      mockRpc.mockResolvedValueOnce({ 
-        data: null, 
-        error: { code: '23514', message: 'new row for relation "wallets" violates check constraint' } 
+      mockRpc.mockResolvedValue({
+        data: null,
+        error: {
+          code: "23514",
+          message: 'new row for relation "wallets" violates check constraint',
+        },
       });
-      
-      await expect(WalletService.deductCredits("tenant-123", 100, "ai_reply"))
-        .rejects.toThrow(AppError);
-        
-      try {
-        await WalletService.deductCredits("tenant-123", 100, "ai_reply");
-      } catch (e: any) {
-        expect(e.code).toBe(ErrorCode.BAD_REQUEST);
-        expect(e.message).toContain("Insufficient wallet balance");
-      }
+
+      await expect(
+        WalletService.deductCredits("tenant-123", 100, "ai_reply"),
+      ).rejects.toMatchObject({
+        code: ErrorCode.BAD_REQUEST,
+        message: expect.stringContaining("Insufficient wallet balance"),
+      });
     });
 
     it("should throw AppError with INTERNAL_ERROR on other RPC failures", async () => {
-      mockRpc.mockResolvedValueOnce({ data: { success: false, error: 'System crash' }, error: null });
-      
-      await expect(WalletService.deductCredits("tenant-123", 10, "ai_reply"))
-        .rejects.toThrow(AppError);
-        
-      try {
-        await WalletService.deductCredits("tenant-123", 10, "ai_reply");
-      } catch (e: any) {
-        expect(e.code).toBe(ErrorCode.INTERNAL_ERROR);
-      }
+      mockRpc.mockResolvedValue({
+        data: { success: false, error: "System crash" },
+        error: null,
+      });
+
+      await expect(
+        WalletService.deductCredits("tenant-123", 10, "ai_reply"),
+      ).rejects.toMatchObject({
+        code: ErrorCode.INTERNAL_ERROR,
+      });
     });
   });
 
   describe("hasSufficientBalance", () => {
     it("should return true when balance is greater than or equal to cost", async () => {
       mockSingle.mockResolvedValueOnce({ data: { balance: 50 }, error: null });
-      
-      const hasFunds = await WalletService.hasSufficientBalance("tenant-123", 40);
-      
+
+      const hasFunds = await WalletService.hasSufficientBalance(
+        "tenant-123",
+        40,
+      );
+
       expect(hasFunds).toBe(true);
     });
 
     it("should return false when balance is less than cost", async () => {
       mockSingle.mockResolvedValueOnce({ data: { balance: 30 }, error: null });
-      
-      const hasFunds = await WalletService.hasSufficientBalance("tenant-123", 40);
-      
+
+      const hasFunds = await WalletService.hasSufficientBalance(
+        "tenant-123",
+        40,
+      );
+
       expect(hasFunds).toBe(false);
     });
   });

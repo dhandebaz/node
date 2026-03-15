@@ -16,15 +16,19 @@ vi.mock("next/server", () => {
   return {
     NextRequest: class MockNextRequest {
       nextUrl: any;
+      method = "GET";
       headers = new Map();
       cookies = {
+        get: vi.fn((_name: string) => undefined),
         getAll: () => [],
         set: vi.fn(),
+        delete: vi.fn(),
       };
       url: string;
       constructor(url: string, init: any = {}) {
         this.url = url;
         this.nextUrl = new URL(url);
+        if (init?.method) this.method = init.method;
       }
     },
     NextResponse: {
@@ -33,7 +37,7 @@ vi.mock("next/server", () => {
       })),
       redirect: vi.fn((url: URL) => ({
         status: 302,
-        url: url.toString()
+        url: url.toString(),
       })),
     },
   };
@@ -48,31 +52,31 @@ describe("proxy middleware", () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
     const { NextRequest } = await import("next/server");
     const req = new NextRequest("http://localhost:3000/dashboard");
-    
+
     const res = await proxy(req as unknown as NextRequest);
     expect((res as any).url).toContain("/login");
   });
 
   it("should block non-admins from admin routes", async () => {
-    mockGetUser.mockResolvedValue({ 
-      data: { user: { id: "1", user_metadata: { role: "owner" } } }, 
-      error: null 
+    mockGetUser.mockResolvedValue({
+      data: { user: { id: "1", user_metadata: { role: "owner" } } },
+      error: null,
     });
     const { NextRequest } = await import("next/server");
     const req = new NextRequest("http://localhost:3000/admin/dashboard");
-    
+
     const res = await proxy(req as unknown as NextRequest);
     expect((res as any).url).toContain("/dashboard");
   });
 
   it("should allow admins to access admin routes", async () => {
-    mockGetUser.mockResolvedValue({ 
-      data: { user: { id: "1", user_metadata: { role: "admin" } } }, 
-      error: null 
+    mockGetUser.mockResolvedValue({
+      data: { user: { id: "1", user_metadata: { role: "admin" } } },
+      error: null,
     });
     const { NextRequest, NextResponse } = await import("next/server");
     const req = new NextRequest("http://localhost:3000/admin/dashboard");
-    
+
     await proxy(req as unknown as NextRequest);
     expect(NextResponse.next).toHaveBeenCalled();
   });

@@ -7,20 +7,23 @@ export async function POST(req: Request) {
   try {
     const supabase = await getSupabaseServer();
     const admin = await getSupabaseAdmin();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const formData = await req.formData();
-    const file = formData.get("file") as File;
-    const tenantIdFromBody = formData.get("tenantId") as string | null;
-    const tenantId =
-      (typeof tenantIdFromBody === "string" && tenantIdFromBody ? tenantIdFromBody : null) ||
+    const file = formData.get("file");
+    const tenantIdFromBody = formData.get("tenantId");
+    const resolvedTenantId =
+      (typeof tenantIdFromBody === "string" && tenantIdFromBody) ||
       (await requireActiveTenant());
 
-    if (!file) {
+    if (!(file instanceof File)) {
       return NextResponse.json({ error: "File required" }, { status: 400 });
     }
 
@@ -30,15 +33,21 @@ export async function POST(req: Request) {
     const verification = await geminiService.verifyDocument(base64, file.type);
     if (!verification.isValid) {
       return NextResponse.json(
-        { error: verification.reason || "Could not verify document. Please upload a clearer photo." },
-        { status: 400 }
+        {
+          error:
+            verification.reason ||
+            "Could not verify document. Please upload a clearer photo.",
+        },
+        { status: 400 },
       );
     }
 
     const extension =
-      file.name.includes(".") ? file.name.split(".").pop() : file.type.split("/")[1] || "bin";
+      file.name.includes(".")
+        ? file.name.split(".").pop()
+        : file.type.split("/")[1] || "bin";
     const objectName = `${crypto.randomUUID()}.${extension}`;
-    const storagePath = `kyc/${tenantId}/${user.id}/${objectName}`;
+    const storagePath = `kyc/${resolvedTenantId}/${user.id}/${objectName}`;
 
     const { error: uploadError } = await admin.storage
       .from("kyc")
@@ -48,7 +57,10 @@ export async function POST(req: Request) {
       });
 
     if (uploadError) {
-      return NextResponse.json({ error: uploadError.message || "Upload failed" }, { status: 500 });
+      return NextResponse.json(
+        { error: uploadError.message || "Upload failed" },
+        { status: 500 },
+      );
     }
 
     const normalizedType =
@@ -70,7 +82,7 @@ export async function POST(req: Request) {
     const { data: doc, error: docError } = await admin
       .from("kyc_documents")
       .insert({
-        tenant_id: tenantId,
+        tenant_id: resolvedTenantId,
         user_id: user.id,
         document_type: normalizedType,
         file_path: storagePath,
@@ -81,7 +93,10 @@ export async function POST(req: Request) {
       .single();
 
     if (docError) {
-      return NextResponse.json({ error: docError.message || "Failed to store document record" }, { status: 500 });
+      return NextResponse.json(
+        { error: docError.message || "Failed to store document record" },
+        { status: 500 },
+      );
     }
 
     return NextResponse.json({
@@ -90,11 +105,12 @@ export async function POST(req: Request) {
       extractedData,
       documentId: doc?.id || null,
     });
-  } catch (error: any) {
-    console.error("Upload error:", error);
-    if (String(error?.message || "").includes("Active Tenant Context Missing")) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal Server Error";
+    if (message.includes("Active Tenant Context Missing")) {
       return NextResponse.json({ error: "Tenant ID required" }, { status: 400 });
     }
-    return NextResponse.json({ error: error.message }, { status: 500 });
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

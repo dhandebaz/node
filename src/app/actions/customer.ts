@@ -14,14 +14,17 @@ import { revalidatePath } from "next/cache";
 // Helper to get current user or throw
 async function getCurrentUser(): Promise<User> {
   const session = await getSession();
-  
+
   if (!session?.userId) throw new Error("Unauthorized: No session");
-  
+
   const user = await userService.getUserById(session.userId);
   if (user) return user;
 
   const supabase = await getSupabaseServer();
-  const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+  const {
+    data: { user: authUser },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !authUser) {
     throw new Error("Unauthorized: User not found");
   }
@@ -33,29 +36,43 @@ async function getCurrentUser(): Promise<User> {
     tenants: DBTenant;
   };
 
-  const [{ data: account }, { data: tenantUserResult }, { data: kaisaAccount }] = await Promise.all([
-    supabase.from("accounts").select("*").eq("user_id", authUser.id).maybeSingle(),
+  const [
+    { data: account },
+    { data: tenantUserResult },
+    { data: kaisaAccount },
+  ] = await Promise.all([
     supabase
-      .from("tenant_users")
-      .select(`
-        tenant_id, 
-        role, 
-        tenants (
-          id, 
-          name, 
-          owner_user_id, 
-          created_at, 
-          business_type, 
-          early_access, 
-          kyc_status, 
-          pan_number, 
-          aadhaar_number, 
-          kyc_verified_at
-        )
-      `)
+      .from("accounts")
+      .select("*")
       .eq("user_id", authUser.id)
       .maybeSingle(),
-    supabase.from("kaisa_accounts").select("*").eq("user_id", authUser.id).maybeSingle(),
+    supabase
+      .from("tenant_users")
+      .select(
+        `
+        tenant_id,
+        role,
+        tenants (
+          id,
+          name,
+          owner_user_id,
+          created_at,
+          business_type,
+          early_access,
+          kyc_status,
+          pan_number,
+          aadhaar_number,
+          kyc_verified_at
+        )
+      `,
+      )
+      .eq("user_id", authUser.id)
+      .maybeSingle(),
+    supabase
+      .from("kaisa_accounts")
+      .select("*")
+      .eq("user_id", authUser.id)
+      .maybeSingle(),
   ]);
 
   // Safely cast the result to our type (Supabase types can be tricky with joins)
@@ -83,7 +100,7 @@ async function getCurrentUser(): Promise<User> {
   const authRole = String(authUser.user_metadata?.role || "customer");
   const isAdmin = authRole === "admin" || authRole === "superadmin";
   const isKaisaUser = !!kaisaAccount || account?.product_type === "ai_employee";
-  
+
   // Robust Onboarding Check (Consistent with API/Middleware)
   const onboardingStatus = await OnboardingService.getStatus(authUser.id);
   const onboarding = onboardingStatus.isComplete ? "completed" : "pending";
@@ -96,7 +113,8 @@ async function getCurrentUser(): Promise<User> {
       createdAt: authUser.created_at,
     },
     profile: {
-      fullName: (authUser.user_metadata?.full_name as string | undefined) || null,
+      fullName:
+        (authUser.user_metadata?.full_name as string | undefined) || null,
     },
     status: {
       account: "active",
@@ -139,7 +157,7 @@ export async function getCustomerProfile() {
     roles: user.roles,
     products: user.products,
     metadata: user.metadata,
-    tenant: user.tenant
+    tenant: user.tenant,
   };
 }
 
@@ -147,13 +165,14 @@ export async function getCustomerProfile() {
 
 export async function getKaisaDashboardData() {
   const user = await getCurrentUser();
-  if (!user.roles.isKaisaUser) throw new Error("Access Denied: Not a Kaisa user");
+  if (!user.roles.isKaisaUser)
+    throw new Error("Access Denied: Not a Kaisa user");
 
   const [tasks, activity, credits, config] = await Promise.all([
     kaisaService.getUserTasks(user.identity.id),
     kaisaService.getUserActivityLog(user.identity.id),
     kaisaService.getCreditUsage(user.identity.id),
-    kaisaService.getConfig()
+    kaisaService.getConfig(),
   ]);
 
   return {
@@ -162,21 +181,53 @@ export async function getKaisaDashboardData() {
     tasks,
     activity,
     credits,
-    integrations: config.integrations
+    integrations: config.integrations,
   };
 }
 
-export async function toggleKaisaModuleAction(moduleName: string, enabled: boolean): Promise<void> {
-    const user = await getCurrentUser();
-    // In a real app, validate if module is allowed for business type
-    // Mock update:
-    if (enabled) {
-        if (!user.products.kaisa?.activeModules.includes(moduleName)) {
-            user.products.kaisa?.activeModules.push(moduleName);
-        }
-    } else {
-        user.products.kaisa!.activeModules = user.products.kaisa!.activeModules.filter(m => m !== moduleName);
-    }
+export async function toggleKaisaModuleAction(
+  moduleName: string,
+  enabled: boolean,
+): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user.products.kaisa?.tenantId)
+    throw new Error("No active Kaisa workspace found");
+
+  const supabase = await getSupabaseServer();
+
+  // Fetch current active_modules from DB
+  const { data: account, error: fetchError } = await supabase
+    .from("kaisa_accounts")
+    .select("active_modules")
+    .eq("user_id", user.identity.id)
+    .maybeSingle();
+
+  if (fetchError)
+    throw new Error("Failed to fetch Kaisa account: " + fetchError.message);
+
+  const currentModules: string[] = (account?.active_modules as string[]) ?? [];
+
+  let updatedModules: string[];
+  if (enabled) {
+    updatedModules = currentModules.includes(moduleName)
+      ? currentModules
+      : [...currentModules, moduleName];
+  } else {
+    updatedModules = currentModules.filter((m) => m !== moduleName);
+  }
+
+  const { error: updateError } = await supabase
+    .from("kaisa_accounts")
+    .update({
+      active_modules: updatedModules,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("user_id", user.identity.id);
+
+  if (updateError)
+    throw new Error("Failed to update module: " + updateError.message);
+
+  revalidatePath("/dashboard/ai/settings");
 }
 
 // --- Support Actions ---
@@ -187,42 +238,46 @@ export async function getCustomerTickets() {
 }
 
 export async function createCustomerTicket(formData: FormData): Promise<void> {
-    try {
-        const user = await getCurrentUser();
-        const subject = formData.get("subject") as string;
-        const product = formData.get("product") as "ai_employee" | "general";
-        const message = formData.get("message") as string;
-        const priority = formData.get("priority") as "low" | "medium" | "high";
+  try {
+    const user = await getCurrentUser();
+    const subject = formData.get("subject") as string;
+    const product = formData.get("product") as "ai_employee" | "general";
+    const message = formData.get("message") as string;
+    const priority = formData.get("priority") as "low" | "medium" | "high";
 
-        if (!subject || !product || !message) {
-            throw new Error("Missing required fields");
-        }
-
-        await supportService.createTicket({
-            userId: user.identity.id,
-            subject,
-            product,
-            priority: priority || "medium",
-            status: "open"
-        });
-
-        // Add initial message
-        // In a real app, this would be part of createTicket or a separate call
-    } catch (error) {
-        console.error("Create ticket error:", error);
-        throw new Error("Failed to create ticket");
+    if (!subject || !product || !message) {
+      throw new Error("Missing required fields");
     }
+
+    await supportService.createTicket({
+      userId: user.identity.id,
+      subject,
+      product,
+      priority: priority || "medium",
+      status: "open",
+    });
+
+    // Add initial message
+    // In a real app, this would be part of createTicket or a separate call
+  } catch (error) {
+    console.error("Create ticket error:", error);
+    throw new Error("Failed to create ticket");
+  }
 }
 
-export async function createTicketAction(subject: string, product: "ai_employee" | "general", message: string): Promise<void> {
+export async function createTicketAction(
+  subject: string,
+  product: "ai_employee" | "general",
+  message: string,
+): Promise<void> {
   const user = await getCurrentUser();
-  
+
   const ticket = await supportService.createTicket({
     userId: user.identity.id,
     subject,
     product,
     priority: "medium",
-    status: "open"
+    status: "open",
   });
 
   // Add initial message
@@ -230,7 +285,7 @@ export async function createTicketAction(subject: string, product: "ai_employee"
     id: `MSG-${Date.now()}`,
     sender: "user",
     message,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -247,7 +302,7 @@ export async function updateTenantProfileAction(updates: {
   if (!user.tenant?.id) throw new Error("No active workspace found");
 
   const supabase = await getSupabaseServer();
-  
+
   const { error } = await supabase
     .from("tenants")
     .update({
@@ -278,7 +333,7 @@ export async function updateAiSettingsAction(updates: {
   if (!user.tenant?.id) throw new Error("No active workspace found");
 
   const supabase = await getSupabaseServer();
-  
+
   // 1. Get current settings
   const { data: tenant } = await supabase
     .from("tenants")
@@ -289,14 +344,14 @@ export async function updateAiSettingsAction(updates: {
   const currentSettings = tenant?.ai_settings || {};
   const newSettings = {
     ...currentSettings,
-    ...updates
+    ...updates,
   };
 
   // 2. Update settings
   const { error } = await supabase
     .from("tenants")
     .update({
-      ai_settings: newSettings
+      ai_settings: newSettings,
     })
     .eq("id", user.tenant.id);
 

@@ -1,10 +1,33 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
 
-export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+const ALLOWED_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "application/pdf",
+];
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+
+function getExtension(mimeType: string): string {
+  const map: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/heic": "heic",
+    "application/pdf": "pdf",
+  };
+  return map[mimeType] || "bin";
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const { id: guestId } = await params;
     const tenantId = await requireActiveTenant();
@@ -23,52 +46,169 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     const formData = await request.formData();
-    const frontImage = formData.get("frontImage") as File;
-    const backImage = formData.get("backImage") as File;
-    const documentType = formData.get("documentType") as string;
+    const frontImage = formData.get("frontImage") as File | null;
+    const backImage = formData.get("backImage") as File | null;
+    const documentType = formData.get("documentType") as string | null;
 
     if (!frontImage || !documentType) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields: frontImage and documentType" },
+        { status: 400 },
+      );
     }
 
-    // Mock Upload (In real app, upload to storage bucket)
-    // const { data: uploadData, error: uploadError } = await supabase.storage.from('ids').upload(...)
-    const mockPath = `secure/ids/${tenantId}/${guestId}/${Date.now()}_front.jpg`;
+    if (!ALLOWED_MIME_TYPES.includes(frontImage.type)) {
+      return NextResponse.json(
+        {
+          error: `Unsupported file type: ${frontImage.type}. Allowed: JPEG, PNG, WEBP, HEIC, PDF`,
+        },
+        { status: 415 },
+      );
+    }
+
+    if (frontImage.size > MAX_FILE_SIZE_BYTES) {
+      return NextResponse.json(
+        { error: "Front image exceeds 10 MB limit" },
+        { status: 413 },
+      );
+    }
+
+    const timestamp = Date.now();
+    const uploadedPaths: { side: string; path: string }[] = [];
+
+    // Upload front image
+    const frontBuffer = Buffer.from(await frontImage.arrayBuffer());
+    const frontExt = getExtension(frontImage.type);
+    const frontPath = `secure/ids/${tenantId}/${guestId}/${timestamp}_front.${frontExt}`;
+
+    const { error: frontUploadError } = await supabase.storage
+      .from("ids")
+      .upload(frontPath, frontBuffer, {
+        contentType: frontImage.type,
+        upsert: false,
+      });
+
+    if (frontUploadError) {
+      console.error("Front image upload error:", frontUploadError);
+      return NextResponse.json(
+        { error: `Failed to upload front image: ${frontUploadError.message}` },
+        { status: 500 },
+      );
+    }
+
+    uploadedPaths.push({ side: "front", path: frontPath });
+
+    // Upload back image if provided
+    let backPath: string | null = null;
+    if (backImage && backImage.size > 0) {
+      if (!ALLOWED_MIME_TYPES.includes(backImage.type)) {
+        return NextResponse.json(
+          { error: `Unsupported file type for back image: ${backImage.type}` },
+          { status: 415 },
+        );
+      }
+      if (backImage.size > MAX_FILE_SIZE_BYTES) {
+        return NextResponse.json(
+          { error: "Back image exceeds 10 MB limit" },
+          { status: 413 },
+        );
+      }
+
+      const backBuffer = Buffer.from(await backImage.arrayBuffer());
+      const backExt = getExtension(backImage.type);
+      backPath = `secure/ids/${tenantId}/${guestId}/${timestamp}_back.${backExt}`;
+
+      const { error: backUploadError } = await supabase.storage
+        .from("ids")
+        .upload(backPath, backBuffer, {
+          contentType: backImage.type,
+          upsert: false,
+        });
+
+      if (backUploadError) {
+        console.error("Back image upload error:", backUploadError);
+        // Clean up front image since the overall operation failed
+        await supabase.storage.from("ids").remove([frontPath]);
+        return NextResponse.json(
+          { error: `Failed to upload back image: ${backUploadError.message}` },
+          { status: 500 },
+        );
+      }
+
+      uploadedPaths.push({ side: "back", path: backPath });
+    }
+
+    // Persist document record
+    const { error: docInsertError } = await supabase
+      .from("guest_id_documents")
+      .insert({
+        tenant_id: tenantId,
+        guest_id: guestId,
+        document_type: documentType,
+        front_path: frontPath,
+        back_path: backPath,
+        status: "submitted",
+        created_at: new Date().toISOString(),
+      });
+
+    // If the table doesn't exist yet, fall back gracefully — status update still proceeds
+    if (docInsertError) {
+      console.warn(
+        "guest_id_documents insert warning (table may not exist yet):",
+        docInsertError.message,
+      );
+    }
 
     // Update Guest Status
-    const { data: updated, error: updateError } = await supabase
+    const { error: updateError } = await supabase
       .from("guests")
       .update({
         id_verification_status: "submitted",
-        // Store metadata in a separate table usually, but for now assuming guest table has fields or we just update status
-        // If guest table has metadata column:
-        // metadata: { documentType, frontPath: mockPath }
+        id_document_path: frontPath,
+        id_document_type: documentType,
+        id_submitted_at: new Date().toISOString(),
       })
       .eq("id", guestId)
-      .select()
-      .single();
+      .eq("tenant_id", tenantId);
 
     if (updateError) {
-      return NextResponse.json({ error: "Failed to update guest status" }, { status: 500 });
+      console.error("Guest status update error:", updateError);
+      // Clean up uploaded files since the overall operation failed
+      const paths = uploadedPaths.map((u) => u.path);
+      await supabase.storage.from("ids").remove(paths);
+      return NextResponse.json(
+        { error: "Failed to update guest verification status" },
+        { status: 500 },
+      );
     }
 
     // Log Event
     await logEvent({
       tenant_id: tenantId,
-      actor_type: "user", // Guest is the user here technically, or system if proxy
+      actor_type: "user",
       event_type: EVENT_TYPES.ID_SUBMITTED,
       entity_type: "guest",
       entity_id: guestId,
-      metadata: { documentType }
+      metadata: {
+        documentType,
+        frontPath,
+        backPath,
+        hasBothSides: !!backPath,
+      },
     });
 
     return NextResponse.json({
       success: true,
       status: "submitted",
-      guestId
+      guestId,
+      frontPath,
+      backPath,
     });
-
   } catch (error: any) {
-    return NextResponse.json({ error: error?.message || "Internal Server Error" }, { status: 500 });
+    console.error("Upload ID error:", error);
+    return NextResponse.json(
+      { error: error?.message || "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }

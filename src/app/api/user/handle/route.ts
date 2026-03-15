@@ -1,13 +1,55 @@
 import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
+
+/**
+ * GET /api/user/handle?handle=<value>
+ * Check whether a handle is available (no auth required — public availability check).
+ */
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const handle = searchParams.get("handle")?.toLowerCase().trim();
+
+    if (!handle) {
+      return NextResponse.json(
+        { error: "handle query param required" },
+        { status: 400 },
+      );
+    }
+
+    // Validate format: 3-30 chars, lowercase, alphanumeric + hyphen
+    if (!/^[a-z0-9-]{3,30}$/.test(handle)) {
+      return NextResponse.json(
+        {
+          available: false,
+          error: "Invalid handle format (3–30 chars, a–z, 0–9, hyphen only)",
+        },
+        { status: 200 },
+      );
+    }
+
+    const admin = await getSupabaseAdmin();
+    const { data: existing } = await admin
+      .from("tenants")
+      .select("id")
+      .eq("username", handle)
+      .maybeSingle();
+
+    return NextResponse.json({ available: !existing });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
 
 export async function POST(req: Request) {
   try {
     const supabase = await getSupabaseServer();
     const admin = await getSupabaseAdmin();
-    
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -16,12 +58,18 @@ export async function POST(req: Request) {
     const { handle, tenantId } = body;
 
     if (!handle || !tenantId) {
-      return NextResponse.json({ error: "Handle and Tenant ID required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Handle and Tenant ID required" },
+        { status: 400 },
+      );
     }
 
     // Validate format: 3-30 chars, lowercase, alphanumeric + hyphen
     if (!/^[a-z0-9-]{3,30}$/.test(handle)) {
-        return NextResponse.json({ error: "Invalid handle format" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid handle format" },
+        { status: 400 },
+      );
     }
 
     // Check availability
@@ -32,7 +80,7 @@ export async function POST(req: Request) {
       .maybeSingle();
 
     if (existing) {
-        return NextResponse.json({ error: "Handle taken" }, { status: 409 });
+      return NextResponse.json({ error: "Handle taken" }, { status: 409 });
     }
 
     // Verify ownership
@@ -43,15 +91,15 @@ export async function POST(req: Request) {
       .eq("user_id", user.id)
       .single();
 
-    if (!membership || membership.role !== 'owner') {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (!membership || membership.role !== "owner") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const { error } = await admin
       .from("tenants")
       .update({
         username: handle,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq("id", tenantId);
 
@@ -59,7 +107,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, url: `https://nodebase.co/@${handle}` });
+    return NextResponse.json({
+      success: true,
+      url: `https://nodebase.co/@${handle}`,
+    });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

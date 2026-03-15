@@ -1,14 +1,23 @@
-import { User, Bell, Shield, Smartphone, Monitor, CheckCircle2, FileCheck } from "lucide-react";
+import {
+  User,
+  Bell,
+  Shield,
+  Smartphone,
+  Monitor,
+  CheckCircle2,
+  FileCheck,
+  ArrowRight,
+} from "lucide-react";
 import { getCustomerProfile } from "@/app/actions/customer";
 import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
-import { KYCVerificationForm } from "@/components/dashboard/settings/KYCVerificationForm";
 import { ComplianceHubCard } from "@/components/dashboard/settings/ComplianceHubCard";
 import { BusinessProfileSettings } from "@/components/dashboard/settings/BusinessProfileSettings";
 import { TeamManagement } from "@/components/dashboard/settings/TeamManagement";
 import { DownloadSignedAgreementButton } from "@/components/dashboard/settings/DownloadSignedAgreementButton";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function CustomerSettingsPage() {
   const profile = await getCustomerProfile();
@@ -27,7 +36,7 @@ export default async function CustomerSettingsPage() {
 
       <div className="grid gap-8">
         <BusinessProfileSettings tenant={tenant} />
-        
+
         <TeamManagement />
 
         {/* Profile Section */}
@@ -44,32 +53,40 @@ export default async function CustomerSettingsPage() {
           <div className="p-6 space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">User ID</label>
-                <input 
-                  type="text" 
-                  value={profile.identity.id} 
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  User ID
+                </label>
+                <input
+                  type="text"
+                  value={profile.identity.id}
                   readOnly
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 cursor-not-allowed opacity-70"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Mobile Number (Primary)</label>
-                 <div className="relative">
-                    <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-                    <input 
-                    type="text" 
-                    value={profile.identity.phone} 
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  Mobile Number (Primary)
+                </label>
+                <div className="relative">
+                  <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <input
+                    type="text"
+                    value={profile.identity.phone}
                     readOnly
                     className="w-full bg-zinc-950 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-white focus:outline-none focus:border-blue-500 cursor-not-allowed opacity-70"
-                    />
-                 </div>
-                 <p className="text-xs text-zinc-500 mt-1">Used for login and OTP.</p>
+                  />
+                </div>
+                <p className="text-xs text-zinc-500 mt-1">
+                  Used for login and OTP.
+                </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">Email (Optional)</label>
-                <input 
-                  type="email" 
-                  value={profile.identity.email || ""} 
+                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                  Email (Optional)
+                </label>
+                <input
+                  type="email"
+                  value={profile.identity.email || ""}
                   readOnly
                   placeholder="Not set"
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 cursor-not-allowed opacity-70"
@@ -80,42 +97,79 @@ export default async function CustomerSettingsPage() {
         </div>
 
         {/* KYC Section */}
-        {tenant.kyc_status === 'verified' ? (
+        {tenant.kyc_status === "verified" ? (
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
             <div className="p-6 border-b border-zinc-800 flex items-center gap-4">
               <div className="p-3 bg-zinc-800 rounded-lg">
                 <FileCheck className="w-6 h-6 text-green-500" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">KYC Verification</h2>
-                <p className="text-sm text-zinc-400">Identity verification status</p>
+                <h2 className="text-lg font-semibold text-white">
+                  KYC Verification
+                </h2>
+                <p className="text-sm text-zinc-400">
+                  Identity verification status
+                </p>
               </div>
             </div>
             <div className="p-6">
-               <div className="flex items-center gap-3 p-4 bg-green-500/10 rounded-lg border border-green-500/20 mb-4">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
-                  <div>
-                      <div className="font-medium text-green-400">Verification Complete</div>
-                      <div className="text-sm text-green-500/80">Your identity has been verified. You have full access to all features.</div>
+              <div className="flex items-center gap-3 p-4 bg-green-500/10 rounded-lg border border-green-500/20 mb-4">
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <div>
+                  <div className="font-medium text-green-400">
+                    Verification Complete
                   </div>
-               </div>
-               <div className="grid md:grid-cols-2 gap-4 text-sm text-zinc-500">
-                  <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-green-500" />
-                      <span>Aadhaar Verified ({tenant.aadhaar_number})</span>
+                  <div className="text-sm text-green-500/80">
+                    Your identity has been verified. You have full access to all
+                    features.
                   </div>
-                  <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-green-500" />
-                      <span>PAN Verified ({tenant.pan_number})</span>
-                  </div>
-               </div>
-               <div className="mt-6">
-                 <DownloadSignedAgreementButton />
-               </div>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4 text-sm text-zinc-500">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-500" />
+                  <span>Aadhaar Verified ({tenant.aadhaar_number})</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-green-500" />
+                  <span>PAN Verified ({tenant.pan_number})</span>
+                </div>
+              </div>
+              <div className="mt-6">
+                <DownloadSignedAgreementButton />
+              </div>
             </div>
           </div>
         ) : (
-          <KYCVerificationForm />
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-zinc-800 flex items-center gap-4">
+              <div className="p-3 bg-zinc-800 rounded-lg">
+                <FileCheck className="w-6 h-6 text-purple-500" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-white">
+                  KYC Verification
+                </h2>
+                <p className="text-sm text-zinc-400">
+                  Complete identity verification to unlock the platform.
+                </p>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="rounded-lg border border-purple-500/20 bg-purple-500/10 p-4 text-sm text-zinc-200">
+                Your workspace still needs the host verification flow. Continue
+                to the guided verification page to submit your details, upload
+                your document, and sign the agreement.
+              </div>
+              <Link
+                href="/dashboard/verification"
+                className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-purple-500"
+              >
+                Continue verification
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
         )}
 
         <ComplianceHubCard tenant={tenant} />
@@ -127,7 +181,9 @@ export default async function CustomerSettingsPage() {
               <Bell className="w-6 h-6 text-yellow-500" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Notifications</h2>
+              <h2 className="text-lg font-semibold text-white">
+                Notifications
+              </h2>
               <p className="text-sm text-zinc-400">Manage how we contact you</p>
             </div>
           </div>
@@ -135,7 +191,9 @@ export default async function CustomerSettingsPage() {
             <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
               <div>
                 <div className="font-medium text-white">Product Updates</div>
-                <div className="text-sm text-zinc-400">Receive updates about your products</div>
+                <div className="text-sm text-zinc-400">
+                  Receive updates about your products
+                </div>
               </div>
               <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600 cursor-pointer">
                 <span className="translate-x-6 inline-block h-4 w-4 transform rounded-full bg-white transition-transform" />
@@ -144,9 +202,14 @@ export default async function CustomerSettingsPage() {
             <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
               <div>
                 <div className="font-medium text-white">Security Alerts</div>
-                <div className="text-sm text-zinc-400">Login alerts and critical notifications</div>
+                <div className="text-sm text-zinc-400">
+                  Login alerts and critical notifications
+                </div>
               </div>
-              <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600 cursor-pointer opacity-50 cursor-not-allowed" title="Always enabled">
+              <div
+                className="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-600 cursor-pointer opacity-50 cursor-not-allowed"
+                title="Always enabled"
+              >
                 <span className="translate-x-6 inline-block h-4 w-4 transform rounded-full bg-white transition-transform" />
               </div>
             </div>
@@ -161,46 +224,53 @@ export default async function CustomerSettingsPage() {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-white">Security</h2>
-              <p className="text-sm text-zinc-400">Manage your active sessions</p>
+              <p className="text-sm text-zinc-400">
+                Manage your active sessions
+              </p>
             </div>
           </div>
           <div className="p-6">
             <div className="space-y-4">
-                 <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
-                    <div className="flex items-center gap-3">
-                        <Monitor className="w-5 h-5 text-zinc-400" />
-                        <div>
-                            <div className="font-medium text-white">Current Session</div>
-                            <div className="text-sm text-zinc-400">Windows • Chrome • India</div>
-                        </div>
+              <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
+                <div className="flex items-center gap-3">
+                  <Monitor className="w-5 h-5 text-zinc-400" />
+                  <div>
+                    <div className="font-medium text-white">
+                      Current Session
                     </div>
-                    <div className="text-xs text-green-400 font-medium px-2 py-1 bg-green-500/10 rounded">
-                        Active Now
+                    <div className="text-sm text-zinc-400">
+                      Windows • Chrome • India
                     </div>
-                 </div>
-                 <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
-                    <div className="flex items-center gap-3">
-                        <Smartphone className="w-5 h-5 text-zinc-400" />
-                        <div>
-                            <div className="font-medium text-white">Mobile App</div>
-                            <div className="text-sm text-zinc-400">iOS • iPhone 14 • India</div>
-                        </div>
+                  </div>
+                </div>
+                <div className="text-xs text-green-400 font-medium px-2 py-1 bg-green-500/10 rounded">
+                  Active Now
+                </div>
+              </div>
+              <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
+                <div className="flex items-center gap-3">
+                  <Smartphone className="w-5 h-5 text-zinc-400" />
+                  <div>
+                    <div className="font-medium text-white">Mobile App</div>
+                    <div className="text-sm text-zinc-400">
+                      iOS • iPhone 14 • India
                     </div>
-                    <button className="text-xs text-red-400 hover:text-red-300 font-medium px-2 py-1 hover:bg-red-500/10 rounded transition-colors">
-                        Revoke
-                    </button>
-                 </div>
-            </div>
-            
-            <div className="mt-6 pt-6 border-t border-zinc-800">
-                <button className="text-red-400 hover:text-red-300 font-medium text-sm flex items-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    Log out of all devices
+                  </div>
+                </div>
+                <button className="text-xs text-red-400 hover:text-red-300 font-medium px-2 py-1 hover:bg-red-500/10 rounded transition-colors">
+                  Revoke
                 </button>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-zinc-800">
+              <button className="text-red-400 hover:text-red-300 font-medium text-sm flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                Log out of all devices
+              </button>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

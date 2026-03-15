@@ -27,23 +27,32 @@ export async function POST() {
   const capabilities = getPersonaCapabilities(tenant?.business_type);
   if (!capabilities.integrations.whatsapp) {
     await logEvent({
-        tenant_id: tenantId,
-        actor_type: 'user',
-        actor_id: session.userId,
-        event_type: EVENT_TYPES.ACTION_BLOCKED,
-        entity_type: 'integration',
-        entity_id: 'whatsapp',
-        metadata: { reason: "Persona capability restriction" }
+      tenant_id: tenantId,
+      actor_type: "user",
+      actor_id: session.userId,
+      event_type: EVENT_TYPES.ACTION_BLOCKED,
+      entity_type: "integration",
+      entity_id: "whatsapp",
+      metadata: { reason: "Persona capability restriction" },
     });
-    return NextResponse.json({ error: "WhatsApp integration is not enabled for your business type" }, { status: 403 });
+    return NextResponse.json(
+      {
+        error: "WhatsApp integration is not enabled for your business type",
+      },
+      { status: 403 },
+    );
   }
 
-  // 2. Mock Connection (In real life, this would be an OAuth flow or QR code scan)
+  // 2. Ensure app URL is configured
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
   if (!appUrl) {
-    return NextResponse.json({ error: "NEXT_PUBLIC_APP_URL is not set" }, { status: 500 });
+    return NextResponse.json(
+      { error: "NEXT_PUBLIC_APP_URL is not set" },
+      { status: 500 },
+    );
   }
 
+  // 3. Start WAHA session — registers webhook and returns QR code URL if not already authenticated
   const webhookUrl = `${appUrl}/api/integrations/webhook/whatsapp?tenantId=${tenantId}`;
   const { status, qrUrl } = await wahaService.startSession({
     sessionName: tenantId,
@@ -52,21 +61,34 @@ export async function POST() {
 
   const integrationStatus = status === "WORKING" ? "active" : "pending_qr";
 
-  const { error } = await supabase
-    .from("integrations")
-    .upsert({
+  // 4. Persist integration record
+  const { error } = await supabase.from("integrations").upsert(
+    {
       tenant_id: tenantId,
       user_id: session.userId,
       provider: "whatsapp",
       status: integrationStatus,
       connected_name: "WhatsApp",
       last_synced_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }, { onConflict: "tenant_id, provider" });
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "tenant_id, provider" },
+  );
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // 5. Log event
+  await logEvent({
+    tenant_id: tenantId,
+    actor_type: "user",
+    actor_id: session.userId,
+    event_type: EVENT_TYPES.INTEGRATION_CONNECTED,
+    entity_type: "integration",
+    entity_id: "whatsapp",
+    metadata: { status: integrationStatus },
+  });
 
   return NextResponse.json({ success: true, status: integrationStatus, qrUrl });
 }

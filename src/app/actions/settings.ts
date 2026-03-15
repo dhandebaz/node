@@ -1,20 +1,35 @@
-
 "use server";
 
 import { settingsService } from "@/lib/services/settingsService";
+import { getSession } from "@/lib/auth/session";
 import { revalidatePath } from "next/cache";
-import { 
-  AuthSettings, 
-  IntegrationConfig, 
-  PlatformSettings, 
-  NotificationSettings, 
+import {
+  AuthSettings,
+  IntegrationConfig,
+  PlatformSettings,
+  NotificationSettings,
   SecuritySettings,
-  ApiSettings
+  ApiSettings,
 } from "@/types/settings";
 
-const ADMIN_ID = "SUPERADMIN-01"; // Mock ID
+/**
+ * Resolves the current admin's user ID from the session.
+ * Throws if the user is not authenticated or not an admin/superadmin.
+ */
+async function getAdminId(): Promise<string> {
+  const session = await getSession();
+  if (!session?.userId) {
+    throw new Error("Unauthorized: No active session");
+  }
+  const role = String(session.role || "");
+  if (role !== "admin" && role !== "superadmin") {
+    throw new Error("Forbidden: Admin role required");
+  }
+  return session.userId;
+}
 
-// Getters
+// ─── Getters ──────────────────────────────────────────────────────────────────
+
 export async function getAppSettingsAction() {
   return await settingsService.getSettings();
 }
@@ -23,64 +38,104 @@ export async function getSettingsAuditLogsAction() {
   return await settingsService.getAuditLogs();
 }
 
-// Auth
-export async function updateAuthSettingsAction(updates: Partial<AuthSettings>): Promise<void> {
-  await settingsService.updateAuthSettings(ADMIN_ID, updates);
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+export async function updateAuthSettingsAction(
+  updates: Partial<AuthSettings>,
+): Promise<void> {
+  const adminId = await getAdminId();
+  await settingsService.updateAuthSettings(adminId, updates);
   revalidatePath("/admin/settings");
 }
 
-// Integrations
-export async function toggleIntegrationAction(id: string, enabled: boolean): Promise<void> {
-  await settingsService.toggleIntegration(ADMIN_ID, id, enabled);
+// ─── Integrations ─────────────────────────────────────────────────────────────
+
+export async function toggleIntegrationAction(
+  id: string,
+  enabled: boolean,
+): Promise<void> {
+  const adminId = await getAdminId();
+  await settingsService.toggleIntegration(adminId, id, enabled);
   revalidatePath("/admin/settings");
 }
 
-export async function updateIntegrationAction(id: string, updates: Partial<IntegrationConfig>): Promise<void> {
-  await settingsService.updateIntegration(ADMIN_ID, id, updates);
+export async function updateIntegrationAction(
+  id: string,
+  updates: Partial<IntegrationConfig>,
+): Promise<void> {
+  const adminId = await getAdminId();
+  await settingsService.updateIntegration(adminId, id, updates);
   revalidatePath("/admin/settings");
 }
 
-// API
-export async function updateApiSettingsAction(updates: Partial<ApiSettings>): Promise<void> {
-  await settingsService.updateApi(ADMIN_ID, updates);
+// ─── API ──────────────────────────────────────────────────────────────────────
+
+export async function updateApiSettingsAction(
+  updates: Partial<ApiSettings>,
+): Promise<void> {
+  const adminId = await getAdminId();
+  await settingsService.updateApi(adminId, updates);
   revalidatePath("/admin/settings");
 }
 
 export async function rotateApiKeysAction(): Promise<void> {
-  await settingsService.rotateApiKeys(ADMIN_ID);
+  const adminId = await getAdminId();
+  await settingsService.rotateApiKeys(adminId);
   revalidatePath("/admin/settings");
 }
 
-// Features
-export async function toggleFeatureAction(id: string, enabled: boolean): Promise<void> {
-  await settingsService.toggleFeature(ADMIN_ID, id, enabled);
+// ─── Features ─────────────────────────────────────────────────────────────────
+
+export async function toggleFeatureAction(
+  id: string,
+  enabled: boolean,
+): Promise<void> {
+  const adminId = await getAdminId();
+  await settingsService.toggleFeature(adminId, id, enabled);
   revalidatePath("/admin/settings");
 }
 
-// Platform
-export async function updatePlatformAction(updates: Partial<PlatformSettings>): Promise<void> {
-  await settingsService.updatePlatform(ADMIN_ID, updates);
+// ─── Platform ─────────────────────────────────────────────────────────────────
+
+export async function updatePlatformAction(
+  updates: Partial<PlatformSettings>,
+): Promise<void> {
+  const adminId = await getAdminId();
+  await settingsService.updatePlatform(adminId, updates);
   revalidatePath("/admin/settings");
 }
 
-export async function updateSignupAction(product: keyof PlatformSettings["signupEnabled"], enabled: boolean): Promise<void> {
-  await settingsService.updatePlatformSignups(ADMIN_ID, product, enabled);
+export async function updateSignupAction(
+  product: keyof PlatformSettings["signupEnabled"],
+  enabled: boolean,
+): Promise<void> {
+  const adminId = await getAdminId();
+  await settingsService.updatePlatformSignups(adminId, product, enabled);
   revalidatePath("/admin/settings");
 }
 
-// Notifications
-export async function updateNotificationsAction(updates: Partial<NotificationSettings>): Promise<void> {
-  await settingsService.updateNotifications(ADMIN_ID, updates);
+// ─── Notifications ────────────────────────────────────────────────────────────
+
+export async function updateNotificationsAction(
+  updates: Partial<NotificationSettings>,
+): Promise<void> {
+  const adminId = await getAdminId();
+  await settingsService.updateNotifications(adminId, updates);
   revalidatePath("/admin/settings");
 }
 
-// Security
-export async function updateSecurityAction(updates: Partial<SecuritySettings>): Promise<void> {
-  await settingsService.updateSecurity(ADMIN_ID, updates);
+// ─── Security ─────────────────────────────────────────────────────────────────
+
+export async function updateSecurityAction(
+  updates: Partial<SecuritySettings>,
+): Promise<void> {
+  const adminId = await getAdminId();
+  await settingsService.updateSecurity(adminId, updates);
   revalidatePath("/admin/settings");
 }
 
 export async function forceLogoutAllAction(): Promise<void> {
-  await settingsService.forceLogoutAll(ADMIN_ID);
+  const adminId = await getAdminId();
+  await settingsService.forceLogoutAll(adminId);
   revalidatePath("/admin/settings");
 }

@@ -1,21 +1,29 @@
-
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
-import { BillingPlan, Subscription, Invoice, PaymentMethod } from "@/types/billing";
-import { DBBillingPlan, DBSubscription, DBInvoice, DBPaymentMethod } from "@/types/database";
-
+import {
+  BillingPlan,
+  Subscription,
+  Invoice,
+  PaymentMethod,
+} from "@/types/billing";
+import {
+  DBBillingPlan,
+  DBSubscription,
+  DBInvoice,
+  DBPaymentMethod,
+} from "@/types/database";
 
 export const billingService = {
-  async getPlans(product?: 'kaisa' | 'space'): Promise<BillingPlan[]> {
+  async getPlans(product?: "kaisa" | "space"): Promise<BillingPlan[]> {
     const supabase = await getSupabaseServer();
     let query = supabase.from("billing_plans").select("*");
-    
+
     if (product) {
       query = query.eq("product", product);
     }
-    
+
     const { data, error } = await query;
     if (error) return [];
-    
+
     return data.map(mapDbPlanToAppPlan);
   },
 
@@ -26,7 +34,7 @@ export const billingService = {
       .select("*")
       .eq("id", planId)
       .single();
-      
+
     if (error || !data) return undefined;
     return mapDbPlanToAppPlan(data);
   },
@@ -37,7 +45,7 @@ export const billingService = {
       .from("subscriptions")
       .select("*")
       .eq("user_id", userId);
-      
+
     if (error || !data) return [];
     return data.map(mapDbSubToAppSub);
   },
@@ -49,182 +57,196 @@ export const billingService = {
       .select("*")
       .eq("user_id", userId)
       .order("date", { ascending: false });
-      
+
     if (error) return [];
     return data.map(mapDbInvoiceToAppInvoice);
   },
-  
+
   async getUserPaymentMethods(userId: string): Promise<PaymentMethod[]> {
     const supabase = await getSupabaseServer();
     const { data, error } = await supabase
       .from("payment_methods")
       .select("*")
       .eq("user_id", userId);
-      
+
     if (error) return [];
     return data.map(mapDbPmToAppPm);
   },
 
   // Actions
-  async upgradeSubscription(userId: string, subscriptionId: string, newPlanId: string): Promise<Subscription> {
+  async upgradeSubscription(
+    userId: string,
+    subscriptionId: string,
+    newPlanId: string,
+  ): Promise<Subscription> {
     const supabase = await getSupabaseServer();
     const adminSupabase = await getSupabaseAdmin();
-    
+
     // 1. Get Subscription (User can read)
     const { data: sub } = await supabase
-        .from("subscriptions")
-        .select("*")
-        .eq("id", subscriptionId)
-        .eq("user_id", userId)
-        .single();
-        
+      .from("subscriptions")
+      .select("*")
+      .eq("id", subscriptionId)
+      .eq("user_id", userId)
+      .single();
+
     if (!sub) throw new Error("Subscription not found");
 
     // 2. Get New Plan (Public)
     const { data: plan } = await supabase
-        .from("billing_plans")
-        .select("*")
-        .eq("id", newPlanId)
-        .single();
-        
+      .from("billing_plans")
+      .select("*")
+      .eq("id", newPlanId)
+      .single();
+
     if (!plan) throw new Error("Plan not found");
 
     // 3. Update Subscription (Admin only)
     const { data: updatedSub, error } = await adminSupabase
-        .from("subscriptions")
-        .update({
-            plan_id: newPlanId,
-            updated_at: new Date().toISOString()
-        })
-        .eq("id", subscriptionId)
-        .select()
-        .single();
+      .from("subscriptions")
+      .update({
+        plan_id: newPlanId,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", subscriptionId)
+      .select()
+      .single();
 
     if (error || !updatedSub) throw new Error("Failed to update subscription");
-    
-    // 4. Create Invoice (Mock charge) - Admin
+
+    // 4. Create Invoice record for the upgrade - Admin
     await adminSupabase.from("invoices").insert({
-        user_id: userId,
-        subscription_id: subscriptionId,
-        amount: plan.price,
-        currency: plan.currency,
-        status: "paid",
-        items: [{ description: `Upgrade to ${plan.name}`, amount: plan.price }],
-        billing_details: { name: "User" } // Simplify
+      user_id: userId,
+      subscription_id: subscriptionId,
+      amount: plan.price,
+      currency: plan.currency,
+      status: "paid",
+      items: [{ description: `Upgrade to ${plan.name}`, amount: plan.price }],
+      billing_details: { name: "User" }, // Simplify
     });
-    
+
     // 5. Update User's cached plan - Admin
-    await adminSupabase.from("users").update({ subscription_plan: newPlanId }).eq("id", userId);
+    await adminSupabase
+      .from("users")
+      .update({ subscription_plan: newPlanId })
+      .eq("id", userId);
 
     return mapDbSubToAppSub(updatedSub);
   },
 
-  async cancelSubscription(userId: string, subscriptionId: string): Promise<Subscription> {
+  async cancelSubscription(
+    userId: string,
+    subscriptionId: string,
+  ): Promise<Subscription> {
     const supabase = await getSupabaseServer();
     const adminSupabase = await getSupabaseAdmin();
-    
+
     // Verify ownership
     const { data: sub } = await supabase
-        .from("subscriptions")
-        .select("id")
-        .eq("id", subscriptionId)
-        .eq("user_id", userId)
-        .single();
+      .from("subscriptions")
+      .select("id")
+      .eq("id", subscriptionId)
+      .eq("user_id", userId)
+      .single();
 
     if (!sub) throw new Error("Subscription not found");
-    
+
     const { data: updatedSub, error } = await adminSupabase
-        .from("subscriptions")
-        .update({
-            cancel_at_period_end: true,
-            updated_at: new Date().toISOString()
-        })
-        .eq("id", subscriptionId)
-        .select()
-        .single();
+      .from("subscriptions")
+      .update({
+        cancel_at_period_end: true,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", subscriptionId)
+      .select()
+      .single();
 
     if (error || !updatedSub) throw new Error("Failed to cancel subscription");
     return mapDbSubToAppSub(updatedSub);
   },
-  
-  async resumeSubscription(userId: string, subscriptionId: string): Promise<Subscription> {
+
+  async resumeSubscription(
+    userId: string,
+    subscriptionId: string,
+  ): Promise<Subscription> {
     const supabase = await getSupabaseServer();
     const adminSupabase = await getSupabaseAdmin();
 
     // Verify ownership
     const { data: sub } = await supabase
-        .from("subscriptions")
-        .select("id")
-        .eq("id", subscriptionId)
-        .eq("user_id", userId)
-        .single();
+      .from("subscriptions")
+      .select("id")
+      .eq("id", subscriptionId)
+      .eq("user_id", userId)
+      .single();
 
     if (!sub) throw new Error("Subscription not found");
-    
+
     const { data: updatedSub, error } = await adminSupabase
-        .from("subscriptions")
-        .update({
-            cancel_at_period_end: false,
-            updated_at: new Date().toISOString()
-        })
-        .eq("id", subscriptionId)
-        .select()
-        .single();
+      .from("subscriptions")
+      .update({
+        cancel_at_period_end: false,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", subscriptionId)
+      .select()
+      .single();
 
     if (error || !updatedSub) throw new Error("Failed to resume subscription");
     return mapDbSubToAppSub(updatedSub);
-  }
+  },
 };
 
 // Mappers
 function mapDbPlanToAppPlan(db: DBBillingPlan): BillingPlan {
-    return {
-        id: db.id,
-        name: db.name,
-        description: db.description,
-        price: Number(db.price),
-        currency: db.currency,
-        interval: db.interval as BillingPlan['interval'],
-        product: db.product as BillingPlan['product'],
-        features: db.features || [],
-        type: db.type as BillingPlan['type']
-    };
+  return {
+    id: db.id,
+    name: db.name,
+    description: db.description,
+    price: Number(db.price),
+    currency: db.currency,
+    interval: db.interval as BillingPlan["interval"],
+    product: db.product as BillingPlan["product"],
+    features: db.features || [],
+    type: db.type as BillingPlan["type"],
+  };
 }
 
 function mapDbSubToAppSub(db: DBSubscription): Subscription {
-    return {
-        id: db.id,
-        userId: db.user_id,
-        planId: db.plan_id,
-        status: db.status as Subscription['status'],
-        currentPeriodStart: db.current_period_start,
-        currentPeriodEnd: db.current_period_end,
-        cancelAtPeriodEnd: db.cancel_at_period_end,
-        metadata: db.metadata as Record<string, unknown> | undefined
-    };
+  return {
+    id: db.id,
+    userId: db.user_id,
+    planId: db.plan_id,
+    status: db.status as Subscription["status"],
+    currentPeriodStart: db.current_period_start,
+    currentPeriodEnd: db.current_period_end,
+    cancelAtPeriodEnd: db.cancel_at_period_end,
+    metadata: db.metadata as Record<string, unknown> | undefined,
+  };
 }
 
 function mapDbInvoiceToAppInvoice(db: DBInvoice): Invoice {
-    return {
-        id: db.id,
-        userId: db.user_id,
-        subscriptionId: db.subscription_id,
-        amount: Number(db.amount),
-        currency: db.currency,
-        status: db.status as Invoice['status'],
-        date: db.date,
-        items: db.items || [],
-        billingDetails: (db.billing_details as Invoice['billingDetails']) || { name: '' }
-    };
+  return {
+    id: db.id,
+    userId: db.user_id,
+    subscriptionId: db.subscription_id,
+    amount: Number(db.amount),
+    currency: db.currency,
+    status: db.status as Invoice["status"],
+    date: db.date,
+    items: db.items || [],
+    billingDetails: (db.billing_details as Invoice["billingDetails"]) || {
+      name: "",
+    },
+  };
 }
 
 function mapDbPmToAppPm(db: DBPaymentMethod): PaymentMethod {
-    return {
-        id: db.id,
-        type: db.type as PaymentMethod['type'],
-        last4: db.last4,
-        brand: db.brand,
-        isDefault: db.is_default
-    };
+  return {
+    id: db.id,
+    type: db.type as PaymentMethod["type"],
+    last4: db.last4,
+    brand: db.brand,
+    isDefault: db.is_default,
+  };
 }
-

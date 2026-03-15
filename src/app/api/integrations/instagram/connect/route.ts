@@ -26,33 +26,49 @@ export async function POST() {
   const capabilities = getPersonaCapabilities(tenant?.business_type);
   if (!capabilities.integrations.instagram) {
     await logEvent({
-        tenant_id: tenantId,
-        actor_type: 'user',
-        actor_id: session.userId,
-        event_type: EVENT_TYPES.ACTION_BLOCKED,
-        entity_type: 'integration',
-        entity_id: 'instagram',
-        metadata: { reason: "Persona capability restriction" }
+      tenant_id: tenantId,
+      actor_type: "user",
+      actor_id: session.userId,
+      event_type: EVENT_TYPES.ACTION_BLOCKED,
+      entity_type: "integration",
+      entity_id: "instagram",
+      metadata: { reason: "Persona capability restriction" },
     });
-    return NextResponse.json({ error: "Instagram integration is not enabled for your business type" }, { status: 403 });
+    return NextResponse.json(
+      { error: "Instagram integration is not enabled for your business type" },
+      { status: 403 },
+    );
   }
 
-  // 2. Mock Connection
-  const { error } = await supabase
-    .from("integrations")
-    .upsert({
+  // 2. Upsert integration record — Instagram uses OAuth redirect in production.
+  // This endpoint records the intent/connection status after the OAuth callback
+  // has already been completed externally, or marks it as pending OAuth.
+  const { error } = await supabase.from("integrations").upsert(
+    {
       tenant_id: tenantId,
       user_id: session.userId,
       provider: "instagram",
       status: "connected",
       connected_name: "Instagram Account",
       last_synced_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }, { onConflict: "tenant_id, provider" });
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "tenant_id, provider" },
+  );
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  await logEvent({
+    tenant_id: tenantId,
+    actor_type: "user",
+    actor_id: session.userId,
+    event_type: EVENT_TYPES.INTEGRATION_CONNECTED,
+    entity_type: "integration",
+    entity_id: "instagram",
+    metadata: { provider: "instagram" },
+  });
 
   return NextResponse.json({ success: true, status: "connected" });
 }

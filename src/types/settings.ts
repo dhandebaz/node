@@ -1,6 +1,9 @@
-
 export type OTPProvider = "Twilio" | "Supabase" | "Custom";
-export type EnvironmentMode = "production" | "staging" | "maintenance" | "readonly";
+export type EnvironmentMode =
+  | "production"
+  | "staging"
+  | "maintenance"
+  | "readonly";
 
 export interface AuthSettings {
   otpProvider: OTPProvider;
@@ -20,10 +23,10 @@ export interface IntegrationConfig {
   status: "connected" | "disconnected" | "error";
   lastChecked?: string;
   // Extended configuration fields
-  clientId?: string;     // PayPal, etc.
+  clientId?: string; // PayPal, etc.
   clientSecret?: string; // PayPal, Razorpay
-  vendorId?: string;     // Paddle
-  publicKey?: string;    // Paddle (Client-side token)
+  vendorId?: string; // Paddle
+  publicKey?: string; // Paddle (Client-side token)
   // Twilio specific fields
   accountSid?: string;
   authToken?: string;
@@ -41,7 +44,7 @@ export interface FeatureFlag {
 }
 
 export interface PlatformSettings {
-  environment: "mock" | "production";
+  environment: "production" | "development" | "test";
   maintenanceMode: boolean;
   readOnlyMode: boolean;
   signupEnabled: {
@@ -88,7 +91,13 @@ export interface AppSettings {
 export interface SettingsAuditLog {
   id: string;
   adminId: string;
-  section: "auth" | "integrations" | "features" | "platform" | "notifications" | "security";
+  section:
+    | "auth"
+    | "integrations"
+    | "features"
+    | "platform"
+    | "notifications"
+    | "security";
   action: string;
   details: string;
   timestamp: string;

@@ -1,31 +1,32 @@
+import { createHash } from "crypto";
 import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { jsPDF } from "jspdf";
 import { requireActiveTenant } from "@/lib/auth/tenant";
-import { createHash } from "crypto";
+import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
 
 export async function POST(req: Request) {
   try {
     const supabase = await getSupabaseServer();
     const admin = await getSupabaseAdmin();
-    
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
     const { tenantId, signatureBase64 } = body;
-    const resolvedTenantId: string =
-      (typeof tenantId === "string" && tenantId ? tenantId : null) ||
-      (await requireActiveTenant());
+    const resolvedTenantId =
+      (typeof tenantId === "string" && tenantId) || (await requireActiveTenant());
 
     if (!signatureBase64) {
       return NextResponse.json({ error: "Signature required" }, { status: 400 });
     }
 
-    // Get Tenant Details for PDF
     const { data: tenant } = await supabase
       .from("tenants")
       .select("id, name, address, tax_id")
@@ -37,11 +38,15 @@ export async function POST(req: Request) {
     }
 
     const signerEmail = user.email || null;
-    const signerIp = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
+    const signerIp =
+      req.headers.get("x-forwarded-for") ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
     const signerUserAgent = req.headers.get("user-agent") || "unknown";
     const signedAtIso = new Date().toISOString();
 
-    const nodebaseEntityName = process.env.NODEBASE_LEGAL_ENTITY_NAME || "Nodebase";
+    const nodebaseEntityName =
+      process.env.NODEBASE_LEGAL_ENTITY_NAME || "Nodebase";
     const nodebaseEntityAddress = process.env.NODEBASE_LEGAL_ENTITY_ADDRESS || "";
     const governingLaw = process.env.NODEBASE_GOVERNING_LAW || "India";
     const jurisdiction = process.env.NODEBASE_JURISDICTION || "India";
@@ -53,7 +58,7 @@ export async function POST(req: Request) {
       `This Agreement is entered into on ${signedAtIso} ("Effective Date") between:`,
       "",
       `1) ${nodebaseEntityName}${nodebaseEntityAddress ? `, ${nodebaseEntityAddress}` : ""} ("Nodebase")`,
-      `and`,
+      "and",
       `2) ${tenant.name}${tenant.address ? `, ${tenant.address}` : ""}${tenant.tax_id ? `, Tax ID: ${tenant.tax_id}` : ""} ("Business").`,
       "",
       "1. Purpose",
@@ -83,7 +88,6 @@ export async function POST(req: Request) {
       `Tenant ID: ${resolvedTenantId}`,
     ].join("\n");
 
-    // Generate PDF
     const doc = new jsPDF();
     doc.setProperties({
       title: `Nodebase Agreement - ${tenant.name}`,
@@ -141,11 +145,13 @@ export async function POST(req: Request) {
       });
 
     if (uploadError) {
-      return NextResponse.json({ error: uploadError.message || "Failed to store agreement" }, { status: 500 });
+      return NextResponse.json(
+        { error: uploadError.message || "Failed to store agreement" },
+        { status: 500 },
+      );
     }
 
-    // Update Tenant Status
-    const { error } = await admin
+    const { error: tenantError } = await admin
       .from("tenants")
       .update({
         legal_agreement_path: storagePath,
@@ -154,8 +160,8 @@ export async function POST(req: Request) {
       })
       .eq("id", resolvedTenantId);
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (tenantError) {
+      return NextResponse.json({ error: tenantError.message }, { status: 500 });
     }
 
     const { error: insertError } = await admin
@@ -172,18 +178,19 @@ export async function POST(req: Request) {
       });
 
     if (insertError) {
-      return NextResponse.json({ error: insertError.message || "Failed to record agreement" }, { status: 500 });
+      return NextResponse.json(
+        { error: insertError.message || "Failed to record agreement" },
+        { status: 500 },
+      );
     }
-
-    // Fire Webhook (Mock)
-    console.log(`[Webhook] Account verified for tenant ${resolvedTenantId}`);
 
     return NextResponse.json({ success: true, redirectUrl: "/dashboard" });
-  } catch (error: any) {
-    console.error("Agreement error:", error);
-    if (String(error?.message || "").includes("Active Tenant Context Missing")) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal Server Error";
+    if (message.includes("Active Tenant Context Missing")) {
       return NextResponse.json({ error: "Tenant ID required" }, { status: 400 });
     }
-    return NextResponse.json({ error: error.message }, { status: 500 });
+
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
