@@ -1,3 +1,5 @@
+import type { AIModel, AIProvider } from "@/lib/ai/config";
+
 export type OTPProvider = "Twilio" | "Supabase" | "Custom";
 export type EnvironmentMode =
   | "production"
@@ -71,6 +73,8 @@ export interface ApiSettings {
   webhookOutgoingEnabled: boolean;
   rotationLastPerformed?: string;
   geminiApiKey?: string;
+  kaisaProvider?: AIProvider;
+  kaisaModel?: AIModel;
 }
 
 export interface AnalyticsSettings {

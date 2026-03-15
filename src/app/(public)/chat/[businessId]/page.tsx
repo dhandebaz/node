@@ -1,11 +1,19 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Send, User, Phone, MessageSquare, Loader2, AlertCircle, RefreshCw } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
+import {
+  AlertCircle,
+  ArrowRight,
+  Loader2,
+  MessageSquareShare,
+  Phone,
+  RefreshCw,
+  Send,
+  User,
+} from "lucide-react";
 import { getCsrfToken } from "@/lib/api/csrf";
 
-// Types
 type Message = {
   id: string;
   content: string;
@@ -21,59 +29,57 @@ type GuestSession = {
   conversationId: string;
 };
 
+const inputClassName = "public-input";
+
 export default function PublicChatPage() {
   const params = useParams();
   const businessId = params.businessId as string;
-  
+  const storageKey = useMemo(() => `nodebase_chat_${businessId}`, [businessId]);
+
   const [session, setSession] = useState<GuestSession | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  // Form state
+  const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Load session from local storage on mount
   useEffect(() => {
-    const stored = localStorage.getItem(`nodebase_chat_${businessId}`);
-    if (stored) {
-      setSession(JSON.parse(stored));
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        setSession(JSON.parse(stored));
+      }
+    } catch {
+      localStorage.removeItem(storageKey);
+    } finally {
+      setInitializing(false);
     }
-    setInitializing(false);
-  }, [businessId]);
+  }, [storageKey]);
 
-  // Poll for messages if session exists
   useEffect(() => {
     if (!session) return;
-    
+
     const fetchMessages = async () => {
-        try {
-            const res = await fetch(`/api/chat/messages?conversationId=${session.conversationId}`);
-            if (res.ok) {
-                const data = await res.json();
-                // Merge with local state to preserve "sending" status if any?
-                // Actually, if we poll, we might overwrite local optimistic updates.
-                // Simple strategy: only add new messages that we don't have.
-                setMessages(prev => {
-                    const existingIds = new Set(prev.map(m => m.id));
-                    const newMsgs = data.filter((m: Message) => !existingIds.has(m.id));
-                    
-                    // Also update status of sent messages if they appear in backend
-                    // But backend IDs might be UUIDs vs our timestamp IDs.
-                    // This is tricky without a temporary ID mapping.
-                    // For now, let's just append new ones and keep local ones until reload.
-                    // Or better: Re-fetch all and replace, but that kills "sending" state.
-                    
-                    if (newMsgs.length === 0) return prev;
-                    return [...prev, ...newMsgs].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-                });
-            }
-        } catch (e) {
-            console.error(e);
-        }
+      try {
+        const response = await fetch(`/api/chat/messages?conversationId=${session.conversationId}`);
+        if (!response.ok) return;
+
+        const data = await response.json();
+        setMessages((current) => {
+          const localOnly = current.filter((message) => message.status === "sending");
+          const merged = [...data, ...localOnly];
+          const unique = new Map(merged.map((message) => [message.id, message]));
+          return [...unique.values()].sort(
+            (left, right) =>
+              new Date(left.timestamp).getTime() - new Date(right.timestamp).getTime(),
+          );
+        });
+      } catch {
+        // Silent polling failure, the surface keeps the last known state.
+      }
     };
 
     fetchMessages();
@@ -81,218 +87,354 @@ export default function PublicChatPage() {
     return () => clearInterval(interval);
   }, [session]);
 
-  // Scroll to bottom on new messages
   useEffect(() => {
-    if (scrollRef.current) {
-        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages]);
 
-  const handleStartChat = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name) return;
+  const handleStartChat = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!name.trim()) return;
 
     setLoading(true);
+    setError(null);
+
     try {
-        const csrf = getCsrfToken();
-        const res = await fetch("/api/chat/init", {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              ...(csrf ? { "x-csrf-token": csrf } : {})
-            },
-            body: JSON.stringify({ businessId, name, phone })
-        });
-        
-        if (!res.ok) throw new Error("Failed to start chat");
-        
-        const data = await res.json();
-        const newSession = {
-            id: data.guestId,
-            name,
-            phone,
-            conversationId: data.conversationId
-        };
-        
-        setSession(newSession);
-        localStorage.setItem(`nodebase_chat_${businessId}`, JSON.stringify(newSession));
-    } catch (err) {
-        alert("Could not start chat. Please try again.");
+      const csrf = getCsrfToken();
+      const response = await fetch("/api/chat/init", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrf ? { "x-csrf-token": csrf } : {}),
+        },
+        body: JSON.stringify({ businessId, name: name.trim(), phone: phone.trim() }),
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload?.error || "Could not start chat.");
+      }
+
+      const data = await response.json();
+      const nextSession = {
+        id: data.guestId,
+        name: name.trim(),
+        phone: phone.trim(),
+        conversationId: data.conversationId,
+      };
+
+      setSession(nextSession);
+      localStorage.setItem(storageKey, JSON.stringify(nextSession));
+    } catch (err: any) {
+      setError(err?.message || "Could not start chat. Please try again.");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
   const sendMessage = async (content: string, tempId: string) => {
     if (!session) return;
-    
+
     try {
-        const csrf = getCsrfToken();
-        const res = await fetch("/api/chat/send", {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              ...(csrf ? { "x-csrf-token": csrf } : {})
-            },
-            body: JSON.stringify({
-                conversationId: session.conversationId,
-                content,
-                sender: "guest"
-            })
-        });
+      const csrf = getCsrfToken();
+      const response = await fetch("/api/chat/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrf ? { "x-csrf-token": csrf } : {}),
+        },
+        body: JSON.stringify({
+          conversationId: session.conversationId,
+          content,
+          sender: "guest",
+        }),
+      });
 
-        if (!res.ok) throw new Error("Failed");
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload?.error || "Failed to send message.");
+      }
 
-        setMessages(prev => prev.map(m => 
-            m.id === tempId ? { ...m, status: "sent" } : m
-        ));
-    } catch (err) {
-        setMessages(prev => prev.map(m => 
-            m.id === tempId ? { ...m, status: "error" } : m
-        ));
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === tempId ? { ...message, status: "sent" } : message,
+        ),
+      );
+    } catch {
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === tempId ? { ...message, status: "error" } : message,
+        ),
+      );
     }
   };
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSend = async (event: React.FormEvent) => {
+    event.preventDefault();
     if (!input.trim() || !session) return;
 
-    const content = input;
-    const tempId = Date.now().toString();
-    const tempMsg: Message = {
-        id: tempId,
-        content,
-        sender: "guest",
-        timestamp: new Date().toISOString(),
-        status: "sending"
+    const content = input.trim();
+    const tempId = `temp-${Date.now()}`;
+    const tempMessage: Message = {
+      id: tempId,
+      content,
+      sender: "guest",
+      timestamp: new Date().toISOString(),
+      status: "sending",
     };
-    
-    setMessages(prev => [...prev, tempMsg]);
-    setInput("");
 
+    setMessages((current) => [...current, tempMessage]);
+    setInput("");
     await sendMessage(content, tempId);
   };
 
-  const handleRetry = (msg: Message) => {
-      if (msg.status === 'error') {
-          setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: 'sending' } : m));
-          sendMessage(msg.content, msg.id);
-      }
+  const handleRetry = (message: Message) => {
+    if (message.status !== "error") return;
+
+    setMessages((current) =>
+      current.map((entry) =>
+        entry.id === message.id ? { ...entry, status: "sending" } : entry,
+      ),
+    );
+    void sendMessage(message.content, message.id);
   };
 
-  if (initializing) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin" /></div>;
+  const handleResetConversation = () => {
+    localStorage.removeItem(storageKey);
+    setSession(null);
+    setMessages([]);
+    setInput("");
+    setError(null);
+  };
+
+  if (initializing) {
+    return (
+      <div className="public-container pb-20 pt-28 sm:pt-32 lg:pt-36">
+        <div className="mx-auto flex max-w-3xl items-center justify-center rounded-[2rem] border border-[var(--public-line)] bg-[rgba(255,251,244,0.82)] px-6 py-16">
+          <Loader2 className="h-8 w-8 animate-spin text-[var(--public-accent-strong)]" />
+        </div>
+      </div>
+    );
+  }
 
   if (!session) {
     return (
-        <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-4">
-            <div className="bg-white max-w-md w-full rounded-2xl shadow-xl p-8">
-                <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <MessageSquare className="w-8 h-8 text-white" />
-                    </div>
-                    <h1 className="text-2xl font-bold text-zinc-900">Chat with us</h1>
-                    <p className="text-zinc-500 mt-2">Enter your details to start chatting.</p>
+      <div className="public-container pb-20 pt-28 sm:pt-32 lg:pt-36">
+        <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,0.92fr)_minmax(18rem,1.08fr)]">
+          <section className="public-panel px-6 py-8 sm:px-8 sm:py-10">
+            <div className="relative z-10 space-y-6">
+              <div className="public-pill public-eyebrow">Guest messaging portal</div>
+              <h1 className="public-display text-4xl leading-[0.94] text-[var(--public-ink)] sm:text-5xl">
+                Start a direct conversation without calling the host repeatedly.
+              </h1>
+              <p className="max-w-2xl text-base leading-7 text-[var(--public-muted)]">
+                This chat surface is designed for guest questions, arrival coordination,
+                and operational follow-up. Start with your name, then message as needed.
+              </p>
+              <div className="grid gap-3">
+                <div className="public-inset rounded-[1.3rem] px-4 py-4">
+                  <div className="public-eyebrow">Use this for</div>
+                  <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                    Arrival questions, check-in coordination, and host follow-up
+                  </div>
                 </div>
-                
-                <form onSubmit={handleStartChat} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-700 mb-1">Name</label>
-                        <div className="relative">
-                            <User className="w-5 h-5 text-zinc-400 absolute left-3 top-2.5" />
-                            <input 
-                                type="text" 
-                                required
-                                value={name}
-                                onChange={e => setName(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Your name"
-                            />
-                        </div>
-                    </div>
-                     <div>
-                        <label className="block text-sm font-medium text-zinc-700 mb-1">Phone (Optional)</label>
-                        <div className="relative">
-                            <Phone className="w-5 h-5 text-zinc-400 absolute left-3 top-2.5" />
-                            <input 
-                                type="tel" 
-                                value={phone}
-                                onChange={e => setPhone(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="+1 234 567 8900"
-                            />
-                        </div>
-                    </div>
-                    <button 
-                        disabled={loading}
-                        className="w-full bg-blue-600 text-white font-bold py-2.5 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-                    >
-                        {loading ? "Starting..." : "Start Chat"}
-                    </button>
-                </form>
+                <div className="public-inset rounded-[1.3rem] px-4 py-4">
+                  <div className="public-eyebrow">What happens next</div>
+                  <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                    Your chat thread stays tied to the business workflow rather than a generic web form.
+                  </div>
+                </div>
+              </div>
             </div>
+          </section>
+
+          <section className="public-panel-soft p-6 sm:p-8">
+            <div className="space-y-6">
+              <div>
+                <div className="public-eyebrow">Start chat</div>
+                <h2 className="mt-3 text-2xl font-semibold text-[var(--public-ink)]">
+                  Tell the host who you are.
+                </h2>
+              </div>
+
+              <form onSubmit={handleStartChat} className="grid gap-4">
+                <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                  Name
+                  <div className="relative">
+                    <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--public-muted)]" />
+                    <input
+                      required
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      placeholder="Your name"
+                      className={`${inputClassName} pl-11`}
+                    />
+                  </div>
+                </label>
+
+                <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                  Phone (optional)
+                  <div className="relative">
+                    <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--public-muted)]" />
+                    <input
+                      value={phone}
+                      onChange={(event) => setPhone(event.target.value)}
+                      placeholder="+91 98765 43210"
+                      className={`${inputClassName} pl-11`}
+                    />
+                  </div>
+                </label>
+
+                {error ? (
+                  <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-[var(--public-accent-strong)]">
+                    {error}
+                  </div>
+                ) : null}
+
+                <button
+                  disabled={loading}
+                  className="public-button px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageSquareShare className="h-4 w-4" />}
+                  Start chat
+                </button>
+              </form>
+            </div>
+          </section>
         </div>
+      </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-50">
-        <header className="bg-white border-b border-zinc-200 px-4 py-3 flex items-center gap-3 shadow-sm">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                 <MessageSquare className="w-5 h-5 text-blue-600" />
+    <div className="public-container pb-20 pt-28 sm:pt-32 lg:pt-36">
+      <div className="mx-auto max-w-5xl space-y-6">
+        <section className="public-panel-soft p-5 sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+                <MessageSquareShare className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="public-eyebrow">Active conversation</div>
+                <h1 className="mt-2 text-2xl font-semibold text-[var(--public-ink)]">
+                  Guest thread for {session.name}
+                </h1>
+                <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+                  Use this window to message the business. Replies refresh automatically.
+                </p>
+              </div>
             </div>
-            <div>
-                <h1 className="font-bold text-zinc-900">Support Chat</h1>
-                <p className="text-xs text-zinc-500">We usually reply in a few minutes</p>
-            </div>
-        </header>
+            <button
+              type="button"
+              onClick={handleResetConversation}
+              className="public-button-secondary px-5 py-3 text-sm font-semibold"
+            >
+              Start over
+            </button>
+          </div>
+        </section>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={scrollRef}>
-            {messages.map((msg, i) => (
-                <div key={msg.id || i} className={`flex flex-col ${msg.sender === 'guest' ? 'items-end' : 'items-start'}`}>
-                    <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
-                        msg.sender === 'guest' 
-                        ? 'bg-blue-600 text-white rounded-br-none' 
-                        : 'bg-white border border-zinc-200 text-zinc-800 rounded-bl-none shadow-sm'
-                    }`}>
-                        {msg.content}
-                        <div className={`text-[10px] mt-1 flex items-center gap-1 ${msg.sender === 'guest' ? 'text-blue-200' : 'text-zinc-400'}`}>
-                            {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                            {msg.sender === 'guest' && (
-                                <span>
-                                    {msg.status === 'sending' && '...'}
-                                    {msg.status === 'error' && <AlertCircle className="w-3 h-3 text-red-300" />}
-                                </span>
-                            )}
-                        </div>
+        <section className="public-panel p-4 sm:p-6">
+          <div className="relative z-10 grid gap-4">
+            <div
+              ref={scrollRef}
+              className="min-h-[28rem] max-h-[34rem] space-y-3 overflow-y-auto rounded-[1.6rem] border border-[var(--public-line)] bg-[rgba(255,251,244,0.72)] p-4"
+            >
+              {messages.length === 0 ? (
+                <div className="flex h-full min-h-[20rem] items-center justify-center">
+                  <div className="max-w-md text-center">
+                    <div className="public-inset mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[var(--public-accent-soft)]/75 text-[var(--public-accent-strong)]">
+                      <MessageSquareShare className="h-6 w-6" />
                     </div>
-                    {msg.status === 'error' && (
-                        <button 
-                            onClick={() => handleRetry(msg)}
-                            className="text-xs text-red-500 flex items-center gap-1 mt-1 hover:underline"
-                        >
-                            <RefreshCw className="w-3 h-3" /> Retry
-                        </button>
-                    )}
+                    <h2 className="mt-4 text-xl font-semibold text-[var(--public-ink)]">
+                      Conversation opened
+                    </h2>
+                    <p className="mt-3 text-sm leading-6 text-[var(--public-muted)]">
+                      Send the first message when you are ready. This is the cleanest
+                      way to coordinate with the business without switching channels.
+                    </p>
+                  </div>
                 </div>
-            ))}
-        </div>
+              ) : (
+                messages.map((message) => {
+                  const isGuest = message.sender === "guest";
 
-        <div className="p-4 bg-white border-t border-zinc-200">
-            <form onSubmit={handleSend} className="flex gap-2">
-                <input 
-                    value={input}
-                    onChange={e => setInput(e.target.value)}
-                    placeholder="Type a message..."
-                    className="flex-1 bg-zinc-100 border-0 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button 
-                    disabled={!input.trim()}
-                    className="bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    <Send className="w-5 h-5" />
-                </button>
+                  return (
+                    <div
+                      key={message.id}
+                      className={`flex flex-col ${isGuest ? "items-end" : "items-start"}`}
+                    >
+                      <div
+                        className={[
+                          "max-w-[85%] rounded-[1.4rem] px-4 py-3 text-sm leading-6 shadow-[0_10px_18px_rgba(43,29,16,0.06)]",
+                          isGuest
+                            ? "bg-[var(--public-accent)] text-white"
+                            : "border border-[var(--public-line)] bg-white text-[var(--public-ink)]",
+                        ].join(" ")}
+                      >
+                        <div>{message.content}</div>
+                        <div
+                          className={`mt-2 flex items-center gap-2 text-[11px] ${
+                            isGuest ? "text-white/75" : "text-[var(--public-muted)]"
+                          }`}
+                        >
+                          <span>
+                            {new Intl.DateTimeFormat("en-IN", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }).format(new Date(message.timestamp))}
+                          </span>
+                          {isGuest && message.status === "sending" ? <span>Sending...</span> : null}
+                          {isGuest && message.status === "error" ? (
+                            <span className="inline-flex items-center gap-1 text-[rgb(122,29,22)]">
+                              <AlertCircle className="h-3 w-3" />
+                              Failed
+                            </span>
+                          ) : null}
+                        </div>
+                      </div>
+                      {message.status === "error" ? (
+                        <button
+                          type="button"
+                          onClick={() => handleRetry(message)}
+                          className="mt-2 inline-flex items-center gap-2 text-xs font-semibold text-[var(--public-accent-strong)]"
+                        >
+                          <RefreshCw className="h-3 w-3" />
+                          Retry
+                        </button>
+                      ) : null}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <form onSubmit={handleSend} className="flex flex-col gap-3 sm:flex-row">
+              <input
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                placeholder="Type your message..."
+                className={`${inputClassName} flex-1`}
+              />
+              <button
+                disabled={!input.trim()}
+                className="public-button px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Send className="h-4 w-4" />
+                Send
+              </button>
             </form>
-        </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--public-muted)]">
+              <div>This thread refreshes automatically every few seconds.</div>
+              <div className="public-pill text-[11px] font-semibold text-[var(--public-muted)]">
+                Workflow-linked guest conversation
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

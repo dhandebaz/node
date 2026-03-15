@@ -7,6 +7,7 @@ import { EVENT_TYPES } from "@/types/events";
 import { ControlService } from "@/lib/services/controlService";
 import { RazorpayService } from "@/lib/services/razorpayService";
 import { SubscriptionService } from "@/lib/services/subscriptionService";
+import { getAppUrl } from "@/lib/runtime-config";
 
 type Payload = {
   listingId: string;
@@ -28,7 +29,10 @@ const normalizeContact = (phone?: string | null, email?: string | null) => {
 export async function POST(request: Request) {
   try {
     const supabase = await getSupabaseServer();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -37,9 +41,12 @@ export async function POST(request: Request) {
 
     // Check kill switch
     try {
-      await ControlService.checkAction(tenantId, 'payment');
+      await ControlService.checkAction(tenantId, "payment");
     } catch (error: any) {
-      return NextResponse.json({ error: error.message }, { status: error?.status || 503 });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error?.status || 503 },
+      );
     }
 
     const body = (await request.json()) as Payload;
@@ -63,7 +70,10 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (listingError) {
-      return NextResponse.json({ error: listingError.message }, { status: 500 });
+      return NextResponse.json(
+        { error: listingError.message },
+        { status: 500 },
+      );
     }
 
     if (!listing) {
@@ -78,7 +88,10 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (!payoutAccount || payoutAccount.status !== "active") {
-      return NextResponse.json({ error: "Payout setup incomplete" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Payout setup incomplete" },
+        { status: 400 },
+      );
     }
 
     // Fetch Tenant Business Type to determine validation rules
@@ -88,27 +101,31 @@ export async function POST(request: Request) {
       .eq("id", tenantId)
       .single();
 
-    const businessType = tenant?.business_type || 'airbnb_host';
+    const businessType = tenant?.business_type || "airbnb_host";
 
     // Subscription Limit Check
-    const { allowed, limit, current } = await SubscriptionService.checkMonthlyLimit(tenantId, 'bookings');
+    const { allowed, limit, current } =
+      await SubscriptionService.checkMonthlyLimit(tenantId, "bookings");
     if (!allowed) {
       await logEvent({
         tenant_id: tenantId,
-        actor_type: 'user',
+        actor_type: "user",
         event_type: EVENT_TYPES.ACTION_BLOCKED,
-        entity_type: 'subscription',
-        entity_id: 'monthly_limit',
-        metadata: { limit, current, resource: 'bookings' }
+        entity_type: "subscription",
+        entity_id: "monthly_limit",
+        metadata: { limit, current, resource: "bookings" },
       });
-      return NextResponse.json({ 
-        error: `Monthly booking limit reached (${limit}). Upgrade your plan to accept more bookings.` 
-      }, { status: 403 });
+      return NextResponse.json(
+        {
+          error: `Monthly booking limit reached (${limit}). Upgrade your plan to accept more bookings.`,
+        },
+        { status: 403 },
+      );
     }
 
     // Overlap Check (Only for Airbnb and Doctor)
     // Kirana/Thrift allow concurrent orders (no date blocking)
-    if (businessType === 'airbnb_host' || businessType === 'doctor_clinic') {
+    if (businessType === "airbnb_host" || businessType === "doctor_clinic") {
       const { data: conflict } = await supabase
         .from("bookings")
         .select("id")
@@ -119,7 +136,10 @@ export async function POST(request: Request) {
         .maybeSingle();
 
       if (conflict) {
-        return NextResponse.json({ error: "Selected dates are already booked" }, { status: 409 });
+        return NextResponse.json(
+          { error: "Selected dates are already booked" },
+          { status: 409 },
+        );
       }
     }
 
@@ -154,13 +174,16 @@ export async function POST(request: Request) {
           email: guestEmail,
           channel: "direct",
           id_verification_status: "none",
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
         })
         .select("id")
         .single();
 
       if (guestError || !inserted) {
-        return NextResponse.json({ error: guestError?.message || "Failed to create guest" }, { status: 500 });
+        return NextResponse.json(
+          { error: guestError?.message || "Failed to create guest" },
+          { status: 500 },
+        );
       }
       guestId = inserted.id;
     }
@@ -177,24 +200,27 @@ export async function POST(request: Request) {
         amount,
         status: "payment_pending",
         source: "direct",
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       })
       .select("id")
       .single();
 
     if (bookingError || !booking) {
-      return NextResponse.json({ error: bookingError?.message || "Failed to create booking" }, { status: 500 });
+      return NextResponse.json(
+        { error: bookingError?.message || "Failed to create booking" },
+        { status: 500 },
+      );
     }
 
     // Log Booking Created
     await logEvent({
       tenant_id: tenantId,
-      actor_type: 'user',
+      actor_type: "user",
       actor_id: user.id,
       event_type: EVENT_TYPES.BOOKING_CREATED,
-      entity_type: 'booking',
+      entity_type: "booking",
       entity_id: booking.id,
-      metadata: { amount, listingId }
+      metadata: { amount, listingId },
     });
 
     // 1. Create Payment Record first to get ID
@@ -208,15 +234,18 @@ export async function POST(request: Request) {
         status: "pending",
         payment_link: "", // Placeholder, updated below
         paid_at: null,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       })
       .select("id")
       .single();
 
     if (paymentError || !payment) {
-      // Rollback booking? Or just fail? 
+      // Rollback booking? Or just fail?
       // Ideally rollback, but for now return error
-      return NextResponse.json({ error: paymentError?.message || "Failed to create payment record" }, { status: 500 });
+      return NextResponse.json(
+        { error: paymentError?.message || "Failed to create payment record" },
+        { status: 500 },
+      );
     }
 
     // 2. Create Razorpay Payment Link with internal_payment_id in notes
@@ -229,58 +258,71 @@ export async function POST(request: Request) {
         customer: {
           name: guestName,
           email: guestEmail || undefined,
-          contact: guestPhone || undefined
+          contact: guestPhone || undefined,
         },
         reference_id: booking.id,
-        callback_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/bookings/${booking.id}/confirmation`,
+        callback_url: `${getAppUrl()}/bookings/${booking.id}/confirmation`,
         notes: {
           internal_payment_id: payment.id,
           booking_id: booking.id,
-          tenant_id: tenantId
-        }
+          tenant_id: tenantId,
+        },
       });
     } catch (rzpError: any) {
       console.error("Razorpay Error:", rzpError);
       // Update payment status to failed?
-      await supabase.from("payments").update({ status: "failed", metadata: { error: rzpError.message } }).eq("id", payment.id);
-      return NextResponse.json({ error: "Failed to create payment link: " + rzpError.message }, { status: 502 });
+      await supabase
+        .from("payments")
+        .update({ status: "failed", metadata: { error: rzpError.message } })
+        .eq("id", payment.id);
+      return NextResponse.json(
+        { error: "Failed to create payment link: " + rzpError.message },
+        { status: 502 },
+      );
     }
 
     const paymentLink = paymentLinkData.short_url;
-    
+
     // 3. Update Payment Record with Link
     const { error: updateError } = await supabase
       .from("payments")
       .update({
         payment_link: paymentLink,
-        payment_link_id: paymentLinkData.id
+        payment_link_id: paymentLinkData.id,
       })
       .eq("id", payment.id);
 
     if (updateError) {
-       console.error("Failed to update payment with link", updateError);
-       // Non-critical if link was generated, but bad for UI.
+      console.error("Failed to update payment with link", updateError);
+      // Non-critical if link was generated, but bad for UI.
     }
 
     // Log Payment Link Created
     await logEvent({
       tenant_id: tenantId,
-      actor_type: 'user',
+      actor_type: "user",
       actor_id: user.id,
       event_type: EVENT_TYPES.PAYMENT_LINK_CREATED,
-      entity_type: 'payment',
+      entity_type: "payment",
       entity_id: payment.id,
-      metadata: { amount, bookingId: booking.id, paymentLinkId: paymentLinkData.id }
+      metadata: {
+        amount,
+        bookingId: booking.id,
+        paymentLinkId: paymentLinkData.id,
+      },
     });
 
-    return NextResponse.json({ 
-      success: true, 
-      paymentLink, 
+    return NextResponse.json({
+      success: true,
+      paymentLink,
       bookingId: booking.id,
-      paymentId: payment.id
+      paymentId: payment.id,
     });
   } catch (error: any) {
     console.error("Payment Link Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }

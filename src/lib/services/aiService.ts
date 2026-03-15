@@ -1,10 +1,16 @@
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { createAnthropic } from '@ai-sdk/anthropic';
-import { convertToModelMessages, generateText, streamText, type UIMessage } from 'ai';
-import { KnowledgeService } from './knowledgeService';
-
-export type AIProvider = 'google' | 'anthropic';
-export type AIModel = 'gemini-1.5-flash' | 'gemini-1.5-pro' | 'claude-3-opus-20240229' | 'claude-3-sonnet-20240229' | 'claude-3-haiku-20240307';
+import {
+  convertToModelMessages,
+  generateText,
+  streamText,
+  type UIMessage,
+} from "ai";
+import { KnowledgeService } from "./knowledgeService";
+import {
+  getGatewayProviderOptions,
+  type AIModel,
+  type AIProvider,
+} from "@/lib/ai/config";
+export type { AIModel, AIProvider } from "@/lib/ai/config";
 
 interface GenerateOptions {
   provider: AIProvider;
@@ -20,50 +26,41 @@ interface GenerateOptions {
 }
 
 export class AIService {
-  private google: ReturnType<typeof createGoogleGenerativeAI>;
-  private anthropic: ReturnType<typeof createAnthropic>;
-
-  constructor() {
-    // Initialize with default env vars, can be overridden per request
-    this.google = createGoogleGenerativeAI({
-      apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || '',
-    });
-    this.anthropic = createAnthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY || '',
-    });
+  private getModel(modelName: AIModel) {
+    return modelName;
   }
 
-  private getModel(provider: AIProvider, modelName: string, apiKey?: string) {
-    if (provider === 'google') {
-      const google = apiKey ? createGoogleGenerativeAI({ apiKey }) : this.google;
-      return google(modelName);
-    } else if (provider === 'anthropic') {
-      const anthropic = apiKey ? createAnthropic({ apiKey }) : this.anthropic;
-      return anthropic(modelName);
-    }
-    throw new Error(`Unsupported provider: ${provider}`);
-  }
-
-  async generate({ provider, model, tenantId, agentId, prompt, system, temperature, maxOutputTokens, apiKey }: GenerateOptions) {
-    const aiModel = this.getModel(provider, model, apiKey);
+  async generate({
+    provider,
+    model,
+    tenantId,
+    agentId,
+    prompt,
+    system,
+    temperature,
+    maxOutputTokens,
+    apiKey,
+  }: GenerateOptions) {
+    const aiModel = this.getModel(model);
+    const providerOptions = getGatewayProviderOptions(provider, apiKey);
     if (!prompt) {
-      throw new Error('Missing prompt');
+      throw new Error("Missing prompt");
     }
 
     // 1. Fetch Knowledge from RAG
     const knowledge = await KnowledgeService.queryKnowledge(tenantId, prompt);
-    
+
     // 2. Fetch Agent Instructions if applicable
     let agentContext = "";
     if (agentId) {
-      const { getSupabaseAdmin } = await import('@/lib/supabase/server');
+      const { getSupabaseAdmin } = await import("@/lib/supabase/server");
       const supabaseAdmin = await getSupabaseAdmin();
       const { data: agent } = await supabaseAdmin
-        .from('team_agents')
-        .select('name, role, instructions, personality')
-        .eq('id', agentId)
+        .from("team_agents")
+        .select("name, role, instructions, personality")
+        .eq("id", agentId)
         .single();
-      
+
       if (agent) {
         agentContext = `
           You are ${agent.name}, acting as ${agent.role}.
@@ -78,36 +75,59 @@ export class AIService {
       ${agentContext || system || "You are a helpful AI assistant."}
       ${knowledge ? `\n\nUSE THIS SPECIFIC KNOWLEDGE TO ANSWER:\n${knowledge}` : ""}
     `;
-    
+
     return await generateText({
       model: aiModel,
       prompt,
       system: augmentedSystem,
       temperature,
       maxOutputTokens,
+      providerOptions,
     });
   }
 
-  async stream({ provider, model, tenantId, agentId, prompt, messages, system, temperature, maxOutputTokens, apiKey }: GenerateOptions) {
-    const aiModel = this.getModel(provider, model, apiKey);
+  async stream({
+    provider,
+    model,
+    tenantId,
+    agentId,
+    prompt,
+    messages,
+    system,
+    temperature,
+    maxOutputTokens,
+    apiKey,
+  }: GenerateOptions) {
+    const aiModel = this.getModel(model);
+    const providerOptions = getGatewayProviderOptions(provider, apiKey);
 
     // Get the last user message for RAG query
-    const lastUserMessage = messages?.filter(m => m.role === 'user').pop()?.parts?.map(p => p.type === 'text' ? p.text : '').join(' ') || prompt || "";
-    
+    const lastUserMessage =
+      messages
+        ?.filter((m) => m.role === "user")
+        .pop()
+        ?.parts?.map((p) => (p.type === "text" ? p.text : ""))
+        .join(" ") ||
+      prompt ||
+      "";
+
     // 1. Fetch Knowledge from RAG
-    const knowledge = await KnowledgeService.queryKnowledge(tenantId, lastUserMessage);
-    
+    const knowledge = await KnowledgeService.queryKnowledge(
+      tenantId,
+      lastUserMessage,
+    );
+
     // 2. Fetch Agent Instructions if applicable
     let agentContext = "";
     if (agentId) {
-      const { getSupabaseAdmin } = await import('@/lib/supabase/server');
+      const { getSupabaseAdmin } = await import("@/lib/supabase/server");
       const supabaseAdmin = await getSupabaseAdmin();
       const { data: agent } = await supabaseAdmin
-        .from('team_agents')
-        .select('name, role, instructions, personality')
-        .eq('id', agentId)
+        .from("team_agents")
+        .select("name, role, instructions, personality")
+        .eq("id", agentId)
         .single();
-      
+
       if (agent) {
         agentContext = `
           You are ${agent.name}, acting as ${agent.role}.
@@ -130,11 +150,12 @@ export class AIService {
         system: augmentedSystem,
         temperature,
         maxOutputTokens,
+        providerOptions,
       });
     }
 
     if (!prompt) {
-      throw new Error('Missing prompt or messages');
+      throw new Error("Missing prompt or messages");
     }
 
     return await streamText({
@@ -143,6 +164,7 @@ export class AIService {
       system: augmentedSystem,
       temperature,
       maxOutputTokens,
+      providerOptions,
     });
   }
 }

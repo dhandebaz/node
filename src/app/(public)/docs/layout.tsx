@@ -1,35 +1,59 @@
-"use client";
-
+import Link from "next/link";
+import { ArrowRight, BookMarked } from "lucide-react";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
-import { Search } from "lucide-react";
+import { docsNavigation } from "@/lib/public-content";
 
 export default function DocsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="flex flex-col min-h-screen bg-brand-deep-red text-brand-bone pt-20 relative overflow-hidden font-sans selection:bg-brand-bone/20 bg-grid-pattern">
-      
-      {/* Mobile Search / Nav Header could go here */}
-      <div className="lg:hidden p-4 border-b border-brand-bone/10 flex items-center gap-4 sticky top-20 bg-brand-deep-red/90 backdrop-blur-md z-20">
-         <div className="relative flex-1">
-           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-bone/40" />
-           <input 
-             type="text" 
-             placeholder="Search docs..." 
-             className="w-full bg-brand-bone/5 border border-brand-bone/10 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-brand-bone/30 text-brand-bone placeholder:text-brand-bone/30"
-           />
-         </div>
-      </div>
+  const mobileLinks = docsNavigation.flatMap((section) => section.items);
 
-      <div className="flex container mx-auto px-6 max-w-7xl relative z-10">
-        <DocsSidebar />
-        
-        <main className="flex-1 min-w-0 py-10 lg:pl-10">
-          <div className="max-w-4xl mx-auto">
-             {children}
+  return (
+    <div className="public-container pb-20 pt-28 sm:pt-32 lg:pt-36">
+      <div className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
+        <aside className="hidden lg:sticky lg:top-28 lg:block">
+          <DocsSidebar />
+        </aside>
+
+        <main className="min-w-0 space-y-6">
+          <div className="public-panel-soft p-4 lg:hidden">
+            <div className="public-eyebrow">Jump to docs section</div>
+            <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
+              {mobileLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="public-pill whitespace-nowrap text-sm font-semibold text-[var(--public-ink)]"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
           </div>
+
+          <section className="public-panel-soft p-5 sm:p-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-3">
+                <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+                  <BookMarked className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="public-eyebrow">Documentation</div>
+                  <h1 className="public-display mt-2 text-2xl text-[var(--public-ink)]">
+                    Deployment notes, control surfaces, and implementation detail
+                  </h1>
+                </div>
+              </div>
+              <Link href="/company/contact" className="public-button-secondary px-5 py-3 text-sm font-semibold">
+                Need deployment help
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </section>
+
+          <div className="max-w-4xl">{children}</div>
         </main>
       </div>
     </div>

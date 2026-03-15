@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-
+import { cn } from "@/lib/utils";
 import { BusinessType } from "@/types";
 import { businessDetailsSchema } from "@/lib/validations/onboarding";
 
@@ -16,12 +15,15 @@ interface BusinessDetailsFormProps {
 
 const STORAGE_KEY = "onboarding_business_details";
 
-export function BusinessDetailsForm({ businessType, onSubmit, loading }: BusinessDetailsFormProps) {
+export function BusinessDetailsForm({
+  businessType,
+  onSubmit,
+  loading,
+}: BusinessDetailsFormProps) {
   const [propertyCount, setPropertyCount] = useState<number>(1);
   const [platforms, setPlatforms] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load from local storage
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -29,76 +31,73 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
         const parsed = JSON.parse(saved);
         if (parsed.propertyCount) setPropertyCount(parsed.propertyCount);
         if (parsed.platforms) setPlatforms(parsed.platforms);
-      } catch (e) {
-        console.error("Failed to load saved form state", e);
+      } catch {
+        localStorage.removeItem(STORAGE_KEY);
       }
     }
     setIsLoaded(true);
   }, []);
 
-  // Save to local storage
   useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ propertyCount, platforms }));
-    }
+    if (!isLoaded) return;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ propertyCount, platforms }));
   }, [propertyCount, platforms, isLoaded]);
 
-  // Configure questions based on persona
   const getQuestionConfig = () => {
     switch (businessType) {
       case "airbnb_host":
         return {
           countLabel: "How many properties do you manage?",
-          platformLabel: "Which platforms are you on?",
+          platformLabel: "Which channels matter most right now?",
           platforms: [
             { id: "airbnb", label: "Airbnb" },
             { id: "booking", label: "Booking.com" },
             { id: "mmt", label: "MakeMyTrip" },
             { id: "agoda", label: "Agoda" },
-            { id: "direct", label: "Direct / WhatsApp" },
-          ]
+            { id: "direct", label: "Direct or WhatsApp" },
+          ],
         };
       case "kirana_store":
         return {
-          countLabel: "Average daily orders?",
-          platformLabel: "How do you receive orders?",
+          countLabel: "Roughly how many daily orders do you handle?",
+          platformLabel: "How do customers reach you?",
           platforms: [
             { id: "whatsapp", label: "WhatsApp" },
             { id: "walkin", label: "Walk-in" },
-            { id: "phone", label: "Phone Call" },
-            { id: "swiggy", label: "Swiggy / Zomato" },
-            { id: "online", label: "Online Store" },
-          ]
+            { id: "phone", label: "Phone call" },
+            { id: "swiggy", label: "Swiggy or Zomato" },
+            { id: "online", label: "Online store" },
+          ],
         };
       case "doctor_clinic":
         return {
-          countLabel: "Average daily patients?",
-          platformLabel: "How do patients book?",
+          countLabel: "How many patients or appointments per day?",
+          platformLabel: "Where does appointment traffic come from?",
           platforms: [
-            { id: "call", label: "Phone Call" },
+            { id: "call", label: "Phone call" },
             { id: "walkin", label: "Walk-in" },
-            { id: "practo", label: "Practo / Zocdoc" },
+            { id: "practo", label: "Practo" },
             { id: "google", label: "Google Business" },
             { id: "whatsapp", label: "WhatsApp" },
-          ]
+          ],
         };
       case "thrift_store":
         return {
-          countLabel: "Items in inventory?",
-          platformLabel: "Where do you sell?",
+          countLabel: "How many active inventory items do you usually manage?",
+          platformLabel: "Where are you currently selling?",
           platforms: [
             { id: "instagram", label: "Instagram" },
             { id: "whatsapp", label: "WhatsApp" },
-            { id: "depop", label: "Depop / Poshmark" },
+            { id: "depop", label: "Depop or Poshmark" },
             { id: "website", label: "Website" },
-            { id: "popups", label: "Pop-up Stores" },
-          ]
+            { id: "popups", label: "Pop-up stores" },
+          ],
         };
       default:
         return {
-          countLabel: "How many units?",
-          platformLabel: "Which platforms?",
-          platforms: []
+          countLabel: "How many units should the employee manage?",
+          platformLabel: "Which channels should we plan around?",
+          platforms: [],
         };
     }
   };
@@ -106,96 +105,96 @@ export function BusinessDetailsForm({ businessType, onSubmit, loading }: Busines
   const config = getQuestionConfig();
 
   const togglePlatform = (id: string) => {
-    setPlatforms(prev => 
-      prev.includes(id) 
-        ? prev.filter(p => p !== id)
-        : [...prev, id]
+    setPlatforms((current) =>
+      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const result = businessDetailsSchema.safeParse({ propertyCount, platforms });
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
 
+    const result = businessDetailsSchema.safeParse({ propertyCount, platforms });
     if (!result.success) {
-      toast.error(result.error.issues[0]?.message || "Invalid input");
+      toast.error(result.error.issues[0]?.message || "Invalid input.");
       return;
     }
-    
-    // Clear storage on valid submit (optimistic)
+
     localStorage.removeItem(STORAGE_KEY);
-    
-    console.log("Submitting form with:", result.data); // Debug log
     onSubmit(result.data);
   };
 
-  if (!isLoaded) return null; // Prevent hydration mismatch
+  if (!isLoaded) return null;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="space-y-4">
-        <label className="block text-sm font-medium text-white/80 uppercase tracking-wider">
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="space-y-3">
+        <label className="block text-sm font-semibold text-[var(--public-ink)]">
           {config.countLabel}
         </label>
         <input
           type="number"
           min="1"
           value={propertyCount}
-          onChange={(e) => {
-            setPropertyCount(parseInt(e.target.value));
-          }}
-          className="w-full bg-zinc-900 border border-white/10 rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-lg"
+          onChange={(event) =>
+            setPropertyCount(Number.parseInt(event.target.value || "0", 10))
+          }
+          className="public-input"
           required
         />
       </div>
 
       <div className="space-y-4">
-        <label className="block text-sm font-medium text-white/80 uppercase tracking-wider">
-          {config.platformLabel} <span className="text-white/40 ml-2 normal-case font-normal">(Select all that apply)</span>
+        <label className="block text-sm font-semibold text-[var(--public-ink)]">
+          {config.platformLabel}
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {config.platforms.map((platform) => (
-            <button
-              key={platform.id}
-              type="button"
-              onClick={() => togglePlatform(platform.id)}
-              className={cn(
-                "flex items-center gap-3 p-4 rounded-lg border text-left transition-all",
-                platforms.includes(platform.id)
-                  ? "bg-blue-500/20 border-blue-500 text-white"
-                  : "bg-zinc-900 border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
-              )}
-            >
-              <div className={cn(
-                "w-5 h-5 rounded border flex items-center justify-center transition-colors",
-                platforms.includes(platform.id) ? "bg-blue-500 border-blue-500" : "border-white/30"
-              )}>
-                {platforms.includes(platform.id) && <span className="text-white text-xs">✓</span>}
-              </div>
-              <span className="font-medium">{platform.label}</span>
-            </button>
-          ))}
+        <p className="text-sm leading-6 text-[var(--public-muted)]">
+          Select every channel that actually shapes the workflow today.
+        </p>
+        <div className="grid gap-3 md:grid-cols-2">
+          {config.platforms.map((platform) => {
+            const selected = platforms.includes(platform.id);
+
+            return (
+              <button
+                key={platform.id}
+                type="button"
+                onClick={() => togglePlatform(platform.id)}
+                className={cn(
+                  "public-inset flex items-center gap-3 rounded-[1.2rem] px-4 py-4 text-left transition-all",
+                  selected && "border-[rgba(146,43,34,0.28)] bg-[rgba(214,88,74,0.08)]",
+                )}
+              >
+                <div
+                  className={cn(
+                    "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
+                    selected
+                      ? "border-[var(--public-accent)] bg-[var(--public-accent)] text-white"
+                      : "border-[rgba(61,44,25,0.18)] text-transparent",
+                  )}
+                >
+                  <Check className="h-3 w-3" />
+                </div>
+                <span className="text-sm font-semibold text-[var(--public-ink)]">
+                  {platform.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-white text-black font-bold py-4 rounded-lg uppercase tracking-wider hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="public-button w-full px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            Configuring AI...
-          </>
-        ) : (
-          "Configure My AI Employee"
-        )}
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+        Configure my AI employee
       </button>
-      
-      <p className="text-center text-xs text-zinc-500">
-        Setup takes less than 2 minutes. No credit card or platform passwords required now.
+
+      <p className="text-center text-sm leading-6 text-[var(--public-muted)]">
+        Setup usually takes a couple of minutes. No card or platform passwords are
+        needed at this step.
       </p>
     </form>
   );

@@ -3,6 +3,7 @@ import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
 import { getPersonaCapabilities } from "@/lib/business-context";
 import { BusinessType } from "@/types";
+import { hasRazorpayCredentials } from "@/lib/runtime-config";
 
 export type SystemFlagKey =
   | "ai_global_enabled"
@@ -436,14 +437,23 @@ export class ControlService {
         aiStatus = "disabled";
         aiMessage = "AI globally disabled via system flag";
       } else {
-        // Check that at least one AI provider key is configured
-        const hasGeminiKey = !!process.env.GEMINI_API_KEY;
+        // AI Gateway works with either an explicit API key or Vercel OIDC in deployments.
+        const hasGatewayAuth =
+          !!process.env.AI_GATEWAY_API_KEY || !!process.env.VERCEL;
+        const hasGeminiKey =
+          !!process.env.GEMINI_API_KEY ||
+          !!process.env.GOOGLE_GENERATIVE_AI_API_KEY;
         const hasOpenAiKey = !!process.env.OPENAI_API_KEY;
         const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
 
-        if (!hasGeminiKey && !hasOpenAiKey && !hasAnthropicKey) {
+        if (
+          !hasGatewayAuth &&
+          !hasGeminiKey &&
+          !hasOpenAiKey &&
+          !hasAnthropicKey
+        ) {
           aiStatus = "degraded";
-          aiMessage = "No AI provider API key configured";
+          aiMessage = "No AI gateway or provider API key configured";
         }
       }
     } catch {
@@ -466,13 +476,11 @@ export class ControlService {
         paymentsStatus = "disabled";
         paymentsMessage = "Payments globally disabled via system flag";
       } else {
-        const hasRazorpayKey =
-          !!process.env.RAZORPAY_KEY_ID &&
-          process.env.RAZORPAY_KEY_ID !== "rzp_test_missing";
+        const hasRazorpayKey = hasRazorpayCredentials();
 
         if (!hasRazorpayKey) {
           paymentsStatus = "degraded";
-          paymentsMessage = "Razorpay API key not configured";
+          paymentsMessage = "Razorpay credentials are not configured";
         }
       }
     } catch {

@@ -1,248 +1,315 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowRight,
+  CreditCard,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Settings,
+  Shield,
+  X,
+} from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { cn } from "@/lib/utils";
+import { publicNavLinks } from "@/lib/public-content";
 import { useAuthStore } from "@/store/useAuthStore";
-import { User } from "@/types/user";
-import { Menu, X, User as UserIcon, LogOut, LayoutDashboard, CreditCard, Settings, Plug } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
-interface HeaderProps {
-  user?: User | null;
+interface HeaderViewer {
+  authenticated?: boolean;
+  name?: string | null;
+  email?: string | null;
+  dashboardHref?: string;
 }
 
-export function Header({ user }: HeaderProps) {
+interface HeaderProps {
+  viewer?: HeaderViewer | null;
+}
+
+const menuTransition = { duration: 0.2, ease: "easeOut" } as const;
+
+export function Header({ viewer }: HeaderProps) {
   const pathname = usePathname();
   const { host, logout } = useAuthStore();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
 
-  // Derive display user from either client store (host) or server prop (user)
-  const displayUser = host ? {
-    name: host.name,
-    email: host.email
-  } : user ? {
-    name: user.profile?.fullName || "User",
-    email: user.identity.email
-  } : null;
+  useEffect(() => {
+    setMenuOpen(false);
+    setAccountOpen(false);
+  }, [pathname]);
 
-  const isLoggedIn = !!displayUser;
+  const currentViewer = useMemo(() => {
+    if (host) {
+      return {
+        authenticated: true,
+        name: host.name,
+        email: host.email,
+        dashboardHref: "/dashboard/ai",
+      };
+    }
 
-  const navItems = [
-    { name: "AI Employees", href: "/employees" },
-    { name: "Pricing", href: "/pricing" },
-    { name: "Company", href: "/company" },
-  ];
+    if (viewer?.authenticated) {
+      return {
+        authenticated: true,
+        name: viewer.name,
+        email: viewer.email,
+        dashboardHref: viewer.dashboardHref || "/dashboard/ai",
+      };
+    }
 
-  const userMenuItems = [
-    { name: "Dashboard", href: "/dashboard/ai", icon: LayoutDashboard },
-    { name: "Wallet & Usage", href: "/dashboard/billing", icon: CreditCard },
-    { name: "Integrations", href: "/dashboard/ai/integrations", icon: Plug },
-    { name: "Settings", href: "/dashboard/settings", icon: Settings },
-  ];
+    return {
+      authenticated: false,
+      name: null,
+      email: null,
+      dashboardHref: "/dashboard/ai",
+    };
+  }, [host, viewer]);
+
+  const isAuthenticated = currentViewer.authenticated === true;
+  const dashboardHref = currentViewer.dashboardHref || "/dashboard/ai";
+  const initials = (currentViewer.name || currentViewer.email || "NB")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+
+  const handleLogout = () => {
+    logout();
+    window.location.assign("/");
+  };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-red/80 border-b border-white/10 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
-      <div className="w-full px-6 h-20 flex items-center justify-between max-w-7xl mx-auto">
-        
-        {/* Left: Logo */}
-        <Link href="/" className="block hover:scale-105 transition-transform duration-200">
-          <Logo className="w-10 h-10" />
-        </Link>
-
-        {/* Center: Nav Items (Desktop) */}
-        <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-8">
-           {!isLoggedIn ? (
-             <ul role="list" className="flex items-center gap-8">
-               {navItems.map((item) => (
-                 <li key={item.href}>
-                   <Link 
-                     href={item.href}
-                     className={cn(
-                       "text-sm font-bold uppercase tracking-wider text-white hover:text-white/80 transition-colors",
-                       pathname === item.href && "underline decoration-2 underline-offset-4"
-                     )}
-                   >
-                     {item.name}
-                   </Link>
-                 </li>
-               ))}
-             </ul>
-           ) : (
-             <Link 
-               href="/dashboard/ai"
-               className="skeuo-button text-white px-8 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider transition-all"
-             >
-               Go to Dashboard
-             </Link>
-           )}
-        </nav>
-
-        {/* Right: Account / User Menu */}
-        <div className="flex items-center gap-4">
-          {!isLoggedIn ? (
-            <div className="hidden md:flex items-center gap-4">
-               <Link 
-                 href="/login" 
-                 className="text-white font-bold text-sm uppercase tracking-wider hover:underline underline-offset-4"
-               >
-                 Login
-               </Link>
-            </div>
-          ) : (
-            <div className="relative">
-              <button 
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 skeuo-inset bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full transition-all text-white border-white/10"
-                aria-expanded={userMenuOpen}
-                aria-haspopup="true"
-              >
-                <div className="w-6 h-6 rounded-full bg-brand-bone/20 flex items-center justify-center border border-white/20">
-                   <UserIcon className="w-3 h-3" />
+    <header className="public-shell fixed inset-x-0 top-0 z-50">
+      <div className="public-container pt-4 sm:pt-5">
+        <div className="public-nav-shell rounded-[2rem] px-4 py-3 sm:px-5">
+          <div className="flex items-center gap-4">
+            <Link href="/" className="flex shrink-0 items-center gap-3">
+              <div className="public-inset flex h-12 w-12 items-center justify-center rounded-[1.4rem] bg-[var(--public-accent)]/95">
+                <Logo className="h-8 w-8" />
+              </div>
+              <div className="hidden sm:block">
+                <div className="public-display text-lg text-[var(--public-ink)]">
+                  nodebase
                 </div>
-                <span className="text-xs font-bold uppercase tracking-widest hidden sm:block max-w-[100px] truncate">
-                  {displayUser?.name?.split(' ')[0]}
-                </span>
-              </button>
+                <div className="public-eyebrow">AI employees for operators</div>
+              </div>
+            </Link>
 
-              <AnimatePresence>
-                {userMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden py-2"
+            <nav className="hidden flex-1 items-center justify-center md:flex">
+              <div className="public-inset flex items-center gap-1 rounded-full px-2 py-2">
+                {publicNavLinks.map((item) => {
+                  const active =
+                    pathname === item.href ||
+                    pathname.startsWith(`${item.href}/`);
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "rounded-full px-4 py-2 text-sm font-semibold transition-all",
+                        active
+                          ? "bg-[var(--public-accent)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]"
+                          : "text-[var(--public-muted)] hover:bg-white/70 hover:text-[var(--public-ink)]",
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </nav>
+
+            <div className="ml-auto hidden items-center gap-3 md:flex">
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href={dashboardHref}
+                    className="public-button-secondary px-5 py-3 text-sm font-semibold"
                   >
-                    <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900 truncate">{displayUser?.name}</p>
-                      <p className="text-xs text-gray-500 truncate">{displayUser?.email}</p>
-                    </div>
-                    
-                    <ul role="list" className="py-1">
-                      {userMenuItems.map((item) => (
-                        <li key={item.href}>
-                          <Link
-                            href={item.href}
-                            onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                          >
-                            <item.icon className="w-4 h-4 text-gray-400" />
-                            {item.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="border-t border-gray-100 mt-1 pt-1">
-                      <button
-                        onClick={() => {
-                          logout();
-                          setUserMenuOpen(false);
-                        }}
-                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    Open dashboard
+                  </Link>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setAccountOpen((open) => !open)}
+                      className="public-inset flex items-center gap-3 rounded-full px-3 py-2"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--public-accent)] text-sm font-bold text-white">
+                        {initials || "NB"}
+                      </div>
+                      <div className="text-left">
+                        <div className="text-sm font-semibold text-[var(--public-ink)]">
+                          {currentViewer.name || "Nodebase account"}
+                        </div>
+                        <div className="text-xs text-[var(--public-muted)]">
+                          {currentViewer.email || "Authenticated"}
+                        </div>
+                      </div>
+                    </button>
+                    <AnimatePresence>
+                      {accountOpen ? (
+                        <motion.div
+                          initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 12, scale: 0.98 }}
+                          transition={menuTransition}
+                          className="public-panel absolute right-0 top-[calc(100%+0.75rem)] w-72 p-3"
+                        >
+                          <div className="relative z-10 space-y-2">
+                            <Link
+                              href={dashboardHref}
+                              className="public-inset flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]"
+                            >
+                              <LayoutDashboard className="h-4 w-4 text-[var(--public-accent-strong)]" />
+                              Dashboard
+                            </Link>
+                            <Link
+                              href="/dashboard/billing"
+                              className="public-inset flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]"
+                            >
+                              <CreditCard className="h-4 w-4 text-[var(--public-accent-strong)]" />
+                              Billing & usage
+                            </Link>
+                            <Link
+                              href="/dashboard/settings"
+                              className="public-inset flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]"
+                            >
+                              <Settings className="h-4 w-4 text-[var(--public-accent-strong)]" />
+                              Settings
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={handleLogout}
+                              className="public-inset flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-[var(--public-ink)]"
+                            >
+                              <LogOut className="h-4 w-4 text-[var(--public-accent-strong)]" />
+                              Sign out
+                            </button>
+                          </div>
+                        </motion.div>
+                      ) : null}
+                    </AnimatePresence>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="public-button-secondary px-5 py-3 text-sm font-semibold"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/company/contact"
+                    className="public-button px-5 py-3 text-sm font-semibold"
+                  >
+                    Book a workflow review
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </>
+              )}
             </div>
-          )}
 
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+            <button
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              className="public-inset ml-auto flex h-11 w-11 items-center justify-center rounded-2xl md:hidden"
+              aria-label="Toggle navigation"
+            >
+              {menuOpen ? (
+                <X className="h-5 w-5 text-[var(--public-ink)]" />
+              ) : (
+                <Menu className="h-5 w-5 text-[var(--public-ink)]" />
+              )}
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {menuOpen ? (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={menuTransition}
+                className="overflow-hidden md:hidden"
+              >
+                <div className="mt-4 space-y-3 border-t border-[var(--public-line)] pt-4">
+                  {publicNavLinks.map((item) => {
+                    const active =
+                      pathname === item.href ||
+                      pathname.startsWith(`${item.href}/`);
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                          "public-inset flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold",
+                          active
+                            ? "bg-[var(--public-accent)] text-white"
+                            : "text-[var(--public-ink)]",
+                        )}
+                      >
+                        {item.label}
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    );
+                  })}
+
+                  {isAuthenticated ? (
+                    <>
+                      <Link
+                        href={dashboardHref}
+                        className="public-button w-full px-5 py-3 text-sm font-semibold"
+                      >
+                        Open dashboard
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                      <Link
+                        href="/dashboard/settings"
+                        className="public-button-secondary flex w-full items-center justify-center gap-2 px-5 py-3 text-sm font-semibold"
+                      >
+                        <Shield className="h-4 w-4" />
+                        Account settings
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="public-button-secondary flex w-full items-center justify-center gap-2 px-5 py-3 text-sm font-semibold"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Sign out
+                      </button>
+                    </>
+                  ) : (
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <Link
+                        href="/login"
+                        className="public-button-secondary flex items-center justify-center px-5 py-3 text-sm font-semibold"
+                      >
+                        Log in
+                      </Link>
+                      <Link
+                        href="/company/contact"
+                        className="public-button flex items-center justify-center px-5 py-3 text-sm font-semibold"
+                      >
+                        Contact sales
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[var(--color-brand-red)] border-t border-white/20 overflow-hidden"
-          >
-            <nav aria-label="Mobile Navigation" className="p-6 space-y-4">
-              {!isLoggedIn ? (
-                 <ul role="list" className="space-y-4">
-                    {navItems.map((item) => (
-                      <li key={item.href}>
-                        <Link 
-                          href={item.href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="block text-lg font-bold uppercase tracking-wider text-white"
-                        >
-                          {item.name}
-                        </Link>
-                      </li>
-                    ))}
-                    <li>
-                      <Link 
-                        href="/login"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block text-lg font-bold uppercase tracking-wider text-white/70"
-                      >
-                        Login
-                      </Link>
-                    </li>
-                 </ul>
-              ) : (
-                <div className="space-y-4">
-                   <Link 
-                     href="/dashboard/ai"
-                     onClick={() => setMobileMenuOpen(false)}
-                     className="block w-full text-center bg-white text-[var(--color-brand-red)] px-4 py-3 rounded-lg font-bold uppercase tracking-wider"
-                   >
-                     Go to Dashboard
-                   </Link>
-                   
-                   <div className="pt-4 border-t border-white/20">
-                      <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-4">Menu</p>
-                      <ul role="list" className="space-y-3">
-                        {userMenuItems.map((item) => (
-                          <li key={item.href}>
-                            <Link
-                              href={item.href}
-                              onClick={() => setMobileMenuOpen(false)}
-                              className="flex items-center gap-3 text-white font-medium"
-                            >
-                              <item.icon className="w-5 h-5 text-white/70" />
-                              {item.name}
-                            </Link>
-                          </li>
-                        ))}
-                         <li>
-                            <button
-                              onClick={() => {
-                                logout();
-                                setMobileMenuOpen(false);
-                              }}
-                              className="flex items-center gap-3 text-white/70 font-medium w-full text-left"
-                            >
-                              <LogOut className="w-5 h-5" />
-                              Sign Out
-                            </button>
-                         </li>
-                      </ul>
-                   </div>
-                </div>
-              )}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { RazorpayService } from "@/lib/services/razorpayService";
+import { getRazorpayKeyId } from "@/lib/runtime-config";
 
 export async function POST(request: Request) {
   try {
@@ -10,7 +11,10 @@ export async function POST(request: Request) {
     const { amount } = body; // Amount in INR (Major Unit)
 
     if (!amount || amount < 100) {
-      return NextResponse.json({ error: "Minimum top-up amount is ₹100" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Minimum top-up amount is ₹100" },
+        { status: 400 },
+      );
     }
 
     // Create Order
@@ -22,19 +26,25 @@ export async function POST(request: Request) {
       notes: {
         tenantId,
         type: "wallet_topup",
-        credits: String(amount) // 1 INR = 1 Credit logic
-      }
+        credits: String(amount), // 1 INR = 1 Credit logic
+      },
     });
+
+    const razorpayKeyId = getRazorpayKeyId();
 
     return NextResponse.json({
       orderId: order.id,
-      amount: order.amount,
+      amount,
+      amountMinor: order.amount,
       currency: order.currency,
-      keyId: process.env.RAZORPAY_KEY_ID
+      keyId: razorpayKeyId,
+      key_id: razorpayKeyId,
     });
-
   } catch (error: any) {
     console.error("Top-up Order Error:", error);
-    return NextResponse.json({ error: error.message || "Failed to create order" }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "Failed to create order" },
+      { status: 500 },
+    );
   }
 }

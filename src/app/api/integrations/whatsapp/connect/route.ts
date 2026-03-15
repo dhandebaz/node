@@ -6,6 +6,7 @@ import { getPersonaCapabilities } from "@/lib/business-context";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
 import { wahaService } from "@/lib/services/wahaService";
+import { getAppUrl } from "@/lib/runtime-config";
 
 export async function POST() {
   const session = await getSession();
@@ -43,14 +44,8 @@ export async function POST() {
     );
   }
 
-  // 2. Ensure app URL is configured
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-  if (!appUrl) {
-    return NextResponse.json(
-      { error: "NEXT_PUBLIC_APP_URL is not set" },
-      { status: 500 },
-    );
-  }
+  // 2. Resolve the webhook target against the configured deployment URL.
+  const appUrl = getAppUrl();
 
   // 3. Start WAHA session — registers webhook and returns QR code URL if not already authenticated
   const webhookUrl = `${appUrl}/api/integrations/webhook/whatsapp?tenantId=${tenantId}`;

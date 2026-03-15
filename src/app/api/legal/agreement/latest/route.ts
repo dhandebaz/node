@@ -25,8 +25,8 @@ export async function GET() {
       .maybeSingle();
 
     let filePath = agreement?.file_path || null;
-    let version = agreement?.version || null;
-    let signedAt = agreement?.signed_at || null;
+    const version = agreement?.version || null;
+    const signedAt = agreement?.signed_at || null;
 
     if (!filePath) {
       const { data: tenant } = await supabase

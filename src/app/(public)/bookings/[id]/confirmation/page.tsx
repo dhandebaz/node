@@ -1,116 +1,156 @@
-import { CheckCircle, XCircle, Clock } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
-// Since this is a public page, we use a client component or server component with admin client?
-// Ideally, we should fetch data server-side.
-// We need to fetch booking details. RLS might block if we are not authenticated.
-// So we probably need to use a service role client or expose a public endpoint.
-// For now, let's assume we can fetch basic details if we have the ID, or maybe we need a token?
-// The booking confirmation usually happens after payment, so maybe we can show details.
-// BUT, RLS usually requires tenant_id. 
-// If this is a public page, we might need a way to bypass RLS or use a secure token.
-// However, typically confirmation pages are transient or public but obfuscated.
-// Let's assume for now we use the ID and fetch what we can. 
-// If RLS blocks, we might need to adjust. 
-// Actually, `bookings` table has RLS.
-// We might need to make a server action or API route that verifies the booking ID and returns details without auth if it's a confirmation flow.
-// Or simpler: The user just paid, so maybe they have a cookie? No, they might be on a different device.
-// Let's use `getSupabaseAdmin` (if available) or similar for this specific page, OR simpler:
-// Just show a static "Thank you" and fetch status client side? 
-// Let's try to fetch server side with admin access for just this read, strictly scoped.
-
+import { CalendarDays, CheckCircle2, Clock3, CreditCard, ShieldCheck } from "lucide-react";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
-export default async function BookingConfirmationPage({ 
+function formatDate(value: string | null | undefined) {
+  if (!value) return "Not available";
+
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(value));
+}
+
+function formatCurrency(value: number | null | undefined) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+}
+
+export default async function BookingConfirmationPage({
   params,
-  searchParams
-}: { 
-  params: Promise<{ id: string }>,
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { id } = await params;
   await searchParams;
-  const supabaseAdmin = await getSupabaseAdmin();
 
+  const supabaseAdmin = await getSupabaseAdmin();
   const { data: booking, error } = await supabaseAdmin
     .from("bookings")
-    .select("*, listings(name, tenant_id), tenants(business_type, is_branding_enabled)")
+    .select("*, listings(name), tenants(business_type, is_branding_enabled)")
     .eq("id", id)
     .single();
 
   if (error || !booking) {
-    return notFound();
+    notFound();
   }
 
-  const tenant = booking.tenants;
-  const listing = booking.listings;
+  const isConfirmed = booking.status === "confirmed";
+  const isPending = booking.status === "payment_pending";
+  const headline = isConfirmed ? "Booking confirmed" : isPending ? "Payment recorded" : "Booking received";
+  const summary = isConfirmed
+    ? `Your stay at ${booking.listings?.name || "the property"} is confirmed.`
+    : isPending
+      ? `Payment has been recorded for ${booking.listings?.name || "the property"}. Final confirmation should reach you shortly.`
+      : `We have received your booking for ${booking.listings?.name || "the property"}. Watch for the host's next update.`;
 
-  // Determine Branding Text
   let brandingText = "Powered by Nodebase AI";
-  if (tenant?.is_branding_enabled) {
-     switch (tenant.business_type) {
-        case 'kirana_store':
-        case 'thrift_store':
-          brandingText = "This store uses Nodebase AI";
-          break;
-        case 'doctor_clinic':
-          brandingText = "Automated by Nodebase";
-          break;
-        case 'airbnb_host':
-        default:
-          brandingText = "Powered by Nodebase AI";
-          break;
-     }
+  if (booking.tenants?.is_branding_enabled) {
+    switch (booking.tenants.business_type) {
+      case "kirana_store":
+      case "thrift_store":
+        brandingText = "This business runs on Nodebase";
+        break;
+      case "doctor_clinic":
+        brandingText = "Automated with Nodebase";
+        break;
+      default:
+        brandingText = "Powered by Nodebase AI";
+        break;
+    }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="p-8 text-center">
-          {booking.status === 'confirmed' || booking.status === 'payment_pending' ? (
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
-              <CheckCircle className="h-8 w-8 text-green-600" />
+    <div className="public-container pb-20 pt-28 sm:pt-32 lg:pt-36">
+      <div className="mx-auto max-w-3xl space-y-6">
+        <section className="public-panel px-6 py-8 text-center sm:px-8 sm:py-10">
+          <div className="relative z-10 space-y-5">
+            <div className="public-inset mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[rgba(130,185,112,0.14)] text-[var(--public-success)]">
+              {isConfirmed ? <CheckCircle2 className="h-9 w-9" /> : <Clock3 className="h-9 w-9" />}
             </div>
-          ) : (
-             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-6">
-              <Clock className="h-8 w-8 text-yellow-600" />
-            </div>
-          )}
-          
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {booking.status === 'confirmed' ? 'Booking Confirmed!' : 'Booking Received'}
-          </h1>
-          <p className="text-gray-600 mb-8">
-            {booking.status === 'confirmed' 
-              ? `Your booking at ${listing?.name} is confirmed.` 
-              : `We have received your request for ${listing?.name}. Check your email for updates.`}
-          </p>
-
-          <div className="border-t border-gray-100 pt-6 text-left">
-            <div className="flex justify-between mb-2">
-              <span className="text-gray-500">Amount</span>
-              <span className="font-medium text-gray-900">₹{booking.amount}</span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span className="text-gray-500">Check-in</span>
-              <span className="font-medium text-gray-900">{new Date(booking.start_date).toLocaleDateString()}</span>
-            </div>
-             <div className="flex justify-between">
-              <span className="text-gray-500">Check-out</span>
-              <span className="font-medium text-gray-900">{new Date(booking.end_date).toLocaleDateString()}</span>
+            <div className="space-y-3">
+              <div className="public-pill public-eyebrow">
+                {isConfirmed ? "Confirmed stay" : isPending ? "Awaiting final confirmation" : "Booking update"}
+              </div>
+              <h1 className="public-display text-4xl text-[var(--public-ink)] sm:text-5xl">
+                {headline}
+              </h1>
+              <p className="mx-auto max-w-2xl text-base leading-7 text-[var(--public-muted)]">
+                {summary}
+              </p>
             </div>
           </div>
-        </div>
-        
-        {/* Contextual Branding Footer */}
-        {tenant?.is_branding_enabled && (
-           <div className="bg-gray-50 px-8 py-4 text-center border-t border-gray-100">
-             <p className="text-xs text-gray-400 font-medium">
-               {brandingText}
-             </p>
-           </div>
-        )}
+        </section>
+
+        <section className="grid gap-4 sm:grid-cols-3">
+          <div className="public-panel-soft p-5">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+              <CreditCard className="h-5 w-5" />
+            </div>
+            <div className="public-eyebrow mt-4">Amount</div>
+            <div className="mt-2 text-lg font-semibold text-[var(--public-ink)]">
+              {formatCurrency(booking.amount)}
+            </div>
+          </div>
+          <div className="public-panel-soft p-5">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+              <CalendarDays className="h-5 w-5" />
+            </div>
+            <div className="public-eyebrow mt-4">Check-in</div>
+            <div className="mt-2 text-lg font-semibold text-[var(--public-ink)]">
+              {formatDate(booking.start_date)}
+            </div>
+          </div>
+          <div className="public-panel-soft p-5">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <div className="public-eyebrow mt-4">Check-out</div>
+            <div className="mt-2 text-lg font-semibold text-[var(--public-ink)]">
+              {formatDate(booking.end_date)}
+            </div>
+          </div>
+        </section>
+
+        <section className="public-panel-soft p-6 sm:p-7">
+          <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+            <div>
+              <div className="public-eyebrow">What happens next</div>
+              <ul className="mt-4 space-y-3 text-sm leading-6 text-[var(--public-muted)]">
+                <li className="public-inset rounded-[1.2rem] px-4 py-3">
+                  Keep this page for your records until you receive the host confirmation message.
+                </li>
+                <li className="public-inset rounded-[1.2rem] px-4 py-3">
+                  If the host requested additional verification, complete that before arrival.
+                </li>
+                <li className="public-inset rounded-[1.2rem] px-4 py-3">
+                  Use the contact method shared by the host if arrival details change.
+                </li>
+              </ul>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Link href="/" className="public-button px-6 py-3 text-sm font-semibold">
+                Return home
+              </Link>
+              <Link href="/trust" className="public-button-secondary px-6 py-3 text-sm font-semibold">
+                Review trust center
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {booking.tenants?.is_branding_enabled ? (
+          <div className="text-center text-xs uppercase tracking-[0.22em] text-[var(--public-muted)]">
+            {brandingText}
+          </div>
+        ) : null}
       </div>
     </div>
   );

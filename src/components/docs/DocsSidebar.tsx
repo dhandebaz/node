@@ -2,75 +2,85 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  Book, 
-  Code2, 
-  Layout,
-  Brain,
-  Rocket,
-  Terminal
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, BookOpenText, LifeBuoy } from "lucide-react";
+import { docsNavigation } from "@/lib/public-content";
+import { cn } from "@/lib/utils";
 
 export function DocsSidebar() {
   const pathname = usePathname();
 
-  const links = [
-    {
-      title: "Getting Started",
-      items: [
-        { name: "Introduction", href: "/docs/getting-started", icon: Rocket },
-        { name: "Quickstart", href: "/docs/getting-started/quickstart", icon: Terminal },
-      ]
-    },
-    {
-      title: "kaisa AI",
-      items: [
-        { name: "Overview", href: "/docs/kaisa", icon: Brain },
-        { name: "Agents API", href: "/docs/kaisa/agents-api", icon: Code2 },
-        { name: "Integrations", href: "/docs/kaisa/integrations", icon: Layout },
-      ]
-    }
-  ];
-
   return (
-    <div className="w-64 flex-shrink-0 border-r border-brand-bone/10 bg-brand-deep-red/50 backdrop-blur-sm h-[calc(100vh-80px)] sticky top-20 overflow-y-auto custom-scrollbar hidden lg:block">
-      <div className="p-6">
-        <div className="mb-8">
-           <div className="flex items-center gap-2 text-brand-bone font-bold text-xl mb-1">
-             <Book className="w-5 h-5" />
-             Docs
-           </div>
-           <p className="text-xs text-brand-bone/40">Version 2.0.4</p>
+    <div className="space-y-4">
+      <div className="public-panel p-5">
+        <div className="relative z-10">
+          <div className="public-pill public-eyebrow">Docs navigation</div>
+          <div className="mt-4 flex items-start gap-3">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+              <BookOpenText className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="public-display text-2xl text-[var(--public-ink)]">Build with control</h2>
+              <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+                Start with the operating model, then move into APIs and integration rails.
+              </p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div className="space-y-8">
-          {links.map((section) => (
-            <div key={section.title}>
-              <h3 className="text-xs font-bold text-brand-bone/40 uppercase tracking-wider mb-3 px-2">
-                {section.title}
-              </h3>
-              <ul className="space-y-1">
+      <div className="public-panel-soft p-4">
+        <div className="space-y-5">
+          {docsNavigation.map((section, sectionIndex) => (
+            <motion.div
+              key={section.title}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: sectionIndex * 0.08 }}
+            >
+              <div className="public-eyebrow px-2">{section.title}</div>
+              <ul className="mt-3 space-y-2">
                 {section.items.map((item) => {
-                  const isActive = pathname === item.href;
+                  const isActive =
+                    pathname === item.href || pathname.startsWith(`${item.href}/`);
+
                   return (
                     <li key={item.href}>
-                      <Link 
+                      <Link
                         href={item.href}
-                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          isActive 
-                            ? "bg-brand-bone/10 text-brand-bone border border-brand-bone/5" 
-                            : "text-brand-bone/60 hover:text-brand-bone hover:bg-brand-bone/5"
-                        }`}
+                        className={cn(
+                          "public-inset flex items-center justify-between gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all",
+                          isActive
+                            ? "bg-[var(--public-accent)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.38)]"
+                            : "text-[var(--public-ink)] hover:-translate-y-0.5",
+                        )}
                       >
-                        <item.icon className={`w-4 h-4 ${isActive ? "text-brand-bone" : "opacity-70"}`} />
-                        {item.name}
+                        <span>{item.label}</span>
+                        <ArrowRight className="h-4 w-4" />
                       </Link>
                     </li>
                   );
                 })}
               </ul>
-            </div>
+            </motion.div>
           ))}
+
+          <div className="rounded-[1.4rem] border border-[var(--public-line)] bg-[var(--public-accent-soft)]/65 p-4">
+            <div className="flex items-center gap-2 text-sm font-semibold text-[var(--public-ink)]">
+              <LifeBuoy className="h-4 w-4 text-[var(--public-accent-strong)]" />
+              Need rollout help?
+            </div>
+            <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+              If the docs do not answer a deployment question, route it to the team directly.
+            </p>
+            <Link
+              href="/company/contact"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--public-accent-strong)]"
+            >
+              Contact Nodebase
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </div>
     </div>

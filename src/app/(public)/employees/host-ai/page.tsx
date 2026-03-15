@@ -1,18 +1,5 @@
-import { AiManagerDetailPage } from "@/components/ai-managers/AiManagerDetailPage";
+import { RenderArticleRoute } from "@/components/public-site/ContentRoute";
 
 export default function HostAiPage() {
-  return (
-    <AiManagerDetailPage
-      slug="host-ai"
-      title="Host AI"
-      intro="Host AI manages guest conversations, availability, payments, and compliance for short-stay properties."
-      responsibilities={[
-        "Inbox management",
-        "Follow-ups",
-        "Scheduling / calendar",
-        "Payments coordination",
-        "Context-aware replies"
-      ]}
-    />
-  );
+  return <RenderArticleRoute id="employee-host-ai" />;
 }

@@ -1,6 +1,7 @@
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
 import { AppError, ErrorCode } from "@/lib/errors";
+import { getAppUrl } from "@/lib/runtime-config";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -158,7 +159,7 @@ export class KycService {
    * Returns the currently active consent form for a tenant, or null if none exists.
    */
   static async getActiveConsentForm(
-    tenantId: string
+    tenantId: string,
   ): Promise<ConsentForm | null> {
     const supabase = await getSupabaseServer();
     const { data, error } = await supabase
@@ -184,7 +185,7 @@ export class KycService {
   static async createConsentForm(
     tenantId: string,
     userId: string,
-    data: { title: string; body_markdown: string; version?: string }
+    data: { title: string; body_markdown: string; version?: string },
   ): Promise<ConsentForm> {
     const admin = await getSupabaseAdmin();
 
@@ -211,7 +212,10 @@ export class KycService {
 
     if (error || !form) {
       log.error("Failed to create consent form", error, { tenantId });
-      throw new AppError(ErrorCode.INTERNAL_ERROR, "Failed to create consent form");
+      throw new AppError(
+        ErrorCode.INTERNAL_ERROR,
+        "Failed to create consent form",
+      );
     }
     return form as ConsentForm;
   }
@@ -226,7 +230,7 @@ export class KycService {
     tenantId: string,
     data: Partial<
       Pick<ConsentForm, "title" | "body_markdown" | "version" | "is_active">
-    >
+    >,
   ): Promise<ConsentForm> {
     const admin = await getSupabaseAdmin();
 
@@ -249,7 +253,10 @@ export class KycService {
 
     if (error || !form) {
       log.error("Failed to update consent form", error, { id, tenantId });
-      throw new AppError(ErrorCode.INTERNAL_ERROR, "Failed to update consent form");
+      throw new AppError(
+        ErrorCode.INTERNAL_ERROR,
+        "Failed to update consent form",
+      );
     }
     return form as ConsentForm;
   }
@@ -272,7 +279,7 @@ export class KycService {
       booking_reference?: string;
       booking_id?: string;
       consent_form_id?: string;
-    }
+    },
   ): Promise<GuestKycRequest> {
     const admin = await getSupabaseAdmin();
 
@@ -298,7 +305,10 @@ export class KycService {
 
     if (error || !request) {
       log.error("Failed to create KYC request", error, { tenantId });
-      throw new AppError(ErrorCode.INTERNAL_ERROR, "Failed to create KYC request");
+      throw new AppError(
+        ErrorCode.INTERNAL_ERROR,
+        "Failed to create KYC request",
+      );
     }
     return request as GuestKycRequest;
   }
@@ -309,7 +319,7 @@ export class KycService {
    */
   static async listKycRequests(
     tenantId: string,
-    options?: { status?: KycRequestStatus; limit?: number }
+    options?: { status?: KycRequestStatus; limit?: number },
   ): Promise<GuestKycRequest[]> {
     const supabase = await getSupabaseServer();
     let query = supabase
@@ -336,7 +346,7 @@ export class KycService {
    */
   static async getKycRequestById(
     id: string,
-    tenantId: string
+    tenantId: string,
   ): Promise<KycRequestDetail | null> {
     const supabase = await getSupabaseServer();
 
@@ -386,7 +396,7 @@ export class KycService {
       log.error("Failed to delete KYC request", error, { id, tenantId });
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
-        "Failed to delete KYC request. Completed requests cannot be deleted."
+        "Failed to delete KYC request. Completed requests cannot be deleted.",
       );
     }
   }
@@ -413,12 +423,14 @@ export class KycService {
       front_image_path: string;
       back_image_path?: string;
       extracted_data: Record<string, unknown>;
-    }
+    },
   ): Promise<GuestDocument> {
     const admin = await getSupabaseAdmin();
 
     // ── Aadhaar masking enforcement ───────────────────────────────
-    const safeExtractedData: Record<string, unknown> = { ...data.extracted_data };
+    const safeExtractedData: Record<string, unknown> = {
+      ...data.extracted_data,
+    };
     let aadhaarLast4: string | null = null;
 
     if (data.document_type === "aadhaar" && safeExtractedData.id_number) {
@@ -462,10 +474,13 @@ export class KycService {
       .single();
 
     if (error || !doc) {
-      log.error("Failed to save guest document", error, { requestId, tenantId });
+      log.error("Failed to save guest document", error, {
+        requestId,
+        tenantId,
+      });
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
-        "Failed to save document record"
+        "Failed to save document record",
       );
     }
     return doc as GuestDocument;
@@ -480,19 +495,14 @@ export class KycService {
    * Falls back to localhost:3000 in development if NEXT_PUBLIC_APP_URL is unset.
    */
   static getKycLink(token: string): string {
-    const base =
-      process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ??
-      "http://localhost:3000";
-    return `${base}/kyc/${token}`;
+    return `${getAppUrl()}/guest-id/${token}`;
   }
 
   /**
    * Generates a signed download URL for a consent PDF stored in the
    * private kyc-consents bucket. URL is valid for 1 hour.
    */
-  static async getSignedPdfUrl(
-    storagePath: string
-  ): Promise<string | null> {
+  static async getSignedPdfUrl(storagePath: string): Promise<string | null> {
     try {
       const admin = await getSupabaseAdmin();
       const { data, error } = await admin.storage

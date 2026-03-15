@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { RazorpayService } from "@/lib/services/razorpayService";
+import { getRazorpayKeyId } from "@/lib/runtime-config";
 
 export async function POST(request: Request) {
   try {
     const supabase = await getSupabaseServer();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,34 +21,44 @@ export async function POST(request: Request) {
     const { credits } = body;
 
     if (!credits || credits < 100) {
-        return NextResponse.json({ error: "Minimum 100 credits required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Minimum 100 credits required" },
+        { status: 400 },
+      );
     }
 
     // Pricing Logic (can be moved to PricingService)
     // 1 Credit = 1 INR
-    const pricePerCredit = 1; 
+    const pricePerCredit = 1;
     const amountINR = credits * pricePerCredit;
     const amountPaise = amountINR * 100;
 
     const order = await RazorpayService.createOrder(tenantId, {
-        amount: amountPaise,
-        currency: "INR",
-        receipt: `topup_${tenantId}_${Date.now()}`,
-        notes: {
-            tenantId,
-            credits: credits.toString(),
-            type: "top_up"
-        }
+      amount: amountPaise,
+      currency: "INR",
+      receipt: `topup_${tenantId}_${Date.now()}`,
+      notes: {
+        tenantId,
+        credits: credits.toString(),
+        type: "top_up",
+      },
     });
 
+    const razorpayKeyId = getRazorpayKeyId();
+
     return NextResponse.json({
-        orderId: order.id,
-        amount: amountINR,
-        currency: "INR",
-        keyId: process.env.RAZORPAY_KEY_ID
+      orderId: order.id,
+      amount: amountINR,
+      amountMinor: order.amount,
+      currency: "INR",
+      keyId: razorpayKeyId,
+      key_id: razorpayKeyId,
     });
   } catch (error: any) {
     console.error("Top Up Error:", error);
-    return NextResponse.json({ error: error.message || "Failed to initiate top up" }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "Failed to initiate top up" },
+      { status: 500 },
+    );
   }
 }

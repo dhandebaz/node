@@ -13,35 +13,43 @@ export default function ProfileSettingsPage() {
   const [kycStatus, setKycStatus] = useState<string>("not_started");
   const [loading, setLoading] = useState(true);
 
-  if (!host) {
-    return <SessionExpiredCard />;
-  }
-
   useEffect(() => {
     setLoading(true);
-    fetchWithAuth<{ tenant?: { kyc_status?: string | null } }>("/api/host/me", { cache: "no-store" })
+    fetchWithAuth<{ tenant?: { kyc_status?: string | null } }>("/api/host/me", {
+      cache: "no-store",
+    })
       .then((data) => {
         setKycStatus(data?.tenant?.kyc_status || "not_started");
       })
       .finally(() => setLoading(false));
   }, []);
 
+  if (!host) {
+    return <SessionExpiredCard />;
+  }
+
   return (
     <div className="space-y-8 pb-24 md:pb-0">
       <div>
         <h1 className="text-2xl font-bold text-white mb-1">Profile & KYC</h1>
-        <p className="text-zinc-400">Keep your profile and verification status up to date.</p>
+        <p className="text-zinc-400">
+          Keep your profile and verification status up to date.
+        </p>
       </div>
 
       <div className="dashboard-surface p-6 space-y-4">
         <div className="text-sm font-semibold text-white">Profile</div>
         <div className="grid md:grid-cols-2 gap-4">
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <div className="text-xs text-white/50 uppercase tracking-wider">Name</div>
+            <div className="text-xs text-white/50 uppercase tracking-wider">
+              Name
+            </div>
             <div className="text-white mt-2">{host.name || "—"}</div>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <div className="text-xs text-white/50 uppercase tracking-wider">Email</div>
+            <div className="text-xs text-white/50 uppercase tracking-wider">
+              Email
+            </div>
             <div className="text-white mt-2">{host.email || "—"}</div>
           </div>
         </div>
@@ -49,22 +57,34 @@ export default function ProfileSettingsPage() {
 
       <div className="dashboard-surface p-6 space-y-6">
         <div>
-          <div className="text-sm font-semibold text-white">KYC Verification</div>
+          <div className="text-sm font-semibold text-white">
+            KYC Verification
+          </div>
           <div className="text-xs text-white/50 mt-2">
             Verification documents are stored securely for compliance.
           </div>
         </div>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <div className="text-xs text-white/50 uppercase tracking-wider">Status</div>
-            <div className="text-white mt-2 capitalize">{loading ? "loading" : String(kycStatus).replaceAll("_", " ")}</div>
+            <div className="text-xs text-white/50 uppercase tracking-wider">
+              Status
+            </div>
+            <div className="text-white mt-2 capitalize">
+              {loading ? "loading" : String(kycStatus).replaceAll("_", " ")}
+            </div>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <div className="text-xs text-white/50 uppercase tracking-wider">Agreement</div>
-            <div className="text-white mt-2">{kycStatus === "verified" ? "Signed" : "Pending"}</div>
+            <div className="text-xs text-white/50 uppercase tracking-wider">
+              Agreement
+            </div>
+            <div className="text-white mt-2">
+              {kycStatus === "verified" ? "Signed" : "Pending"}
+            </div>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <div className="text-xs text-white/50 uppercase tracking-wider">Storage</div>
+            <div className="text-xs text-white/50 uppercase tracking-wider">
+              Storage
+            </div>
             <div className="text-white mt-2">Encrypted</div>
           </div>
         </div>
@@ -74,7 +94,9 @@ export default function ProfileSettingsPage() {
             className="px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold"
             type="button"
           >
-            {kycStatus === "verified" ? "View verification" : "Start verification"}
+            {kycStatus === "verified"
+              ? "View verification"
+              : "Start verification"}
           </button>
           {kycStatus === "verified" ? <DownloadSignedAgreementButton /> : null}
         </div>

@@ -1,6 +1,7 @@
-import Razorpay from 'razorpay';
-import crypto from 'crypto';
-import { log } from '@/lib/logger';
+import Razorpay from "razorpay";
+import crypto from "crypto";
+import { log } from "@/lib/logger";
+import { getRazorpayKeyId, getRazorpayKeySecret } from "@/lib/runtime-config";
 
 export class RazorpayService {
   private static instance: Razorpay;
@@ -8,8 +9,8 @@ export class RazorpayService {
   private static getInstance() {
     if (!this.instance) {
       this.instance = new Razorpay({
-        key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_missing',
-        key_secret: process.env.RAZORPAY_KEY_SECRET || 'secret_missing',
+        key_id: getRazorpayKeyId() || "rzp_test_missing",
+        key_secret: getRazorpayKeySecret() || "secret_missing",
       });
     }
     return this.instance;
@@ -18,19 +19,22 @@ export class RazorpayService {
   /**
    * Create a payment link
    */
-  static async createPaymentLink(tenantId: string, options: {
-    amount: number;
-    currency: string;
-    description: string;
-    customer: {
-      name: string;
-      email?: string;
-      contact?: string;
-    };
-    reference_id: string;
-    callback_url: string;
-    notes?: Record<string, unknown>;
-  }) {
+  static async createPaymentLink(
+    tenantId: string,
+    options: {
+      amount: number;
+      currency: string;
+      description: string;
+      customer: {
+        name: string;
+        email?: string;
+        contact?: string;
+      };
+      reference_id: string;
+      callback_url: string;
+      notes?: Record<string, unknown>;
+    },
+  ) {
     const instance = this.getInstance();
 
     try {
@@ -42,11 +46,11 @@ export class RazorpayService {
         customer: {
           name: options.customer.name,
           email: options.customer.email,
-          contact: options.customer.contact
+          contact: options.customer.contact,
         },
         notify: {
           sms: true,
-          email: true
+          email: true,
         },
         reminder_enable: true,
         reference_id: options.reference_id,
@@ -54,30 +58,41 @@ export class RazorpayService {
         callback_method: "get",
         notes: {
           ...options.notes,
-          tenant_id: tenantId
-        }
+          tenant_id: tenantId,
+        },
       });
       return paymentLink;
     } catch (error) {
-      log.error('Razorpay Create Payment Link Error', error, { tenantId, referenceId: options.reference_id });
+      log.error("Razorpay Create Payment Link Error", error, {
+        tenantId,
+        referenceId: options.reference_id,
+      });
       // Fallback for development
-      if (process.env.NODE_ENV === 'development') {
-          return {
-              id: `plink_mock_${Date.now()}`,
-              short_url: `http://localhost:3000/mock-payment/${options.reference_id}`,
-              status: 'created'
-          };
+      if (process.env.NODE_ENV === "development") {
+        return {
+          id: `plink_mock_${Date.now()}`,
+          short_url: `http://localhost:3000/mock-payment/${options.reference_id}`,
+          status: "created",
+        };
       }
-      throw new Error('Failed to create payment link');
+      throw new Error("Failed to create payment link");
     }
   }
 
   /**
    * Create a new order for top-up
    */
-  static async createOrder(tenantId: string, options: { amount: number, currency: string, receipt: string, notes?: Record<string, unknown> }) {
+  static async createOrder(
+    tenantId: string,
+    options: {
+      amount: number;
+      currency: string;
+      receipt: string;
+      notes?: Record<string, unknown>;
+    },
+  ) {
     const instance = this.getInstance();
-    
+
     const orderOptions = {
       amount: options.amount, // Expecting amount in paise
       currency: options.currency,
@@ -85,28 +100,35 @@ export class RazorpayService {
       payment_capture: 1, // Auto capture
       notes: {
         ...options.notes,
-        tenant_id: tenantId
-      }
+        tenant_id: tenantId,
+      },
     };
 
     try {
       const order = await instance.orders.create(orderOptions);
       return order;
     } catch (error) {
-      log.error('Razorpay Create Order Error', error, { tenantId, receipt: options.receipt });
-      throw new Error('Failed to create payment order');
+      log.error("Razorpay Create Order Error", error, {
+        tenantId,
+        receipt: options.receipt,
+      });
+      throw new Error("Failed to create payment order");
     }
   }
 
   /**
    * Verify payment signature
    */
-  static verifyPayment(orderId: string, paymentId: string, signature: string): boolean {
-    const secret = process.env.RAZORPAY_KEY_SECRET || process.env.key_secret || 'secret_missing';
+  static verifyPayment(
+    orderId: string,
+    paymentId: string,
+    signature: string,
+  ): boolean {
+    const secret = getRazorpayKeySecret() || "secret_missing";
     const generated_signature = crypto
-      .createHmac('sha256', secret)
-      .update(orderId + '|' + paymentId)
-      .digest('hex');
+      .createHmac("sha256", secret)
+      .update(orderId + "|" + paymentId)
+      .digest("hex");
 
     return generated_signature === signature;
   }
@@ -116,12 +138,12 @@ export class RazorpayService {
    */
   static async createSubscription(planId: string, tenantId: string) {
     const instance = this.getInstance();
-    
+
     const PLAN_MAP: Record<string, string> = {
-        pro: process.env.RAZORPAY_PLAN_PRO || 'plan_pro_test',
-        business: process.env.RAZORPAY_PLAN_BUSINESS || 'plan_business_test'
+      pro: process.env.RAZORPAY_PLAN_PRO || "plan_pro_test",
+      business: process.env.RAZORPAY_PLAN_BUSINESS || "plan_business_test",
     };
-    
+
     const razorpayPlanId = PLAN_MAP[planId] || planId;
 
     try {
@@ -131,22 +153,25 @@ export class RazorpayService {
         total_count: 120, // 10 years
         quantity: 1,
         notes: {
-            internal_plan: planId,
-            tenant_id: tenantId
-        }
+          internal_plan: planId,
+          tenant_id: tenantId,
+        },
       });
       return subscription;
     } catch (error) {
-      log.error('Razorpay Create Subscription Error', error, { tenantId, planId });
+      log.error("Razorpay Create Subscription Error", error, {
+        tenantId,
+        planId,
+      });
       // Fallback for development if plan doesn't exist
-      if (process.env.NODE_ENV === 'development') {
-          return {
-              id: `sub_mock_${Date.now()}`,
-              plan_id: razorpayPlanId,
-              status: 'created'
-          };
+      if (process.env.NODE_ENV === "development") {
+        return {
+          id: `sub_mock_${Date.now()}`,
+          plan_id: razorpayPlanId,
+          status: "created",
+        };
       }
-      throw new Error('Failed to create subscription');
+      throw new Error("Failed to create subscription");
     }
   }
 }

@@ -1,3 +1,4 @@
+import { DEFAULT_AI_MODEL, DEFAULT_AI_PROVIDER } from "@/lib/ai/config";
 import {
   AppSettings,
   SettingsAuditLog,
@@ -32,6 +33,8 @@ const DEFAULT_SETTINGS: AppSettings = {
     publicApiEnabled: false,
     partnerApiEnabled: true,
     webhookOutgoingEnabled: true,
+    kaisaProvider: DEFAULT_AI_PROVIDER,
+    kaisaModel: DEFAULT_AI_MODEL,
   },
   integrations: [
     {
@@ -128,8 +131,30 @@ export const settingsService = {
       // Return defaults if not found
       settings = DEFAULT_SETTINGS;
     } else {
-      // Merge with defaults to ensure new fields are present
-      settings = { ...DEFAULT_SETTINGS, ...data.value };
+      const value = data.value as Partial<AppSettings>;
+
+      settings = {
+        ...DEFAULT_SETTINGS,
+        ...value,
+        auth: { ...DEFAULT_SETTINGS.auth, ...value.auth },
+        api: { ...DEFAULT_SETTINGS.api, ...value.api },
+        platform: {
+          ...DEFAULT_SETTINGS.platform,
+          ...value.platform,
+          signupEnabled: {
+            ...DEFAULT_SETTINGS.platform.signupEnabled,
+            ...value.platform?.signupEnabled,
+          },
+        },
+        notifications: {
+          ...DEFAULT_SETTINGS.notifications,
+          ...value.notifications,
+        },
+        security: { ...DEFAULT_SETTINGS.security, ...value.security },
+        analytics: { ...DEFAULT_SETTINGS.analytics, ...value.analytics },
+        integrations: value.integrations || DEFAULT_SETTINGS.integrations,
+        features: value.features || DEFAULT_SETTINGS.features,
+      };
     }
 
     // 2. Set Cache

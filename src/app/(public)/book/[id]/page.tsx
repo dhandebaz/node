@@ -1,67 +1,116 @@
-
-import { PaymentLinkService } from "@/lib/services/paymentLinkService";
 import { notFound } from "next/navigation";
-import { 
-  ShieldCheck, 
-  Calendar, 
-  CreditCard, 
-  Home, 
-  CheckCircle2, 
-  AlertTriangle,
-  Clock,
-  QrCode,
-  UserCheck,
-  FileUp,
-  MapPin,
-  Sparkles,
-  Loader2
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { CalendarDays, CreditCard, ShieldCheck, Sparkles } from "lucide-react";
+import { PaymentLinkService } from "@/lib/services/paymentLinkService";
 import { GuestCheckoutFlow } from "@/components/public/GuestCheckoutFlow";
 
-export default async function PublicCheckoutPage({ 
-  params, 
-  searchParams 
-}: { 
-  params: Promise<{ id: string }>,
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+export default async function PublicCheckoutPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { id } = await params;
-  await searchParams; // Await to satisfy Next.js 15+
+  await searchParams;
+
   const link = await PaymentLinkService.getLinkDetails(id);
 
   if (!link) {
     notFound();
   }
 
+  const amountLabel = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(link.amount || 0));
+
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
-      <div className="max-w-xl w-full space-y-8 py-12">
-        {/* Branding */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Secure Direct Booking</span>
+    <div className="public-container pb-20 pt-28 sm:pt-32 lg:pt-36">
+      <div className="mx-auto max-w-4xl space-y-6">
+        <section className="public-panel px-6 py-8 sm:px-8 sm:py-10">
+          <div className="relative z-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div className="space-y-5">
+              <div className="public-pill public-eyebrow">Secure direct booking</div>
+              <div>
+                <h1 className="public-display text-4xl leading-[0.94] text-[var(--public-ink)] sm:text-5xl">
+                  Complete payment and check-in for {link.tenants?.name || "your host"}.
+                </h1>
+                <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--public-muted)]">
+                  This portal keeps guest details, ID verification, and payment confirmation
+                  in one track so the host can finalize your stay without back-and-forth.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:min-w-64">
+              <div className="public-inset rounded-[1.3rem] px-4 py-4">
+                <div className="public-eyebrow">Listing</div>
+                <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                  {link.listings?.title || "Direct booking"}
+                </div>
+              </div>
+              <div className="public-inset rounded-[1.3rem] px-4 py-4">
+                <div className="public-eyebrow">Amount due</div>
+                <div className="mt-2 text-sm font-semibold text-[var(--public-accent-strong)]">
+                  {amountLabel}
+                </div>
+              </div>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold text-white uppercase tracking-tighter">
-            {link.tenants?.name || "Nodebase Business"}
-          </h1>
-        </div>
+        </section>
+
+        <section className="grid gap-4 md:grid-cols-3">
+          <div className="public-panel-soft p-5">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+              <CalendarDays className="h-5 w-5" />
+            </div>
+            <h2 className="mt-4 text-lg font-semibold text-[var(--public-ink)]">Guest details first</h2>
+            <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+              The host gets your arrival details and contact info in a structured check-in flow.
+            </p>
+          </div>
+          <div className="public-panel-soft p-5">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
+            <h2 className="mt-4 text-lg font-semibold text-[var(--public-ink)]">Masked ID verification</h2>
+            <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+              Upload a document once. Sensitive identifiers are kept bounded for compliance.
+            </p>
+          </div>
+          <div className="public-panel-soft p-5">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+              <CreditCard className="h-5 w-5" />
+            </div>
+            <h2 className="mt-4 text-lg font-semibold text-[var(--public-ink)]">Payment confirmation</h2>
+            <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+              Use the host payment instructions, then confirm so the stay can be locked in.
+            </p>
+          </div>
+        </section>
 
         <GuestCheckoutFlow link={link} />
 
-        {/* Footer */}
-        <div className="flex justify-center items-center gap-6 text-white/20">
-          <div className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-tighter">
-            <ShieldCheck className="w-3 h-3" />
-            PCI Compliant
+        <section className="public-panel-soft p-5 sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[rgba(130,185,112,0.14)] text-[var(--public-success)]">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="public-eyebrow">Trust signal</div>
+                <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+                  This checkout surface is powered by Nodebase and designed for direct-booking
+                  workflows that need compliance, payment tracking, and fewer manual handoffs.
+                </p>
+              </div>
+            </div>
+            <div className="public-pill text-xs font-semibold text-[var(--public-muted)]">
+              PCI-aware flow with verified host context
+            </div>
           </div>
-          <div className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-tighter">
-            <CheckCircle2 className="w-3 h-3" />
-            Verified Host
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   );

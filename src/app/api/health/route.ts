@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
+import { getRazorpayKeyId, getRazorpayKeySecret } from "@/lib/runtime-config";
 
 export async function GET() {
   const start = Date.now();
@@ -25,8 +26,11 @@ export async function GET() {
   try {
     // 1. Database Check
     const supabase = await getSupabaseAdmin();
-    const { error: dbError } = await supabase.from("tenants").select("id").limit(1);
-    
+    const { error: dbError } = await supabase
+      .from("tenants")
+      .select("id")
+      .limit(1);
+
     if (dbError) {
       status.services.database = "unhealthy";
       status.status = "degraded";
@@ -36,39 +40,56 @@ export async function GET() {
     }
 
     // 2. Razorpay Check (Simple ping/fetch check)
-    try {
-      const rzpResponse = await fetch("https://api.razorpay.com/v1/plans", {
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`).toString("base64")}`,
-        },
-      });
-      if (rzpResponse.ok) {
-        status.services.razorpay = "healthy";
-      } else {
-        status.services.razorpay = "unhealthy";
-        status.status = "degraded";
-        log.warn("Health check: Razorpay API returned non-OK status", { status: rzpResponse.status });
-      }
-    } catch (rzpError) {
+    const razorpayKeyId = getRazorpayKeyId();
+    const razorpayKeySecret = getRazorpayKeySecret();
+
+    if (!razorpayKeyId || !razorpayKeySecret) {
       status.services.razorpay = "unhealthy";
       status.status = "degraded";
-      log.error("Health check failed: Razorpay unreachable", rzpError as Error);
+      log.warn("Health check: Razorpay credentials are not configured");
+    } else {
+      try {
+        const rzpResponse = await fetch("https://api.razorpay.com/v1/plans", {
+          headers: {
+            Authorization: `Basic ${Buffer.from(`${razorpayKeyId}:${razorpayKeySecret}`).toString("base64")}`,
+          },
+        });
+        if (rzpResponse.ok) {
+          status.services.razorpay = "healthy";
+        } else {
+          status.services.razorpay = "unhealthy";
+          status.status = "degraded";
+          log.warn("Health check: Razorpay API returned non-OK status", {
+            status: rzpResponse.status,
+          });
+        }
+      } catch (rzpError) {
+        status.services.razorpay = "unhealthy";
+        status.status = "degraded";
+        log.error(
+          "Health check failed: Razorpay unreachable",
+          rzpError as Error,
+        );
+      }
     }
 
     const duration = Date.now() - start;
     status.duration_ms = duration;
 
-    return NextResponse.json(status, { 
+    return NextResponse.json(status, {
       status: status.status === "healthy" ? 200 : 503,
       headers: {
         "Cache-Control": "no-store, max-age=0",
-      }
+      },
     });
   } catch (error) {
     log.error("Critical health check failure", error as Error);
-    return NextResponse.json({ 
-      status: "unhealthy", 
-      error: error instanceof Error ? error.message : "Internal server error" 
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        status: "unhealthy",
+        error: error instanceof Error ? error.message : "Internal server error",
+      },
+      { status: 500 },
+    );
   }
 }

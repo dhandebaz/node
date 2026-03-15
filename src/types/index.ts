@@ -1,3 +1,5 @@
+import type { AITone } from "@/lib/ai/config";
+
 export interface Tenant {
   id: string;
   name: string;
@@ -8,7 +10,7 @@ export interface Tenant {
   is_memory_enabled?: boolean;
   is_branding_enabled?: boolean;
   is_ai_enabled?: boolean;
-  kyc_status?: 'not_started' | 'pending' | 'verified' | 'rejected';
+  kyc_status?: "not_started" | "pending" | "verified" | "rejected";
   pan_number?: string;
   aadhaar_number?: string;
   kyc_verified_at?: string;
@@ -18,27 +20,24 @@ export interface Tenant {
   timezone?: string;
   username?: string;
   ai_settings?: {
-    provider: 'google' | 'anthropic' | 'openai';
-    model: string;
-    apiKey: string | null;
     customInstructions?: string | null;
-    tone?: 'friendly' | 'professional' | 'concise' | 'humorous';
+    tone?: AITone;
   };
   business_qr_url?: string;
   upi_id?: string;
 }
 
-export type BusinessType = 
-  | 'airbnb_host'
-  | 'kirana_store'
-  | 'doctor_clinic'
-  | 'thrift_store';
+export type BusinessType =
+  | "airbnb_host"
+  | "kirana_store"
+  | "doctor_clinic"
+  | "thrift_store";
 
 export interface TenantUser {
   id: string;
   tenantId: string;
   userId: string;
-  role: 'owner' | 'admin' | 'staff';
+  role: "owner" | "admin" | "staff";
 }
 
 export interface Host {
@@ -46,7 +45,7 @@ export interface Host {
   name: string;
   email: string;
   address: string;
-  kycStatus: 'pending' | 'verified' | 'rejected' | 'none';
+  kycStatus: "pending" | "verified" | "rejected" | "none";
   walletBalance: number;
   businessName?: string;
 }
@@ -54,7 +53,11 @@ export interface Host {
 export type ListingStatus = "active" | "incomplete";
 export type ListingType = "Apartment" | "Villa" | "Homestay" | "Guest House";
 export type ListingPlatform = "airbnb" | "booking" | "mmt";
-export type ListingIntegrationStatus = "connected" | "not_connected" | "error" | "never_synced";
+export type ListingIntegrationStatus =
+  | "connected"
+  | "not_connected"
+  | "error"
+  | "never_synced";
 
 export interface Listing {
   id: string;
@@ -136,7 +139,12 @@ export interface BookingRecord {
   source?: string | null;
 }
 
-export type PaymentStatus = "pending" | "paid" | "failed" | "expired" | "refunded";
+export type PaymentStatus =
+  | "pending"
+  | "paid"
+  | "failed"
+  | "expired"
+  | "refunded";
 
 export interface PaymentRecord {
   id: string;
@@ -168,8 +176,15 @@ export interface Guest {
   tenantId: string; // Multi-tenancy
   name: string;
   phone: string;
-  channel: 'airbnb' | 'booking' | 'direct' | 'whatsapp' | 'instagram' | 'messenger' | 'web';
-  idVerificationStatus: 'pending' | 'verified' | 'rejected' | 'none';
+  channel:
+    | "airbnb"
+    | "booking"
+    | "direct"
+    | "whatsapp"
+    | "instagram"
+    | "messenger"
+    | "web";
+  idVerificationStatus: "pending" | "verified" | "rejected" | "none";
   ai_paused?: boolean;
 }
 
@@ -179,8 +194,15 @@ export interface Message {
   guestId: string;
   guestName?: string; // Optional guest name for UI display
   listingId: string;
-  channel: 'airbnb' | 'booking' | 'whatsapp' | 'sms' | 'instagram' | 'messenger' | 'web';
-  direction: 'inbound' | 'outbound';
+  channel:
+    | "airbnb"
+    | "booking"
+    | "whatsapp"
+    | "sms"
+    | "instagram"
+    | "messenger"
+    | "web";
+  direction: "inbound" | "outbound";
   content: string;
   timestamp: string; // ISO Date string
   read: boolean;
@@ -190,19 +212,26 @@ export interface WalletTransaction {
   id: string;
   tenantId: string; // Multi-tenancy
   hostId: string;
-  type: 'debit' | 'credit';
+  type: "debit" | "credit";
   amount: number;
   reason: string;
   timestamp: string;
-  status: 'completed' | 'pending' | 'failed';
+  status: "completed" | "pending" | "failed";
 }
 
 export interface Integration {
   id: string;
   tenantId: string; // Multi-tenancy
   userId: string;
-  provider: 'google' | 'airbnb' | 'booking' | 'instagram' | 'whatsapp' | 'facebook' | 'web';
-  status: 'connected' | 'expired' | 'error' | 'active';
+  provider:
+    | "google"
+    | "airbnb"
+    | "booking"
+    | "instagram"
+    | "whatsapp"
+    | "facebook"
+    | "web";
+  status: "connected" | "expired" | "error" | "active";
   lastSync?: string;
   expiresAt?: string;
   errorCode?: string;

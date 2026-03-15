@@ -1,20 +1,20 @@
-'use server';
+"use server";
 
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { wahaService } from "@/lib/services/wahaService";
+import { getAppUrl } from "@/lib/runtime-config";
 
 export async function generateWhatsAppQRAction() {
   const tenantId = await requireActiveTenant();
 
   try {
-    const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/integrations/webhook/whatsapp?tenantId=${tenantId}`;
+    const webhookUrl = `${getAppUrl()}/api/integrations/webhook/whatsapp?tenantId=${tenantId}`;
     const { qrUrl } = await wahaService.startSession({
       sessionName: tenantId,
       webhooks: [{ url: webhookUrl, events: ["message"] }],
     });
     return { success: true, qrUrl };
-
   } catch (error) {
     console.error("Generate WhatsApp QR Error:", error);
     return { success: false, error: "Failed to generate QR code" };
@@ -28,21 +28,22 @@ export async function checkWhatsAppStatusAction() {
   try {
     const session = await wahaService.getSession({ sessionName: tenantId });
     if (session.status === "WORKING") {
-        const { error } = await supabase
-          .from('integrations')
-          .upsert({
-            tenant_id: tenantId,
-            provider: 'whatsapp',
-            status: 'active',
-            credentials: { type: 'baileys' },
-            updated_at: new Date().toISOString()
-          }, { onConflict: 'tenant_id, provider' });
+      const { error } = await supabase.from("integrations").upsert(
+        {
+          tenant_id: tenantId,
+          provider: "whatsapp",
+          status: "active",
+          credentials: { type: "baileys" },
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "tenant_id, provider" },
+      );
 
-        if (error) throw new Error(error.message);
+      if (error) throw new Error(error.message);
 
-        return { connected: true };
+      return { connected: true };
     }
-    
+
     return { connected: false };
   } catch (error) {
     console.error("Check WhatsApp Status Error:", error);

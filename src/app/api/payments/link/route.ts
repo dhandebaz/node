@@ -5,6 +5,7 @@ import { RazorpayService } from "@/lib/services/razorpayService";
 import { ControlService } from "@/lib/services/controlService";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
+import { getAppUrl } from "@/lib/runtime-config";
 
 interface CreateLinkPayload {
   amount: number;
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
 
     const currency = body.currency || "INR";
     const description = body.description || "Payment via Nodebase";
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.nodebase.co";
+    const appUrl = getAppUrl();
     const callbackUrl = body.callbackUrl || `${appUrl}/dashboard`;
 
     // Create the Razorpay payment link

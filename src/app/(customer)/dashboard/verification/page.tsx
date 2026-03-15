@@ -54,9 +54,7 @@ function getCanvasCoordinates(
 ) {
   const rect = canvas.getBoundingClientRect();
   const point =
-    "touches" in event
-      ? event.touches[0] ?? event.changedTouches[0]
-      : event;
+    "touches" in event ? (event.touches[0] ?? event.changedTouches[0]) : event;
 
   return {
     x: point.clientX - rect.left,
@@ -163,6 +161,10 @@ export default function VerificationPage() {
   const [handleAvailable, setHandleAvailable] = useState<boolean | null>(null);
   const [handleChecking, setHandleChecking] = useState(false);
   const handleDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const publicProfilePrefix =
+    typeof window !== "undefined" && window.location.origin
+      ? `${window.location.origin}/@`
+      : "https://nodebase.space/@";
 
   useEffect(() => {
     fetchWithAuth<HostMeResponse>("/api/host/me", { cache: "no-store" })
@@ -196,10 +198,9 @@ export default function VerificationPage() {
     const normalizedTaxId = details.taxId.trim().toUpperCase();
     if (normalizedTaxId) {
       const isPan = /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(normalizedTaxId);
-      const isGstin =
-        /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(
-          normalizedTaxId,
-        );
+      const isGstin = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(
+        normalizedTaxId,
+      );
       if (!isPan && !isGstin) {
         toast.error(
           "PAN/GSTIN invalid. Example PAN: ABCDE1234F, GSTIN: 07ABCDE1234F1Z5",
@@ -224,7 +225,9 @@ export default function VerificationPage() {
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -275,7 +278,9 @@ export default function VerificationPage() {
       });
       setStep(3);
     } catch (error: unknown) {
-      toast.error(error instanceof Error ? error.message : "Error confirming KYC");
+      toast.error(
+        error instanceof Error ? error.message : "Error confirming KYC",
+      );
     } finally {
       setLoading(false);
     }
@@ -449,7 +454,11 @@ export default function VerificationPage() {
               />
             </div>
             <Button type="submit" disabled={loading} className="w-full">
-              {loading ? <Loader2 className="animate-spin" /> : "Save & Continue"}
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Save & Continue"
+              )}
             </Button>
           </form>
         </div>
@@ -471,7 +480,9 @@ export default function VerificationPage() {
                 disabled={loading}
                 className="mx-auto max-w-xs"
               />
-              {loading ? <Loader2 className="mx-auto mt-4 animate-spin" /> : null}
+              {loading ? (
+                <Loader2 className="mx-auto mt-4 animate-spin" />
+              ) : null}
             </div>
           ) : (
             <div className="space-y-4">
@@ -486,14 +497,20 @@ export default function VerificationPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-xs text-zinc-500">Name</Label>
-                    <div className="font-medium">{extractedData.name || "—"}</div>
+                    <div className="font-medium">
+                      {extractedData.name || "—"}
+                    </div>
                   </div>
                   <div>
                     <Label className="text-xs text-zinc-500">DOB</Label>
-                    <div className="font-medium">{extractedData.dob || "—"}</div>
+                    <div className="font-medium">
+                      {extractedData.dob || "—"}
+                    </div>
                   </div>
                   <div>
-                    <Label className="text-xs text-zinc-500">Document Type</Label>
+                    <Label className="text-xs text-zinc-500">
+                      Document Type
+                    </Label>
                     <div className="font-medium">
                       {extractedData.document_type || "Government ID"}
                     </div>
@@ -512,7 +529,11 @@ export default function VerificationPage() {
                 disabled={loading}
                 className="w-full"
               >
-                {loading ? <Loader2 className="animate-spin" /> : "Confirm Details"}
+                {loading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Confirm Details"
+                )}
               </Button>
             </div>
           )}
@@ -526,7 +547,9 @@ export default function VerificationPage() {
             <h3 className="mb-4 text-lg font-bold">
               Zero-Liability & Platform Terms Acknowledgement
             </h3>
-            <p className="mb-3">This document will be generated specifically for:</p>
+            <p className="mb-3">
+              This document will be generated specifically for:
+            </p>
             <p className="mb-3">
               <strong>Business:</strong> {details.name || "—"}
             </p>
@@ -576,7 +599,7 @@ export default function VerificationPage() {
           </p>
 
           <div className="mx-auto flex max-w-sm items-center justify-center gap-2">
-            <span className="text-zinc-500">nodebase.co/@</span>
+            <span className="text-zinc-500">{publicProfilePrefix}</span>
             <Input
               value={handle}
               onChange={(event) =>
@@ -598,7 +621,9 @@ export default function VerificationPage() {
           {!handleChecking && handleAvailable === true ? (
             <p className="text-sm text-green-500">Handle available</p>
           ) : null}
-          {!handleChecking && handleAvailable === false && handle.length >= 3 ? (
+          {!handleChecking &&
+          handleAvailable === false &&
+          handle.length >= 3 ? (
             <p className="text-sm text-red-400">Handle taken or invalid</p>
           ) : null}
 

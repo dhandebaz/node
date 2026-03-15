@@ -1,39 +1,79 @@
+import { MetadataRoute } from "next";
+import { getAppUrl } from "@/lib/runtime-config";
 
-import { MetadataRoute } from 'next'
- 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://nodebase.ai'
-  
-  return [
+  const baseUrl = getAppUrl();
+  const lastModified = new Date();
+  const routes = [
+    { path: "", changeFrequency: "weekly", priority: 1 },
+    { path: "/pricing", changeFrequency: "weekly", priority: 0.9 },
+    { path: "/trust", changeFrequency: "monthly", priority: 0.8 },
+    { path: "/employees", changeFrequency: "weekly", priority: 0.85 },
+    { path: "/employees/host-ai", changeFrequency: "monthly", priority: 0.8 },
+    { path: "/employees/nurse-ai", changeFrequency: "monthly", priority: 0.8 },
+    { path: "/employees/dukan-ai", changeFrequency: "monthly", priority: 0.8 },
+    { path: "/employees/thrift-ai", changeFrequency: "monthly", priority: 0.8 },
+    { path: "/docs", changeFrequency: "weekly", priority: 0.8 },
     {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 1,
+      path: "/docs/getting-started",
+      changeFrequency: "monthly",
+      priority: 0.75,
     },
     {
-      url: `${baseUrl}/products/kaisa`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
+      path: "/docs/getting-started/quickstart",
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    { path: "/docs/kaisa", changeFrequency: "monthly", priority: 0.75 },
+    {
+      path: "/docs/kaisa/agents-api",
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
     {
-      url: `${baseUrl}/products/space`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
+      path: "/docs/kaisa/integrations",
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    { path: "/company", changeFrequency: "monthly", priority: 0.75 },
+    {
+      path: "/company/careers",
+      changeFrequency: "monthly",
+      priority: 0.65,
     },
     {
-      url: `${baseUrl}/node`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
+      path: "/company/contact",
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
     {
-      url: `${baseUrl}/company/contact`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.5,
+      path: "/company/partners",
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
-  ]
+    {
+      path: "/company/partners/system-integrators",
+      changeFrequency: "monthly",
+      priority: 0.65,
+    },
+    {
+      path: "/company/partners/technology",
+      changeFrequency: "monthly",
+      priority: 0.65,
+    },
+    { path: "/legal/terms", changeFrequency: "yearly", priority: 0.5 },
+    { path: "/legal/privacy", changeFrequency: "yearly", priority: 0.5 },
+    { path: "/legal/cookies", changeFrequency: "yearly", priority: 0.45 },
+    { path: "/legal/refund", changeFrequency: "yearly", priority: 0.45 },
+    { path: "/legal/risk", changeFrequency: "yearly", priority: 0.45 },
+    { path: "/legal/sla", changeFrequency: "yearly", priority: 0.45 },
+    { path: "/legal/aup", changeFrequency: "yearly", priority: 0.45 },
+  ] as const;
+
+  return routes.map((route) => ({
+    url: `${baseUrl}${route.path}`,
+    lastModified,
+    changeFrequency: route.changeFrequency,
+    priority: route.priority,
+  }));
 }

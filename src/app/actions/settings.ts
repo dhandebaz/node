@@ -28,6 +28,17 @@ async function getAdminId(): Promise<string> {
   return session.userId;
 }
 
+async function getSuperAdminId(): Promise<string> {
+  const session = await getSession();
+  if (!session?.userId) {
+    throw new Error("Unauthorized: No active session");
+  }
+  if (String(session.role || "") !== "superadmin") {
+    throw new Error("Forbidden: Superadmin role required");
+  }
+  return session.userId;
+}
+
 // ─── Getters ──────────────────────────────────────────────────────────────────
 
 export async function getAppSettingsAction() {
@@ -73,7 +84,10 @@ export async function updateIntegrationAction(
 export async function updateApiSettingsAction(
   updates: Partial<ApiSettings>,
 ): Promise<void> {
-  const adminId = await getAdminId();
+  const adminId =
+    "kaisaProvider" in updates || "kaisaModel" in updates
+      ? await getSuperAdminId()
+      : await getAdminId();
   await settingsService.updateApi(adminId, updates);
   revalidatePath("/admin/settings");
 }

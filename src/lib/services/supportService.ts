@@ -80,7 +80,7 @@ export const supportService = {
     }
 
     // 2. Create Initial Message if provided
-    let messages: TicketMessage[] = [];
+    const messages: TicketMessage[] = [];
     if (ticket.initialMessage) {
         const { data: msgData, error: msgError } = await supabase
             .from("support_ticket_messages")

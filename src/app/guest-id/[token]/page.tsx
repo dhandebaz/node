@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Loader2, UploadCloud, ShieldCheck } from "lucide-react";
+import {
+  CheckCircle2,
+  Loader2,
+  ShieldCheck,
+  UploadCloud,
+} from "lucide-react";
 import { getCsrfToken } from "@/lib/api/csrf";
 
 type UploadInfo = {
@@ -27,6 +33,7 @@ const idLabel = (value?: string) => {
 export default function GuestIdUploadPage() {
   const params = useParams<{ token: string }>();
   const token = params?.token;
+
   const [info, setInfo] = useState<UploadInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -40,29 +47,37 @@ export default function GuestIdUploadPage() {
       try {
         setLoading(true);
         setError(null);
+
         const response = await fetch(`/api/guest-id/upload?token=${token}`);
         if (!response.ok) {
           const payload = await response.json().catch(() => ({}));
           throw new Error(payload?.error || "Unable to load upload link.");
         }
+
         const data = await response.json();
         setInfo(data);
       } catch (err: any) {
-        setError(err?.message || "Link expired.");
+        setError(err?.message || "This upload link has expired.");
       } finally {
         setLoading(false);
       }
     };
+
     if (token) {
-      loadInfo();
+      void loadInfo();
     }
   }, [token]);
 
   const stayDates = useMemo(() => {
     if (!info?.checkIn || !info?.checkOut) return "";
-    const checkIn = new Date(info.checkIn);
-    const checkOut = new Date(info.checkOut);
-    return `${checkIn.toLocaleDateString("en-IN", { day: "numeric", month: "short" })} → ${checkOut.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}`;
+
+    const formatter = new Intl.DateTimeFormat("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
+    return `${formatter.format(new Date(info.checkIn))} to ${formatter.format(new Date(info.checkOut))}`;
   }, [info]);
 
   const handleSubmit = async () => {
@@ -70,25 +85,30 @@ export default function GuestIdUploadPage() {
       setError("Please upload the front image first.");
       return;
     }
+
     try {
       setSubmitting(true);
       setError(null);
+
       const formData = new FormData();
       formData.append("token", token);
       formData.append("frontImage", frontFile);
       if (backFile) {
         formData.append("backImage", backFile);
       }
+
       const csrf = getCsrfToken();
       const response = await fetch("/api/guest-id/upload", {
         method: "POST",
         headers: csrf ? { "x-csrf-token": csrf } : undefined,
         body: formData,
       });
+
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
         throw new Error(payload?.error || "Upload failed.");
       }
+
       setSubmitted(true);
     } catch (err: any) {
       setError(err?.message || "Upload failed.");
@@ -99,78 +119,156 @@ export default function GuestIdUploadPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#120707] text-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-white/50" />
+      <div className="public-site min-h-screen">
+        <div className="public-container flex min-h-screen items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-[var(--public-accent-strong)]" />
+        </div>
       </div>
     );
   }
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#120707] text-white flex items-center justify-center px-6">
-        <div className="max-w-md w-full bg-white/5 border border-white/10 rounded-2xl p-6 text-center space-y-3">
-          <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center mx-auto">
-            <ShieldCheck className="w-6 h-6" />
+      <div className="public-site min-h-screen">
+        <div className="public-container flex min-h-screen items-center justify-center py-10">
+          <div className="public-panel max-w-xl px-6 py-8 text-center sm:px-8 sm:py-10">
+            <div className="relative z-10 space-y-4">
+              <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(130,185,112,0.14)] text-[var(--public-success)]">
+                <CheckCircle2 className="h-8 w-8" />
+              </div>
+              <h1 className="public-display text-4xl text-[var(--public-ink)]">
+                ID received
+              </h1>
+              <p className="text-base leading-7 text-[var(--public-muted)]">
+                Your host will review it shortly. Thank you for helping complete the
+                check-in compliance step.
+              </p>
+            </div>
           </div>
-          <div className="text-xl font-semibold">ID received</div>
-          <div className="text-sm text-white/60">Your host will review it shortly. Thank you for helping us complete check-in compliance.</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#120707] text-white flex items-center justify-center px-6 py-10">
-      <div className="max-w-xl w-full space-y-6">
-        <div className="text-center space-y-2">
-          <div className="text-xs uppercase tracking-widest text-white/40">Nodebase Guest ID</div>
-          <h1 className="text-2xl font-semibold">{info?.listingName || "Your stay"}</h1>
-          <div className="text-sm text-white/60">{stayDates}</div>
+    <div className="public-site min-h-screen">
+      <div className="public-container py-8">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="public-pill text-sm font-semibold text-[var(--public-ink)]">
+            Nodebase Guest ID
+          </Link>
+          <div className="public-pill text-xs font-semibold text-[var(--public-muted)]">
+            No login required
+          </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4">
-          <div className="space-y-1">
-            <div className="text-sm font-semibold">Please upload your {idLabel(info?.idType)}</div>
-            <div className="text-xs text-white/60">Hotels in India are required to collect a government-issued ID for check-in. Your host will review it securely.</div>
-          </div>
+        <div className="grid min-h-[calc(100vh-8rem)] gap-6 py-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(20rem,1.1fr)] lg:items-center">
+          <section className="public-panel px-6 py-8 sm:px-8 sm:py-10">
+            <div className="relative z-10 space-y-5">
+              <div className="public-pill public-eyebrow">Guest verification</div>
+              <h1 className="public-display text-4xl leading-[0.94] text-[var(--public-ink)] sm:text-5xl">
+                Upload your {idLabel(info?.idType)} for secure check-in.
+              </h1>
+              <p className="max-w-2xl text-base leading-7 text-[var(--public-muted)]">
+                Indian hospitality workflows often require a government-issued ID before
+                arrival. This portal keeps the upload bounded to that specific purpose.
+              </p>
+              <div className="grid gap-3">
+                <div className="public-inset rounded-[1.3rem] px-4 py-4">
+                  <div className="public-eyebrow">Listing</div>
+                  <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                    {info?.listingName || "Your stay"}
+                  </div>
+                </div>
+                <div className="public-inset rounded-[1.3rem] px-4 py-4">
+                  <div className="public-eyebrow">Stay window</div>
+                  <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                    {stayDates || "Shared by the host"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="border border-white/10 rounded-xl p-4 text-sm text-white/70 flex flex-col items-center gap-2 cursor-pointer hover:border-white/30">
-              <UploadCloud className="w-5 h-5" />
-              <span>Front image</span>
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                className="hidden"
-                onChange={(e) => setFrontFile(e.target.files?.[0] || null)}
-              />
-              {frontFile && <span className="text-[10px] text-white/50">{frontFile.name}</span>}
-            </label>
-            <label className="border border-white/10 rounded-xl p-4 text-sm text-white/70 flex flex-col items-center gap-2 cursor-pointer hover:border-white/30">
-              <UploadCloud className="w-5 h-5" />
-              <span>Back image (optional)</span>
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                className="hidden"
-                onChange={(e) => setBackFile(e.target.files?.[0] || null)}
-              />
-              {backFile && <span className="text-[10px] text-white/50">{backFile.name}</span>}
-            </label>
-          </div>
+          <section className="public-panel-soft p-6 sm:p-8">
+            <div className="space-y-6">
+              <div>
+                <div className="public-eyebrow">Upload portal</div>
+                <h2 className="mt-3 text-2xl font-semibold text-[var(--public-ink)]">
+                  Submit clear front and back images.
+                </h2>
+              </div>
 
-          {error && <div className="text-xs text-red-300">{error}</div>}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="rounded-[1.4rem] border border-[var(--public-line)] bg-[rgba(255,251,244,0.8)] p-5 text-center transition hover:-translate-y-0.5">
+                  <div className="public-inset mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--public-accent-soft)]/75 text-[var(--public-accent-strong)]">
+                    <UploadCloud className="h-5 w-5" />
+                  </div>
+                  <div className="mt-4 text-sm font-semibold text-[var(--public-ink)]">
+                    Front image
+                  </div>
+                  <div className="mt-2 text-xs leading-5 text-[var(--public-muted)]">
+                    Capture the full front side with readable text.
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={(event) => setFrontFile(event.target.files?.[0] || null)}
+                  />
+                  {frontFile ? (
+                    <div className="mt-4 text-xs font-semibold text-[var(--public-accent-strong)]">
+                      {frontFile.name}
+                    </div>
+                  ) : null}
+                </label>
 
-          <button
-            onClick={handleSubmit}
-            disabled={submitting}
-            className="w-full bg-white text-black rounded-xl py-3 text-sm font-semibold hover:bg-white/90 disabled:opacity-60"
-          >
-            {submitting ? "Submitting..." : "Submit ID"}
-          </button>
-          <div className="text-[10px] text-white/40 text-center">No login required. We only use this ID for check-in compliance.</div>
+                <label className="rounded-[1.4rem] border border-[var(--public-line)] bg-[rgba(255,251,244,0.8)] p-5 text-center transition hover:-translate-y-0.5">
+                  <div className="public-inset mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--public-accent-soft)]/75 text-[var(--public-accent-strong)]">
+                    <UploadCloud className="h-5 w-5" />
+                  </div>
+                  <div className="mt-4 text-sm font-semibold text-[var(--public-ink)]">
+                    Back image (optional)
+                  </div>
+                  <div className="mt-2 text-xs leading-5 text-[var(--public-muted)]">
+                    Use this if the document has important information on the reverse.
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={(event) => setBackFile(event.target.files?.[0] || null)}
+                  />
+                  {backFile ? (
+                    <div className="mt-4 text-xs font-semibold text-[var(--public-accent-strong)]">
+                      {backFile.name}
+                    </div>
+                  ) : null}
+                </label>
+              </div>
+
+              {error ? (
+                <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-[var(--public-accent-strong)]">
+                  {error}
+                </div>
+              ) : null}
+
+              <button
+                onClick={handleSubmit}
+                disabled={submitting}
+                className="public-button w-full px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
+                Submit ID
+              </button>
+
+              <p className="text-center text-sm leading-6 text-[var(--public-muted)]">
+                Your ID is used only for check-in compliance and host review for this stay.
+              </p>
+            </div>
+          </section>
         </div>
       </div>
     </div>

@@ -1,12 +1,22 @@
-import { MetadataRoute } from 'next'
- 
+import { MetadataRoute } from "next";
+import { getAppUrl } from "@/lib/runtime-config";
+
 export default function robots(): MetadataRoute.Robots {
+  const appUrl = getAppUrl();
+
   return {
     rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: ['/dashboard/', '/admin/'],
+      userAgent: "*",
+      allow: "/",
+      disallow: [
+        "/admin/",
+        "/book/",
+        "/bookings/",
+        "/chat/",
+        "/dashboard/",
+        "/guest-id/",
+      ],
     },
-    sitemap: 'https://nodebase.ai/sitemap.xml',
-  }
+    sitemap: `${appUrl}/sitemap.xml`,
+  };
 }

@@ -1,77 +1,109 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/store/useAuthStore";
 import { useDashboardStore } from "@/store/useDashboardStore";
-import { getBusinessLabels, getPersonaAIDefaults } from "@/lib/business-context";
-import { 
-  Loader2,
-  Brain,
-  MessageSquare,
-  Shield,
-  Zap
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  getBusinessLabels,
+  getPersonaAIDefaults,
+} from "@/lib/business-context";
+import { Loader2, Brain, MessageSquare, Shield, Zap } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import { AIMemorySettings } from "@/components/dashboard/ai/AIMemorySettings";
 import { AIBrandingSettings } from "@/components/dashboard/ai/AIBrandingSettings";
 import { AIModelSettings } from "@/components/dashboard/ai/AIModelSettings";
 import { VoiceAgentSettings } from "@/components/dashboard/ai/VoiceAgentSettings";
 import { AIKnowledgeBase } from "@/components/dashboard/ai/AIKnowledgeBase";
+import { updateAiSettingsAction } from "@/app/actions/customer";
+import { toast } from "sonner";
+import type { AITone } from "@/lib/ai/config";
 
 export default function AISettingsPage() {
   const { host } = useAuthStore();
   const { tenant } = useDashboardStore();
   const labels = getBusinessLabels(tenant?.businessType);
   const aiDefaults = getPersonaAIDefaults(tenant?.businessType);
+  const [tone, setTone] = useState<AITone>("friendly");
+  const [customInstructions, setCustomInstructions] = useState("");
+  const [isSavingVoice, setIsSavingVoice] = useState(false);
+
+  useEffect(() => {
+    setTone(tenant?.ai_settings?.tone || "friendly");
+    setCustomInstructions(tenant?.ai_settings?.customInstructions || "");
+  }, [tenant?.ai_settings?.tone, tenant?.ai_settings?.customInstructions]);
 
   if (!host) {
-     return (
-        <div className="flex items-center justify-center h-[50vh]">
-           <Loader2 className="w-8 h-8 animate-spin text-white/40" />
-        </div>
-     );
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-white/40" />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-24 md:pb-0">
       <div>
-        <h1 className="text-2xl font-bold text-white mb-2">Kaisa AI Settings</h1>
-        <p className="text-white/60">Configure how your AI Employee interacts with {labels.customers.toLowerCase()}.</p>
+        <h1 className="text-2xl font-bold text-white mb-2">
+          Kaisa AI Settings
+        </h1>
+        <p className="text-white/60">
+          Configure how your AI Employee interacts with{" "}
+          {labels.customers.toLowerCase()}.
+        </p>
       </div>
 
       <div className="grid gap-6">
         {/* Master AI Toggle */}
         <Card className="bg-zinc-900 border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.05)]">
-           <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-zinc-800/50">
-              <div className="space-y-1">
-                 <div className="flex items-center gap-2">
-                    <Zap className={cn("w-5 h-5", tenant?.is_ai_enabled ? "text-emerald-500" : "text-zinc-500")} />
-                    <CardTitle className="text-white">AI Employee Activation</CardTitle>
-                 </div>
-                 <CardDescription className="text-zinc-400">
-                    Switch your AI Employee on or off. When off, Kaisa will not reply to any customers.
-                 </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-zinc-800/50">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Zap
+                  className={cn(
+                    "w-5 h-5",
+                    tenant?.is_ai_enabled
+                      ? "text-emerald-500"
+                      : "text-zinc-500",
+                  )}
+                />
+                <CardTitle className="text-white">
+                  AI Employee Activation
+                </CardTitle>
               </div>
-              <Switch 
-                checked={tenant?.is_ai_enabled ?? false} 
-                onCheckedChange={async (checked) => {
-                   try {
-                      const { toggleAiAction } = await import("@/app/actions/ai-status");
-                      await toggleAiAction(checked);
-                   } catch (e) {
-                      console.error("Failed to toggle AI", e);
-                   }
-                }}
-              />
-           </CardHeader>
+              <CardDescription className="text-zinc-400">
+                Switch your AI Employee on or off. When off, Kaisa will not
+                reply to any customers.
+              </CardDescription>
+            </div>
+            <Switch
+              checked={tenant?.is_ai_enabled ?? false}
+              onCheckedChange={async (checked) => {
+                try {
+                  const { toggleAiAction } =
+                    await import("@/app/actions/ai-status");
+                  await toggleAiAction(checked);
+                } catch (e) {
+                  console.error("Failed to toggle AI", e);
+                }
+              }}
+            />
+          </CardHeader>
         </Card>
 
         {/* AI Model & BYOK Settings */}
-        <AIModelSettings initialSettings={tenant?.ai_settings} />
+        <AIModelSettings />
 
         {/* Knowledge Base (RAG 2.0) */}
         <AIKnowledgeBase />
@@ -83,7 +115,9 @@ export default function AISettingsPage() {
         <AIMemorySettings initialEnabled={tenant?.is_memory_enabled ?? false} />
 
         {/* Branding Settings */}
-        <AIBrandingSettings initialEnabled={tenant?.is_branding_enabled ?? false} />
+        <AIBrandingSettings
+          initialEnabled={tenant?.is_branding_enabled ?? false}
+        />
 
         {/* Tone of Voice */}
         <Card className="bg-[var(--color-dashboard-surface)] border-white/10">
@@ -93,28 +127,97 @@ export default function AISettingsPage() {
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-white">How should Kaisa AI talk to {labels.customers.toLowerCase()}?</CardTitle>
-                <CardDescription className="text-white/50">Set the personality of your AI ({aiDefaults.role}).</CardDescription>
+                <CardTitle className="text-white">
+                  How should Kaisa AI talk to {labels.customers.toLowerCase()}?
+                </CardTitle>
+                <CardDescription className="text-white/50">
+                  Set the personality of your AI ({aiDefaults.role}).
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
-                <div className="p-4 rounded-lg border border-white/10 bg-black/20 hover:border-white/20 cursor-pointer transition-colors">
-                    <div className="font-medium text-white mb-1">Professional & Polite</div>
-                    <div className="text-sm text-white/50">Formal, respectful, and efficient. Best for business {labels.customers.toLowerCase()}.</div>
+              <div
+                onClick={() => setTone("professional")}
+                className={cn(
+                  "p-4 rounded-lg border cursor-pointer transition-colors",
+                  tone === "professional"
+                    ? "border-white/30 bg-white/5"
+                    : "border-white/10 bg-black/20 hover:border-white/20",
+                )}
+              >
+                <div className="font-medium text-white mb-1">
+                  Professional & Polite
                 </div>
-                <div className="p-4 rounded-lg border border-[var(--color-brand-red)] bg-[var(--color-brand-red)]/10 cursor-pointer transition-colors">
-                    <div className="font-medium text-[var(--color-brand-red)] mb-1">Warm & Friendly (Active)</div>
-                    <div className="text-sm text-white/50">Casual, welcoming, and helpful. Best for casual {labels.listings.toLowerCase()}.</div>
+                <div className="text-sm text-white/50">
+                  Formal, respectful, and efficient. Best for business{" "}
+                  {labels.customers.toLowerCase()}.
                 </div>
+              </div>
+              <div
+                onClick={() => setTone("friendly")}
+                className={cn(
+                  "p-4 rounded-lg border cursor-pointer transition-colors",
+                  tone === "friendly"
+                    ? "border-[var(--color-brand-red)] bg-[var(--color-brand-red)]/10"
+                    : "border-white/10 bg-black/20 hover:border-white/20",
+                )}
+              >
+                <div
+                  className={cn(
+                    "font-medium mb-1",
+                    tone === "friendly"
+                      ? "text-[var(--color-brand-red)]"
+                      : "text-white",
+                  )}
+                >
+                  Warm & Friendly
+                </div>
+                <div className="text-sm text-white/50">
+                  Casual, welcoming, and helpful. Best for casual{" "}
+                  {labels.listings.toLowerCase()}.
+                </div>
+              </div>
             </div>
             <div className="pt-4">
-                <Label className="text-white mb-2 block">Custom Instructions</Label>
-                <Textarea 
-                    placeholder="e.g. Always mention we have a friendly dog named Max."
-                    className="bg-black/20 border-white/10 text-white placeholder:text-white/20 min-h-[100px]"
-                />
+              <Label className="text-white mb-2 block">
+                Custom Instructions
+              </Label>
+              <Textarea
+                placeholder="e.g. Always mention we have a friendly dog named Max."
+                value={customInstructions}
+                onChange={(event) => setCustomInstructions(event.target.value)}
+                className="bg-black/20 border-white/10 text-white placeholder:text-white/20 min-h-[100px]"
+              />
+              <div className="mt-4 flex justify-end">
+                <Button
+                  onClick={async () => {
+                    setIsSavingVoice(true);
+                    try {
+                      await updateAiSettingsAction({
+                        tone,
+                        customInstructions,
+                      });
+                      toast.success("Kaisa behavior updated");
+                    } catch (error: any) {
+                      toast.error(
+                        error?.message || "Failed to update Kaisa behavior",
+                      );
+                    } finally {
+                      setIsSavingVoice(false);
+                    }
+                  }}
+                  disabled={isSavingVoice}
+                  className="bg-white text-black hover:bg-zinc-200 font-bold px-6"
+                >
+                  {isSavingVoice ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Save Kaisa Behavior"
+                  )}
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -128,31 +231,44 @@ export default function AISettingsPage() {
               </div>
               <div>
                 <CardTitle className="text-white">Allowed Actions</CardTitle>
-                <CardDescription className="text-white/50">Control what your AI can and cannot do.</CardDescription>
+                <CardDescription className="text-white/50">
+                  Control what your AI can and cannot do.
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                    <Label className="text-white text-base">Accept {labels.bookings}</Label>
-                    <div className="text-sm text-white/50">Allow AI to confirm {labels.bookings.toLowerCase()} automatically if criteria are met.</div>
+              <div className="space-y-0.5">
+                <Label className="text-white text-base">
+                  Accept {labels.bookings}
+                </Label>
+                <div className="text-sm text-white/50">
+                  Allow AI to confirm {labels.bookings.toLowerCase()}{" "}
+                  automatically if criteria are met.
                 </div>
-                <Switch defaultChecked />
+              </div>
+              <Switch defaultChecked />
             </div>
             <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                    <Label className="text-white text-base">Process Refunds</Label>
-                    <div className="text-sm text-white/50">Allow AI to process refunds up to a certain limit.</div>
+              <div className="space-y-0.5">
+                <Label className="text-white text-base">Process Refunds</Label>
+                <div className="text-sm text-white/50">
+                  Allow AI to process refunds up to a certain limit.
                 </div>
-                <Switch />
+              </div>
+              <Switch />
             </div>
             <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                    <Label className="text-white text-base">Send Special Offers</Label>
-                    <div className="text-sm text-white/50">Allow AI to propose discounts to close a deal.</div>
+              <div className="space-y-0.5">
+                <Label className="text-white text-base">
+                  Send Special Offers
+                </Label>
+                <div className="text-sm text-white/50">
+                  Allow AI to propose discounts to close a deal.
                 </div>
-                <Switch defaultChecked />
+              </div>
+              <Switch defaultChecked />
             </div>
           </CardContent>
         </Card>
@@ -166,14 +282,22 @@ export default function AISettingsPage() {
               </div>
               <div>
                 <CardTitle className="text-white">Knowledge Base</CardTitle>
-                <CardDescription className="text-white/50">Your AI learns from your {labels.listings.toLowerCase()}, but you can add general rules here.</CardDescription>
+                <CardDescription className="text-white/50">
+                  Your AI learns from your {labels.listings.toLowerCase()}, but
+                  you can add general rules here.
+                </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-center py-8 border-2 border-dashed border-white/10 rounded-lg">
-                <div className="text-white/40 mb-2">No custom documents uploaded</div>
-                <div className="text-sm text-white/30">Upload {labels.listing.toLowerCase()} rules, local guides, or FAQs.</div>
+              <div className="text-white/40 mb-2">
+                No custom documents uploaded
+              </div>
+              <div className="text-sm text-white/30">
+                Upload {labels.listing.toLowerCase()} rules, local guides, or
+                FAQs.
+              </div>
             </div>
           </CardContent>
         </Card>

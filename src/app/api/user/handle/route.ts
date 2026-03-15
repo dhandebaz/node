@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
+import { getAppUrl } from "@/lib/runtime-config";
 
 /**
  * GET /api/user/handle?handle=<value>
@@ -109,7 +110,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      url: `https://nodebase.co/@${handle}`,
+      url: `${getAppUrl()}/@${handle}`,
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

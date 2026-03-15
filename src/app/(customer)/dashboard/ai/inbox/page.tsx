@@ -23,7 +23,7 @@ import {
   X,
   Facebook,
   Zap,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { fetchWithAuth } from "@/lib/api/fetcher";
@@ -35,17 +35,26 @@ import Link from "next/link";
 import { getBusinessLabels } from "@/lib/business-context";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { toggleAIPauseAction, sendManualMessageAction } from "@/app/actions/inbox";
+import {
+  toggleAIPauseAction,
+  sendManualMessageAction,
+} from "@/app/actions/inbox";
 import { createBookingLinkAction } from "@/app/actions/payments";
 import { toast } from "sonner";
 
@@ -60,8 +69,8 @@ type Conversation = {
   manager: { slug: string; name: string };
   status: "draft" | "payment_pending" | "paid" | "scheduled" | "open";
   bookingId?: string | null;
-  guestId?: string; 
-  aiPaused?: boolean; 
+  guestId?: string;
+  aiPaused?: boolean;
 };
 
 type ConversationMessage = {
@@ -112,7 +121,7 @@ const channelIcon = {
   instagram: Instagram,
   messenger: Facebook,
   web: Globe,
-  voice: Mic
+  voice: Mic,
 };
 
 const channelLabel: Record<Conversation["channel"], string> = {
@@ -120,7 +129,7 @@ const channelLabel: Record<Conversation["channel"], string> = {
   instagram: "Instagram",
   messenger: "Messenger",
   web: "Web chat",
-  voice: "Phone call"
+  voice: "Phone call",
 };
 
 const channelConstraint: Record<Conversation["channel"], string> = {
@@ -128,19 +137,19 @@ const channelConstraint: Record<Conversation["channel"], string> = {
   instagram: "Replies appear in DMs",
   messenger: "Replies appear in Messenger",
   web: "Instant web chat",
-  voice: "Voice transcription & recording"
+  voice: "Voice transcription & recording",
 };
 
 const formatTime = (value: string) =>
   new Date(value).toLocaleString("en-IN", {
     hour: "numeric",
-    minute: "2-digit"
+    minute: "2-digit",
   });
 
 const formatDate = (value: string) =>
   new Date(value).toLocaleDateString("en-IN", {
     day: "numeric",
-    month: "short"
+    month: "short",
   });
 
 export default function InboxPage() {
@@ -149,13 +158,30 @@ export default function InboxPage() {
 
   const getDisplayLabel = (originalLabel: string) => {
     const l = originalLabel.toLowerCase();
-    if (l.includes("guest") || l.includes("customer") || l.includes("patient") || l.includes("buyer")) {
+    if (
+      l.includes("guest") ||
+      l.includes("customer") ||
+      l.includes("patient") ||
+      l.includes("buyer")
+    ) {
       return labels.inboxContext.customerLabel;
     }
-    if (l.includes("date") || l.includes("time") || l.includes("stay") || l.includes("appointment") || l.includes("order")) {
+    if (
+      l.includes("date") ||
+      l.includes("time") ||
+      l.includes("stay") ||
+      l.includes("appointment") ||
+      l.includes("order")
+    ) {
       return labels.inboxContext.timeLabel;
     }
-    if (l.includes("listing") || l.includes("property") || l.includes("store") || l.includes("clinic") || l.includes("shop")) {
+    if (
+      l.includes("listing") ||
+      l.includes("property") ||
+      l.includes("store") ||
+      l.includes("clinic") ||
+      l.includes("shop")
+    ) {
       return labels.listing;
     }
     if (l.includes("booking")) {
@@ -166,16 +192,22 @@ export default function InboxPage() {
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [systemMeta, setSystemMeta] = useState<SystemMeta | null>(null);
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  const [selectedConversationId, setSelectedConversationId] = useState<
+    string | null
+  >(null);
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [context, setContext] = useState<ConversationContext | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [replyText, setReplyText] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [unreadOnly, setUnreadOnly] = useState(false);
-  const [channelFilter, setChannelFilter] = useState<Conversation["channel"] | "all">("all");
+  const [channelFilter, setChannelFilter] = useState<
+    Conversation["channel"] | "all"
+  >("all");
   const [managerFilter, setManagerFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<Conversation["status"] | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    Conversation["status"] | "all"
+  >("all");
   const [loadingList, setLoadingList] = useState(true);
   const [loadingThread, setLoadingThread] = useState(false);
   const [loadingContext, setLoadingContext] = useState(false);
@@ -188,7 +220,9 @@ export default function InboxPage() {
   const [sending, setSending] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [listings, setListings] = useState<ListingSummary[]>([]);
-  const [bookingOptions, setBookingOptions] = useState<Array<{ id: string; label: string }>>([]);
+  const [bookingOptions, setBookingOptions] = useState<
+    Array<{ id: string; label: string }>
+  >([]);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentForm, setPaymentForm] = useState({
     listingId: "",
@@ -198,7 +232,7 @@ export default function InboxPage() {
     amount: "",
     checkIn: "",
     checkOut: "",
-    notes: ""
+    notes: "",
   });
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
   const [paymentMessage, setPaymentMessage] = useState<string>("");
@@ -206,7 +240,9 @@ export default function InboxPage() {
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentSent, setPaymentSent] = useState(false);
   const [showIdModal, setShowIdModal] = useState(false);
-  const [idType, setIdType] = useState<"aadhaar" | "passport" | "driving_license" | "voter_id" | "any">("aadhaar");
+  const [idType, setIdType] = useState<
+    "aadhaar" | "passport" | "driving_license" | "voter_id" | "any"
+  >("aadhaar");
   const [idNote, setIdNote] = useState("");
   const [idUploadUrl, setIdUploadUrl] = useState<string | null>(null);
   const [idRequestMessage, setIdRequestMessage] = useState<string | null>(null);
@@ -219,38 +255,8 @@ export default function InboxPage() {
     amount: "",
     listingId: "",
     startDate: "",
-    endDate: ""
+    endDate: "",
   });
-
-  useEffect(() => {
-    loadListings();
-  }, []);
-
-  if (loadingList && listings.length === 0) {
-    return <div className="flex justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-white/40" /></div>;
-  }
-
-  if (listings.length === 0 && !loadingList) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
-        <div className="p-4 rounded-full bg-white/5 text-white/40">
-          <MessageSquare className="w-8 h-8" />
-        </div>
-        <div className="space-y-2">
-          <h3 className="text-xl font-semibold text-white">Inbox is locked</h3>
-          <p className="text-white/60 max-w-sm">
-            Add a {labels.listing.toLowerCase()} to start receiving messages from {labels.customers.toLowerCase()}.
-          </p>
-        </div>
-        <a 
-          href="/dashboard/ai/listings" 
-          className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:bg-gray-200 transition-colors"
-        >
-          Add {labels.listing}
-        </a>
-      </div>
-    );
-  }
 
   const loadListings = async () => {
     try {
@@ -272,7 +278,7 @@ export default function InboxPage() {
       const data = await fetchWithAuth<any[]>("/api/bookings");
       const options = (data || []).map((booking) => ({
         id: booking.id,
-        label: `${booking.guest_name} · ${booking.check_in?.slice(0, 10)} → ${booking.check_out?.slice(0, 10)}`
+        label: `${booking.guest_name} · ${booking.check_in?.slice(0, 10)} → ${booking.check_out?.slice(0, 10)}`,
       }));
       setBookingOptions(options);
       if (!idBookingId && options.length) {
@@ -287,7 +293,10 @@ export default function InboxPage() {
     try {
       setLoadingList(true);
       setListError(null);
-      const data = await fetchWithAuth<{ conversations: Conversation[]; meta: SystemMeta }>("/api/inbox/conversations");
+      const data = await fetchWithAuth<{
+        conversations: Conversation[];
+        meta: SystemMeta;
+      }>("/api/inbox/conversations");
       setConversations(data.conversations || []);
       setSystemMeta(data.meta || null);
       if (!selectedConversationId && data.conversations?.length > 0) {
@@ -308,7 +317,9 @@ export default function InboxPage() {
     try {
       setLoadingThread(true);
       setThreadError(null);
-      const data = await fetchWithAuth<{ messages: ConversationMessage[] }>(`/api/inbox/messages?conversationId=${conversationId}`);
+      const data = await fetchWithAuth<{ messages: ConversationMessage[] }>(
+        `/api/inbox/messages?conversationId=${conversationId}`,
+      );
       setMessages(data.messages || []);
     } catch (error: any) {
       if (error instanceof SessionExpiredError) {
@@ -326,7 +337,9 @@ export default function InboxPage() {
     try {
       setLoadingContext(true);
       setContextError(null);
-      const bookingId = conversations.find((conv) => conv.id === conversationId)?.bookingId;
+      const bookingId = conversations.find(
+        (conv) => conv.id === conversationId,
+      )?.bookingId;
       const url = bookingId
         ? `/api/inbox/context?conversationId=${conversationId}&bookingId=${bookingId}`
         : `/api/inbox/context?conversationId=${conversationId}`;
@@ -347,10 +360,13 @@ export default function InboxPage() {
   const loadSuggestions = async (conversationId: string) => {
     try {
       setLoadingSuggestions(true);
-      const data = await fetchWithAuth<{ suggestions: string[] }>("/api/inbox/ai-suggest", {
-        method: "POST",
-        body: JSON.stringify({ conversationId })
-      });
+      const data = await fetchWithAuth<{ suggestions: string[] }>(
+        "/api/inbox/ai-suggest",
+        {
+          method: "POST",
+          body: JSON.stringify({ conversationId }),
+        },
+      );
       setSuggestions(data.suggestions || []);
     } catch (error) {
       if (error instanceof SessionExpiredError) {
@@ -364,7 +380,11 @@ export default function InboxPage() {
   };
 
   const refreshSelected = async (conversationId: string) => {
-    await Promise.all([loadMessages(conversationId), loadContext(conversationId), loadSuggestions(conversationId)]);
+    await Promise.all([
+      loadMessages(conversationId),
+      loadContext(conversationId),
+      loadSuggestions(conversationId),
+    ]);
   };
 
   useEffect(() => {
@@ -388,7 +408,9 @@ export default function InboxPage() {
 
   const managerOptions = useMemo(() => {
     const unique = new Map<string, string>();
-    conversations.forEach((conv) => unique.set(conv.manager.slug, conv.manager.name));
+    conversations.forEach((conv) =>
+      unique.set(conv.manager.slug, conv.manager.name),
+    );
     return Array.from(unique.entries());
   }, [conversations]);
 
@@ -396,9 +418,12 @@ export default function InboxPage() {
     return conversations
       .filter((conv) => {
         if (unreadOnly && conv.unreadCount === 0) return false;
-        if (channelFilter !== "all" && conv.channel !== channelFilter) return false;
-        if (managerFilter !== "all" && conv.manager.slug !== managerFilter) return false;
-        if (statusFilter !== "all" && conv.status !== statusFilter) return false;
+        if (channelFilter !== "all" && conv.channel !== channelFilter)
+          return false;
+        if (managerFilter !== "all" && conv.manager.slug !== managerFilter)
+          return false;
+        if (statusFilter !== "all" && conv.status !== statusFilter)
+          return false;
         if (searchTerm.trim()) {
           const term = searchTerm.toLowerCase();
           const nameMatch = conv.customerName?.toLowerCase().includes(term);
@@ -407,17 +432,65 @@ export default function InboxPage() {
         }
         return true;
       })
-      .sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime());
-  }, [channelFilter, conversations, managerFilter, searchTerm, statusFilter, unreadOnly]);
+      .sort(
+        (a, b) =>
+          new Date(b.lastMessageAt).getTime() -
+          new Date(a.lastMessageAt).getTime(),
+      );
+  }, [
+    channelFilter,
+    conversations,
+    managerFilter,
+    searchTerm,
+    statusFilter,
+    unreadOnly,
+  ]);
 
-  const selectedConversation = conversations.find((conv) => conv.id === selectedConversationId) || null;
-  const whatsappUrl = paymentMessage ? `https://wa.me/?text=${encodeURIComponent(paymentMessage)}` : "";
-  const smsUrl = paymentMessage && paymentForm.guestPhone
-    ? `sms:${paymentForm.guestPhone}?body=${encodeURIComponent(paymentMessage)}`
+  const selectedConversation =
+    conversations.find((conv) => conv.id === selectedConversationId) || null;
+
+  if (loadingList && listings.length === 0) {
+    return (
+      <div className="flex justify-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-white/40" />
+      </div>
+    );
+  }
+
+  if (listings.length === 0 && !loadingList) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
+        <div className="p-4 rounded-full bg-white/5 text-white/40">
+          <MessageSquare className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-white">Inbox is locked</h3>
+          <p className="text-white/60 max-w-sm">
+            Add a {labels.listing.toLowerCase()} to start receiving messages
+            from {labels.customers.toLowerCase()}.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/ai/listings"
+          className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:bg-gray-200 transition-colors"
+        >
+          Add {labels.listing}
+        </Link>
+      </div>
+    );
+  }
+
+  const whatsappUrl = paymentMessage
+    ? `https://wa.me/?text=${encodeURIComponent(paymentMessage)}`
     : "";
-  const emailUrl = paymentMessage && paymentForm.guestEmail
-    ? `mailto:${paymentForm.guestEmail}?subject=Booking%20payment&body=${encodeURIComponent(paymentMessage)}`
-    : "";
+  const smsUrl =
+    paymentMessage && paymentForm.guestPhone
+      ? `sms:${paymentForm.guestPhone}?body=${encodeURIComponent(paymentMessage)}`
+      : "";
+  const emailUrl =
+    paymentMessage && paymentForm.guestEmail
+      ? `mailto:${paymentForm.guestEmail}?subject=Booking%20payment&body=${encodeURIComponent(paymentMessage)}`
+      : "";
 
   const handleAIPauseToggle = async (paused: boolean) => {
     if (!selectedConversation?.guestId) return;
@@ -425,8 +498,8 @@ export default function InboxPage() {
       await toggleAIPauseAction(selectedConversation.guestId, paused);
       setConversations((prev) =>
         prev.map((c) =>
-          c.id === selectedConversation.id ? { ...c, aiPaused: paused } : c
-        )
+          c.id === selectedConversation.id ? { ...c, aiPaused: paused } : c,
+        ),
       );
       toast.success(paused ? "AI paused for this guest" : "AI resumed");
     } catch (error) {
@@ -444,8 +517,11 @@ export default function InboxPage() {
           toast.error("Cannot send manual message: Guest ID missing");
           return;
         }
-        await sendManualMessageAction(selectedConversation.guestId, replyText.trim());
-        
+        await sendManualMessageAction(
+          selectedConversation.guestId,
+          replyText.trim(),
+        );
+
         // Optimistically update UI
         const newMessage: ConversationMessage = {
           id: Date.now().toString(), // temp id
@@ -453,25 +529,28 @@ export default function InboxPage() {
           senderType: "human",
           content: replyText.trim(),
           timestamp: new Date().toISOString(),
-          channel: selectedConversation.channel
+          channel: selectedConversation.channel,
         };
         setMessages((prev) => [...prev, newMessage]);
-        
+
         // Auto-pause AI locally
         setConversations((prev) =>
           prev.map((c) =>
-            c.id === selectedConversation.id ? { ...c, aiPaused: true } : c
-          )
+            c.id === selectedConversation.id ? { ...c, aiPaused: true } : c,
+          ),
         );
       } else {
-        const data = await fetchWithAuth<{ message: ConversationMessage }>("/api/inbox/send", {
-          method: "POST",
-          body: JSON.stringify({
-            conversationId: selectedConversation.id,
-            content: replyText.trim(),
-            senderType
-          })
-        });
+        const data = await fetchWithAuth<{ message: ConversationMessage }>(
+          "/api/inbox/send",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              conversationId: selectedConversation.id,
+              content: replyText.trim(),
+              senderType,
+            }),
+          },
+        );
         setMessages((prev) => [...prev, data.message]);
       }
       setReplyText("");
@@ -499,15 +578,18 @@ export default function InboxPage() {
     }
     try {
       setSending(true);
-      const data = await fetchWithAuth<{ message: ConversationMessage }>("/api/inbox/send", {
-        method: "POST",
-        body: JSON.stringify({
-          conversationId: selectedConversation.id,
-          content: action.label,
-          senderType: "ai",
-          action: action.action
-        })
-      });
+      const data = await fetchWithAuth<{ message: ConversationMessage }>(
+        "/api/inbox/send",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            conversationId: selectedConversation.id,
+            content: action.label,
+            senderType: "ai",
+            action: action.action,
+          }),
+        },
+      );
       setMessages((prev) => [...prev, data.message]);
     } catch (error) {
       if (error instanceof SessionExpiredError) {
@@ -523,13 +605,17 @@ export default function InboxPage() {
     if (!selectedConversationId || !idBookingId) return;
     try {
       setIdRequesting(true);
-      const response = await fetchWithAuth<{ bookingId: string; uploadUrl: string; message: string }>("/api/guest-id/request", {
+      const response = await fetchWithAuth<{
+        bookingId: string;
+        uploadUrl: string;
+        message: string;
+      }>("/api/guest-id/request", {
         method: "POST",
         body: JSON.stringify({
           bookingId: idBookingId,
           idType,
-          message: idNote.trim() || null
-        })
+          message: idNote.trim() || null,
+        }),
       });
       setIdUploadUrl(response.uploadUrl);
       setIdRequestMessage(response.message);
@@ -553,7 +639,7 @@ export default function InboxPage() {
       amount: "",
       checkIn: "",
       checkOut: "",
-      notes: ""
+      notes: "",
     });
     setPaymentLink(null);
     setPaymentMessage("");
@@ -563,7 +649,13 @@ export default function InboxPage() {
   };
 
   const handleCreatePaymentLink = async () => {
-    if (!paymentForm.listingId || !paymentForm.guestName || !paymentForm.amount || !paymentForm.checkIn || !paymentForm.checkOut) {
+    if (
+      !paymentForm.listingId ||
+      !paymentForm.guestName ||
+      !paymentForm.amount ||
+      !paymentForm.checkIn ||
+      !paymentForm.checkOut
+    ) {
       setPaymentError("Fill all required fields.");
       return;
     }
@@ -578,17 +670,25 @@ export default function InboxPage() {
         amount: Number(paymentForm.amount),
         checkIn: paymentForm.checkIn,
         checkOut: paymentForm.checkOut,
-        notes: paymentForm.notes.trim() || null
+        notes: paymentForm.notes.trim() || null,
       };
       const data = await paymentsApi.createPaymentLink(payload);
-      const listingName = listings.find((l) => l.id === paymentForm.listingId)?.name || "your stay";
+      const listingName =
+        listings.find((l) => l.id === paymentForm.listingId)?.name ||
+        "your stay";
       const message = `Booking for ${listingName} (${paymentForm.checkIn}–${paymentForm.checkOut}) is pending. Please pay ₹${Number(paymentForm.amount).toLocaleString("en-IN")} here: ${data.paymentLink}`;
       setPaymentLink(data.paymentLink);
       setPaymentMessage(message);
       setConversations((prev) =>
         prev.map((conv) =>
-          conv.id === selectedConversation?.id ? { ...conv, status: "payment_pending", lastMessage: conv.lastMessage } : conv
-        )
+          conv.id === selectedConversation?.id
+            ? {
+                ...conv,
+                status: "payment_pending",
+                lastMessage: conv.lastMessage,
+              }
+            : conv,
+        ),
       );
     } catch (error: any) {
       if (error instanceof SessionExpiredError) {
@@ -605,14 +705,17 @@ export default function InboxPage() {
     if (!selectedConversation || !paymentMessage) return;
     try {
       setPaymentLoading(true);
-      const data = await fetchWithAuth<{ message: ConversationMessage }>("/api/inbox/send", {
-        method: "POST",
-        body: JSON.stringify({
-          conversationId: selectedConversation.id,
-          content: paymentMessage,
-          senderType: "human"
-        })
-      });
+      const data = await fetchWithAuth<{ message: ConversationMessage }>(
+        "/api/inbox/send",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            conversationId: selectedConversation.id,
+            content: paymentMessage,
+            senderType: "human",
+          }),
+        },
+      );
       setMessages((prev) => [...prev, data.message]);
       setPaymentSent(true);
     } catch (error: any) {
@@ -632,7 +735,11 @@ export default function InboxPage() {
   };
 
   const handleCreateSmartLink = async () => {
-    if (!selectedConversationId || !smartLinkForm.amount || !smartLinkForm.listingId) {
+    if (
+      !selectedConversationId ||
+      !smartLinkForm.amount ||
+      !smartLinkForm.listingId
+    ) {
       toast.error("Please fill in the amount and listing");
       return;
     }
@@ -645,12 +752,14 @@ export default function InboxPage() {
         amount: Number(smartLinkForm.amount),
         metadata: {
           startDate: smartLinkForm.startDate,
-          endDate: smartLinkForm.endDate
-        }
+          endDate: smartLinkForm.endDate,
+        },
       });
 
       if (result.success) {
-        const listingName = listings.find(l => l.id === smartLinkForm.listingId)?.name || "Listing";
+        const listingName =
+          listings.find((l) => l.id === smartLinkForm.listingId)?.name ||
+          "Listing";
         const message = `I've generated a secure booking link for you for "${listingName}". You can complete your payment here: ${result.checkoutUrl}`;
         setReplyText(message);
         setShowSmartLinkModal(false);
@@ -663,7 +772,8 @@ export default function InboxPage() {
     }
   };
 
-  const showEmptyState = !loadingList && filteredConversations.length === 0 && !listError;
+  const showEmptyState =
+    !loadingList && filteredConversations.length === 0 && !listError;
   const showThread = selectedConversationId !== null;
 
   if (sessionExpired) {
@@ -675,12 +785,14 @@ export default function InboxPage() {
       <div
         className={cn(
           "w-full md:w-80 lg:w-96 bg-[var(--color-dashboard-surface)] border-r border-white/10 flex flex-col absolute md:relative inset-0 z-10 transition-transform duration-300",
-          showThread ? "-translate-x-full md:translate-x-0" : "translate-x-0"
+          showThread ? "-translate-x-full md:translate-x-0" : "translate-x-0",
         )}
       >
         <div className="p-4 border-b border-white/10 bg-[var(--color-dashboard-surface)] space-y-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-white tracking-tight">Inbox</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight">
+              Inbox
+            </h1>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowFilters(true)}
@@ -704,21 +816,35 @@ export default function InboxPage() {
               onClick={() => setUnreadOnly((prev) => !prev)}
               className={cn(
                 "px-3 py-1 rounded-full border transition-colors",
-                unreadOnly ? "border-white/60 text-white" : "border-white/10 hover:border-white/40"
+                unreadOnly
+                  ? "border-white/60 text-white"
+                  : "border-white/10 hover:border-white/40",
               )}
             >
               Unread
             </button>
             <div className="flex items-center gap-1 border border-white/10 rounded-full px-3 py-1">
-              <span>{channelFilter === "all" ? "All channels" : channelLabel[channelFilter]}</span>
+              <span>
+                {channelFilter === "all"
+                  ? "All channels"
+                  : channelLabel[channelFilter]}
+              </span>
               <ChevronDown className="w-3 h-3" />
             </div>
             <div className="flex items-center gap-1 border border-white/10 rounded-full px-3 py-1">
-              <span>{managerFilter === "all" ? "All AI Managers" : managerOptions.find(([slug]) => slug === managerFilter)?.[1]}</span>
+              <span>
+                {managerFilter === "all"
+                  ? "All AI Managers"
+                  : managerOptions.find(
+                      ([slug]) => slug === managerFilter,
+                    )?.[1]}
+              </span>
               <ChevronDown className="w-3 h-3" />
             </div>
             <div className="flex items-center gap-1 border border-white/10 rounded-full px-3 py-1">
-              <span>{statusFilter === "all" ? "All status" : statusFilter}</span>
+              <span>
+                {statusFilter === "all" ? "All status" : statusFilter}
+              </span>
               <ChevronDown className="w-3 h-3" />
             </div>
           </div>
@@ -778,7 +904,9 @@ export default function InboxPage() {
             <div className="p-8 text-center text-white/40">
               <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-20" />
               <p>No conversations yet</p>
-              <p className="text-xs text-white/30 mt-2">Connect a channel to start receiving messages.</p>
+              <p className="text-xs text-white/30 mt-2">
+                Connect a channel to start receiving messages.
+              </p>
             </div>
           )}
           {!loadingList && !listError && filteredConversations.length > 0 && (
@@ -793,7 +921,7 @@ export default function InboxPage() {
                       "w-full text-left px-4 py-4 hover:bg-white/5 transition-colors border-l-2",
                       selectedConversationId === conversation.id
                         ? "bg-white/5 border-[var(--color-brand-red)]"
-                        : "border-transparent"
+                        : "border-transparent",
                     )}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -803,8 +931,17 @@ export default function InboxPage() {
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className={cn("text-sm font-semibold", conversation.unreadCount ? "text-white" : "text-white/70")}>
-                              {conversation.customerName || conversation.customerPhone || "Unknown"}
+                            <span
+                              className={cn(
+                                "text-sm font-semibold",
+                                conversation.unreadCount
+                                  ? "text-white"
+                                  : "text-white/70",
+                              )}
+                            >
+                              {conversation.customerName ||
+                                conversation.customerPhone ||
+                                "Unknown"}
                             </span>
                             {conversation.unreadCount > 0 && (
                               <span className="text-[10px] font-semibold text-white bg-[var(--color-brand-red)] rounded-full px-2 py-0.5">
@@ -812,12 +949,18 @@ export default function InboxPage() {
                               </span>
                             )}
                           </div>
-                          <div className="text-[11px] text-white/40">{conversation.manager.name}</div>
+                          <div className="text-[11px] text-white/40">
+                            {conversation.manager.name}
+                          </div>
                         </div>
                       </div>
-                      <div className="text-[10px] text-white/40 whitespace-nowrap">{formatDate(conversation.lastMessageAt)}</div>
+                      <div className="text-[10px] text-white/40 whitespace-nowrap">
+                        {formatDate(conversation.lastMessageAt)}
+                      </div>
                     </div>
-                    <div className="mt-2 text-xs text-white/60 line-clamp-2">{conversation.lastMessage}</div>
+                    <div className="mt-2 text-xs text-white/60 line-clamp-2">
+                      {conversation.lastMessage}
+                    </div>
                     <div className="mt-3 flex items-center justify-between text-[10px] text-white/30 uppercase tracking-wider">
                       <span>{channelLabel[conversation.channel]}</span>
                       <span>{conversation.status.replace("_", " ")}</span>
@@ -832,8 +975,8 @@ export default function InboxPage() {
 
       <div
         className={cn(
-        "flex-1 bg-[var(--color-dashboard-surface)] flex flex-col absolute md:relative inset-0 z-20 transition-transform duration-300",
-          showThread ? "translate-x-0" : "translate-x-full md:translate-x-0"
+          "flex-1 bg-[var(--color-dashboard-surface)] flex flex-col absolute md:relative inset-0 z-20 transition-transform duration-300",
+          showThread ? "translate-x-0" : "translate-x-full md:translate-x-0",
         )}
       >
         {selectedConversation ? (
@@ -847,50 +990,63 @@ export default function InboxPage() {
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-xs font-bold text-white">
-                  {(selectedConversation.customerName || selectedConversation.customerPhone || "U").charAt(0)}
+                  {(
+                    selectedConversation.customerName ||
+                    selectedConversation.customerPhone ||
+                    "U"
+                  ).charAt(0)}
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-white">
-                    {selectedConversation.customerName || selectedConversation.customerPhone || "Unknown"}
+                    {selectedConversation.customerName ||
+                      selectedConversation.customerPhone ||
+                      "Unknown"}
                   </h2>
-                  <div className="text-[10px] text-white/50">{channelLabel[selectedConversation.channel]}</div>
+                  <div className="text-[10px] text-white/50">
+                    {channelLabel[selectedConversation.channel]}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    {selectedConversation.aiPaused && (
-                      <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-red-500/10 text-red-400 border border-red-500/20">
-                        AI Paused - Human taking over
-                      </span>
-                    )}
-                    <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1">
-                      <Label htmlFor="ai-toggle" className="text-[10px] font-medium text-white cursor-pointer">
-                        AI Autopilot
-                      </Label>
-                      <Switch
-                          id="ai-toggle"
-                          checked={!selectedConversation.aiPaused}
-                          onCheckedChange={(checked) => handleAIPauseToggle(!checked)}
-                          className="scale-75"
-                        />
-                      </div>
-                    </div>
-                  <button
-                    onClick={() => {
-                      setSmartLinkData({
-                        amount: "",
-                        listingId: listings[0]?.id || "",
-                        startDate: "",
-                        endDate: ""
-                      });
-                      setShowSmartLinkModal(true);
-                    }}
-                    className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
-                  >
-                    Send booking link
-                  </button>
-                  <button
-                    onClick={openPaymentModal}
+                <div className="flex items-center gap-2">
+                  {selectedConversation.aiPaused && (
+                    <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-red-500/10 text-red-400 border border-red-500/20">
+                      AI Paused - Human taking over
+                    </span>
+                  )}
+                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1">
+                    <Label
+                      htmlFor="ai-toggle"
+                      className="text-[10px] font-medium text-white cursor-pointer"
+                    >
+                      AI Autopilot
+                    </Label>
+                    <Switch
+                      id="ai-toggle"
+                      checked={!selectedConversation.aiPaused}
+                      onCheckedChange={(checked) =>
+                        handleAIPauseToggle(!checked)
+                      }
+                      className="scale-75"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setSmartLinkData({
+                      amount: "",
+                      listingId: listings[0]?.id || "",
+                      startDate: "",
+                      endDate: "",
+                    });
+                    setShowSmartLinkModal(true);
+                  }}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+                >
+                  Send booking link
+                </button>
+                <button
+                  onClick={openPaymentModal}
                   className="text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 text-white/80 hover:border-white/50"
                 >
                   Send payment link
@@ -910,31 +1066,46 @@ export default function InboxPage() {
                     className="w-full px-4 py-3 flex items-center justify-between text-xs text-white/70"
                   >
                     <span>{context?.managerName || "Context"}</span>
-                    <ChevronDown className={cn("w-4 h-4 transition-transform", showContext ? "rotate-180" : "")} />
+                    <ChevronDown
+                      className={cn(
+                        "w-4 h-4 transition-transform",
+                        showContext ? "rotate-180" : "",
+                      )}
+                    />
                   </button>
                   {showContext && (
                     <div className="px-4 pb-4">
                       {contextError && (
-                        <div className="text-xs text-white/50">{contextError}</div>
+                        <div className="text-xs text-white/50">
+                          {contextError}
+                        </div>
                       )}
                       {loadingContext && (
                         <div className="text-xs text-white/40 flex items-center gap-2">
-                          <Loader2 className="w-3 h-3 animate-spin" /> Updating context...
+                          <Loader2 className="w-3 h-3 animate-spin" /> Updating
+                          context...
                         </div>
                       )}
                       {context && (
                         <div className="space-y-3">
-                          <div className="text-xs text-white/40">Updated {formatTime(context.updatedAt)}</div>
+                          <div className="text-xs text-white/40">
+                            Updated {formatTime(context.updatedAt)}
+                          </div>
                           <div className="grid grid-cols-2 gap-2 text-xs">
                             {context.fields.map((field) => (
-                              <div key={field.label} className="bg-white/5 border border-white/10 rounded-lg p-2">
-                                <div className="text-white/40">{field.label}</div>
+                              <div
+                                key={field.label}
+                                className="bg-white/5 border border-white/10 rounded-lg p-2"
+                              >
+                                <div className="text-white/40">
+                                  {field.label}
+                                </div>
                                 <div
                                   className={cn(
                                     "text-white mt-1",
                                     field.tone === "good" && "text-emerald-300",
                                     field.tone === "warn" && "text-amber-300",
-                                    field.tone === "bad" && "text-red-300"
+                                    field.tone === "bad" && "text-red-300",
                                   )}
                                 >
                                   {field.value}
@@ -957,10 +1128,14 @@ export default function InboxPage() {
                                 </button>
                               ))}
                           </div>
-                          {context.quickActions.filter((action) => action.variant === "secondary").length > 0 && (
+                          {context.quickActions.filter(
+                            (action) => action.variant === "secondary",
+                          ).length > 0 && (
                             <div className="flex flex-wrap gap-2">
                               {context.quickActions
-                                .filter((action) => action.variant === "secondary")
+                                .filter(
+                                  (action) => action.variant === "secondary",
+                                )
                                 .map((action) => (
                                   <button
                                     key={action.id}
@@ -973,7 +1148,9 @@ export default function InboxPage() {
                                 ))}
                             </div>
                           )}
-                          <div className="text-[10px] text-white/40">{channelConstraint[selectedConversation.channel]}</div>
+                          <div className="text-[10px] text-white/40">
+                            {channelConstraint[selectedConversation.channel]}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -983,14 +1160,17 @@ export default function InboxPage() {
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--color-dashboard-surface)]">
                   {loadingThread && (
                     <div className="text-sm text-white/40 flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" /> Loading messages...
+                      <Loader2 className="w-4 h-4 animate-spin" /> Loading
+                      messages...
                     </div>
                   )}
                   {threadError && (
                     <div className="text-sm text-white/50">{threadError}</div>
                   )}
                   {!loadingThread && !threadError && messages.length === 0 && (
-                    <div className="text-sm text-white/40">No messages in this conversation yet.</div>
+                    <div className="text-sm text-white/40">
+                      No messages in this conversation yet.
+                    </div>
                   )}
                   {messages.map((message) => {
                     const isCustomer = message.senderType === "customer";
@@ -998,15 +1178,30 @@ export default function InboxPage() {
                     return (
                       <div
                         key={message.id}
-                        className={cn("flex gap-3 max-w-[85%]", isCustomer ? "" : "ml-auto flex-row-reverse")}
+                        className={cn(
+                          "flex gap-3 max-w-[85%]",
+                          isCustomer ? "" : "ml-auto flex-row-reverse",
+                        )}
                       >
                         <div
                           className={cn(
                             "w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white mt-1",
-                            isCustomer ? "bg-gradient-to-br from-orange-400 to-red-500" : "bg-white/10 border border-white/10"
+                            isCustomer
+                              ? "bg-gradient-to-br from-orange-400 to-red-500"
+                              : "bg-white/10 border border-white/10",
                           )}
                         >
-                          {isCustomer ? (selectedConversation.customerName || selectedConversation.customerPhone || "U").charAt(0) : isAi ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                          {isCustomer ? (
+                            (
+                              selectedConversation.customerName ||
+                              selectedConversation.customerPhone ||
+                              "U"
+                            ).charAt(0)
+                          ) : isAi ? (
+                            <Bot className="w-4 h-4" />
+                          ) : (
+                            <User className="w-4 h-4" />
+                          )}
                         </div>
                         <div>
                           <div
@@ -1014,14 +1209,23 @@ export default function InboxPage() {
                               "rounded-2xl p-3 text-sm leading-relaxed shadow-sm",
                               isCustomer
                                 ? "bg-[var(--color-dashboard-surface)] border border-white/10 rounded-tl-none text-white/90"
-                                : "bg-white/10 border border-white/10 rounded-tr-none text-white"
+                                : "bg-white/10 border border-white/10 rounded-tr-none text-white",
                             )}
                           >
                             {message.content}
                           </div>
-                          <div className={cn("text-[10px] mt-1 flex items-center gap-2", isCustomer ? "text-white/30 ml-1" : "text-white/40 justify-end mr-1")}>
+                          <div
+                            className={cn(
+                              "text-[10px] mt-1 flex items-center gap-2",
+                              isCustomer
+                                ? "text-white/30 ml-1"
+                                : "text-white/40 justify-end mr-1",
+                            )}
+                          >
                             <span>{formatTime(message.timestamp)}</span>
-                            <span>{isAi ? "AI" : isCustomer ? "Customer" : "You"}</span>
+                            <span>
+                              {isAi ? "AI" : isCustomer ? "Customer" : "You"}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -1049,7 +1253,9 @@ export default function InboxPage() {
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex flex-wrap gap-2">
                       {loadingSuggestions && (
-                        <span className="text-[10px] text-white/40">Loading AI replies...</span>
+                        <span className="text-[10px] text-white/40">
+                          Loading AI replies...
+                        </span>
                       )}
                       {!loadingSuggestions &&
                         suggestions.slice(0, 3).map((suggestion) => (
@@ -1080,8 +1286,13 @@ export default function InboxPage() {
               <div className="hidden md:flex w-80 bg-[#140707] border-l border-white/10 flex-col p-4 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-white/40">Context</div>
-                    <div className="text-sm font-semibold text-white">{context?.managerName || selectedConversation.manager.name}</div>
+                    <div className="text-xs uppercase tracking-widest text-white/40">
+                      Context
+                    </div>
+                    <div className="text-sm font-semibold text-white">
+                      {context?.managerName ||
+                        selectedConversation.manager.name}
+                    </div>
                   </div>
                   <button
                     onClick={() => loadContext(selectedConversation.id)}
@@ -1092,7 +1303,8 @@ export default function InboxPage() {
                 </div>
                 {loadingContext && (
                   <div className="text-xs text-white/40 flex items-center gap-2">
-                    <Loader2 className="w-3 h-3 animate-spin" /> Updating context...
+                    <Loader2 className="w-3 h-3 animate-spin" /> Updating
+                    context...
                   </div>
                 )}
                 {contextError && (
@@ -1100,17 +1312,24 @@ export default function InboxPage() {
                 )}
                 {context && (
                   <>
-                    <div className="text-[10px] text-white/40">Updated {formatTime(context.updatedAt)}</div>
+                    <div className="text-[10px] text-white/40">
+                      Updated {formatTime(context.updatedAt)}
+                    </div>
                     <div className="grid grid-cols-1 gap-3 text-xs">
                       {context.fields.map((field) => (
-                        <div key={field.label} className="bg-white/5 border border-white/10 rounded-lg p-3">
-                          <div className="text-white/40">{getDisplayLabel(field.label)}</div>
+                        <div
+                          key={field.label}
+                          className="bg-white/5 border border-white/10 rounded-lg p-3"
+                        >
+                          <div className="text-white/40">
+                            {getDisplayLabel(field.label)}
+                          </div>
                           <div
                             className={cn(
                               "text-white mt-1",
                               field.tone === "good" && "text-emerald-300",
                               field.tone === "warn" && "text-amber-300",
-                              field.tone === "bad" && "text-red-300"
+                              field.tone === "bad" && "text-red-300",
                             )}
                           >
                             {field.value}
@@ -1133,7 +1352,9 @@ export default function InboxPage() {
                           </button>
                         ))}
                     </div>
-                    {context.quickActions.filter((action) => action.variant === "secondary").length > 0 && (
+                    {context.quickActions.filter(
+                      (action) => action.variant === "secondary",
+                    ).length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {context.quickActions
                           .filter((action) => action.variant === "secondary")
@@ -1149,11 +1370,15 @@ export default function InboxPage() {
                           ))}
                       </div>
                     )}
-                    <div className="text-[10px] text-white/40">{channelConstraint[selectedConversation.channel]}</div>
+                    <div className="text-[10px] text-white/40">
+                      {channelConstraint[selectedConversation.channel]}
+                    </div>
                   </>
                 )}
                 {!context && !loadingContext && (
-                  <div className="text-xs text-white/40">Context will appear here once available.</div>
+                  <div className="text-xs text-white/40">
+                    Context will appear here once available.
+                  </div>
                 )}
               </div>
             </div>
@@ -1173,7 +1398,10 @@ export default function InboxPage() {
           <div className="bg-[var(--color-dashboard-surface)] border-t border-white/10 rounded-t-2xl w-full p-6 space-y-4">
             <div className="flex items-center justify-between">
               <div className="text-sm font-semibold text-white">Filters</div>
-              <button onClick={() => setShowFilters(false)} className="text-xs text-white/50">
+              <button
+                onClick={() => setShowFilters(false)}
+                className="text-xs text-white/50"
+              >
                 Close
               </button>
             </div>
@@ -1182,18 +1410,24 @@ export default function InboxPage() {
                 onClick={() => setUnreadOnly((prev) => !prev)}
                 className={cn(
                   "px-3 py-2 rounded-full text-xs border",
-                  unreadOnly ? "border-white/60 text-white" : "border-white/10 text-white/70"
+                  unreadOnly
+                    ? "border-white/60 text-white"
+                    : "border-white/10 text-white/70",
                 )}
               >
                 Unread only
               </button>
-              {(["all", "whatsapp", "instagram", "messenger", "web"] as const).map((channel) => (
+              {(
+                ["all", "whatsapp", "instagram", "messenger", "web"] as const
+              ).map((channel) => (
                 <button
                   key={channel}
                   onClick={() => setChannelFilter(channel)}
                   className={cn(
                     "px-3 py-2 rounded-full text-xs border",
-                    channelFilter === channel ? "border-white/60 text-white" : "border-white/10 text-white/70"
+                    channelFilter === channel
+                      ? "border-white/60 text-white"
+                      : "border-white/10 text-white/70",
                   )}
                 >
                   {channel === "all" ? "All channels" : channelLabel[channel]}
@@ -1201,13 +1435,17 @@ export default function InboxPage() {
               ))}
             </div>
             <div>
-              <div className="text-xs uppercase tracking-widest text-white/40 mb-2">AI Manager</div>
+              <div className="text-xs uppercase tracking-widest text-white/40 mb-2">
+                AI Manager
+              </div>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setManagerFilter("all")}
                   className={cn(
                     "px-3 py-2 rounded-full text-xs border",
-                    managerFilter === "all" ? "border-white/60 text-white" : "border-white/10 text-white/70"
+                    managerFilter === "all"
+                      ? "border-white/60 text-white"
+                      : "border-white/10 text-white/70",
                   )}
                 >
                   All AI Managers
@@ -1218,7 +1456,9 @@ export default function InboxPage() {
                     onClick={() => setManagerFilter(slug)}
                     className={cn(
                       "px-3 py-2 rounded-full text-xs border",
-                      managerFilter === slug ? "border-white/60 text-white" : "border-white/10 text-white/70"
+                      managerFilter === slug
+                        ? "border-white/60 text-white"
+                        : "border-white/10 text-white/70",
                     )}
                   >
                     {name}
@@ -1227,15 +1467,28 @@ export default function InboxPage() {
               </div>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-widest text-white/40 mb-2">Status</div>
+              <div className="text-xs uppercase tracking-widest text-white/40 mb-2">
+                Status
+              </div>
               <div className="flex flex-wrap gap-2">
-                {(["all", "open", "draft", "payment_pending", "paid", "scheduled"] as const).map((status) => (
+                {(
+                  [
+                    "all",
+                    "open",
+                    "draft",
+                    "payment_pending",
+                    "paid",
+                    "scheduled",
+                  ] as const
+                ).map((status) => (
                   <button
                     key={status}
                     onClick={() => setStatusFilter(status)}
                     className={cn(
                       "px-3 py-2 rounded-full text-xs border",
-                      statusFilter === status ? "border-white/60 text-white" : "border-white/10 text-white/70"
+                      statusFilter === status
+                        ? "border-white/60 text-white"
+                        : "border-white/10 text-white/70",
                     )}
                   >
                     {status === "all" ? "All status" : status.replace("_", " ")}
@@ -1251,7 +1504,9 @@ export default function InboxPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
           <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl w-full max-w-2xl overflow-hidden">
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
-              <div className="text-sm font-semibold text-white">Send payment link</div>
+              <div className="text-sm font-semibold text-white">
+                Send payment link
+              </div>
               <button
                 onClick={() => setShowPaymentModal(false)}
                 className="p-2 hover:bg-white/5 rounded-full text-white/60"
@@ -1262,10 +1517,17 @@ export default function InboxPage() {
             <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Property</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Property
+                  </label>
                   <select
                     value={paymentForm.listingId}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, listingId: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        listingId: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   >
                     <option value="">Select property</option>
@@ -1277,70 +1539,119 @@ export default function InboxPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Amount</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Amount
+                  </label>
                   <input
                     type="number"
                     value={paymentForm.amount}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, amount: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        amount: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="Amount in INR"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Guest name</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Guest name
+                  </label>
                   <input
                     type="text"
                     value={paymentForm.guestName}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, guestName: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        guestName: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="Guest name"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Guest phone</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Guest phone
+                  </label>
                   <input
                     type="tel"
                     value={paymentForm.guestPhone}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, guestPhone: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        guestPhone: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="+91 90000 00000"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Guest email</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Guest email
+                  </label>
                   <input
                     type="email"
                     value={paymentForm.guestEmail}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, guestEmail: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        guestEmail: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="guest@email.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Check-in</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Check-in
+                  </label>
                   <input
                     type="date"
                     value={paymentForm.checkIn}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, checkIn: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        checkIn: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Check-out</label>
+                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                    Check-out
+                  </label>
                   <input
                     type="date"
                     value={paymentForm.checkOut}
-                    onChange={(event) => setPaymentForm((prev) => ({ ...prev, checkOut: event.target.value }))}
+                    onChange={(event) =>
+                      setPaymentForm((prev) => ({
+                        ...prev,
+                        checkOut: event.target.value,
+                      }))
+                    }
                     className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-white/60 mb-1">Notes (optional)</label>
+                <label className="block text-xs font-semibold text-white/60 mb-1">
+                  Notes (optional)
+                </label>
                 <textarea
                   value={paymentForm.notes}
-                  onChange={(event) => setPaymentForm((prev) => ({ ...prev, notes: event.target.value }))}
+                  onChange={(event) =>
+                    setPaymentForm((prev) => ({
+                      ...prev,
+                      notes: event.target.value,
+                    }))
+                  }
                   className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
                   placeholder="Add any notes for the guest"
                 />
@@ -1348,8 +1659,12 @@ export default function InboxPage() {
 
               {paymentLink && (
                 <div className="space-y-3 border border-white/10 rounded-xl p-4 bg-white/5">
-                  <div className="text-xs font-semibold text-white/70 uppercase tracking-wider">Payment link</div>
-                  <div className="text-sm text-white break-all">{paymentLink}</div>
+                  <div className="text-xs font-semibold text-white/70 uppercase tracking-wider">
+                    Payment link
+                  </div>
+                  <div className="text-sm text-white break-all">
+                    {paymentLink}
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={handleCopyLink}
@@ -1393,7 +1708,9 @@ export default function InboxPage() {
                     )}
                   </div>
                   {paymentSent && (
-                    <div className="text-xs text-emerald-300">Payment link ready to share.</div>
+                    <div className="text-xs text-emerald-300">
+                      Payment link ready to share.
+                    </div>
                   )}
                 </div>
               )}
@@ -1412,7 +1729,11 @@ export default function InboxPage() {
                   disabled={paymentLoading}
                   className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg text-xs font-semibold disabled:opacity-60"
                 >
-                  {paymentLoading ? "Generating..." : paymentLink ? "Generate again" : "Generate payment link"}
+                  {paymentLoading
+                    ? "Generating..."
+                    : paymentLink
+                      ? "Generate again"
+                      : "Generate payment link"}
                 </button>
               </div>
             </div>
@@ -1425,7 +1746,10 @@ export default function InboxPage() {
           <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden">
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
               <div className="text-sm font-semibold text-white">Request ID</div>
-              <button onClick={() => setShowIdModal(false)} className="p-2 hover:bg-white/5 rounded-full text-white/60">
+              <button
+                onClick={() => setShowIdModal(false)}
+                className="p-2 hover:bg-white/5 rounded-full text-white/60"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -1459,7 +1783,9 @@ export default function InboxPage() {
                 </select>
               </div>
               <div>
-                <div className="text-xs text-white/40 mb-1">Message (optional)</div>
+                <div className="text-xs text-white/40 mb-1">
+                  Message (optional)
+                </div>
                 <textarea
                   value={idNote}
                   onChange={(e) => setIdNote(e.target.value)}
@@ -1479,9 +1805,14 @@ export default function InboxPage() {
               )}
             </div>
             <div className="p-4 border-t border-white/10 flex items-center justify-between">
-              <div className="text-[10px] text-white/40">Nodebase will store IDs securely.</div>
+              <div className="text-[10px] text-white/40">
+                Nodebase will store IDs securely.
+              </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => setShowIdModal(false)} className="px-3 py-1.5 text-xs text-white/60 hover:text-white">
+                <button
+                  onClick={() => setShowIdModal(false)}
+                  className="px-3 py-1.5 text-xs text-white/60 hover:text-white"
+                >
                   Close
                 </button>
                 <button
@@ -1507,7 +1838,12 @@ export default function InboxPage() {
                   <Zap className="text-emerald-500 w-5 h-5" />
                   Generate Smart Link
                 </CardTitle>
-                <Button variant="ghost" size="sm" onClick={() => setShowSmartLinkModal(false)} className="text-white/40 hover:text-white">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSmartLinkModal(false)}
+                  className="text-white/40 hover:text-white"
+                >
                   <X className="w-4 h-4" />
                 </Button>
               </div>
@@ -1518,16 +1854,20 @@ export default function InboxPage() {
             <CardContent className="p-6 space-y-4">
               <div className="space-y-2">
                 <Label className="text-white">Select Listing</Label>
-                <Select 
-                  value={smartLinkForm.listingId} 
-                  onValueChange={(v: string) => setSmartLinkData({...smartLinkForm, listingId: v})}
+                <Select
+                  value={smartLinkForm.listingId}
+                  onValueChange={(v: string) =>
+                    setSmartLinkData({ ...smartLinkForm, listingId: v })
+                  }
                 >
                   <SelectTrigger className="bg-black/20 border-white/10 text-white">
                     <SelectValue placeholder="Select Listing" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-900 border-white/10 text-white">
-                    {listings.map(l => (
-                      <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
+                    {listings.map((l) => (
+                      <SelectItem key={l.id} value={l.id}>
+                        {l.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -1535,11 +1875,16 @@ export default function InboxPage() {
 
               <div className="space-y-2">
                 <Label className="text-white">Amount (₹)</Label>
-                <Input 
+                <Input
                   type="number"
                   placeholder="e.g. 2500"
                   value={smartLinkForm.amount}
-                  onChange={(e) => setSmartLinkData({...smartLinkForm, amount: e.target.value})}
+                  onChange={(e) =>
+                    setSmartLinkData({
+                      ...smartLinkForm,
+                      amount: e.target.value,
+                    })
+                  }
                   className="bg-black/20 border-white/10 text-white"
                 />
               </div>
@@ -1547,31 +1892,45 @@ export default function InboxPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-white">Check-in</Label>
-                  <Input 
+                  <Input
                     type="date"
                     value={smartLinkForm.startDate}
-                    onChange={(e) => setSmartLinkData({...smartLinkForm, startDate: e.target.value})}
+                    onChange={(e) =>
+                      setSmartLinkData({
+                        ...smartLinkForm,
+                        startDate: e.target.value,
+                      })
+                    }
                     className="bg-black/20 border-white/10 text-white"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-white">Check-out</Label>
-                  <Input 
+                  <Input
                     type="date"
                     value={smartLinkForm.endDate}
-                    onChange={(e) => setSmartLinkData({...smartLinkForm, endDate: e.target.value})}
+                    onChange={(e) =>
+                      setSmartLinkData({
+                        ...smartLinkForm,
+                        endDate: e.target.value,
+                      })
+                    }
                     className="bg-black/20 border-white/10 text-white"
                   />
                 </div>
               </div>
 
               <div className="pt-4 border-t border-white/5">
-                <Button 
-                  onClick={handleCreateSmartLink} 
+                <Button
+                  onClick={handleCreateSmartLink}
                   disabled={smartLinkLoading}
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
                 >
-                  {smartLinkLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                  {smartLinkLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 mr-2" />
+                  )}
                   Generate & Insert Link
                 </Button>
               </div>

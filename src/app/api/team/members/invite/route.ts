@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
+import { getAppUrl } from "@/lib/runtime-config";
 
 export async function POST(req: Request) {
   try {
@@ -91,8 +92,7 @@ export async function POST(req: Request) {
       .eq("id", tenantId)
       .single();
 
-    const appUrl =
-      process.env.NEXT_PUBLIC_APP_URL || "https://app.nodebase.co";
+    const appUrl = getAppUrl();
     const redirectTo = `${appUrl}/onboarding?invited=1&tenant=${tenantId}`;
 
     // Record the invitation in DB first
@@ -136,10 +136,7 @@ export async function POST(req: Request) {
 
     if (inviteError) {
       // Clean up the DB record if Supabase invite fails
-      await admin
-        .from("tenant_invitations")
-        .delete()
-        .eq("id", inviteRecord.id);
+      await admin.from("tenant_invitations").delete().eq("id", inviteRecord.id);
 
       console.error("Supabase invite error:", inviteError);
       return NextResponse.json(

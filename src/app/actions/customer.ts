@@ -59,6 +59,7 @@ async function getCurrentUser(): Promise<User> {
           created_at,
           business_type,
           early_access,
+          ai_settings,
           kyc_status,
           pan_number,
           aadhaar_number,
@@ -91,6 +92,13 @@ async function getCurrentUser(): Promise<User> {
         is_branding_enabled: tenantData.is_branding_enabled,
         is_ai_enabled: tenantData.is_ai_enabled,
         kyc_status: tenantData.kyc_status,
+        ai_settings: tenantData.ai_settings
+          ? {
+              customInstructions:
+                tenantData.ai_settings.customInstructions || null,
+              tone: tenantData.ai_settings.tone || undefined,
+            }
+          : undefined,
         pan_number: tenantData.pan_number,
         aadhaar_number: tenantData.aadhaar_number,
         kyc_verified_at: tenantData.kyc_verified_at,
@@ -323,9 +331,6 @@ export async function updateTenantProfileAction(updates: {
 }
 
 export async function updateAiSettingsAction(updates: {
-  provider?: string;
-  model?: string;
-  apiKey?: string;
   customInstructions?: string;
   tone?: string;
 }) {
@@ -342,9 +347,24 @@ export async function updateAiSettingsAction(updates: {
     .single();
 
   const currentSettings = tenant?.ai_settings || {};
+  const {
+    provider: _provider,
+    model: _model,
+    apiKey: _apiKey,
+    ...customerSettings
+  } = currentSettings as Record<string, unknown>;
+  const normalizedTone = [
+    "friendly",
+    "professional",
+    "concise",
+    "humorous",
+  ].includes(String(updates.tone || ""))
+    ? updates.tone
+    : null;
   const newSettings = {
-    ...currentSettings,
-    ...updates,
+    ...customerSettings,
+    customInstructions: updates.customInstructions?.trim() || null,
+    tone: normalizedTone,
   };
 
   // 2. Update settings

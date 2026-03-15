@@ -56,7 +56,7 @@ export class GrowthService {
       // 3. Simple Gap Detection Logic
       // For each day between now and horizon, check if it's covered by a booking
       // (This is a simplified version, real one would be more optimized)
-      let currentGapStart: Date | null = null;
+      const currentGapStart: Date | null = null;
       let lastEnd = new Date(now);
       lastEnd.setHours(0, 0, 0, 0);
 

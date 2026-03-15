@@ -1,7 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { getSession } from "@/lib/auth/session";
-import { userService } from "@/lib/services/userService";
 
 export default async function PublicLayout({
   children,
@@ -9,26 +8,20 @@ export default async function PublicLayout({
   children: React.ReactNode;
 }>) {
   const session = await getSession();
-  let user = null;
-
-  if (session?.userId) {
-    try {
-      const users = await userService.getUsers();
-      user = users.find(u => u.identity.id === session.userId) || null;
-    } catch (error) {
-      console.error("Error fetching user in PublicLayout:", error);
-      // Fallback to null user if database fails
-      user = null;
-    }
-  }
+  const viewer = session?.userId
+    ? {
+        authenticated: true,
+        email: session.email ?? null,
+        dashboardHref:
+          session.role === "superadmin" ? "/admin" : "/dashboard/ai",
+      }
+    : null;
 
   return (
-    <>
-      <Header user={user} />
-      <main className="flex-1">
-        {children}
-      </main>
+    <div className="public-site public-shell flex min-h-screen flex-col">
+      <Header viewer={viewer} />
+      <main className="relative z-10 flex-1">{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }

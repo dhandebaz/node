@@ -32,7 +32,7 @@ export async function GET(
   }
 
   // 2. Generate iCal Content
-  let icalContent = [
+  const icalContent = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//Nodebase//Host Calendar//EN",

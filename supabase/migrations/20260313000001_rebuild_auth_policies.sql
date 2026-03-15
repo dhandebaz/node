@@ -15,6 +15,7 @@ DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.users
 
 DROP POLICY IF EXISTS "Members can view own tenant" ON public.tenants;
 DROP POLICY IF EXISTS "Admins can view all tenants" ON public.tenants;
+DROP POLICY IF EXISTS "Admins can manage all tenants" ON public.tenants;
 DROP POLICY IF EXISTS "Users can view tenants they belong to" ON public.tenants;
 
 DROP POLICY IF EXISTS "Users can view own memberships" ON public.tenant_users;
@@ -41,8 +42,8 @@ CREATE POLICY "Admins can manage all users" ON public.users
 CREATE POLICY "Members can view own tenant" ON public.tenants
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM public.tenant_users 
-            WHERE tenant_users.tenant_id = tenants.id 
+            SELECT 1 FROM public.tenant_users
+            WHERE tenant_users.tenant_id = tenants.id
             AND tenant_users.user_id = auth.uid()
         )
     );
