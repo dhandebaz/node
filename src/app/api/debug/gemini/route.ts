@@ -12,9 +12,15 @@ import { settingsService } from "@/lib/services/settingsService";
 
 const ENV_CANDIDATES = [
   { name: "GEMINI_API_KEY", env: process.env.GEMINI_API_KEY },
-  { name: "NEXT_PUBLIC_GEMINI_API_KEY", env: process.env.NEXT_PUBLIC_GEMINI_API_KEY },
+  {
+    name: "NEXT_PUBLIC_GEMINI_API_KEY",
+    env: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
+  },
   { name: "VERCEL_GEMINI_API_KEY", env: process.env.VERCEL_GEMINI_API_KEY },
-  { name: "GOOGLE_GENERATIVE_AI_API_KEY", env: process.env.GOOGLE_GENERATIVE_AI_API_KEY },
+  {
+    name: "GOOGLE_GENERATIVE_AI_API_KEY",
+    env: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+  },
   { name: "GOOGLE_GEMINI_API_KEY", env: process.env.GOOGLE_GEMINI_API_KEY },
   { name: "GOOGLE_API_KEY", env: process.env.GOOGLE_API_KEY },
   { name: "GCP_GEMINI_KEY", env: process.env.GCP_GEMINI_KEY },
@@ -34,7 +40,11 @@ function resolveSourceFrom(settingsKey?: string) {
 
   for (const candidate of ENV_CANDIDATES) {
     if (candidate.env && candidate.env.trim().length > 0) {
-      return { source: candidate.name, present: true, key: candidate.env.trim() };
+      return {
+        source: candidate.name,
+        present: true,
+        key: candidate.env.trim(),
+      };
     }
   }
 
@@ -51,7 +61,7 @@ export async function GET(request: Request) {
     }
 
     const settings = await settingsService.getSettings();
-    const configuredKey = settings?.api?.geminiApiKey || null;
+    const configuredKey = settings?.api?.geminiApiKey;
     const resolved = resolveSourceFrom(configuredKey);
 
     // Compose a summary of all env candidates (masked)
@@ -69,8 +79,7 @@ export async function GET(request: Request) {
       settings_key_masked: maskKey(configuredKey),
       env_keys: envOverview,
       // Helpful instruction for operators
-      note:
-        "If 'present' is false and no env key shows as present, set GEMINI_API_KEY (or GOOGLE_GENERATIVE_AI_API_KEY) in your environment or paste the key into Admin -> Settings -> API.",
+      note: "If 'present' is false and no env key shows as present, set GEMINI_API_KEY (or GOOGLE_GENERATIVE_AI_API_KEY) in your environment or paste the key into Admin -> Settings -> API.",
     });
   } catch (err) {
     console.error("Debug /api/debug/gemini error:", err);
