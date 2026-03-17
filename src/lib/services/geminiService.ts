@@ -70,7 +70,10 @@ export const geminiService = {
       }
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      // Use configured runtime model when available (fallback to gemini-1.5-flash for compatibility)
+      const modelName = settings.api?.kaisaModel || "gemini-1.5-flash";
+      console.info("geminiService: using generative model:", modelName);
+      const model = genAI.getGenerativeModel({ model: modelName });
 
       const prompt = `
         Analyze this image to verify if it is a valid Indian identity document (PAN Card or Aadhaar Card).
@@ -139,7 +142,10 @@ export const geminiService = {
         );
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "embedding-004" });
+      // Make embedding model configurable via settings.api.embeddingModel (fallback to embedding-004)
+      const embeddingModel = settings.api?.embeddingModel || "embedding-004";
+      console.info("geminiService: using embedding model:", embeddingModel);
+      const model = genAI.getGenerativeModel({ model: embeddingModel });
       const result = await model.embedContent(text);
       return Array.from(result.embedding.values);
     } catch (error: any) {
@@ -164,7 +170,13 @@ export const geminiService = {
         );
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      // Use configured runtime model for sentiment analysis as well
+      const sentimentModel = settings.api?.kaisaModel || "gemini-1.5-flash";
+      console.info(
+        "geminiService: using generative model for sentiment:",
+        sentimentModel,
+      );
+      const model = genAI.getGenerativeModel({ model: sentimentModel });
 
       const prompt = `
         Analyze the sentiment of the following text from a guest to a business owner.
@@ -218,7 +230,13 @@ export const geminiService = {
         );
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      // Respect configured Kaisa runtime model for reply generation
+      const replyModel = settings.api?.kaisaModel || "gemini-1.5-flash";
+      console.info(
+        "geminiService: using generative model for reply:",
+        replyModel,
+      );
+      const model = genAI.getGenerativeModel({ model: replyModel });
 
       const role = context.role || "AI assistant";
       const systemPrompt = `
@@ -283,7 +301,10 @@ export const geminiService = {
       );
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Use configured model for text generation (fall back to gemini-1.5-flash)
+    const textModel = settings.api?.kaisaModel || "gemini-1.5-flash";
+    console.info("geminiService: using generative model for text:", textModel);
+    const model = genAI.getGenerativeModel({ model: textModel });
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
