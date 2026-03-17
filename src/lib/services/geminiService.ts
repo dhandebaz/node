@@ -106,9 +106,7 @@ export const geminiService = {
     }
   },
 
-  async analyzeSentiment(
-    text: string,
-  ): Promise<{
+  async analyzeSentiment(text: string): Promise<{
     sentiment: "positive" | "neutral" | "negative" | "angry";
     score: number;
   }> {
