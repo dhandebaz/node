@@ -102,23 +102,115 @@ export const geminiService = {
         },
       };
 
-      const result = await model.generateContent([prompt, imagePart]);
-      const response = await result.response;
-      const text = response.text();
+      // Attempt generation. If the configured model is not available (404),
+      // try to call ListModels and pick a vision-capable fallback and retry once.
+      try {
+        const result = await model.generateContent([prompt, imagePart]);
+        const response = await result.response;
+        const text = response.text();
 
-      // Clean up markdown code blocks if present
-      const jsonStr = text.replace(/```json\n?|\n?```/g, "").trim();
+        // Clean up markdown code blocks if present
+        const jsonStr = text.replace(/```json\n?|\n?```/g, "").trim();
 
-      return JSON.parse(jsonStr) as VerificationResult;
+        return JSON.parse(jsonStr) as VerificationResult;
+      } catch (innerErr: any) {
+        // Detect a model-not-found style error for retry logic
+        const innerMsg = String(innerErr?.message || innerErr?.toString() || "");
+        const innerStatus = innerErr?.status || innerErr?.statusCode || innerErr?.response?.status;
+        const isInnerModelNotFound =
+          innerStatus === 404 ||
+          /is not found for api version/i.test(innerMsg) ||
+          /models\\/.* is not found/i.test(innerMsg) ||
+          /not found for api version/i.test(innerMsg) ||
+          /model .* is not found/i.test(innerMsg);
+
+        if (!isInnerModelNotFound) {
+          // Re-throw if this isn't a recoverable model-not-found issue
+          throw innerErr;
+        }
+
+        console.warn("geminiService: model not found; attempting ListModels fallback and retry");
+
+        try {
+          // List models via public Generative Language REST endpoint using the same API key
+          // (we use the API key here because the service authenticated successfully earlier)
+          const listUrl = `https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`;
+          const listResp = await fetch(listUrl, { method: "GET" });
+          if (!listResp.ok) {
+            throw new Error(`ListModels failed with status ${listResp.status}`);
+          }
+          const listJson = await listResp.json();
+          const models = listJson.models || [];
+
+          // Heuristic: prefer models whose name/displayName suggests vision/image/multimodal capability
+          let candidate = models.find((m: any) =>
+            /vision|image|multimodal|vision-bison|image-bison/i.test((m.name || m.displayName || ""))
+          );
+
+          // If none found, prefer any model that declares support for generateContent (if available)
+          if (!candidate) {
+            candidate = models.find((m: any) =>
+              Array.isArray(m.supportedMethods) && m.supportedMethods.includes("generateContent")
+            );
+          }
+
+          // Fallback to first model available if nothing else matched
+          if (!candidate && models.length > 0) candidate = models[0];
+
+          if (candidate && (candidate.name || candidate.model)) {
+            const candidateName = candidate.name || candidate.model;
+            console.info("geminiService: ListModels selected fallback model:", candidateName);
+
+            // Retry the call using the selected fallback model
+            const fallbackModel = genAI.getGenerativeModel({ model: candidateName });
+            const retryResult = await fallbackModel.generateContent([prompt, imagePart]);
+            const retryResponse = await retryResult.response;
+            const retryText = retryResponse.text();
+            const retryJsonStr = retryText.replace(/```json\n?|\n?```/g, "").trim();
+            return JSON.parse(retryJsonStr) as VerificationResult;
+          } else {
+            throw new Error("No suitable fallback model found from ListModels");
+          }
+        } catch (listErr) {
+          // Log the fallback failure and rethrow the original inner error so the existing
+          // error handling path remains consistent (it will convert to a user-facing reason).
+          console.error("geminiService: ListModels fallback failed:", listErr);
+          throw innerErr;
+        }
+      }
     } catch (error: any) {
       console.error("Gemini Verification Error:", error);
 
+      // Normalize message and status for detection
+      const msg = String(error?.message || error?.toString() || "");
+      const statusCode =
+        error?.status || error?.statusCode || error?.response?.status;
+
+      // Detect common config errors (missing/invalid key)
       const isConfigError =
-        error.message?.toLowerCase().includes("api key") ||
-        error.message?.toLowerCase().includes("configured");
-      const reason = isConfigError
-        ? "System Configuration Error: Gemini API Key missing or invalid."
-        : "Verification process failed due to technical error.";
+        msg.toLowerCase().includes("api key") ||
+        msg.toLowerCase().includes("configured");
+
+      // Detect model-not-found errors returned by the Google Generative API
+      const isModelNotFound =
+        statusCode === 404 ||
+        /models\/.*not found/i.test(msg) ||
+        /not found for api version/i.test(msg) ||
+        /model .* is not found/i.test(msg);
+
+      let reason: string;
+      if (isModelNotFound) {
+        // Provide a clear remediation path for operators
+        reason =
+          "Model not found: the configured model is not available for the current API/version. " +
+          "Check Admin → Settings → API and update the `kaisaModel` to a supported model name, or remove the custom model to use the default. " +
+          "You can also call ListModels on the Google Generative API to see supported models for your project.";
+      } else if (isConfigError) {
+        reason =
+          "System Configuration Error: Gemini API Key missing or invalid. Ensure the key is set in system settings (Admin > Settings) or as an environment variable (GEMINI_API_KEY or GOOGLE_GENERATIVE_AI_API_KEY).";
+      } else {
+        reason = "Verification process failed due to a technical error.";
+      }
 
       return {
         isValid: false,
