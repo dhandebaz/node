@@ -71,7 +71,7 @@ export const geminiService = {
 
       const genAI = new GoogleGenerativeAI(apiKey);
       // Use configured runtime model when available (fallback to gemini-1.5-flash for compatibility)
-      const modelName = settings.api?.kaisaModel || "gemini-1.5-flash";
+      const modelName = settings.api?.kaisaModel || "gemini-2.5-flash-lite";
       console.info("geminiService: using generative model:", modelName);
       const model = genAI.getGenerativeModel({ model: modelName });
 
@@ -115,21 +115,27 @@ export const geminiService = {
         return JSON.parse(jsonStr) as VerificationResult;
       } catch (innerErr: any) {
         // Detect a model-not-found style error for retry logic
-        const innerMsg = String(innerErr?.message || innerErr?.toString() || "");
-        const innerStatus = innerErr?.status || innerErr?.statusCode || innerErr?.response?.status;
+        const innerMsg = String(
+          innerErr?.message || innerErr?.toString() || "",
+        ).toLowerCase();
+        const innerStatus =
+          innerErr?.status ||
+          innerErr?.statusCode ||
+          innerErr?.response?.status;
         const isInnerModelNotFound =
           innerStatus === 404 ||
-          /is not found for api version/i.test(innerMsg) ||
-          /models\\/.* is not found/i.test(innerMsg) ||
-          /not found for api version/i.test(innerMsg) ||
-          /model .* is not found/i.test(innerMsg);
+          innerMsg.includes("not found for api version") ||
+          (innerMsg.includes("models/") && innerMsg.includes("not found")) ||
+          (innerMsg.includes("model") && innerMsg.includes("not found"));
 
         if (!isInnerModelNotFound) {
           // Re-throw if this isn't a recoverable model-not-found issue
           throw innerErr;
         }
 
-        console.warn("geminiService: model not found; attempting ListModels fallback and retry");
+        console.warn(
+          "geminiService: model not found; attempting ListModels fallback and retry",
+        );
 
         try {
           // List models via public Generative Language REST endpoint using the same API key
@@ -144,13 +150,17 @@ export const geminiService = {
 
           // Heuristic: prefer models whose name/displayName suggests vision/image/multimodal capability
           let candidate = models.find((m: any) =>
-            /vision|image|multimodal|vision-bison|image-bison/i.test((m.name || m.displayName || ""))
+            /vision|image|multimodal|vision-bison|image-bison/i.test(
+              m.name || m.displayName || "",
+            ),
           );
 
           // If none found, prefer any model that declares support for generateContent (if available)
           if (!candidate) {
-            candidate = models.find((m: any) =>
-              Array.isArray(m.supportedMethods) && m.supportedMethods.includes("generateContent")
+            candidate = models.find(
+              (m: any) =>
+                Array.isArray(m.supportedMethods) &&
+                m.supportedMethods.includes("generateContent"),
             );
           }
 
@@ -159,14 +169,24 @@ export const geminiService = {
 
           if (candidate && (candidate.name || candidate.model)) {
             const candidateName = candidate.name || candidate.model;
-            console.info("geminiService: ListModels selected fallback model:", candidateName);
+            console.info(
+              "geminiService: ListModels selected fallback model:",
+              candidateName,
+            );
 
             // Retry the call using the selected fallback model
-            const fallbackModel = genAI.getGenerativeModel({ model: candidateName });
-            const retryResult = await fallbackModel.generateContent([prompt, imagePart]);
+            const fallbackModel = genAI.getGenerativeModel({
+              model: candidateName,
+            });
+            const retryResult = await fallbackModel.generateContent([
+              prompt,
+              imagePart,
+            ]);
             const retryResponse = await retryResult.response;
             const retryText = retryResponse.text();
-            const retryJsonStr = retryText.replace(/```json\n?|\n?```/g, "").trim();
+            const retryJsonStr = retryText
+              .replace(/```json\n?|\n?```/g, "")
+              .trim();
             return JSON.parse(retryJsonStr) as VerificationResult;
           } else {
             throw new Error("No suitable fallback model found from ListModels");
