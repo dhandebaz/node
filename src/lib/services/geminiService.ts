@@ -14,6 +14,42 @@ export interface VerificationResult {
   reason?: string;
 }
 
+/**
+ * Helper: search for a Gemini API key in several possible locations.
+ * Priority: app settings (DB) -> common env vars used across deployments.
+ */
+function findGeminiApiKey(settingsKey?: string) {
+  const candidates = [
+    settingsKey,
+    process.env.GEMINI_API_KEY,
+    process.env.NEXT_PUBLIC_GEMINI_API_KEY,
+    process.env.VERCEL_GEMINI_API_KEY,
+    process.env.GOOGLE_API_KEY,
+    process.env.GOOGLE_GEMINI_API_KEY,
+    process.env.GCP_GEMINI_KEY,
+  ];
+
+  for (const key of candidates) {
+    if (key && typeof key === "string" && key.trim().length > 0) {
+      return key.trim();
+    }
+  }
+
+  return null;
+}
+
+function resolvedKeySource(settingsKey?: string) {
+  if (settingsKey) return "settings";
+  if (process.env.GEMINI_API_KEY) return "env:GEMINI_API_KEY";
+  if (process.env.NEXT_PUBLIC_GEMINI_API_KEY)
+    return "env:NEXT_PUBLIC_GEMINI_API_KEY";
+  if (process.env.VERCEL_GEMINI_API_KEY) return "env:VERCEL_GEMINI_API_KEY";
+  if (process.env.GOOGLE_API_KEY) return "env:GOOGLE_API_KEY";
+  if (process.env.GOOGLE_GEMINI_API_KEY) return "env:GOOGLE_GEMINI_API_KEY";
+  if (process.env.GCP_GEMINI_KEY) return "env:GCP_GEMINI_KEY";
+  return "none";
+}
+
 export const geminiService = {
   async verifyDocument(
     fileBase64: string,
@@ -21,13 +57,15 @@ export const geminiService = {
   ): Promise<VerificationResult> {
     try {
       const settings = await settingsService.getSettings();
-      // Allow an override via environment for deployments where the key is provided
-      // via an env var (e.g., CI, Vercel, Docker). Prefer settings -> env.
-      const apiKey = settings.api.geminiApiKey || process.env.GEMINI_API_KEY;
+      const apiKey = findGeminiApiKey(settings.api.geminiApiKey);
+      const source = resolvedKeySource(settings.api.geminiApiKey);
+
+      // Log resolved source so operators can confirm where the key came from
+      console.info("geminiService: resolved API key source:", source);
 
       if (!apiKey) {
         throw new Error(
-          "Gemini API key is not configured. Set it in System Settings (Admin > API) or provide GEMINI_API_KEY as an environment variable.",
+          "Gemini API key is not configured. Set it in System Settings (Admin > API) or provide GEMINI_API_KEY (or NEXT_PUBLIC_GEMINI_API_KEY / VERCEL_GEMINI_API_KEY) as an environment variable.",
         );
       }
 
@@ -72,7 +110,9 @@ export const geminiService = {
     } catch (error: any) {
       console.error("Gemini Verification Error:", error);
 
-      const isConfigError = error.message?.includes("API key");
+      const isConfigError =
+        error.message?.toLowerCase().includes("api key") ||
+        error.message?.toLowerCase().includes("configured");
       const reason = isConfigError
         ? "System Configuration Error: Gemini API Key missing or invalid."
         : "Verification process failed due to technical error.";
@@ -89,8 +129,10 @@ export const geminiService = {
   async generateEmbedding(text: string): Promise<number[]> {
     try {
       const settings = await settingsService.getSettings();
-      // Fallback to environment variable if not set in settings
-      const apiKey = settings.api.geminiApiKey || process.env.GEMINI_API_KEY;
+      const apiKey = findGeminiApiKey(settings.api.geminiApiKey);
+      const source = resolvedKeySource(settings.api.geminiApiKey);
+      console.info("geminiService: resolved API key source:", source);
+
       if (!apiKey)
         throw new Error(
           "Gemini API key is not configured. Provide GEMINI_API_KEY or set it in the app settings.",
@@ -112,8 +154,10 @@ export const geminiService = {
   }> {
     try {
       const settings = await settingsService.getSettings();
-      // Allow deployments to use an env var as a fallback
-      const apiKey = settings.api.geminiApiKey || process.env.GEMINI_API_KEY;
+      const apiKey = findGeminiApiKey(settings.api.geminiApiKey);
+      const source = resolvedKeySource(settings.api.geminiApiKey);
+      console.info("geminiService: resolved API key source:", source);
+
       if (!apiKey)
         throw new Error(
           "Gemini API key is not configured. Provide GEMINI_API_KEY or set it in the app settings.",
@@ -164,8 +208,10 @@ export const geminiService = {
   }): Promise<{ content: string; usage: { totalTokens: number } }> {
     try {
       const settings = await settingsService.getSettings();
-      // Prefer configured settings, but accept an environment override for quick deploys
-      const apiKey = settings.api.geminiApiKey || process.env.GEMINI_API_KEY;
+      const apiKey = findGeminiApiKey(settings.api.geminiApiKey);
+      const source = resolvedKeySource(settings.api.geminiApiKey);
+      console.info("geminiService: resolved API key source:", source);
+
       if (!apiKey)
         throw new Error(
           "Gemini API key is not configured. Provide GEMINI_API_KEY or set it in the app settings.",
@@ -227,8 +273,10 @@ export const geminiService = {
     prompt: string,
   ): Promise<{ text: string; usage: { totalTokens: number } }> {
     const settings = await settingsService.getSettings();
-    // Support fallback to the GEMINI_API_KEY environment variable
-    const apiKey = settings.api.geminiApiKey || process.env.GEMINI_API_KEY;
+    const apiKey = findGeminiApiKey(settings.api.geminiApiKey);
+    const source = resolvedKeySource(settings.api.geminiApiKey);
+    console.info("geminiService: resolved API key source:", source);
+
     if (!apiKey)
       throw new Error(
         "Gemini API key is not configured. Provide GEMINI_API_KEY or set it in the app settings.",
