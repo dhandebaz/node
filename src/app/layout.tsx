@@ -5,6 +5,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/components/providers";
 import { getAppUrl } from "@/lib/runtime-config";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +67,7 @@ export default async function RootLayout({
           {children}
           <Toaster />
         </Providers>
+        <MobileBottomNav />
       </body>
     </html>
   );
