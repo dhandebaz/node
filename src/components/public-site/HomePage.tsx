@@ -16,55 +16,59 @@ import {
 import { employeeDirectoryPage } from "@/lib/public-content";
 
 const heroMetrics = [
-  { label: "Launch window", value: "Days, not quarters" },
-  { label: "Control model", value: "Operator approvals built in" },
-  { label: "Deployment style", value: "Role-first and workflow-led" },
+  { label: "Setup time", value: "Ready in 5 minutes" },
+  { label: "Full control", value: "Jump in to chat anytime" },
+  { label: "Zero commissions", value: "You keep 100% of your sales" },
 ];
 
-const workflowPillars: { title: string; description: string; icon: LucideIcon }[] = [
+const workflowPillars: {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+}[] = [
   {
-    title: "Hire by operational outcome",
+    title: "The perfect AI for your business",
     description:
-      "Choose the employee by role and workflow, not by model menu or prompt tinkering.",
+      "Whether you run a homestay, clinic, or store, Kaisa AI knows exactly how to talk to your customers.",
     icon: Sparkles,
   },
   {
-    title: "Keep actions attached to systems",
+    title: "Everything in one simple inbox",
     description:
-      "Messages, payment nudges, schedules, and verification events stay in one execution lane.",
+      "Messages, bookings, and payments from WhatsApp and Instagram all flow into one easy-to-use dashboard.",
     icon: Waypoints,
   },
   {
-    title: "Preserve human override",
+    title: "You are always in charge",
     description:
-      "Escalation thresholds, traceability, and approval points are part of the product surface.",
+      "Kaisa handles the busywork, but you can pause the AI and reply manually whenever a human touch is needed.",
     icon: ShieldCheck,
   },
 ];
 
 const operatingSequence = [
-  "Map the workflow and choose the employee role.",
-  "Connect the channel, records, and action boundaries.",
-  "Launch with logging, approvals, and a human fallback.",
+  "Connect your WhatsApp, Instagram, or Website.",
+  "Tell Kaisa your rules (like check-in times or pricing).",
+  "Let the AI answer questions and take bookings 24/7.",
 ];
 
 const controlCards = [
   {
-    eyebrow: "Operator console",
-    title: "Live workflow telemetry",
-    body: "Watch approvals, payment follow-up, and escalation state without digging through separate tools.",
+    eyebrow: "Simple Dashboard",
+    title: "Manage everything from your phone or laptop",
+    body: "See all your unread messages, confirm bookings, and track your revenue without needing separate tools.",
     icon: Activity,
   },
   {
-    eyebrow: "Payments",
-    title: "Collections stay attached to context",
-    body: "Payment links and reminders are issued inside the same customer thread instead of through disconnected ops work.",
+    eyebrow: "Automated Payments",
+    title: "Collect payments directly in chat",
+    body: "Kaisa automatically generates secure payment links and follows up with guests so you never chase a deposit again.",
     icon: CreditCard,
   },
   {
-    eyebrow: "Runbooks",
-    title: "Docs and trust are part of rollout",
-    body: "Launch with the product model, risk posture, and legal surfaces aligned from day one.",
+    eyebrow: "Works out of the box",
+    title: "No coding or prompt engineering required",
+    body: "Just fill in your property or store details, and Kaisa instantly knows how to handle common customer requests.",
     icon: BookOpenText,
   },
 ];
@@ -90,27 +94,32 @@ export function HomePage() {
             <div className="absolute bottom-[-6rem] left-[-5rem] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.45),transparent_72%)]" />
             <div className="relative z-10 space-y-8">
               <div className="space-y-5">
-                <div className="public-pill public-eyebrow">AI employees for practical operators</div>
+                <div className="public-pill public-eyebrow">
+                  The AI assistant for local businesses
+                </div>
                 <h1 className="public-display max-w-4xl text-4xl leading-[0.92] text-[var(--public-ink)] sm:text-5xl lg:text-7xl">
-                  Replace fragmented customer ops with role-based AI employees.
+                  The smart assistant that runs your business while you sleep.
                 </h1>
                 <p className="max-w-3xl text-base leading-7 text-[var(--public-muted)] sm:text-lg">
-                  Nodebase ships AI employees that work inside messaging, payments,
-                  schedules, and compliance-sensitive workflows with clear boundaries and
-                  visible event trails.
+                  Nodebase connects to your WhatsApp and website to instantly
+                  answer customer questions, schedule bookings, and collect
+                  payments automatically—24 hours a day, 7 days a week.
                 </p>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Link href="/company/contact" className="public-button px-6 py-3 text-sm font-semibold">
-                  Book a workflow review
+                <Link
+                  href="/signup"
+                  className="public-button px-6 py-3 text-sm font-semibold"
+                >
+                  Get Started Free
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  href="/employees"
+                  href="/company/contact"
                   className="public-button-secondary px-6 py-3 text-sm font-semibold"
                 >
-                  Explore AI employees
+                  Talk to Sales
                 </Link>
               </div>
 
@@ -138,14 +147,18 @@ export function HomePage() {
               <div className="relative z-10 space-y-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="public-eyebrow">Operator view</div>
+                    <div className="public-eyebrow">Unified Inbox</div>
                     <h2 className="public-display mt-2 text-2xl text-[var(--public-ink)]">
-                      One surface for inbox, approvals, and execution
+                      Everything your business needs in one place
                     </h2>
                   </div>
                   <motion.div
                     animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 4.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                    transition={{
+                      duration: 4.8,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "easeInOut",
+                    }}
                     className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]"
                   >
                     <Sparkles className="h-5 w-5" />
@@ -155,35 +168,43 @@ export function HomePage() {
                 <div className="space-y-3">
                   <div className="public-inset flex items-center justify-between gap-4 px-4 py-3">
                     <div>
-                      <div className="text-sm font-semibold text-[var(--public-ink)]">Host AI</div>
+                      <div className="text-sm font-semibold text-[var(--public-ink)]">
+                        Homestay Booking
+                      </div>
                       <div className="text-xs text-[var(--public-muted)]">
-                        Guest deposit reminder queued
+                        Kaisa answered a question about parking and sent a
+                        booking link.
                       </div>
                     </div>
                     <span className="public-pill text-xs font-semibold text-[var(--public-muted)]">
-                      Awaiting payment
+                      Payment Pending
                     </span>
                   </div>
                   <div className="public-inset flex items-center justify-between gap-4 px-4 py-3">
                     <div>
-                      <div className="text-sm font-semibold text-[var(--public-ink)]">Nurse AI</div>
+                      <div className="text-sm font-semibold text-[var(--public-ink)]">
+                        Clinic Appointment
+                      </div>
                       <div className="text-xs text-[var(--public-muted)]">
-                        Reschedule escalated to front desk
+                        Patient asked a complex question. AI paused for your
+                        review.
                       </div>
                     </div>
-                    <span className="public-pill text-xs font-semibold text-[var(--public-muted)]">
-                      Human handoff
+                    <span className="public-pill text-xs font-semibold text-red-500 bg-red-500/10">
+                      Needs Attention
                     </span>
                   </div>
                   <div className="public-inset flex items-center justify-between gap-4 px-4 py-3">
                     <div>
-                      <div className="text-sm font-semibold text-[var(--public-ink)]">Dukan AI</div>
+                      <div className="text-sm font-semibold text-[var(--public-ink)]">
+                        Store Order
+                      </div>
                       <div className="text-xs text-[var(--public-muted)]">
-                        Inventory question answered with policy guardrails
+                        Payment received. Customer confirmed delivery address.
                       </div>
                     </div>
-                    <span className="public-pill text-xs font-semibold text-[var(--public-muted)]">
-                      Closed loop
+                    <span className="public-pill text-xs font-semibold text-emerald-600 bg-emerald-500/10">
+                      Paid
                     </span>
                   </div>
                 </div>
@@ -191,7 +212,8 @@ export function HomePage() {
                 <div className="rounded-[1.5rem] border border-[var(--public-line)] bg-[var(--public-accent-soft)]/60 p-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-[var(--public-ink)]">
                     <Clock3 className="h-4 w-4 text-[var(--public-accent-strong)]" />
-                    Average operator response time compressed with automation and escalation.
+                    Never lose a sale because you replied too late. Kaisa
+                    answers instantly.
                   </div>
                 </div>
               </div>
@@ -263,12 +285,18 @@ export function HomePage() {
           <div className="relative z-10 space-y-8">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <div className="public-pill public-eyebrow">Choose the employee</div>
+                <div className="public-pill public-eyebrow">
+                  Choose the employee
+                </div>
                 <h2 className="public-display mt-4 text-3xl text-[var(--public-ink)] sm:text-4xl">
-                  Hire by business lane, not by general-purpose model capability.
+                  Hire by business lane, not by general-purpose model
+                  capability.
                 </h2>
               </div>
-              <Link href="/pricing" className="public-button-secondary px-5 py-3 text-sm font-semibold">
+              <Link
+                href="/pricing"
+                className="public-button-secondary px-5 py-3 text-sm font-semibold"
+              >
                 See pricing
               </Link>
             </div>
@@ -286,7 +314,10 @@ export function HomePage() {
                     variants={reveal}
                     transition={{ duration: 0.45, delay: index * 0.07 }}
                   >
-                    <Link href={item.href || "/employees"} className="block h-full">
+                    <Link
+                      href={item.href || "/employees"}
+                      className="block h-full"
+                    >
                       <div className="public-panel-soft group h-full p-5 transition-transform duration-200 hover:-translate-y-1">
                         <div className="flex items-start justify-between gap-4">
                           <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/75 text-[var(--public-accent-strong)]">
@@ -298,8 +329,12 @@ export function HomePage() {
                             </span>
                           ) : null}
                         </div>
-                        <div className="public-eyebrow mt-5">{item.eyebrow}</div>
-                        <h3 className="mt-2 text-xl font-semibold text-[var(--public-ink)]">{item.title}</h3>
+                        <div className="public-eyebrow mt-5">
+                          {item.eyebrow}
+                        </div>
+                        <h3 className="mt-2 text-xl font-semibold text-[var(--public-ink)]">
+                          {item.title}
+                        </h3>
                         <p className="mt-3 text-sm leading-6 text-[var(--public-muted)]">
                           {item.description}
                         </p>
@@ -324,19 +359,29 @@ export function HomePage() {
                 Upgrade the workflow, then the page surface.
               </h2>
               <p className="text-base leading-7 text-[var(--public-muted)]">
-                The public site now reflects a higher signal product: role-based employees,
-                documented controls, stronger legal surfaces, and clearer deployment logic.
+                The public site now reflects a higher signal product: role-based
+                employees, documented controls, stronger legal surfaces, and
+                clearer deployment logic.
               </p>
               <div className="grid gap-3">
-                <Link href="/trust" className="public-inset flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]">
+                <Link
+                  href="/trust"
+                  className="public-inset flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]"
+                >
                   Trust center
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link href="/docs" className="public-inset flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]">
+                <Link
+                  href="/docs"
+                  className="public-inset flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]"
+                >
                   Documentation
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link href="/company" className="public-inset flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]">
+                <Link
+                  href="/company"
+                  className="public-inset flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]"
+                >
                   Company and partner model
                   <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -354,7 +399,10 @@ export function HomePage() {
               </div>
               <div className="space-y-4">
                 {operatingSequence.map((step, index) => (
-                  <div key={step} className="public-inset flex gap-4 rounded-[1.4rem] px-4 py-4">
+                  <div
+                    key={step}
+                    className="public-inset flex gap-4 rounded-[1.4rem] px-4 py-4"
+                  >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--public-accent)] text-sm font-bold text-white">
                       0{index + 1}
                     </div>
@@ -373,15 +421,22 @@ export function HomePage() {
             <div className="max-w-3xl">
               <div className="public-pill public-eyebrow">Ready to deploy</div>
               <h2 className="public-display mt-4 text-3xl text-[var(--public-ink)] sm:text-4xl">
-                If the workflow matters, launch it with the right employee and the right controls.
+                If the workflow matters, launch it with the right employee and
+                the right controls.
               </h2>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/company/contact" className="public-button px-6 py-3 text-sm font-semibold">
+              <Link
+                href="/company/contact"
+                className="public-button px-6 py-3 text-sm font-semibold"
+              >
                 Talk to Nodebase
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/employees" className="public-button-secondary px-6 py-3 text-sm font-semibold">
+              <Link
+                href="/employees"
+                className="public-button-secondary px-6 py-3 text-sm font-semibold"
+              >
                 Browse employees
               </Link>
             </div>

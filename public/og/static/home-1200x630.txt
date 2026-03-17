@@ -1,0 +1,63 @@
+OG Image Placeholder & Metadata — home-1200x630
+
+Filename (place in repo):
+- node/public/og/static/home-1200x630.png
+- Optional smaller / modern formats:
+  - node/public/og/static/home-1200x630.webp
+  - node/public/og/static/home-1200x630.jpg (fallback)
+
+Image dimensions:
+- 1200 x 630 px (recommended for FB / LinkedIn / Twitter summary_large_image)
+- Aspect ratio: 1.91:1
+
+Alt text (for accessibility & SEO):
+- "Nodebase — AI assistants for local businesses"
+
+Suggested visual layout (safe design guidelines):
+- Safe text area: keep all headline/subhead inside a centered safe box of 1040 x 430 px (margin ~80 px left/right, ~100 px top/bottom)
+- Logo placement: top-left or centered-left inside the safe area; 10–14% width of the image for visibility
+- Headline: short, single-line preferred (max ~45 characters)
+  Example: "AI staff that works 24/7"
+- Subheadline (optional): single short phrase under headline (max ~70 characters)
+  Example: "Answers customers, schedules bookings, and collects payments"
+- CTA or micro-label (optional): small text bottom-right, e.g., "Ready in 5 minutes"
+- Contrast: ensure high contrast between text and background (WCAG AA)
+- File format: use PNG for crisp logo/text; add a WebP variant for delivery where supported
+
+Visual style suggestions:
+- Background: subtle gradient or brand color (dark or light depending on brand); avoid busy photography behind text
+- Fonts: bold, legible sans-serif for headline; medium-weight for subhead
+- Logo: use flattened SVG exported to PNG for OG images
+- Keep minimal elements — clear, legible at social-card size
+
+Caching & performance:
+- Set long cache headers for the static OG assets (e.g., Cache-Control: public, max-age=604800)
+- Use WebP where possible and provide a PNG fallback for older crawlers
+- Ensure the image URL is absolute in metadata (see examples below)
+
+Example meta tags to reference this OG image (insert into per-page metadata):
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Nodebase — AI assistants for local businesses" />
+<meta property="og:description" content="Turn messages into bookings and payments with an AI assistant tuned for your business. Ready in minutes." />
+<meta property="og:url" content="https://yourdomain.com/" />
+<meta property="og:image" content="https://yourdomain.com/og/static/home-1200x630.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Nodebase — AI assistants for local businesses" />
+<meta name="twitter:description" content="Turn messages into bookings and payments with an AI assistant tuned for your business." />
+<meta name="twitter:image" content="https://yourdomain.com/og/static/home-1200x630.png" />
+
+JSON-LD snippets to include in page-level metadata (site & org reference):
+- WebSite: include site name and url
+- Organization: include name, url, logo (use absolute URL to the logo PNG/SVG)
+- BreadcrumbList (for pages with a navigation trail)
+
+Notes for implementer:
+- Replace https://yourdomain.com/ with your production domain in metadata.
+- If you have an OG image generation pipeline (Vercel OG, Puppeteer, or similar), use that to produce per-page images with the same layout but dynamic text (page title). Otherwise use these static PNG/WebP files as fallbacks.
+- Verify social preview by sharing the URL on Twitter Card validator and Facebook Sharing Debugger (or LinkedIn Post Inspector) after deploy to confirm correct preview rendering.
+
+Attribution & contact:
+- Created as placeholder guidance for the Nodebase public site OG image.
+- For polished assets, produce a high-resolution source (SVG or PSD/Figma file) and export to 1200x630 PNG + WebP.

@@ -30,11 +30,25 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(getAppUrl()),
-  title: "nodebase | AI Employees & Digital Infrastructure",
+  title: "Nodebase | The AI Assistant for Local Businesses",
   description:
-    "Hire AI Employees. Run Your Business on Autopilot. Powered by Nodebase Core.",
+    "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically—24/7.",
   appleWebApp: {
-    title: "nodebase",
+    title: "Nodebase",
+  },
+  openGraph: {
+    title: "Nodebase | The AI Assistant for Local Businesses",
+    description:
+      "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically—24/7.",
+    url: getAppUrl(),
+    siteName: "Nodebase",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nodebase | The AI Assistant for Local Businesses",
+    description:
+      "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically—24/7.",
   },
 };
 

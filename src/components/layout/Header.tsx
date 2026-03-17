@@ -97,7 +97,9 @@ export function Header({ viewer }: HeaderProps) {
                 <div className="public-display text-lg text-[var(--public-ink)]">
                   nodebase
                 </div>
-                <div className="public-eyebrow">AI employees for operators</div>
+                <div className="public-eyebrow">
+                  AI assistants for your business
+                </div>
               </div>
             </Link>
 
@@ -207,10 +209,10 @@ export function Header({ viewer }: HeaderProps) {
                     Log in
                   </Link>
                   <Link
-                    href="/company/contact"
+                    href="/signup"
                     className="public-button px-5 py-3 text-sm font-semibold"
                   >
-                    Book a workflow review
+                    Get Started Free
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </>
@@ -297,10 +299,10 @@ export function Header({ viewer }: HeaderProps) {
                         Log in
                       </Link>
                       <Link
-                        href="/company/contact"
+                        href="/signup"
                         className="public-button flex items-center justify-center px-5 py-3 text-sm font-semibold"
                       >
-                        Contact sales
+                        Get Started Free
                       </Link>
                     </div>
                   )}

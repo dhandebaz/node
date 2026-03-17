@@ -16,80 +16,80 @@ import { cn } from "@/lib/utils";
 
 const pricingFrames = [
   {
-    title: "Platform retainer",
+    title: "Base Subscription",
     price: "From INR 1,999/mo",
     eyebrow: "Foundation",
     description:
-      "Covers the employee surface, dashboard, controls, and the basic operating environment.",
+      "Everything you need to run your business inbox, including the AI assistant and unified dashboard.",
     highlights: [
-      "Role-based AI employee setup",
-      "Shared inbox and workflow controls",
-      "Audit-friendly event history",
+      "One customized AI assistant",
+      "Unified WhatsApp & Instagram inbox",
+      "Automated payment collection",
     ],
     icon: ShieldCheck,
     featured: true,
   },
   {
-    title: "Usage ledger",
-    price: "Metered usage",
-    eyebrow: "Consumption",
+    title: "Pay as you go",
+    price: "Usage-based",
+    eyebrow: "Messages",
     description:
-      "You pay for real workflow activity rather than a flat volume assumption that rarely matches production.",
+      "You only pay for the messages your AI actually sends. No flat fees for things you don't use.",
     highlights: [
-      "Message and run activity tracked clearly",
-      "No revenue-share on bookings or sales",
-      "Budget controls stay with the operator",
+      "Pay per AI reply",
+      "No commissions on your sales",
+      "Set your own spending limits",
     ],
     icon: WalletCards,
   },
   {
-    title: "Deployment support",
-    price: "Scoped with rollout",
-    eyebrow: "Services",
+    title: "Expert Setup",
+    price: "One-time fee",
+    eyebrow: "Optional",
     description:
-      "Optional help for implementation, channel setup, policy mapping, and launch review where the workflow needs it.",
+      "Need help getting started? We'll map your business rules and connect your WhatsApp for you.",
     highlights: [
-      "Workflow mapping and escalation review",
-      "Channel and operator onboarding",
-      "Trust and legal alignment before launch",
+      "Done-for-you WhatsApp setup",
+      "Custom AI training on your rules",
+      "1-on-1 launch call",
     ],
     icon: Headphones,
   },
 ];
 
 const operatingRules = [
-  "You keep your revenue. Nodebase prices the operating system and the usage it generates, not your GMV.",
-  "Budget and approval thresholds should be configured before the employee goes live in a sensitive workflow.",
-  "The right question is not only monthly cost, but the amount of operator time and leakage the workflow is currently burning.",
+  "You keep 100% of your revenue. We never take a cut of your bookings or sales.",
+  "You can pause the AI at any time and reply to customers yourself.",
+  "Stop paying flat monthly fees. Pay only for the messages your AI successfully answers.",
 ];
 
 const sampleLedger = [
-  { label: "Platform retainer", value: "INR 1,999" },
-  { label: "1,200 managed message actions", value: "Usage-based" },
-  { label: "2 payment follow-up sequences", value: "Included in workflow activity" },
-  { label: "Human override and audit trail", value: "Included" },
+  { label: "Base Subscription", value: "INR 1,999" },
+  { label: "1,200 AI replies sent to customers", value: "Usage-based" },
+  { label: "Automated payment follow-ups", value: "Included" },
+  { label: "Human inbox & manual replies", value: "Included" },
 ];
 
 const faq = [
   {
     question: "Do you charge commission on bookings or orders?",
     answer:
-      "No. The commercial model is built around software and workflow usage, not a cut of your transactions.",
+      "Never. You keep 100% of your sales. We only charge a flat subscription for the software and a tiny usage fee per AI message.",
   },
   {
-    question: "Can I start with one employee and expand later?",
+    question: "Can I jump in and reply to customers myself?",
     answer:
-      "Yes. Most teams start with the highest-friction workflow, validate it, and then add more employees or channels.",
+      "Yes! You can pause the AI at any time with one click and take over the conversation from your dashboard.",
   },
   {
-    question: "Is deployment support mandatory?",
+    question: "Do I need technical skills to set this up?",
     answer:
-      "No. Some teams self-serve from docs and operator review, while others want a tighter rollout partnership.",
+      "No. If you can fill out a simple form with your business rules (like check-in times or prices), you can use our platform.",
   },
   {
-    question: "How should I think about ROI?",
+    question: "What if the AI doesn't know the answer?",
     answer:
-      "Measure operator time recovered, faster response loops, fewer dropped payment follow-ups, and cleaner handoffs.",
+      "If a customer asks a complicated question, the AI will politely pause and notify you to take over the chat.",
   },
 ];
 
@@ -125,7 +125,9 @@ function PricingCard({ frame, index }: { frame: Frame; index: number }) {
           </span>
         </div>
         <div>
-          <h2 className="text-2xl font-semibold text-[var(--public-ink)]">{frame.title}</h2>
+          <h2 className="text-2xl font-semibold text-[var(--public-ink)]">
+            {frame.title}
+          </h2>
           <div className="mt-2 text-2xl font-semibold text-[var(--public-accent-strong)]">
             {frame.price}
           </div>
@@ -135,7 +137,10 @@ function PricingCard({ frame, index }: { frame: Frame; index: number }) {
         </div>
         <ul className="space-y-3">
           {frame.highlights.map((highlight) => (
-            <li key={highlight} className="flex gap-3 text-sm leading-6 text-[var(--public-muted)]">
+            <li
+              key={highlight}
+              className="flex gap-3 text-sm leading-6 text-[var(--public-muted)]"
+            >
               <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[var(--public-accent-strong)]" />
               <span>{highlight}</span>
             </li>
@@ -161,19 +166,26 @@ export function PricingSurface() {
             <div className="relative z-10 space-y-6">
               <div className="public-pill public-eyebrow">Pricing</div>
               <h1 className="public-display max-w-4xl text-4xl leading-[0.92] text-[var(--public-ink)] sm:text-5xl lg:text-6xl">
-                Price the workflow operating system, not the hype layer around it.
+                Price the workflow operating system, not the hype layer around
+                it.
               </h1>
               <p className="max-w-3xl text-base leading-7 text-[var(--public-muted)] sm:text-lg">
-                Nodebase pricing is structured around the platform retainer, real usage,
-                and rollout help where the workflow deserves it. The goal is practical
-                economics with visible controls.
+                Nodebase pricing is structured around the platform retainer,
+                real usage, and rollout help where the workflow deserves it. The
+                goal is practical economics with visible controls.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Link href="/company/contact" className="public-button px-6 py-3 text-sm font-semibold">
+                <Link
+                  href="/company/contact"
+                  className="public-button px-6 py-3 text-sm font-semibold"
+                >
                   Scope a deployment
                   <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link href="/docs/getting-started/quickstart" className="public-button-secondary px-6 py-3 text-sm font-semibold">
+                <Link
+                  href="/docs/getting-started/quickstart"
+                  className="public-button-secondary px-6 py-3 text-sm font-semibold"
+                >
                   Review the quickstart
                 </Link>
               </div>
@@ -232,15 +244,23 @@ export function PricingSurface() {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,0.88fr)_minmax(18rem,1.12fr)]">
           <section className="public-panel-soft p-6 sm:p-8">
             <div className="space-y-5">
-              <div className="public-pill public-eyebrow">How to think about spend</div>
+              <div className="public-pill public-eyebrow">
+                How to think about spend
+              </div>
               <h2 className="public-display text-3xl text-[var(--public-ink)] sm:text-4xl">
-                The real comparison is against manual drift and missed follow-through.
+                The real comparison is against manual drift and missed
+                follow-through.
               </h2>
               <div className="space-y-3">
                 {operatingRules.map((rule) => (
-                  <div key={rule} className="public-inset flex gap-3 rounded-[1.4rem] px-4 py-4">
+                  <div
+                    key={rule}
+                    className="public-inset flex gap-3 rounded-[1.4rem] px-4 py-4"
+                  >
                     <Activity className="mt-1 h-4 w-4 shrink-0 text-[var(--public-accent-strong)]" />
-                    <p className="text-sm leading-6 text-[var(--public-muted)]">{rule}</p>
+                    <p className="text-sm leading-6 text-[var(--public-muted)]">
+                      {rule}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -255,11 +275,16 @@ export function PricingSurface() {
               </h2>
               <div className="space-y-3">
                 {sampleLedger.map((entry) => (
-                  <div key={entry.label} className="public-inset flex items-center justify-between gap-4 rounded-[1.4rem] px-4 py-4">
+                  <div
+                    key={entry.label}
+                    className="public-inset flex items-center justify-between gap-4 rounded-[1.4rem] px-4 py-4"
+                  >
                     <div className="text-sm font-semibold text-[var(--public-ink)]">
                       {entry.label}
                     </div>
-                    <div className="text-sm text-[var(--public-muted)]">{entry.value}</div>
+                    <div className="text-sm text-[var(--public-muted)]">
+                      {entry.value}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -278,8 +303,12 @@ export function PricingSurface() {
               transition={{ duration: 0.4, delay: index * 0.06 }}
               className="public-panel-soft p-6"
             >
-              <h2 className="text-lg font-semibold text-[var(--public-ink)]">{item.question}</h2>
-              <p className="mt-3 text-sm leading-6 text-[var(--public-muted)]">{item.answer}</p>
+              <h2 className="text-lg font-semibold text-[var(--public-ink)]">
+                {item.question}
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-[var(--public-muted)]">
+                {item.answer}
+              </p>
             </motion.article>
           ))}
         </section>
@@ -287,17 +316,25 @@ export function PricingSurface() {
         <section className="public-panel public-shimmer p-6 sm:p-8 lg:p-10">
           <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-3xl">
-              <div className="public-pill public-eyebrow">Commercial review</div>
+              <div className="public-pill public-eyebrow">
+                Commercial review
+              </div>
               <h2 className="public-display mt-4 text-3xl text-[var(--public-ink)] sm:text-4xl">
                 If the workflow is real, we can price it clearly.
               </h2>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/company/contact" className="public-button px-6 py-3 text-sm font-semibold">
+              <Link
+                href="/company/contact"
+                className="public-button px-6 py-3 text-sm font-semibold"
+              >
                 Talk to sales
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/employees" className="public-button-secondary px-6 py-3 text-sm font-semibold">
+              <Link
+                href="/employees"
+                className="public-button-secondary px-6 py-3 text-sm font-semibold"
+              >
                 Compare employees
               </Link>
             </div>

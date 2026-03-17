@@ -97,7 +97,7 @@ export type PublicDirectoryPageData = {
 
 export const publicNavLinks = [
   {
-    label: "AI Employees",
+    label: "AI Assistants",
     href: "/employees",
   },
   {
@@ -122,7 +122,7 @@ export const footerLinkGroups = [
   {
     title: "Product",
     links: [
-      { label: "AI Employees", href: "/employees" },
+      { label: "AI Assistants", href: "/employees" },
       { label: "Pricing", href: "/pricing" },
       { label: "Trust Center", href: "/trust" },
     ],
@@ -178,20 +178,20 @@ export const docsNavigation = [
 ];
 
 export const employeeDirectoryPage: PublicDirectoryPageData = {
-  eyebrow: "AI Employees",
-  title: "Specialized AI employees with one job to own.",
+  eyebrow: "AI Assistants",
+  title: "Meet the AI assistants built for your business.",
   summary:
-    "Each Nodebase employee comes with a role, default workflows, connected tools, and operating guardrails. You hire by business outcome, not by model configuration.",
+    "We trained specialized AI assistants for different industries. Choose the one that fits your business, and it will know exactly how to handle your customers from day one.",
   metrics: [
-    { label: "Setup time", value: "< 2 hours" },
-    { label: "Channels", value: "WhatsApp, web, inbox" },
-    { label: "Regions", value: "Built for India-first ops" },
+    { label: "Setup time", value: "5 minutes" },
+    { label: "Channels", value: "WhatsApp, Instagram, Web" },
+    { label: "Availability", value: "24/7/365" },
   ],
   cards: [
     {
       title: "Host AI",
       description:
-        "Handles guest replies, pre-arrival nudges, payment follow-up, and verification workflows for short stays.",
+        "Perfect for homestays and vacation rentals. Answers guest questions, shares check-in details, and collects payments.",
       href: "/employees/host-ai",
       icon: Building2,
       eyebrow: "Hospitality",
@@ -201,7 +201,7 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Nurse AI",
       description:
-        "Manages intake, appointment reminders, follow-ups, and queue hygiene for clinics and diagnostic centers.",
+        "Perfect for clinics. Answers patient questions, schedules appointments, and sends friendly reminders.",
       href: "/employees/nurse-ai",
       icon: Stethoscope,
       eyebrow: "Healthcare",
@@ -211,7 +211,7 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Dukan AI",
       description:
-        "Automates catalogue questions, order status, pickup coordination, and repeat purchase nudges for local commerce.",
+        "Perfect for local stores. Answers product questions, takes orders over WhatsApp, and confirms deliveries.",
       href: "/employees/dukan-ai",
       icon: Store,
       eyebrow: "Retail",
@@ -221,7 +221,7 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Thrift AI",
       description:
-        "Runs Instagram-style selling workflows across inquiry, reservation, payment, and fulfillment follow-up.",
+        "Perfect for Instagram sellers. Replies instantly to DMs, holds inventory, and collects payments safely.",
       href: "/employees/thrift-ai",
       icon: ShoppingBag,
       eyebrow: "Social commerce",
@@ -231,24 +231,24 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
   ],
   sections: [
     {
-      title: "What changes with the new workflow",
+      title: "Why use a specialized AI?",
       cards: [
         {
-          title: "Role-first setup",
+          title: "Ready to work immediately",
           description:
-            "You start by selecting the business role and channels. Nodebase ships the prompt stack, tools, and escalation rules.",
+            "No coding required. Just tell the AI your business rules and it's ready to chat with customers.",
           icon: BriefcaseBusiness,
         },
         {
-          title: "Operational memory",
+          title: "Never forgets a detail",
           description:
-            "Employees keep context about listings, clinic hours, stock policies, and payment expectations without manual copy-paste.",
+            "Your AI remembers your pricing, parking rules, and operating hours, so it always gives customers the right answer.",
           icon: BrainCircuit,
         },
         {
-          title: "Guardrailed execution",
+          title: "Safe and polite",
           description:
-            "Every employee has action boundaries, approval thresholds, and ledgered events for auditability.",
+            "Our AI is trained to be helpful and professional. If a customer asks a complicated question, it pauses and notifies you.",
           icon: ShieldCheck,
         },
       ],
@@ -256,79 +256,79 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
     },
   ],
   cta: {
-    title: "Pick the employee that matches your operational bottleneck.",
+    title: "Ready to put your customer service on autopilot?",
     description:
-      "If the fit is unclear, start with a guided consult and we will map the role to your exact workflow.",
-    primary: { label: "Book a workflow review", href: "/company/contact" },
+      "Create an account for free and see how your new AI assistant handles your inbox.",
+    primary: { label: "Get Started Free", href: "/signup" },
     secondary: { label: "See pricing", href: "/pricing" },
   },
 };
 
 export const employeePages: Record<string, PublicArticlePageData> = {
   "host-ai": {
-    eyebrow: "Hospitality employee",
+    eyebrow: "Hospitality Assistant",
     title:
-      "Host AI keeps guest communication, payment nudges, and compliance in one lane.",
+      "Host AI answers your guests instantly so you can get back your time.",
     summary:
-      "Designed for homestays, vacation rentals, and multi-property operators who need fast guest replies without turning every WhatsApp thread into founder work.",
+      "Designed for homestays and vacation rentals. It handles bookings, shares WiFi passwords, and collects deposit payments automatically.",
     metrics: [
-      { label: "Best for", value: "Short-stay operators" },
-      { label: "Response loop", value: "Inbox to arrival" },
-      { label: "Escalation", value: "Owner or property staff" },
+      { label: "Best for", value: "Homestays & Villas" },
+      { label: "Goal", value: "More bookings, zero stress" },
+      { label: "Control", value: "Jump in anytime" },
     ],
     sections: [
       {
-        title: "Primary responsibilities",
+        title: "What Host AI can do for you",
         cards: [
           {
-            title: "Reservation coordination",
+            title: "Answers questions instantly",
             description:
-              "Handles availability clarifications, booking confirmations, reminder flows, and post-booking FAQs.",
+              "Guests hate waiting. Host AI replies instantly with accurate check-in times, parking rules, and property details.",
             icon: CalendarClock,
           },
           {
-            title: "Payment follow-up",
+            title: "Collects payments",
             description:
-              "Sends structured nudges around deposit, check-in, and settlement timing without sounding robotic.",
+              "Generates secure payment links and politely follows up if a guest forgets to pay their deposit.",
             icon: CreditCard,
           },
           {
-            title: "Guest verification readiness",
+            title: "Collects IDs safely",
             description:
-              "Guides guests through verification links, arrival details, and the data required before handoff.",
+              "Automatically asks guests to upload their ID cards before check-in to keep your property secure.",
             icon: FileCheck2,
           },
         ],
         columns: 3,
       },
       {
-        title: "Default workflow",
+        title: "How it works in practice",
         bullets: [
-          "Reads the listing context, check-in notes, pricing guardrails, and cancellation policy before replying.",
-          "Answers common booking and stay questions with listing-aware context instead of generic support copy.",
-          "Pushes owner-facing escalation only when the message crosses policy, pricing, or exception thresholds.",
-          "Logs the important event trail so operations can audit payment and verification milestones later.",
+          "Reads your property rules, pricing, and availability before it ever replies to a guest.",
+          "Answers common questions politely and accurately, giving your guests a 5-star experience.",
+          "If a guest asks for a special discount or a complex request, the AI pauses and asks you to take over.",
+          "Everything happens in one simple dashboard on your phone.",
         ],
       },
       {
-        title: "Connected tools",
+        title: "Seamless connections",
         cards: [
           {
-            title: "WhatsApp and inbox",
+            title: "WhatsApp & Instagram",
             description:
-              "Host AI can work in the channel where the guest already is instead of forcing a new portal.",
+              "Host AI talks to your guests on the apps they already use every day.",
             icon: MessagesSquare,
           },
           {
-            title: "Listings and calendars",
+            title: "Calendar Sync",
             description:
-              "Availability context and operating notes are used directly in replies and follow-up sequences.",
+              "Syncs with Airbnb and Booking.com so you never get double-booked.",
             icon: Layers3,
           },
           {
-            title: "Payment links and KYC",
+            title: "Integrated Payments",
             description:
-              "Payment reminders and verification requests stay attached to the same operating workflow.",
+              "Creates Razorpay payment links so money goes straight into your bank account.",
             icon: WalletCards,
           },
         ],
@@ -336,23 +336,23 @@ export const employeePages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title: "Host AI is for operators who want speed without losing control.",
+      title: "Ready to get your time back?",
       description:
-        "If your bottleneck is pre-arrival support and conversion follow-up, this is the fastest employee to deploy.",
-      primary: { label: "Deploy Host AI", href: "/login" },
+        "Set up Host AI in 5 minutes and let it handle your next booking.",
+      primary: { label: "Get Started Free", href: "/signup" },
       secondary: { label: "View pricing", href: "/pricing" },
     },
   },
   "nurse-ai": {
-    eyebrow: "Healthcare employee",
+    eyebrow: "Healthcare Assistant",
     title:
-      "Nurse AI keeps patient messaging clean, timely, and operationally safe.",
+      "Nurse AI manages your clinic's appointments so you can focus on patients.",
     summary:
-      "Built for clinics and healthcare teams that need dependable intake, scheduling follow-up, and structured communication without turning medical staff into inbox managers.",
+      "Built for clinics and diagnostic centers. It answers common questions, books appointments, and sends helpful reminders.",
     metrics: [
-      { label: "Best for", value: "Clinics & diagnostics" },
-      { label: "Core loop", value: "Inquiry to appointment" },
-      { label: "Guardrails", value: "Non-diagnostic by design" },
+      { label: "Best for", value: "Clinics & Doctors" },
+      { label: "Goal", value: "Fewer no-shows" },
+      { label: "Safety", value: "Never gives medical advice" },
     ],
     sections: [
       {
@@ -413,24 +413,23 @@ export const employeePages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title:
-        "Use Nurse AI to compress front-desk effort without compromising safety.",
+      title: "Give your front desk a superpower.",
       description:
-        "It is optimized for operational communication, not clinical substitution.",
-      primary: { label: "Start a healthcare setup", href: "/login" },
+        "Set up Nurse AI and let it handle the scheduling while you focus on care.",
+      primary: { label: "Get Started Free", href: "/signup" },
       secondary: { label: "Talk to the team", href: "/company/contact" },
     },
   },
   "dukan-ai": {
-    eyebrow: "Retail employee",
+    eyebrow: "Retail Assistant",
     title:
-      "Dukan AI turns repetitive catalogue questions and order follow-up into a managed retail loop.",
+      "Dukan AI handles questions and takes orders on WhatsApp automatically.",
     summary:
-      "For local stores and modern merchants selling over WhatsApp, DMs, and repeat customer channels with small teams and high message volume.",
+      "For local stores and merchants. It answers questions about stock, takes orders over chat, and confirms delivery times.",
     metrics: [
-      { label: "Best for", value: "Kirana & local retail" },
-      { label: "Core loop", value: "Question to order" },
-      { label: "Typical channel", value: "WhatsApp-first" },
+      { label: "Best for", value: "Local stores" },
+      { label: "Goal", value: "More sales on chat" },
+      { label: "Channel", value: "WhatsApp & Instagram" },
     ],
     sections: [
       {
@@ -491,24 +490,22 @@ export const employeePages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title:
-        "Deploy Dukan AI where message volume already hurts your order quality.",
+      title: "Stop losing sales because you were too busy to reply.",
       description:
-        "It is built to reduce missed replies and speed up order confirmation without forcing an app migration.",
-      primary: { label: "Deploy Dukan AI", href: "/login" },
+        "Let Dukan AI handle your WhatsApp orders so you can focus on running your store.",
+      primary: { label: "Get Started Free", href: "/signup" },
       secondary: { label: "See partner options", href: "/company/partners" },
     },
   },
   "thrift-ai": {
-    eyebrow: "Social commerce employee",
-    title:
-      "Thrift AI manages Instagram-style inquiry, reservation, and payment follow-up with resale discipline.",
+    eyebrow: "Social Commerce Assistant",
+    title: "Thrift AI sells for you in the Instagram DMs.",
     summary:
-      "For businesses where conversion happens in DMs, stock turns quickly, and every missed follow-up costs a sale.",
+      "For businesses selling on Instagram. It answers size questions, holds inventory, and collects payments safely.",
     metrics: [
-      { label: "Best for", value: "DM-led selling" },
-      { label: "Core loop", value: "Inquiry to paid reservation" },
-      { label: "Strength", value: "Speed with tone control" },
+      { label: "Best for", value: "Instagram Sellers" },
+      { label: "Goal", value: "Convert followers to buyers" },
+      { label: "Strength", value: "Instant warm replies" },
     ],
     sections: [
       {
@@ -569,11 +566,10 @@ export const employeePages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title:
-        "Thrift AI is for teams that sell in conversation, not in a traditional cart.",
+      title: "Turn your DMs into a fully automated storefront.",
       description:
-        "Use it when speed-to-reply and reservation discipline matter more than a storefront theme.",
-      primary: { label: "Deploy Thrift AI", href: "/login" },
+        "Use Thrift AI to reply to customers instantly and never miss a sale.",
+      primary: { label: "Get Started Free", href: "/signup" },
       secondary: { label: "Talk to sales", href: "/company/contact" },
     },
   },
@@ -582,19 +578,19 @@ export const employeePages: Record<string, PublicArticlePageData> = {
 export const companyDirectoryPage: PublicDirectoryPageData = {
   eyebrow: "Company",
   title:
-    "Nodebase is building an operating system for AI employees, not just another chatbot layer.",
+    "Nodebase makes AI accessible for local businesses, not just giant tech companies.",
   summary:
-    "The public site, product posture, and partner motion all moved up-market. This section explains the company, the partner model, and how we are shipping infrastructure around practical business workflows.",
+    "We believe small businesses deserve the same powerful automation as the big players. This section explains who we are, our partner network, and how we build tools for real-world business owners.",
   metrics: [
     { label: "HQ", value: "India" },
-    { label: "Focus", value: "Operational AI systems" },
-    { label: "Motion", value: "Operator-led deployment" },
+    { label: "Focus", value: "Small Business AI" },
+    { label: "Goal", value: "Make your life easier" },
   ],
   cards: [
     {
       title: "Careers",
       description:
-        "How the team operates, what we hire for, and where we need product-minded engineers next.",
+        "Join our team of builders who want to help small businesses thrive with easy-to-use AI.",
       href: "/company/careers",
       icon: BriefcaseBusiness,
       eyebrow: "Open roles",
@@ -603,7 +599,7 @@ export const companyDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Partners",
       description:
-        "Technology partners, system integrators, and operators who want to build Nodebase into delivery.",
+        "Agencies, consultants, and tech partners who want to bring easy automation to their clients.",
       href: "/company/partners",
       icon: Handshake,
       eyebrow: "Ecosystem",
@@ -612,7 +608,7 @@ export const companyDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Trust & legal",
       description:
-        "Security posture, data boundaries, and the operating commitments behind the platform.",
+        "Learn how we keep your business data private, secure, and completely under your control.",
       href: "/trust",
       icon: ShieldCheck,
       eyebrow: "Trust",
@@ -621,7 +617,7 @@ export const companyDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Contact",
       description:
-        "Talk to the team about pilots, deployment support, or partner opportunities.",
+        "Talk to our team if you need help getting started or want to partner with us.",
       href: "/company/contact",
       icon: Mail,
       eyebrow: "Reach us",
@@ -630,24 +626,24 @@ export const companyDirectoryPage: PublicDirectoryPageData = {
   ],
   sections: [
     {
-      title: "How the company has changed",
+      title: "Our Mission",
       cards: [
         {
-          title: "From chatbot branding to AI employees",
+          title: "Built for real people",
           description:
-            "The language now maps directly to operational roles, which makes onboarding and sales sharper.",
+            "We design our software for store owners, clinic managers, and hosts—not for IT departments.",
           icon: Bot,
         },
         {
-          title: "From features to workflow outcomes",
+          title: "Focus on results",
           description:
-            "Pages now organize around what the system does for hospitality, healthcare, retail, and partner delivery.",
+            "We don't sell hype. We sell software that answers messages, takes bookings, and saves you time.",
           icon: Activity,
         },
         {
-          title: "From generic SaaS design to tactile system UI",
+          title: "Extremely easy to use",
           description:
-            "The visual system uses depth, pressure, and motion as affordances rather than decoration.",
+            "You shouldn't need a manual to run your business. Our dashboard is simple, fast, and works on your phone.",
           icon: Layers3,
         },
       ],
@@ -655,45 +651,44 @@ export const companyDirectoryPage: PublicDirectoryPageData = {
     },
   ],
   cta: {
-    title: "If you deploy operational systems, we should probably talk.",
+    title: "Ready to put your business on autopilot?",
     description:
-      "Nodebase is opinionated about delivery, escalation, and auditability. That is a feature, not a limitation.",
-    primary: { label: "Contact Nodebase", href: "/company/contact" },
-    secondary: { label: "Review partner tracks", href: "/company/partners" },
+      "Join the businesses saving hours every day with Nodebase AI assistants.",
+    primary: { label: "Get Started Free", href: "/signup" },
+    secondary: { label: "Talk to Sales", href: "/company/contact" },
   },
 };
 
 export const careersPage: PublicArticlePageData = {
   eyebrow: "Careers",
-  title:
-    "We hire people who can make a workflow sharper, not just ship an interface.",
+  title: "Join us in building AI that actually helps small businesses grow.",
   summary:
-    "Nodebase is small by design. Roles are scoped around product judgment, systems thinking, and shipping discipline across engineering, infrastructure, and go-to-market delivery.",
+    "Nodebase is a small, focused team. We care about making products that are incredibly easy to use for shop owners, homestay hosts, and clinic managers.",
   metrics: [
-    { label: "Team model", value: "Small & senior" },
-    { label: "Work style", value: "High ownership" },
-    { label: "Hiring lens", value: "Product + systems" },
+    { label: "Team model", value: "Small & fast" },
+    { label: "Focus", value: "Real-world impact" },
+    { label: "Hiring", value: "Passionate builders" },
   ],
   sections: [
     {
-      title: "What we optimize for",
+      title: "What we value",
       cards: [
         {
-          title: "Operational taste",
+          title: "Empathy for the user",
           description:
-            "You know how software lands in a real business workflow and can cut the unnecessary layers out of it.",
+            "You understand that our customers are busy business owners who need simple, reliable tools.",
           icon: Activity,
         },
         {
-          title: "Systems clarity",
+          title: "Clarity over complexity",
           description:
-            "You can reason from customer behavior through architecture, tooling, and maintenance burden.",
+            "You prefer simple, elegant solutions over over-engineered, confusing architecture.",
           icon: Waypoints,
         },
         {
-          title: "Shipping judgement",
+          title: "Shipping fast & learning",
           description:
-            "You know the difference between quick work and sloppy work, and you can defend the distinction.",
+            "You know how to build a great V1, get it into users' hands, and improve it based on feedback.",
           icon: Rocket,
         },
       ],
@@ -733,77 +728,74 @@ export const careersPage: PublicArticlePageData = {
     },
   ],
   cta: {
-    title:
-      "If you can improve a business workflow with software and taste, reach out.",
+    title: "Want to build products that help real businesses?",
     description:
-      "We would rather read a sharp note and one strong artifact than a polished but generic application pack.",
+      "Send us an email with a link to something you've built that you're proud of.",
     primary: { label: "Email the team", href: "/company/contact" },
-    secondary: { label: "Review company overview", href: "/company" },
+    secondary: { label: "Learn about us", href: "/company" },
   },
 };
 
 export const partnersDirectoryPage: PublicDirectoryPageData = {
   eyebrow: "Partners",
-  title:
-    "Nodebase partners are the multiplier between product capability and field execution.",
+  title: "Partner with Nodebase to help businesses automate their operations.",
   summary:
-    "We work with technology companies, integrators, and delivery operators who want structured automation that survives contact with real businesses.",
+    "We work with agencies, consultants, and tech companies who want to bring easy-to-use AI to their clients.",
   metrics: [
-    { label: "Tracks", value: "Technology + integrators" },
-    { label: "Delivery focus", value: "Implementation quality" },
-    { label: "Primary market", value: "India-led operations" },
+    { label: "Tracks", value: "Agencies & Tech" },
+    { label: "Focus", value: "Customer success" },
+    { label: "Market", value: "Local businesses" },
   ],
   cards: [
     {
-      title: "Technology partners",
+      title: "Technology Partners",
       description:
-        "Messaging, payment, scheduling, and infrastructure partners that extend what employees can do in production.",
+        "Connect your software to our AI assistants to give your users magical new features.",
       href: "/company/partners/technology",
       icon: Globe2,
       eyebrow: "Platform",
-      ctaLabel: "View technology track",
+      ctaLabel: "View tech partners",
     },
     {
-      title: "System integrators",
+      title: "Agency Partners",
       description:
-        "Operators who implement Nodebase into client environments and own rollout, training, and escalation design.",
+        "Help your clients set up their AI assistants, train their rules, and transform their customer service.",
       href: "/company/partners/system-integrators",
       icon: Building2,
-      eyebrow: "Delivery",
-      ctaLabel: "View SI track",
+      eyebrow: "Agencies",
+      ctaLabel: "View agency track",
     },
   ],
   sections: [
     {
-      title: "What we look for in partners",
+      title: "Why partner with us?",
       bullets: [
-        "A bias toward deployment quality over lead volume.",
-        "Comfort with operational design, escalation, and compliance-sensitive workflows.",
-        "The ability to shape repeatable implementation patterns instead of one-off custom chaos.",
+        "Provide immense value to your clients by solving their biggest pain point: customer communication.",
+        "Earn revenue shares and get priority access to our support team.",
+        "Use a simple, reliable platform that just works, making you look great to your clients.",
       ],
     },
   ],
   cta: {
-    title:
-      "Good partners tighten the system instead of turning it into services sprawl.",
+    title: "If you love helping businesses grow, let's work together.",
     description:
-      "If that matches how you work, there is room to build together.",
-    primary: { label: "Contact partner team", href: "/company/contact" },
-    secondary: { label: "See trust posture", href: "/trust" },
+      "Reach out to our partner team to learn more about our programs.",
+    primary: { label: "Contact Partners Team", href: "/company/contact" },
+    secondary: { label: "View Pricing", href: "/pricing" },
   },
 };
 
 export const partnerTrackPages: Record<string, PublicArticlePageData> = {
   "system-integrators": {
-    eyebrow: "System integrators",
+    eyebrow: "Agency Partners",
     title:
-      "The SI track is built for teams that can own implementation without breaking operational clarity.",
+      "Help your clients set up their AI assistants and transform their customer service.",
     summary:
-      "This track is for delivery organizations that want a productized system with room for disciplined implementation, not endless customization.",
+      "This track is for agencies, consultants, and freelancers who want to offer AI automation as a service to their small business clients.",
     metrics: [
-      { label: "Partner role", value: "Delivery & rollout" },
-      { label: "Best fit", value: "Ops-led integrators" },
-      { label: "Engagement", value: "Structured implementation" },
+      { label: "Role", value: "Setup & Training" },
+      { label: "Best fit", value: "Digital Agencies" },
+      { label: "Goal", value: "Client Success" },
     ],
     sections: [
       {
@@ -840,26 +832,26 @@ export const partnerTrackPages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title: "The SI track is meant for partners who like rigor.",
+      title: "Ready to offer AI to your clients?",
       description:
-        "If your default instinct is to turn everything into bespoke consulting, this is probably not the right motion.",
-      primary: { label: "Apply as a partner", href: "/company/contact" },
+        "Join our agency program to get priority support and revenue share.",
+      primary: { label: "Apply as a Partner", href: "/company/contact" },
       secondary: {
-        label: "View technology track",
+        label: "View Tech Track",
         href: "/company/partners/technology",
       },
     },
   },
   technology: {
-    eyebrow: "Technology partners",
+    eyebrow: "Technology Partners",
     title:
-      "Technology partnerships should remove friction from deployment, not add another integration tax.",
+      "Connect your software to Nodebase and give your users magical AI features.",
     summary:
-      "We work with partners whose products improve messaging, scheduling, payments, observability, and infrastructure around AI employee workflows.",
+      "We work with SaaS platforms, payment gateways, and scheduling tools to make our AI assistants even smarter for mutual customers.",
     metrics: [
-      { label: "Partner role", value: "Product extension" },
-      { label: "Best fit", value: "Workflow infrastructure" },
-      { label: "Evaluation", value: "Reliability first" },
+      { label: "Role", value: "Integration" },
+      { label: "Best fit", value: "B2B SaaS" },
+      { label: "Goal", value: "Seamless sync" },
     ],
     sections: [
       {
@@ -896,32 +888,30 @@ export const partnerTrackPages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title:
-        "If your product strengthens workflow execution, it is probably relevant.",
+      title: "Want to integrate your software with Nodebase?",
       description:
-        "The easiest way to start is a clear note on the integration problem you solve.",
-      primary: { label: "Talk to partnerships", href: "/company/contact" },
-      secondary: { label: "Read docs", href: "/docs" },
+        "Reach out to our team to discuss API access and co-marketing opportunities.",
+      primary: { label: "Talk to Partnerships", href: "/company/contact" },
+      secondary: { label: "Read the Docs", href: "/docs" },
     },
   },
 };
 
 export const docsDirectoryPage: PublicDirectoryPageData = {
   eyebrow: "Documentation",
-  title:
-    "The docs are now organized around deployment, control surfaces, and workflow execution.",
+  title: "Everything you need to set up your AI assistant.",
   summary:
-    "Use the docs to understand how employees are configured, where actions are logged, and how deployment stays predictable across messaging-heavy operations.",
+    "Read our guides to learn how to connect your WhatsApp, set up your business rules, and let your AI take over the busywork.",
   metrics: [
-    { label: "Audience", value: "Operators and builders" },
-    { label: "Coverage", value: "Setup, control, integrations" },
-    { label: "Style", value: "Practical over abstract" },
+    { label: "Audience", value: "Business Owners" },
+    { label: "Coverage", value: "Setup & Guides" },
+    { label: "Style", value: "Simple & Clear" },
   ],
   cards: [
     {
       title: "Getting Started",
       description:
-        "What Nodebase is, how the system is structured, and where to begin when setting up the first workflow.",
+        "Learn what Nodebase is and how it can save you hours of customer support every day.",
       href: "/docs/getting-started",
       icon: BookOpenText,
       eyebrow: "Start here",
@@ -930,7 +920,7 @@ export const docsDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Quickstart",
       description:
-        "A short deployment path from account access to the first workflow being production-ready.",
+        "A step-by-step guide to getting your AI assistant running in under 5 minutes.",
       href: "/docs/getting-started/quickstart",
       icon: Rocket,
       eyebrow: "Hands-on",
@@ -965,15 +955,14 @@ export const docsDirectoryPage: PublicDirectoryPageData = {
     },
   ],
   cta: {
-    title:
-      "Start with the quickstart if you want the shortest path to a live workflow.",
+    title: "Ready to save time and automate your inbox?",
     description:
-      "If you need deeper architecture context first, begin with the Kaisa overview instead.",
+      "Start with our 5-minute quickstart guide to launch your first AI assistant.",
     primary: {
-      label: "Open quickstart",
+      label: "Open Quickstart",
       href: "/docs/getting-started/quickstart",
     },
-    secondary: { label: "Read Kaisa overview", href: "/docs/kaisa" },
+    secondary: { label: "View Integrations", href: "/docs/kaisa/integrations" },
   },
 };
 
@@ -981,13 +970,13 @@ export const docsPages: Record<string, PublicArticlePageData> = {
   "getting-started": {
     eyebrow: "Documentation",
     title:
-      "Nodebase is built around role-based AI employees and the systems that keep them accountable.",
+      "Nodebase is built around specialized AI assistants that understand your business.",
     summary:
-      "This overview is the shortest way to understand how Nodebase thinks about workflows, operational memory, and human override.",
+      "This guide explains how Nodebase learns your rules, answers your customers, and knows exactly when to ask you for help.",
     metrics: [
-      { label: "Model", value: "Role-first" },
-      { label: "Control", value: "Guardrailed actions" },
-      { label: "Auditability", value: "Event-driven logs" },
+      { label: "Focus", value: "Easy Setup" },
+      { label: "Control", value: "You are the boss" },
+      { label: "Visibility", value: "See every chat" },
     ],
     sections: [
       {
@@ -1025,30 +1014,28 @@ export const docsPages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title:
-        "When you are ready, use the quickstart to stand up the first workflow.",
+      title: "Ready to set up your AI assistant?",
       description:
-        "That is the fastest path from concept to an employee that can actually operate.",
+        "Follow our simple quickstart guide to get up and running in minutes.",
       primary: {
-        label: "Open quickstart",
+        label: "Open Quickstart",
         href: "/docs/getting-started/quickstart",
       },
       secondary: {
-        label: "Jump to integrations",
+        label: "View Integrations",
         href: "/docs/kaisa/integrations",
       },
     },
   },
   quickstart: {
     eyebrow: "Quickstart",
-    title:
-      "Stand up a production-ready Nodebase workflow in four practical steps.",
+    title: "Get your AI assistant running in 5 minutes.",
     summary:
-      "This is the shortest path to a working employee with channel access, operating context, and clear human fallback.",
+      "Follow these four simple steps to connect your WhatsApp, teach your AI your rules, and start saving time.",
     metrics: [
-      { label: "Outcome", value: "First live workflow" },
-      { label: "Assumption", value: "You know the target use case" },
-      { label: "Output", value: "Runnable employee" },
+      { label: "Time", value: "5 minutes" },
+      { label: "Required", value: "Your business rules" },
+      { label: "Result", value: "Automated inbox" },
     ],
     sections: [
       {
@@ -1090,14 +1077,13 @@ log_mode: event_stream`,
       },
     ],
     cta: {
-      title:
-        "After quickstart, move to the API or integrations docs based on how you plan to operate.",
+      title: "Your AI is ready to work!",
       description:
-        "Most teams go to integrations next. Teams building control surfaces usually go to the API.",
-      primary: { label: "Open integrations", href: "/docs/kaisa/integrations" },
+        "Next, check out our integrations guide to connect your Instagram or calendar.",
+      primary: { label: "View Integrations", href: "/docs/kaisa/integrations" },
       secondary: {
-        label: "Read the Agents API",
-        href: "/docs/kaisa/agents-api",
+        label: "Go to Dashboard",
+        href: "/login",
       },
     },
   },
@@ -1300,14 +1286,13 @@ log_mode: event_stream`,
 
 export const trustPage: PublicArticlePageData = {
   eyebrow: "Trust center",
-  title:
-    "The trust posture is built around operator control, bounded data use, and action traceability.",
+  title: "Your data is secure, and you are always in complete control.",
   summary:
-    "Nodebase is meant for workflows where communication, payments, and verification data cannot be handled casually. The trust layer is part of the product, not a marketing appendix.",
+    "We know your customer chats and payments are highly sensitive. Our platform is built from the ground up to keep your data private and give you the final say.",
   metrics: [
-    { label: "Design stance", value: "Least surprise" },
-    { label: "Records", value: "Event-level logging" },
-    { label: "Data posture", value: "Context-bounded use" },
+    { label: "Design", value: "Privacy First" },
+    { label: "Records", value: "Secure Logs" },
+    { label: "Control", value: "You are the boss" },
   ],
   sections: [
     {
@@ -1374,11 +1359,11 @@ export const trustPage: PublicArticlePageData = {
     },
   ],
   cta: {
-    title: "Trust only matters if it survives deployment.",
+    title: "We take your business seriously.",
     description:
-      "If you need to evaluate the platform for a compliance-sensitive workflow, start a review with the team.",
-    primary: { label: "Contact Nodebase", href: "/company/contact" },
-    secondary: { label: "Read the docs", href: "/docs" },
+      "If you have any questions about how we handle data or payments, our team is happy to chat.",
+    primary: { label: "Contact Us", href: "/company/contact" },
+    secondary: { label: "Read the Docs", href: "/docs" },
   },
 };
 
