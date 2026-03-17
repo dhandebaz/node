@@ -255,7 +255,8 @@ export const geminiService = {
 
       const genAI = new GoogleGenerativeAI(apiKey);
       // Make embedding model configurable via settings.api.embeddingModel (fallback to embedding-004)
-      const embeddingModel = settings.api?.embeddingModel || "embedding-004";
+      const embeddingModel =
+        (settings.api as any)?.embeddingModel || "embedding-004";
       console.info("geminiService: using embedding model:", embeddingModel);
       const model = genAI.getGenerativeModel({ model: embeddingModel });
       const result = await model.embedContent(text);
