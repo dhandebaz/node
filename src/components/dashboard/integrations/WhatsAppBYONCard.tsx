@@ -83,7 +83,7 @@ export function WhatsAppBYONCard({ initialStatus }: WhatsAppBYONCardProps) {
                     Connected
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/5 text-muted-foreground border border-white/10">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/5 text-muted-foreground border border-[var(--public-line)]">
                     <XCircle className="w-3 h-3" />
                     Not Connected
                   </span>
@@ -97,7 +97,7 @@ export function WhatsAppBYONCard({ initialStatus }: WhatsAppBYONCardProps) {
           </p>
         </div>
 
-        <div className="w-full md:w-[400px] bg-white/5 rounded-lg border border-white/10 p-5 flex flex-col items-center justify-center min-h-[200px]">
+        <div className="w-full md:w-[400px] bg-white/5 rounded-lg border border-[var(--public-line)] p-5 flex flex-col items-center justify-center min-h-[200px]">
           {status === 'connected' ? (
             <div className="text-center space-y-4">
               <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
@@ -126,7 +126,7 @@ export function WhatsAppBYONCard({ initialStatus }: WhatsAppBYONCardProps) {
           ) : (
             <Button 
               onClick={handleConnect} 
-              className="bg-[#25D366] hover:bg-[#128C7E] text-white font-medium"
+              className="bg-[#25D366] hover:bg-[#128C7E] text-[var(--public-ink)] font-medium"
               disabled={loading}
             >
               {loading ? (

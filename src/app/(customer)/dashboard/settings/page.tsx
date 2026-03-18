@@ -40,8 +40,8 @@ export default async function CustomerSettingsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-white mb-1">Settings</h1>
-        <p className="text-zinc-400">Manage your profile and preferences.</p>
+        <h1 className="text-2xl font-bold text-[var(--public-ink)] mb-1">Settings</h1>
+        <p className="text-[var(--public-muted)]">Manage your profile and preferences.</p>
       </div>
 
       <div className="grid gap-8">
@@ -50,48 +50,48 @@ export default async function CustomerSettingsPage() {
         <TeamManagement />
 
         {/* Profile Section */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-zinc-800 flex items-center gap-4">
-            <div className="p-3 bg-zinc-800 rounded-lg">
+        <div className="public-panel border border-[var(--public-line)] rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-[var(--public-line)] flex items-center gap-4">
+            <div className="p-3 bg-[var(--public-panel-muted)] rounded-lg">
               <User className="w-6 h-6 text-blue-500" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Profile</h2>
-              <p className="text-sm text-zinc-400">Your personal information</p>
+              <h2 className="text-lg font-semibold text-[var(--public-ink)]">Profile</h2>
+              <p className="text-sm text-[var(--public-muted)]">Your personal information</p>
             </div>
           </div>
           <div className="p-6 space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label className="block text-sm font-medium text-[var(--public-muted)] mb-2">
                   User ID
                 </label>
                 <input
                   type="text"
                   value={profile.identity.id}
                   readOnly
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 cursor-not-allowed opacity-70"
+                  className="w-full bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-lg px-4 py-2 text-[var(--public-ink)] focus:outline-none focus:border-blue-500 cursor-not-allowed opacity-70"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label className="block text-sm font-medium text-[var(--public-muted)] mb-2">
                   Mobile Number (Primary)
                 </label>
                 <div className="relative">
-                  <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--public-muted)]" />
                   <input
                     type="text"
                     value={profile.identity.phone}
                     readOnly
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-white focus:outline-none focus:border-blue-500 cursor-not-allowed opacity-70"
+                    className="w-full bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-lg pl-10 pr-4 py-2 text-[var(--public-ink)] focus:outline-none focus:border-blue-500 cursor-not-allowed opacity-70"
                   />
                 </div>
-                <p className="text-xs text-zinc-500 mt-1">
+                <p className="text-xs text-[var(--public-muted)] mt-1">
                   Used for login and OTP.
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label className="block text-sm font-medium text-[var(--public-muted)] mb-2">
                   Email (Optional)
                 </label>
                 <input
@@ -99,7 +99,7 @@ export default async function CustomerSettingsPage() {
                   value={profile.identity.email || ""}
                   readOnly
                   placeholder="Not set"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 cursor-not-allowed opacity-70"
+                  className="w-full bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-lg px-4 py-2 text-[var(--public-ink)] focus:outline-none focus:border-blue-500 cursor-not-allowed opacity-70"
                 />
               </div>
             </div>
@@ -108,16 +108,16 @@ export default async function CustomerSettingsPage() {
 
         {/* KYC Section */}
         {tenant.kyc_status === "verified" ? (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-            <div className="p-6 border-b border-zinc-800 flex items-center gap-4">
-              <div className="p-3 bg-zinc-800 rounded-lg">
+          <div className="public-panel border border-[var(--public-line)] rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-[var(--public-line)] flex items-center gap-4">
+              <div className="p-3 bg-[var(--public-panel-muted)] rounded-lg">
                 <FileCheck className="w-6 h-6 text-green-500" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-[var(--public-ink)]">
                   KYC Verification
                 </h2>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-[var(--public-muted)]">
                   Identity verification status
                 </p>
               </div>
@@ -135,7 +135,7 @@ export default async function CustomerSettingsPage() {
                   </div>
                 </div>
               </div>
-              <div className="grid gap-4 text-sm text-zinc-500 md:grid-cols-2">
+              <div className="grid gap-4 text-sm text-[var(--public-muted)] md:grid-cols-2">
                 {verificationDetails.length > 0 ? (
                   verificationDetails.map((detail) => (
                     <div key={detail} className="flex items-center gap-2">
@@ -156,16 +156,16 @@ export default async function CustomerSettingsPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-            <div className="p-6 border-b border-zinc-800 flex items-center gap-4">
-              <div className="p-3 bg-zinc-800 rounded-lg">
+          <div className="public-panel border border-[var(--public-line)] rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-[var(--public-line)] flex items-center gap-4">
+              <div className="p-3 bg-[var(--public-panel-muted)] rounded-lg">
                 <FileCheck className="w-6 h-6 text-purple-500" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-[var(--public-ink)]">
                   KYC Verification
                 </h2>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-[var(--public-muted)]">
                   Complete identity verification to unlock the platform.
                 </p>
               </div>
@@ -178,7 +178,7 @@ export default async function CustomerSettingsPage() {
               </div>
               <Link
                 href="/dashboard/verification"
-                className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-purple-500"
+                className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-[var(--public-ink)] transition-colors hover:bg-purple-500"
               >
                 Continue verification
                 <ArrowRight className="h-4 w-4" />
@@ -190,23 +190,23 @@ export default async function CustomerSettingsPage() {
         <ComplianceHubCard tenant={tenant} />
 
         {/* Notifications Section */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-zinc-800 flex items-center gap-4">
-            <div className="p-3 bg-zinc-800 rounded-lg">
+        <div className="public-panel border border-[var(--public-line)] rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-[var(--public-line)] flex items-center gap-4">
+            <div className="p-3 bg-[var(--public-panel-muted)] rounded-lg">
               <Bell className="w-6 h-6 text-yellow-500" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">
+              <h2 className="text-lg font-semibold text-[var(--public-ink)]">
                 Notifications
               </h2>
-              <p className="text-sm text-zinc-400">Manage how we contact you</p>
+              <p className="text-sm text-[var(--public-muted)]">Manage how we contact you</p>
             </div>
           </div>
           <div className="p-6 space-y-4">
-            <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
+            <div className="flex items-center justify-between p-4 bg-[var(--public-bg-soft)] text-[var(--public-ink)] rounded-lg border border-[var(--public-line)]">
               <div>
-                <div className="font-medium text-white">Product Updates</div>
-                <div className="text-sm text-zinc-400">
+                <div className="font-medium text-[var(--public-ink)]">Product Updates</div>
+                <div className="text-sm text-[var(--public-muted)]">
                   Receive updates about your products
                 </div>
               </div>
@@ -214,10 +214,10 @@ export default async function CustomerSettingsPage() {
                 <span className="translate-x-6 inline-block h-4 w-4 transform rounded-full bg-white transition-transform" />
               </div>
             </div>
-            <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
+            <div className="flex items-center justify-between p-4 bg-[var(--public-bg-soft)] text-[var(--public-ink)] rounded-lg border border-[var(--public-line)]">
               <div>
-                <div className="font-medium text-white">Security Alerts</div>
-                <div className="text-sm text-zinc-400">
+                <div className="font-medium text-[var(--public-ink)]">Security Alerts</div>
+                <div className="text-sm text-[var(--public-muted)]">
                   Login alerts and critical notifications
                 </div>
               </div>
@@ -232,28 +232,28 @@ export default async function CustomerSettingsPage() {
         </div>
 
         {/* Security Section */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-          <div className="p-6 border-b border-zinc-800 flex items-center gap-4">
-            <div className="p-3 bg-zinc-800 rounded-lg">
+        <div className="public-panel border border-[var(--public-line)] rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-[var(--public-line)] flex items-center gap-4">
+            <div className="p-3 bg-[var(--public-panel-muted)] rounded-lg">
               <Shield className="w-6 h-6 text-green-500" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Security</h2>
-              <p className="text-sm text-zinc-400">
+              <h2 className="text-lg font-semibold text-[var(--public-ink)]">Security</h2>
+              <p className="text-sm text-[var(--public-muted)]">
                 Manage your active sessions
               </p>
             </div>
           </div>
           <div className="p-6">
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
+              <div className="flex items-center justify-between p-4 bg-[var(--public-bg-soft)] text-[var(--public-ink)] rounded-lg border border-[var(--public-line)]">
                 <div className="flex items-center gap-3">
-                  <Monitor className="w-5 h-5 text-zinc-400" />
+                  <Monitor className="w-5 h-5 text-[var(--public-muted)]" />
                   <div>
-                    <div className="font-medium text-white">
+                    <div className="font-medium text-[var(--public-ink)]">
                       Current Session
                     </div>
-                    <div className="text-sm text-zinc-400">
+                    <div className="text-sm text-[var(--public-muted)]">
                       Windows • Chrome • India
                     </div>
                   </div>
@@ -262,12 +262,12 @@ export default async function CustomerSettingsPage() {
                   Active Now
                 </div>
               </div>
-              <div className="flex items-center justify-between p-4 bg-zinc-950 rounded-lg border border-zinc-800">
+              <div className="flex items-center justify-between p-4 bg-[var(--public-bg-soft)] text-[var(--public-ink)] rounded-lg border border-[var(--public-line)]">
                 <div className="flex items-center gap-3">
-                  <Smartphone className="w-5 h-5 text-zinc-400" />
+                  <Smartphone className="w-5 h-5 text-[var(--public-muted)]" />
                   <div>
-                    <div className="font-medium text-white">Mobile App</div>
-                    <div className="text-sm text-zinc-400">
+                    <div className="font-medium text-[var(--public-ink)]">Mobile App</div>
+                    <div className="text-sm text-[var(--public-muted)]">
                       iOS • iPhone 14 • India
                     </div>
                   </div>
@@ -278,7 +278,7 @@ export default async function CustomerSettingsPage() {
               </div>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-zinc-800">
+            <div className="mt-6 pt-6 border-t border-[var(--public-line)]">
               <button className="text-red-400 hover:text-red-300 font-medium text-sm flex items-center gap-2">
                 <Shield className="w-4 h-4" />
                 Log out of all devices

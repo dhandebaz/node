@@ -132,7 +132,7 @@ function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
     <div className="relative">
       <canvas
         ref={canvasRef}
-        className="h-40 w-full touch-none rounded-lg border border-zinc-700 bg-zinc-900 cursor-crosshair"
+        className="h-40 w-full touch-none rounded-lg border border-[var(--public-line)] public-panel cursor-crosshair"
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={stopDrawing}
@@ -144,7 +144,7 @@ function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
       <button
         type="button"
         onClick={clearPad}
-        className="absolute bottom-2 right-2 rounded-md bg-zinc-800 px-3 py-1 text-xs text-zinc-400 hover:bg-zinc-700 hover:text-white"
+        className="absolute bottom-2 right-2 rounded-md bg-[var(--public-panel-muted)] px-3 py-1 text-xs text-[var(--public-muted)] hover:bg-zinc-700 hover:text-[var(--public-ink)]"
       >
         Clear
       </button>
@@ -193,7 +193,7 @@ export default function VerificationPage() {
         if (!data.tenant) return;
 
         setTenantId(data.tenant.id);
-        setHandle(data.tenant.username || "");
+        setHandle(data.tenant.username || ""); if (data.tenant.username) setHandleAvailable(true);
         setDetails((prev) => ({
           ...prev,
           name: data.tenant?.name || "",
@@ -400,8 +400,8 @@ export default function VerificationPage() {
             <div
               className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
                 step >= currentStep
-                  ? "bg-brand-red text-white"
-                  : "bg-zinc-800 text-zinc-500"
+                  ? "bg-brand-red text-[var(--public-ink)]"
+                  : "bg-[var(--public-panel-muted)] text-[var(--public-muted)]"
               }`}
             >
               {step > currentStep ? <CheckCircle2 size={16} /> : currentStep}
@@ -409,7 +409,7 @@ export default function VerificationPage() {
             {currentStep < 4 && (
               <div
                 className={`mx-2 h-1 w-12 ${
-                  step > currentStep ? "bg-brand-red" : "bg-zinc-800"
+                  step > currentStep ? "bg-brand-red" : "bg-[var(--public-panel-muted)]"
                 }`}
               />
             )}
@@ -418,7 +418,7 @@ export default function VerificationPage() {
       </div>
 
       {step === 1 && (
-        <div className="space-y-6 rounded-xl skeuo-card p-6">
+        <div className="space-y-6 rounded-xl public-panel p-6">
           <h2 className="text-xl font-bold">Business Details</h2>
           <form onSubmit={handleDetailsSubmit} className="space-y-4">
             <div className="grid gap-2">
@@ -429,7 +429,7 @@ export default function VerificationPage() {
                   setDetails({ ...details, name: event.target.value })
                 }
                 required
-                className="border-white/10 bg-zinc-950 text-white placeholder:text-white/40"
+                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
               />
             </div>
             <div className="grid gap-2">
@@ -440,7 +440,7 @@ export default function VerificationPage() {
                   setDetails({ ...details, taxId: event.target.value })
                 }
                 placeholder="ABCDE1234F or 07ABCDE1234F1Z5"
-                className="border-white/10 bg-zinc-950 text-white placeholder:text-white/40"
+                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
               />
             </div>
             <div className="grid gap-2">
@@ -451,7 +451,7 @@ export default function VerificationPage() {
                   setDetails({ ...details, address: event.target.value })
                 }
                 required
-                className="border-white/10 bg-zinc-950 text-white placeholder:text-white/40"
+                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
               />
             </div>
             <div className="grid gap-2">
@@ -462,7 +462,7 @@ export default function VerificationPage() {
                   setDetails({ ...details, phone: event.target.value })
                 }
                 required
-                className="border-white/10 bg-zinc-950 text-white placeholder:text-white/40"
+                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
               />
             </div>
             <div className="grid gap-2">
@@ -473,10 +473,10 @@ export default function VerificationPage() {
                   setDetails({ ...details, timezone: event.target.value })
                 }
                 required
-                className="border-white/10 bg-zinc-950 text-white placeholder:text-white/40"
+                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
               />
             </div>
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button type="submit" disabled={loading} className="w-full public-button">
               {loading ? (
                 <Loader2 className="animate-spin" />
               ) : (
@@ -488,14 +488,14 @@ export default function VerificationPage() {
       )}
 
       {step === 2 && (
-        <div className="space-y-6 rounded-xl skeuo-card p-6">
-          <h2 className="text-xl font-bold text-white">
+        <div className="space-y-6 rounded-xl public-panel p-6">
+          <h2 className="text-xl font-bold text-[var(--public-ink)]">
             Identity Verification
           </h2>
           {!extractedData ? (
-            <div className="rounded-xl border-2 border-dashed border-zinc-700 p-8 text-center transition-colors hover:border-brand-red">
-              <Upload className="mx-auto mb-4 h-12 w-12 text-zinc-500" />
-              <p className="mb-4 text-zinc-400">
+            <div className="rounded-xl border-2 border-dashed border-[var(--public-line)] p-8 text-center transition-colors hover:border-brand-red">
+              <Upload className="mx-auto mb-4 h-12 w-12 text-[var(--public-muted)]" />
+              <p className="mb-4 text-[var(--public-muted)]">
                 Upload Aadhaar, PAN, passport, or another government ID.
               </p>
               <Input
@@ -518,22 +518,22 @@ export default function VerificationPage() {
                 </span>
               </div>
 
-              <div className="grid gap-4 rounded-lg bg-zinc-950 p-4">
+              <div className="grid gap-4 rounded-lg bg-[var(--public-bg-soft)] text-[var(--public-ink)] p-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs text-zinc-500">Name</Label>
+                    <Label className="text-xs text-[var(--public-muted)]">Name</Label>
                     <div className="font-medium">
                       {extractedData.name || "—"}
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs text-zinc-500">DOB</Label>
+                    <Label className="text-xs text-[var(--public-muted)]">DOB</Label>
                     <div className="font-medium">
                       {extractedData.dob || "—"}
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs text-zinc-500">
+                    <Label className="text-xs text-[var(--public-muted)]">
                       Document Type
                     </Label>
                     <div className="font-medium">
@@ -541,7 +541,7 @@ export default function VerificationPage() {
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs text-zinc-500">Document No</Label>
+                    <Label className="text-xs text-[var(--public-muted)]">Document No</Label>
                     <div className="font-medium">
                       {extractedData.document_number || "—"}
                     </div>
@@ -552,7 +552,7 @@ export default function VerificationPage() {
               <Button
                 onClick={handleKycConfirm}
                 disabled={loading}
-                className="w-full"
+                className="w-full public-button"
               >
                 {loading ? (
                   <Loader2 className="animate-spin" />
@@ -566,7 +566,7 @@ export default function VerificationPage() {
       )}
 
       {step === 3 && (
-        <div className="space-y-6 rounded-xl skeuo-card p-6">
+        <div className="space-y-6 rounded-xl public-panel p-6">
           <h2 className="text-xl font-bold">Legal Agreement</h2>
           <div className="h-64 overflow-y-auto rounded-lg bg-white p-6 text-sm font-serif text-black">
             <h3 className="mb-4 text-lg font-bold">
@@ -597,7 +597,7 @@ export default function VerificationPage() {
           <div className="space-y-2">
             <Label>Sign Below</Label>
             <SignaturePad onEnd={setSignature} />
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-[var(--public-muted)]">
               Draw your signature using mouse or touch.
             </p>
           </div>
@@ -605,7 +605,7 @@ export default function VerificationPage() {
           <Button
             onClick={handleAgreementSign}
             disabled={loading}
-            className="w-full"
+            className="w-full public-button"
           >
             {loading ? (
               <Loader2 className="animate-spin" />
@@ -617,14 +617,14 @@ export default function VerificationPage() {
       )}
 
       {step === 4 && (
-        <div className="space-y-6 rounded-xl skeuo-card p-6 text-center">
+        <div className="space-y-6 rounded-xl public-panel p-6 text-center">
           <h2 className="text-xl font-bold">Claim your Handle</h2>
-          <p className="text-zinc-400">
+          <p className="text-[var(--public-muted)]">
             Choose a unique username for your public profile.
           </p>
 
           <div className="mx-auto flex max-w-sm items-center justify-center gap-2">
-            <span className="text-zinc-500">{publicProfilePrefix}</span>
+            <span className="text-[var(--public-muted)]">{publicProfilePrefix}</span>
             <Input
               value={handle}
               onChange={(event) =>
@@ -633,12 +633,12 @@ export default function VerificationPage() {
                 )
               }
               placeholder="my-business"
-              className="bg-zinc-950"
+              className="bg-[var(--public-bg-soft)] text-[var(--public-ink)]"
             />
           </div>
 
           {handleChecking ? (
-            <p className="flex items-center justify-center gap-1 text-sm text-zinc-400">
+            <p className="flex items-center justify-center gap-1 text-sm text-[var(--public-muted)]">
               <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-zinc-400 border-t-transparent" />
               Checking…
             </p>
@@ -655,7 +655,7 @@ export default function VerificationPage() {
           <Button
             onClick={handleUsernameSubmit}
             disabled={!handleAvailable || loading}
-            className="mx-auto w-full max-w-sm"
+            className="mx-auto w-full max-w-sm public-button"
           >
             {loading ? <Loader2 className="animate-spin" /> : "Launch Site"}
           </Button>

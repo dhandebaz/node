@@ -69,8 +69,8 @@ export default function RevenuePage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-white/40" />
-        <p className="text-white/40 text-sm">Analyzing market trends...</p>
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
+        <p className="text-[var(--public-ink)]/40 text-sm">Analyzing market trends...</p>
       </div>
     );
   }
@@ -80,11 +80,11 @@ export default function RevenuePage() {
       {/* Header with Stats */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white uppercase tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-[var(--public-ink)] uppercase tracking-tight flex items-center gap-3">
             <TrendingUp className="text-emerald-500 w-8 h-8" />
             Revenue & Pricing
           </h1>
-          <p className="text-white/50 text-sm">
+          <p className="text-[var(--public-ink)]/50 text-sm">
             AI-driven nightly rate optimization based on occupancy and local demand.
           </p>
         </div>
@@ -92,7 +92,7 @@ export default function RevenuePage() {
           onClick={handleRefresh} 
           disabled={refreshing}
           variant="outline"
-          className="border-white/10 text-white hover:bg-white/5 font-bold px-6 rounded-full"
+          className="border-[var(--public-line)] text-[var(--public-ink)] hover:bg-white/5 font-bold px-6 rounded-full"
         >
           {refreshing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
           Refresh Trends
@@ -101,10 +101,10 @@ export default function RevenuePage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-zinc-900 border-white/5">
+        <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Suggested Uplift</CardDescription>
-            <CardTitle className="text-3xl font-bold text-white">+₹2,400</CardTitle>
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Suggested Uplift</CardDescription>
+            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">+₹2,400</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-emerald-400">
@@ -113,10 +113,10 @@ export default function RevenuePage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-900 border-white/5">
+        <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Average Occupancy</CardDescription>
-            <CardTitle className="text-3xl font-bold text-white">68%</CardTitle>
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Average Occupancy</CardDescription>
+            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">68%</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-emerald-400">
@@ -125,13 +125,13 @@ export default function RevenuePage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-zinc-900 border-white/5">
+        <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Total Revenue</CardDescription>
-            <CardTitle className="text-3xl font-bold text-white">₹48,200</CardTitle>
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Total Revenue</CardDescription>
+            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">₹48,200</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-2 text-xs text-zinc-500">
+            <div className="flex items-center gap-2 text-xs text-[var(--public-muted)]">
               <DollarSign className="w-3 h-3" />
               <span>This month</span>
             </div>
@@ -142,21 +142,21 @@ export default function RevenuePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Feed: Price Suggestions */}
         <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-lg font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <h2 className="text-lg font-bold text-[var(--public-ink)] uppercase tracking-wider flex items-center gap-2">
             <Zap className="w-5 h-5 text-emerald-500" />
             Pricing Opportunities
           </h2>
 
           {data.suggestions.length === 0 ? (
-            <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-12 text-center space-y-4">
-              <div className="p-4 bg-white/5 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-white/20">
+            <div className="public-panel/50 border border-white/5 rounded-2xl p-12 text-center space-y-4">
+              <div className="p-4 bg-white/5 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-[var(--public-ink)]/20">
                 <Sparkles className="w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-white font-bold">Your pricing is optimal</h3>
-                <p className="text-white/40 text-sm">Kaisa hasn't found any immediate price adjustments for your listings.</p>
+                <h3 className="text-[var(--public-ink)] font-bold">Your pricing is optimal</h3>
+                <p className="text-[var(--public-ink)]/40 text-sm">Kaisa hasn't found any immediate price adjustments for your listings.</p>
               </div>
-              <Button variant="outline" onClick={handleRefresh} className="border-white/10 text-white hover:bg-white/5">
+              <Button variant="outline" onClick={handleRefresh} className="border-[var(--public-line)] text-[var(--public-ink)] hover:bg-white/5">
                 Re-scan Market
               </Button>
             </div>
@@ -165,7 +165,7 @@ export default function RevenuePage() {
               {data.suggestions.map((s: any) => {
                 const isPriceUp = s.suggestedPrice > s.currentPrice;
                 return (
-                  <Card key={s.id} className="bg-zinc-900 border-white/5 hover:border-emerald-500/30 transition-all overflow-hidden group">
+                  <Card key={s.id} className="public-panel border-white/5 hover:border-emerald-500/30 transition-all overflow-hidden group">
                     <div className="flex flex-col md:flex-row">
                       <div className="p-6 flex-1 space-y-4">
                         <div className="flex items-center justify-between">
@@ -174,10 +174,10 @@ export default function RevenuePage() {
                               <Calendar className="w-5 h-5" />
                             </div>
                             <div>
-                              <div className="text-sm font-bold text-white">
+                              <div className="text-sm font-bold text-[var(--public-ink)]">
                                 {new Date(s.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', weekday: 'short' })}
                               </div>
-                              <div className="text-[10px] text-zinc-500 uppercase tracking-widest">{s.listingTitle}</div>
+                              <div className="text-[10px] text-[var(--public-muted)] uppercase tracking-widest">{s.listingTitle}</div>
                             </div>
                           </div>
                           <div className={cn(
@@ -191,8 +191,8 @@ export default function RevenuePage() {
 
                         <div className="flex items-center gap-8">
                           <div>
-                            <div className="text-[10px] text-zinc-500 uppercase font-bold mb-1">Current</div>
-                            <div className="text-lg font-bold text-white/40 line-through">₹{s.currentPrice}</div>
+                            <div className="text-[10px] text-[var(--public-muted)] uppercase font-bold mb-1">Current</div>
+                            <div className="text-lg font-bold text-[var(--public-ink)]/40 line-through">₹{s.currentPrice}</div>
                           </div>
                           <div className="text-zinc-700">→</div>
                           <div>
@@ -200,8 +200,8 @@ export default function RevenuePage() {
                             <div className="text-2xl font-bold text-emerald-400">₹{s.suggestedPrice}</div>
                           </div>
                           <div className="ml-auto text-right">
-                             <div className="text-[10px] text-zinc-500 uppercase font-bold mb-1">Reason</div>
-                             <div className="text-xs text-white/80">{s.reason}</div>
+                             <div className="text-[10px] text-[var(--public-muted)] uppercase font-bold mb-1">Reason</div>
+                             <div className="text-xs text-[var(--public-ink)]/80">{s.reason}</div>
                           </div>
                         </div>
                       </div>
@@ -214,7 +214,7 @@ export default function RevenuePage() {
                         </Button>
                         <Button 
                           variant="ghost" 
-                          className="flex-1 text-zinc-500 hover:text-white hover:bg-white/5 text-xs font-bold py-1"
+                          className="flex-1 text-[var(--public-muted)] hover:text-[var(--public-ink)] hover:bg-white/5 text-xs font-bold py-1"
                         >
                           Ignore
                         </Button>
@@ -229,30 +229,30 @@ export default function RevenuePage() {
 
         {/* Sidebar: Pricing Rules & Intelligence */}
         <div className="space-y-6">
-          <h2 className="text-lg font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <Home className="w-5 h-5 text-zinc-400" />
+          <h2 className="text-lg font-bold text-[var(--public-ink)] uppercase tracking-wider flex items-center gap-2">
+            <Home className="w-5 h-5 text-[var(--public-muted)]" />
             Pricing Rules
           </h2>
           
-          <Card className="bg-zinc-900 border-white/5">
+          <Card className="public-panel border-white/5">
             <CardHeader className="pb-4 border-b border-white/5">
-              <CardTitle className="text-sm text-white">Balanced Strategy</CardTitle>
+              <CardTitle className="text-sm text-[var(--public-ink)]">Balanced Strategy</CardTitle>
               <CardDescription className="text-xs">Prioritizes both occupancy and revenue</CardDescription>
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-zinc-500 uppercase font-bold tracking-tighter">Weekend Markup</span>
-                <span className="text-white font-bold">1.2x</span>
+                <span className="text-[var(--public-muted)] uppercase font-bold tracking-tighter">Weekend Markup</span>
+                <span className="text-[var(--public-ink)] font-bold">1.2x</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-zinc-500 uppercase font-bold tracking-tighter">Last Minute</span>
-                <span className="text-white font-bold">0.8x</span>
+                <span className="text-[var(--public-muted)] uppercase font-bold tracking-tighter">Last Minute</span>
+                <span className="text-[var(--public-ink)] font-bold">0.8x</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-zinc-500 uppercase font-bold tracking-tighter">Min Price</span>
-                <span className="text-white font-bold">₹0</span>
+                <span className="text-[var(--public-muted)] uppercase font-bold tracking-tighter">Min Price</span>
+                <span className="text-[var(--public-ink)] font-bold">₹0</span>
               </div>
-              <Button variant="outline" className="w-full border-white/10 text-white/70 text-xs font-bold hover:bg-white/5">
+              <Button variant="outline" className="w-full border-[var(--public-line)] text-[var(--public-ink)]/70 text-xs font-bold hover:bg-white/5">
                 Change Strategy
               </Button>
             </CardContent>

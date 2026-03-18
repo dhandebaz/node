@@ -36,7 +36,29 @@ export async function GET(req: Request) {
       .eq("username", handle)
       .maybeSingle();
 
-    return NextResponse.json({ available: !existing });
+    let available = !existing;
+
+    if (existing) {
+      const supabase = await getSupabaseServer();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: membership } = await supabase
+          .from("tenant_users")
+          .select("tenant_id")
+          .eq("tenant_id", existing.id)
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (membership) {
+          available = true;
+        }
+      }
+    }
+
+    return NextResponse.json({ available });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -80,7 +102,7 @@ export async function POST(req: Request) {
       .eq("username", handle)
       .maybeSingle();
 
-    if (existing) {
+    if (existing && existing.id !== tenantId) {
       return NextResponse.json({ error: "Handle taken" }, { status: 409 });
     }
 

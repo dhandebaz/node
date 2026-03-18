@@ -51,26 +51,26 @@ export function ComplianceHubCard({ tenant }: ComplianceHubCardProps) {
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden mt-8">
-      <div className="p-6 border-b border-zinc-800 flex items-center gap-4">
-        <div className="p-3 bg-zinc-800 rounded-lg">
+    <div className="public-panel border border-[var(--public-line)] rounded-xl overflow-hidden mt-8">
+      <div className="p-6 border-b border-[var(--public-line)] flex items-center gap-4">
+        <div className="p-3 bg-[var(--public-panel-muted)] rounded-lg">
           <FileText className="w-6 h-6 text-blue-500" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-white">Legal & Compliance Hub</h2>
-          <p className="text-sm text-zinc-400">Automated legal documents and guidelines</p>
+          <h2 className="text-lg font-semibold text-[var(--public-ink)]">Legal & Compliance Hub</h2>
+          <p className="text-sm text-[var(--public-muted)]">Automated legal documents and guidelines</p>
         </div>
       </div>
       
       <div className="p-6">
         {!isVerified ? (
           <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
-            <div className="p-4 bg-zinc-800/50 rounded-full">
-              <Lock className="w-8 h-8 text-zinc-500" />
+            <div className="p-4 bg-[var(--public-panel-muted)]/50 rounded-full">
+              <Lock className="w-8 h-8 text-[var(--public-muted)]" />
             </div>
             <div className="max-w-sm">
-              <h3 className="text-lg font-medium text-white mb-2">Hub Locked</h3>
-              <p className="text-zinc-400 text-sm">
+              <h3 className="text-lg font-medium text-[var(--public-ink)] mb-2">Hub Locked</h3>
+              <p className="text-[var(--public-muted)] text-sm">
                 Complete your KYC verification to unlock automated legal documents, Shop Act guidelines, and more.
               </p>
             </div>
@@ -90,7 +90,7 @@ export function ComplianceHubCard({ tenant }: ComplianceHubCardProps) {
                   key={doc}
                   variant="outline"
                   disabled={loading}
-                  className="h-auto py-4 flex flex-col items-center gap-3 border-zinc-800 hover:bg-zinc-800 hover:text-white disabled:opacity-50"
+                  className="h-auto py-4 flex flex-col items-center gap-3 border-[var(--public-line)] hover:bg-[var(--public-panel-muted)] hover:text-[var(--public-ink)] disabled:opacity-50"
                   onClick={() => handleGenerate(doc)}
                 >
                   <Sparkles className="w-5 h-5 text-purple-400" />
@@ -113,13 +113,13 @@ export function ComplianceHubCard({ tenant }: ComplianceHubCardProps) {
                         variant="secondary" 
                         size="sm" 
                         onClick={() => setDocumentContent(null)}
-                        className="bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700"
+                        className="bg-[var(--public-panel-muted)] hover:bg-zinc-700 text-[var(--public-ink)] border border-[var(--public-line)]"
                     >
                         <X className="w-4 h-4 mr-2" />
                         Close / Clear
                     </Button>
                  </div>
-                 <div className="bg-zinc-950 border border-zinc-800 p-8 rounded-xl prose prose-invert max-w-none">
+                 <div className="bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] p-8 rounded-xl prose prose-invert max-w-none">
                     <ReactMarkdown>{documentContent}</ReactMarkdown>
                  </div>
               </div>

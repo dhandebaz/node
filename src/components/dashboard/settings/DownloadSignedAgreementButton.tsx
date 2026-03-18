@@ -32,7 +32,7 @@ export function DownloadSignedAgreementButton() {
     <button
       onClick={handleDownload}
       disabled={loading}
-      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-950 border border-zinc-800 text-white hover:bg-zinc-900 transition-colors disabled:opacity-60"
+      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] text-[var(--public-ink)] hover:public-panel transition-colors disabled:opacity-60"
       type="button"
     >
       {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}

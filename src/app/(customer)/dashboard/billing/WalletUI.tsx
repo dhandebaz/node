@@ -204,7 +204,7 @@ export function WalletUI({
                       onClick={() => setTopUpAmount(amt)}
                       className={`py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${
                         topUpAmount === amt
-                          ? "bg-black text-white border-black"
+                          ? "bg-black text-[var(--public-ink)] border-black"
                           : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
                       }`}
                     >
@@ -243,7 +243,7 @@ export function WalletUI({
               <button
                 onClick={handleTopUp}
                 disabled={loading || topUpAmount < 100}
-                className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                className="w-full bg-black text-[var(--public-ink)] py-3 rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -266,7 +266,7 @@ export function WalletUI({
         </div>
         <button
           onClick={() => setIsTopUpOpen(true)}
-          className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800"
+          className="bg-black text-[var(--public-ink)] px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800"
         >
           <CreditCard className="w-4 h-4" />
           Top Up Credits
@@ -372,7 +372,7 @@ export function WalletUI({
             <div className="flex justify-between items-center">
               <h4 className="font-bold text-lg">Pro</h4>
               {plan === "pro" && (
-                <span className="text-xs bg-black text-white px-2 py-1 rounded">
+                <span className="text-xs bg-black text-[var(--public-ink)] px-2 py-1 rounded">
                   Active
                 </span>
               )}
@@ -397,7 +397,7 @@ export function WalletUI({
               <button
                 onClick={() => handleUpgrade("pro")}
                 disabled={loading}
-                className="w-full py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800"
+                className="w-full py-2 bg-black text-[var(--public-ink)] rounded-lg font-medium hover:bg-gray-800"
               >
                 Upgrade to Pro
               </button>
@@ -411,7 +411,7 @@ export function WalletUI({
             <div className="flex justify-between items-center">
               <h4 className="font-bold text-lg">Business</h4>
               {plan === "business" && (
-                <span className="text-xs bg-black text-white px-2 py-1 rounded">
+                <span className="text-xs bg-black text-[var(--public-ink)] px-2 py-1 rounded">
                   Active
                 </span>
               )}
@@ -437,7 +437,7 @@ export function WalletUI({
               <button
                 onClick={() => handleUpgrade("business")}
                 disabled={loading}
-                className="w-full py-2 bg-black text-white rounded-lg font-medium hover:bg-gray-800"
+                className="w-full py-2 bg-black text-[var(--public-ink)] rounded-lg font-medium hover:bg-gray-800"
               >
                 Upgrade to Business
               </button>

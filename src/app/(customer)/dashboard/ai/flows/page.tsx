@@ -182,8 +182,8 @@ export default function FlowsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-white/40" />
-        <p className="text-white/40 text-sm">Loading Custom Logic...</p>
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
+        <p className="text-[var(--public-ink)]/40 text-sm">Loading Custom Logic...</p>
       </div>
     );
   }
@@ -193,17 +193,17 @@ export default function FlowsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white uppercase tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-[var(--public-ink)] uppercase tracking-tight flex items-center gap-3">
             <GitMerge className="text-blue-500 w-8 h-8" />
             Kaisa Flows
           </h1>
-          <p className="text-white/50 text-sm">
+          <p className="text-[var(--public-ink)]/50 text-sm">
             Define custom "If-This-Then-That" logic to handle specific guest scenarios.
           </p>
         </div>
         <Button 
           onClick={createNewFlow}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 rounded-full"
+          className="bg-blue-600 hover:bg-blue-700 text-[var(--public-ink)] font-bold px-6 rounded-full"
         >
           <Plus className="w-4 h-4 mr-2" />
           Create Flow
@@ -211,13 +211,13 @@ export default function FlowsPage() {
       </div>
 
       {flows.length === 0 ? (
-        <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-12 text-center space-y-6">
-          <div className="p-4 bg-white/5 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-white/20">
+        <div className="public-panel/50 border border-white/5 rounded-2xl p-12 text-center space-y-6">
+          <div className="p-4 bg-white/5 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-[var(--public-ink)]/20">
             <GitMerge className="w-8 h-8" />
           </div>
           <div className="max-w-md mx-auto space-y-2">
-            <h3 className="text-white font-bold">No custom flows yet</h3>
-            <p className="text-white/40 text-sm">
+            <h3 className="text-[var(--public-ink)] font-bold">No custom flows yet</h3>
+            <p className="text-[var(--public-ink)]/40 text-sm">
               Custom flows allow you to intercept messages. For example: "If message contains 'booking', notify me immediately."
             </p>
           </div>
@@ -225,7 +225,7 @@ export default function FlowsPage() {
             <Button
               variant="outline"
               onClick={() => setShowTemplates(true)}
-              className="border-white/10 text-white hover:bg-white/5"
+              className="border-[var(--public-line)] text-[var(--public-ink)] hover:bg-white/5"
             >
               View Templates
             </Button>
@@ -236,11 +236,11 @@ export default function FlowsPage() {
                     key={t.name}
                     type="button"
                     onClick={() => applyTemplate(t)}
-                    className="bg-zinc-950 border border-zinc-800 rounded-xl p-4 hover:border-blue-500/40 transition-colors"
+                    className="bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-xl p-4 hover:border-blue-500/40 transition-colors"
                   >
-                    <div className="text-white font-semibold">{t.name}</div>
-                    <div className="text-xs text-white/40 mt-1">{t.description}</div>
-                    <div className="text-[10px] text-white/30 mt-2 uppercase tracking-widest">
+                    <div className="text-[var(--public-ink)] font-semibold">{t.name}</div>
+                    <div className="text-xs text-[var(--public-ink)]/40 mt-1">{t.description}</div>
+                    <div className="text-[10px] text-[var(--public-ink)]/30 mt-2 uppercase tracking-widest">
                       Trigger: {t.trigger_type.replaceAll("_", " ")} • Priority: {t.priority}
                     </div>
                   </button>
@@ -252,12 +252,12 @@ export default function FlowsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {flows.map((flow) => (
-            <Card key={flow.id} className="bg-zinc-900 border-white/5 hover:border-blue-500/30 transition-all overflow-hidden group">
+            <Card key={flow.id} className="public-panel border-white/5 hover:border-blue-500/30 transition-all overflow-hidden group">
               <CardHeader className="pb-4 border-b border-white/5">
                 <div className="flex items-center justify-between mb-2">
                   <div className={cn(
                     "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest",
-                    flow.status === 'active' ? "bg-emerald-500/10 text-emerald-400" : "bg-zinc-800 text-zinc-500"
+                    flow.status === 'active' ? "bg-emerald-500/10 text-emerald-400" : "bg-[var(--public-panel-muted)] text-[var(--public-muted)]"
                   )}>
                     {flow.status}
                   </div>
@@ -266,23 +266,23 @@ export default function FlowsPage() {
                     onCheckedChange={(checked) => handleToggle(flow, checked)}
                   />
                 </div>
-                <CardTitle className="text-white text-lg">{flow.name}</CardTitle>
+                <CardTitle className="text-[var(--public-ink)] text-lg">{flow.name}</CardTitle>
                 <CardDescription className="text-xs line-clamp-1">{flow.description || "No description"}</CardDescription>
               </CardHeader>
               <CardContent className="pt-6 space-y-4">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-xs text-white/60">
+                  <div className="flex items-center gap-3 text-xs text-[var(--public-ink)]/60">
                     <Zap className="w-3 h-3 text-blue-400" />
                     <span>Trigger: {flow.trigger_type.replace("_", " ")}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-white/60">
-                    <Zap className="w-3 h-3 text-zinc-500" />
+                  <div className="flex items-center gap-3 text-xs text-[var(--public-ink)]/60">
+                    <Zap className="w-3 h-3 text-[var(--public-muted)]" />
                     <span>
                       Nodes: {Array.isArray(flow.nodes) ? flow.nodes.length : 0} • Edges:{" "}
                       {Array.isArray(flow.edges) ? flow.edges.length : 0} • Priority: {flow.priority ?? 0}
                     </span>
                   </div>
-                  <div className="text-[10px] text-white/30 uppercase tracking-widest">
+                  <div className="text-[10px] text-[var(--public-ink)]/30 uppercase tracking-widest">
                     Updated: {flow.updated_at ? new Date(flow.updated_at).toLocaleString() : "—"}
                   </div>
                 </div>
@@ -291,7 +291,7 @@ export default function FlowsPage() {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="flex-1 text-zinc-400 hover:text-white hover:bg-white/5 text-xs font-bold"
+                    className="flex-1 text-[var(--public-muted)] hover:text-[var(--public-ink)] hover:bg-white/5 text-xs font-bold"
                     onClick={() => openEditor(flow)}
                   >
                     <Settings2 className="w-3 h-3 mr-2" />
@@ -300,7 +300,7 @@ export default function FlowsPage() {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="text-zinc-500 hover:text-red-400 hover:bg-red-500/10"
+                    className="text-[var(--public-muted)] hover:text-red-400 hover:bg-red-500/10"
                     onClick={() => handleDelete(flow.id)}
                   >
                     <Trash2 className="w-3 h-3" />
@@ -315,26 +315,26 @@ export default function FlowsPage() {
       {/* Editor Modal Mock (Simplified for this step) */}
       {showEditor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <Card className="w-full max-w-2xl bg-zinc-900 border-white/10 shadow-2xl">
+          <Card className="w-full max-w-2xl public-panel border-[var(--public-line)] shadow-2xl">
             <CardHeader className="border-b border-white/5">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-white">{editingFlow?.id ? "Edit Flow" : "Create Flow"}</CardTitle>
-                <Button variant="ghost" size="sm" onClick={() => setShowEditor(false)} className="text-white/40 hover:text-white">Close</Button>
+                <CardTitle className="text-[var(--public-ink)]">{editingFlow?.id ? "Edit Flow" : "Create Flow"}</CardTitle>
+                <Button variant="ghost" size="sm" onClick={() => setShowEditor(false)} className="text-[var(--public-ink)]/40 hover:text-[var(--public-ink)]">Close</Button>
               </div>
             </CardHeader>
             <CardContent className="p-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Name</div>
+                  <div className="text-xs text-[var(--public-ink)]/60 font-bold uppercase tracking-widest">Name</div>
                   <Input
                     value={editingFlow?.name || ""}
                     onChange={(e) => setEditingFlow((prev) => (prev ? { ...prev, name: e.target.value } : prev))}
-                    className="bg-zinc-950 border-white/10 text-white placeholder:text-white/30"
+                    className="bg-[var(--public-bg-soft)] text-[var(--public-ink)] border-[var(--public-line)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/30"
                     placeholder="e.g. Escalate angry guests"
                   />
                 </div>
                 <div className="space-y-2">
-                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Trigger</div>
+                  <div className="text-xs text-[var(--public-ink)]/60 font-bold uppercase tracking-widest">Trigger</div>
                   <select
                     value={editingFlow?.trigger_type || "message_received"}
                     onChange={(e) =>
@@ -342,7 +342,7 @@ export default function FlowsPage() {
                         prev ? { ...prev, trigger_type: e.target.value as TriggerType } : prev
                       )
                     }
-                    className="h-10 w-full rounded-md bg-zinc-950 border border-white/10 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                    className="h-10 w-full rounded-md bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] px-3 text-sm text-[var(--public-ink)] focus:outline-none focus:ring-2 focus:ring-blue-500/40"
                   >
                     <option value="message_received">Message received</option>
                     <option value="booking_confirmed">Booking confirmed</option>
@@ -351,24 +351,24 @@ export default function FlowsPage() {
                   </select>
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Description</div>
+                  <div className="text-xs text-[var(--public-ink)]/60 font-bold uppercase tracking-widest">Description</div>
                   <Textarea
                     value={editingFlow?.description || ""}
                     onChange={(e) =>
                       setEditingFlow((prev) => (prev ? { ...prev, description: e.target.value } : prev))
                     }
-                    className="bg-zinc-950 border-white/10 text-white placeholder:text-white/30"
+                    className="bg-[var(--public-bg-soft)] text-[var(--public-ink)] border-[var(--public-line)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/30"
                     placeholder="What does this flow do?"
                   />
                 </div>
                 <div className="space-y-2">
-                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Status</div>
+                  <div className="text-xs text-[var(--public-ink)]/60 font-bold uppercase tracking-widest">Status</div>
                   <select
                     value={editingFlow?.status || "draft"}
                     onChange={(e) =>
                       setEditingFlow((prev) => (prev ? { ...prev, status: e.target.value as FlowStatus } : prev))
                     }
-                    className="h-10 w-full rounded-md bg-zinc-950 border border-white/10 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                    className="h-10 w-full rounded-md bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] px-3 text-sm text-[var(--public-ink)] focus:outline-none focus:ring-2 focus:ring-blue-500/40"
                   >
                     <option value="draft">Draft</option>
                     <option value="active">Active</option>
@@ -376,7 +376,7 @@ export default function FlowsPage() {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Priority</div>
+                  <div className="text-xs text-[var(--public-ink)]/60 font-bold uppercase tracking-widest">Priority</div>
                   <Input
                     type="number"
                     value={String(editingFlow?.priority ?? 0)}
@@ -385,33 +385,33 @@ export default function FlowsPage() {
                         prev ? { ...prev, priority: Number(e.target.value || 0) } : prev
                       )
                     }
-                    className="bg-zinc-950 border-white/10 text-white placeholder:text-white/30"
+                    className="bg-[var(--public-bg-soft)] text-[var(--public-ink)] border-[var(--public-line)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/30"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Nodes (JSON)</div>
+                <div className="text-xs text-[var(--public-ink)]/60 font-bold uppercase tracking-widest">Nodes (JSON)</div>
                 <Textarea
                   value={nodesJson}
                   onChange={(e) => setNodesJson(e.target.value)}
-                  className="bg-zinc-950 border-white/10 text-white font-mono text-xs"
+                  className="bg-[var(--public-bg-soft)] text-[var(--public-ink)] border-[var(--public-line)] text-[var(--public-ink)] font-mono text-xs"
                   rows={8}
                 />
               </div>
 
               <div className="space-y-2">
-                <div className="text-xs text-white/60 font-bold uppercase tracking-widest">Edges (JSON)</div>
+                <div className="text-xs text-[var(--public-ink)]/60 font-bold uppercase tracking-widest">Edges (JSON)</div>
                 <Textarea
                   value={edgesJson}
                   onChange={(e) => setEdgesJson(e.target.value)}
-                  className="bg-zinc-950 border-white/10 text-white font-mono text-xs"
+                  className="bg-[var(--public-bg-soft)] text-[var(--public-ink)] border-[var(--public-line)] text-[var(--public-ink)] font-mono text-xs"
                   rows={8}
                 />
               </div>
 
               <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
-                <Button variant="ghost" onClick={() => setShowEditor(false)} className="text-zinc-500 font-bold">
+                <Button variant="ghost" onClick={() => setShowEditor(false)} className="text-[var(--public-muted)] font-bold">
                   Cancel
                 </Button>
                 <Button

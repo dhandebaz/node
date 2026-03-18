@@ -26,13 +26,13 @@ export default function ListingsPage() {
   return (
     <div className="space-y-6 pb-24 md:pb-0">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white uppercase tracking-tight">
+        <h1 className="text-2xl font-bold text-[var(--public-ink)] uppercase tracking-tight">
           {labels.listings}
         </h1>
         {canAddListing ? (
           <Link
             href="/dashboard/ai/listings/new"
-            className="flex items-center gap-2 bg-[var(--color-brand-red)] text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors"
+            className="flex items-center gap-2 bg-[var(--color-brand-red)] text-[var(--public-ink)] px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden md:inline">Add {labels.listing}</span>
@@ -40,7 +40,7 @@ export default function ListingsPage() {
         ) : (
           <button
             disabled
-            className="flex items-center gap-2 bg-white/5 text-white/40 px-4 py-2 rounded-lg font-medium cursor-not-allowed"
+            className="flex items-center gap-2 bg-white/5 text-[var(--public-ink)]/40 px-4 py-2 rounded-lg font-medium cursor-not-allowed"
             title={`You can only have one ${labels.listing.toLowerCase()}`}
           >
             <Plus className="w-4 h-4" />
@@ -53,17 +53,17 @@ export default function ListingsPage() {
 
       {isLoading && listings.length === 0 ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-white/40" />
+          <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
         </div>
       ) : listings.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-white/10 rounded-xl bg-white/5">
+        <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-[var(--public-line)] rounded-xl bg-white/5">
           <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-4">
-            <Home className="w-6 h-6 text-white/40" />
+            <Home className="w-6 h-6 text-[var(--public-ink)]/40" />
           </div>
-          <h3 className="text-lg font-medium text-white mb-1">
+          <h3 className="text-lg font-medium text-[var(--public-ink)] mb-1">
             No {labels.listings.toLowerCase()} found
           </h3>
-          <p className="text-sm text-white/50 mb-6 max-w-sm">
+          <p className="text-sm text-[var(--public-ink)]/50 mb-6 max-w-sm">
             {labels.emptyListings}
           </p>
           {canAddListing && (
@@ -82,10 +82,10 @@ export default function ListingsPage() {
             <Link
               key={listing.id}
               href={`/dashboard/ai/listings/${listing.id}`}
-              className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl overflow-hidden group hover:border-white/20 transition-colors"
+              className="bg-[var(--color-dashboard-surface)] border border-[var(--public-line)] rounded-2xl overflow-hidden group hover:border-white/20 transition-colors"
             >
               <div className="h-36 bg-white/5 relative">
-                <div className="absolute inset-0 flex items-center justify-center text-white/10">
+                <div className="absolute inset-0 flex items-center justify-center text-[var(--public-ink)]/10">
                   <Home className="w-12 h-12" />
                 </div>
                 <div
@@ -99,30 +99,30 @@ export default function ListingsPage() {
                 </div>
               </div>
               <div className="p-5">
-                <h3 className="text-lg font-bold text-white mb-1 truncate">
+                <h3 className="text-lg font-bold text-[var(--public-ink)] mb-1 truncate">
                   {listing.name}
                 </h3>
-                <p className="text-sm text-white/60 mb-4 truncate">
+                <p className="text-sm text-[var(--public-ink)]/60 mb-4 truncate">
                   {listing.city}
                 </p>
 
                 <div className="grid gap-3 pt-4 border-t border-white/5">
-                  <div className="flex items-center justify-between text-xs text-white/60">
+                  <div className="flex items-center justify-between text-xs text-[var(--public-ink)]/60">
                     <span className="flex items-center gap-2">
                       <Link2 className="w-3 h-3" />
                       Platforms connected
                     </span>
-                    <span className="text-white font-semibold">
+                    <span className="text-[var(--public-ink)] font-semibold">
                       {listing.platformsConnected?.length || 0}
                     </span>
                   </div>
                   {showCalendar && (
-                    <div className="flex items-center justify-between text-xs text-white/60">
+                    <div className="flex items-center justify-between text-xs text-[var(--public-ink)]/60">
                       <span className="flex items-center gap-2">
                         <Calendar className="w-3 h-3" />
                         {labels.calendar} sync
                       </span>
-                      <span className="text-white font-semibold">
+                      <span className="text-[var(--public-ink)] font-semibold">
                         {listing.calendarSyncStatus === "connected"
                           ? "OK"
                           : listing.calendarSyncStatus === "error"

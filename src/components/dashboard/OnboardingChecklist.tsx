@@ -64,17 +64,17 @@ export function OnboardingChecklist({ stats, milestones = [] }: OnboardingCheckl
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="skeuo-card overflow-hidden"
+      className="public-panel overflow-hidden"
     >
-      <div className="p-6 border-b border-zinc-800">
+      <div className="p-6 border-b border-[var(--public-line)]">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-bold text-white">Getting Started</h2>
-            <p className="text-sm text-zinc-400">Complete these steps to fully activate your AI Employee.</p>
+            <h2 className="text-xl font-bold text-[var(--public-ink)]">Getting Started</h2>
+            <p className="text-sm text-[var(--public-muted)]">Complete these steps to fully activate your AI Employee.</p>
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-brand-red">{Math.round(progress)}%</div>
-            <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Progress</div>
+            <div className="text-[10px] text-[var(--public-muted)] uppercase font-bold tracking-widest">Progress</div>
           </div>
         </div>
         <div className="h-3 skeuo-progress-bg mt-4">
@@ -105,16 +105,16 @@ export function OnboardingChecklist({ stats, milestones = [] }: OnboardingCheckl
             <div className="flex-1">
               <h3 className={cn(
                 "text-sm font-bold",
-                step.completed ? "text-zinc-400" : "text-white"
+                step.completed ? "text-[var(--public-muted)]" : "text-[var(--public-ink)]"
               )}>
                 {step.title}
               </h3>
-              <p className="text-xs text-zinc-500 mt-1">{step.description}</p>
+              <p className="text-xs text-[var(--public-muted)] mt-1">{step.description}</p>
             </div>
             {!step.completed && (
               <Link 
                 href={step.href}
-                className="p-2 hover:bg-white/10 rounded-full text-zinc-400 hover:text-white transition-colors"
+                className="p-2 hover:bg-white/10 rounded-full text-[var(--public-muted)] hover:text-[var(--public-ink)] transition-colors"
               >
                 <ArrowRight className="w-4 h-4" />
               </Link>

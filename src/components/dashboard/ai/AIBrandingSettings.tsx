@@ -28,15 +28,15 @@ export function AIBrandingSettings({ initialEnabled }: AIBrandingSettingsProps) 
   };
 
   return (
-    <Card className="bg-[var(--color-dashboard-surface)] border-white/10">
+    <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
       <CardHeader>
         <div className="flex items-center gap-3">
           <div className="p-2 bg-orange-500/10 rounded-lg text-orange-400">
             <Zap className="w-5 h-5" />
           </div>
           <div>
-            <CardTitle className="text-white">Growth & Branding</CardTitle>
-            <CardDescription className="text-white/50">
+            <CardTitle className="text-[var(--public-ink)]">Growth & Branding</CardTitle>
+            <CardDescription className="text-[var(--public-ink)]/50">
               Help Nodebase grow to keep your costs low.
             </CardDescription>
           </div>
@@ -45,8 +45,8 @@ export function AIBrandingSettings({ initialEnabled }: AIBrandingSettingsProps) 
       <CardContent>
         <div className="flex items-center justify-between p-4 rounded-lg bg-black/20 border border-white/5">
           <div className="space-y-0.5">
-            <Label className="text-white text-base">Show "Powered by Nodebase"</Label>
-            <div className="text-sm text-white/50">
+            <Label className="text-[var(--public-ink)] text-base">Show "Powered by Nodebase"</Label>
+            <div className="text-sm text-[var(--public-ink)]/50">
               Add a small badge to guest messages and confirmations.
             </div>
           </div>

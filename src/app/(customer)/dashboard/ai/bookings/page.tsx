@@ -166,8 +166,8 @@ export default function BookingsPage() {
     if (status === "draft") {
       return {
         label: "Draft",
-        text: "text-white/50",
-        badge: "bg-white/5 text-white/50",
+        text: "text-[var(--public-ink)]/50",
+        badge: "bg-white/5 text-[var(--public-ink)]/50",
       };
     }
     if (status === "cancelled" || status === "refunded") {
@@ -187,8 +187,8 @@ export default function BookingsPage() {
     }
     return {
       label: status,
-      text: "text-white/60",
-      badge: "bg-white/5 text-white/60",
+      text: "text-[var(--public-ink)]/60",
+      badge: "bg-white/5 text-[var(--public-ink)]/60",
     };
   };
 
@@ -361,24 +361,24 @@ export default function BookingsPage() {
     <div className="space-y-6 pb-24 md:pb-0">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white uppercase tracking-tight">
+          <h1 className="text-2xl font-bold text-[var(--public-ink)] uppercase tracking-tight">
             {labels.bookings}
           </h1>
-          <p className="text-sm text-white/50">
+          <p className="text-sm text-[var(--public-ink)]/50">
             Track direct and OTA {labels.bookings.toLowerCase()} with payment
             status.
           </p>
         </div>
         <button
           onClick={openPaymentModal}
-          className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-full border border-white/20 text-white/80 hover:border-white/50"
+          className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-full border border-white/20 text-[var(--public-ink)]/80 hover:border-white/50"
         >
           <Plus className="w-4 h-4" />
           Create {labels.booking.toLowerCase()}
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-2 text-xs text-white/70">
+      <div className="flex flex-wrap gap-2 text-xs text-[var(--public-ink)]/70">
         {(
           [
             "all",
@@ -395,8 +395,8 @@ export default function BookingsPage() {
             className={cn(
               "px-3 py-1.5 rounded-full border",
               statusFilter === status
-                ? "border-white/60 text-white"
-                : "border-white/10 text-white/60",
+                ? "border-white/60 text-[var(--public-ink)]"
+                : "border-[var(--public-line)] text-[var(--public-ink)]/60",
             )}
           >
             {status === "all" ? "All status" : status.replace("_", " ")}
@@ -405,13 +405,13 @@ export default function BookingsPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1.3fr_1fr] gap-6">
-        <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl overflow-hidden flex flex-col h-[70vh]">
-          <div className="p-4 border-b border-white/10 flex items-center justify-between sticky top-0 bg-[var(--color-dashboard-surface)]/95 backdrop-blur z-10">
-            <div className="text-sm font-semibold text-white">
+        <div className="bg-[var(--color-dashboard-surface)] border border-[var(--public-line)] rounded-2xl overflow-hidden flex flex-col h-[70vh]">
+          <div className="p-4 border-b border-[var(--public-line)] flex items-center justify-between sticky top-0 bg-[var(--color-dashboard-surface)]/95 backdrop-blur z-10">
+            <div className="text-sm font-semibold text-[var(--public-ink)]">
               {labels.bookings} list
             </div>
           </div>
-          {error && <div className="p-6 text-sm text-white/50">{error}</div>}
+          {error && <div className="p-6 text-sm text-[var(--public-ink)]/50">{error}</div>}
 
           {loading && (
             <div className="p-4 space-y-4">
@@ -435,10 +435,10 @@ export default function BookingsPage() {
           )}
 
           {!loading && !error && filteredBookings.length === 0 && (
-            <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-white/10 rounded-xl bg-white/5 mt-4 mx-6">
+            <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-[var(--public-line)] rounded-xl bg-white/5 mt-4 mx-6">
               <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-4">
                 <svg
-                  className="w-6 h-6 text-white/40"
+                  className="w-6 h-6 text-[var(--public-ink)]/40"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -451,10 +451,10 @@ export default function BookingsPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-white mb-1">
+              <h3 className="text-lg font-medium text-[var(--public-ink)] mb-1">
                 No {labels.bookings.toLowerCase()} found
               </h3>
-              <p className="text-sm text-white/50 mb-6 max-w-sm">
+              <p className="text-sm text-[var(--public-ink)]/50 mb-6 max-w-sm">
                 Get started by creating your first manual{" "}
                 {labels.booking.toLowerCase()} or wait for guests to book.
               </p>
@@ -485,18 +485,18 @@ export default function BookingsPage() {
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="space-y-1">
-                      <div className="text-sm font-semibold text-white">
+                      <div className="text-sm font-semibold text-[var(--public-ink)]">
                         {booking.guest_name}
                       </div>
-                      <div className="text-xs text-white/40">{listingName}</div>
-                      <div className="text-xs text-white/50 flex items-center gap-2">
+                      <div className="text-xs text-[var(--public-ink)]/40">{listingName}</div>
+                      <div className="text-xs text-[var(--public-ink)]/50 flex items-center gap-2">
                         <Calendar className="w-3 h-3" />
                         {formatBookingDate(booking.check_in)} →{" "}
                         {formatBookingDate(booking.check_out)}
                       </div>
                     </div>
                     <div className="text-right space-y-2">
-                      <div className="text-sm font-semibold text-white">
+                      <div className="text-sm font-semibold text-[var(--public-ink)]">
                         ₹{Number(booking.amount || 0).toLocaleString("en-IN")}
                       </div>
                       <div
@@ -505,11 +505,11 @@ export default function BookingsPage() {
                         {statusMeta.label}
                       </div>
                       {capabilities.id_verification && (
-                        <div className="text-[10px] text-white/50 uppercase tracking-wider">
+                        <div className="text-[10px] text-[var(--public-ink)]/50 uppercase tracking-wider">
                           ID {idStatusLabel(booking.id_status)}
                         </div>
                       )}
-                      <div className="text-[10px] text-white/40 uppercase tracking-wider">
+                      <div className="text-[10px] text-[var(--public-ink)]/40 uppercase tracking-wider">
                         {booking.source || "direct"}
                       </div>
                     </div>
@@ -520,8 +520,8 @@ export default function BookingsPage() {
           </div>
         </div>
 
-        <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl p-4 space-y-4">
-          <div className="text-sm font-semibold text-white">
+        <div className="bg-[var(--color-dashboard-surface)] border border-[var(--public-line)] rounded-2xl p-4 space-y-4">
+          <div className="text-sm font-semibold text-[var(--public-ink)]">
             {labels.booking} detail
           </div>
           {detailLoading && (
@@ -545,35 +545,35 @@ export default function BookingsPage() {
             </div>
           )}
           {!detailLoading && !detail && (
-            <div className="text-sm text-white/50">
+            <div className="text-sm text-[var(--public-ink)]/50">
               Select a {labels.booking.toLowerCase()} to view details.
             </div>
           )}
           {detail?.booking && (
             <div className="space-y-4">
               <div className="space-y-1">
-                <div className="text-lg font-semibold text-white">
+                <div className="text-lg font-semibold text-[var(--public-ink)]">
                   {detail.booking.guest_name}
                 </div>
-                <div className="text-xs text-white/50">
+                <div className="text-xs text-[var(--public-ink)]/50">
                   {detail.booking.guest_contact || "No contact provided"}
                 </div>
-                <div className="text-xs text-white/50">
+                <div className="text-xs text-[var(--public-ink)]/50">
                   {formatBookingDate(detail.booking.check_in)} →{" "}
                   {formatBookingDate(detail.booking.check_out)}
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="bg-white/5 border border-white/10 rounded-lg p-3">
-                  <div className="text-white/40">Amount</div>
-                  <div className="text-white mt-1">
+                <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-3">
+                  <div className="text-[var(--public-ink)]/40">Amount</div>
+                  <div className="text-[var(--public-ink)] mt-1">
                     ₹
                     {Number(detail.booking.amount || 0).toLocaleString("en-IN")}
                   </div>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-lg p-3">
-                  <div className="text-white/40">Status</div>
+                <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-3">
+                  <div className="text-[var(--public-ink)]/40">Status</div>
                   <div
                     className={cn(
                       "mt-1",
@@ -583,56 +583,56 @@ export default function BookingsPage() {
                     {statusDisplay(detail.booking.status).label}
                   </div>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-lg p-3">
-                  <div className="text-white/40">Payment</div>
-                  <div className="text-white mt-1">
+                <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-3">
+                  <div className="text-[var(--public-ink)]/40">Payment</div>
+                  <div className="text-[var(--public-ink)] mt-1">
                     {detail.payment?.status || "not created"}
                   </div>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-lg p-3">
-                  <div className="text-white/40">Source</div>
-                  <div className="text-white mt-1">
+                <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-3">
+                  <div className="text-[var(--public-ink)]/40">Source</div>
+                  <div className="text-[var(--public-ink)] mt-1">
                     {detail.booking.source || "direct"}
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3 space-y-2">
-                <div className="text-xs text-white/40">Payment link</div>
+              <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-3 space-y-2">
+                <div className="text-xs text-[var(--public-ink)]/40">Payment link</div>
                 {detail.payment?.payment_link ? (
                   <a
                     href={detail.payment.payment_link}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs text-white/80 inline-flex items-center gap-2"
+                    className="text-xs text-[var(--public-ink)]/80 inline-flex items-center gap-2"
                   >
                     <ExternalLink className="w-3 h-3" />
                     Open Razorpay link
                   </a>
                 ) : (
-                  <div className="text-xs text-white/50">Not generated yet</div>
+                  <div className="text-xs text-[var(--public-ink)]/50">Not generated yet</div>
                 )}
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3 space-y-1">
-                <div className="text-xs text-white/40">Linked conversation</div>
-                <div className="text-xs text-white/60">Not linked yet</div>
+              <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-3 space-y-1">
+                <div className="text-xs text-[var(--public-ink)]/40">Linked conversation</div>
+                <div className="text-xs text-[var(--public-ink)]/60">Not linked yet</div>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={handleCancelBooking}
-                  className="px-3 py-1.5 text-xs font-semibold border border-white/20 text-white/70 rounded-full"
+                  className="px-3 py-1.5 text-xs font-semibold border border-white/20 text-[var(--public-ink)]/70 rounded-full"
                 >
                   Cancel {labels.booking.toLowerCase()}
                 </button>
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-lg p-3 space-y-3">
+              <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-3 space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs text-white/40">ID Verification</div>
-                    <div className="text-sm text-white">
+                    <div className="text-xs text-[var(--public-ink)]/40">ID Verification</div>
+                    <div className="text-sm text-[var(--public-ink)]">
                       {capabilities.id_verification
                         ? idStatusLabel((detail.booking as any).id_status)
                         : "Not required"}
@@ -641,7 +641,7 @@ export default function BookingsPage() {
                   {capabilities.id_verification && (
                     <button
                       onClick={() => setShowIdModal(true)}
-                      className="text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 text-white/80 hover:border-white/50"
+                      className="text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 text-[var(--public-ink)]/80 hover:border-white/50"
                     >
                       Request ID
                     </button>
@@ -660,11 +660,11 @@ export default function BookingsPage() {
 
                 {idRecord && (
                   <div className="space-y-2">
-                    <div className="text-xs text-white/50">
+                    <div className="text-xs text-[var(--public-ink)]/50">
                       Type: {idRecord.id_type}
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="relative border border-white/10 rounded-lg overflow-hidden">
+                      <div className="relative border border-[var(--public-line)] rounded-lg overflow-hidden">
                         <img
                           src={`/api/guest-id/${idRecord.id}/image?side=front`}
                           alt="Front ID"
@@ -674,7 +674,7 @@ export default function BookingsPage() {
                           )}
                         />
                       </div>
-                      <div className="relative border border-white/10 rounded-lg overflow-hidden">
+                      <div className="relative border border-[var(--public-line)] rounded-lg overflow-hidden">
                         {idRecord.back_image_path ? (
                           <img
                             src={`/api/guest-id/${idRecord.id}/image?side=back`}
@@ -685,7 +685,7 @@ export default function BookingsPage() {
                             )}
                           />
                         ) : (
-                          <div className="min-h-[160px] bg-black/20 flex items-center justify-center text-xs text-white/40">
+                          <div className="min-h-[160px] bg-black/20 flex items-center justify-center text-xs text-[var(--public-ink)]/40">
                             Back image not provided
                           </div>
                         )}
@@ -694,7 +694,7 @@ export default function BookingsPage() {
                     <div className="flex flex-wrap items-center gap-2">
                       <button
                         onClick={() => setBlurred((b) => !b)}
-                        className="text-xs px-3 py-1.5 rounded-full border border-white/20 text-white/80"
+                        className="text-xs px-3 py-1.5 rounded-full border border-white/20 text-[var(--public-ink)]/80"
                       >
                         {blurred ? "View ID" : "Hide ID"}
                       </button>
@@ -709,7 +709,7 @@ export default function BookingsPage() {
                         <input
                           value={rejectReason}
                           onChange={(e) => setRejectReason(e.target.value)}
-                          className="text-xs bg-white/5 border border-white/10 rounded px-2 py-1 text-white"
+                          className="text-xs bg-white/5 border border-[var(--public-line)] rounded px-2 py-1 text-[var(--public-ink)]"
                           placeholder="Reason for rejection"
                         />
                         <button
@@ -721,7 +721,7 @@ export default function BookingsPage() {
                         </button>
                       </div>
                       {idRecord.rejection_reason && (
-                        <div className="text-[10px] text-white/40">
+                        <div className="text-[10px] text-[var(--public-ink)]/40">
                           Last rejection: {idRecord.rejection_reason}
                         </div>
                       )}
@@ -739,14 +739,14 @@ export default function BookingsPage() {
 
       {showPaymentModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl w-full max-w-2xl overflow-hidden">
-            <div className="p-4 border-b border-white/10 flex items-center justify-between">
-              <div className="text-sm font-semibold text-white">
+          <div className="bg-[var(--color-dashboard-surface)] border border-[var(--public-line)] rounded-2xl w-full max-w-2xl overflow-hidden">
+            <div className="p-4 border-b border-[var(--public-line)] flex items-center justify-between">
+              <div className="text-sm font-semibold text-[var(--public-ink)]">
                 Create {labels.booking.toLowerCase()} payment link
               </div>
               <button
                 onClick={() => setShowPaymentModal(false)}
-                className="p-2 hover:bg-white/5 rounded-full text-white/60"
+                className="p-2 hover:bg-white/5 rounded-full text-[var(--public-ink)]/60"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -754,7 +754,7 @@ export default function BookingsPage() {
             <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
                     {labels.listing}
                   </label>
                   <select
@@ -765,7 +765,7 @@ export default function BookingsPage() {
                         listingId: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   >
                     <option value="">
                       Select {labels.listing.toLowerCase()}
@@ -778,7 +778,7 @@ export default function BookingsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
                     Amount
                   </label>
                   <input
@@ -790,12 +790,12 @@ export default function BookingsPage() {
                         amount: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="Amount in INR"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
                     {labels.customer} name
                   </label>
                   <input
@@ -807,12 +807,12 @@ export default function BookingsPage() {
                         guestName: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder={`${labels.customer} name`}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
                     {labels.customer} phone
                   </label>
                   <input
@@ -824,12 +824,12 @@ export default function BookingsPage() {
                         guestPhone: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="+91 90000 00000"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
                     {labels.customer} email
                   </label>
                   <input
@@ -841,12 +841,12 @@ export default function BookingsPage() {
                         guestEmail: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="email@example.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
                     Check-in
                   </label>
                   <input
@@ -858,11 +858,11 @@ export default function BookingsPage() {
                         checkIn: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
                     Check-out
                   </label>
                   <input
@@ -874,13 +874,13 @@ export default function BookingsPage() {
                         checkOut: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-white/60 mb-1">
+                <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
                   Notes (optional)
                 </label>
                 <textarea
@@ -891,17 +891,17 @@ export default function BookingsPage() {
                       notes: event.target.value,
                     }))
                   }
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
+                  className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
                   placeholder={`Add any notes for the ${labels.customer.toLowerCase()}`}
                 />
               </div>
 
               {paymentLink && (
-                <div className="space-y-3 border border-white/10 rounded-xl p-4 bg-white/5">
-                  <div className="text-xs font-semibold text-white/70 uppercase tracking-wider">
+                <div className="space-y-3 border border-[var(--public-line)] rounded-xl p-4 bg-white/5">
+                  <div className="text-xs font-semibold text-[var(--public-ink)]/70 uppercase tracking-wider">
                     Payment link
                   </div>
-                  <div className="text-sm text-white break-all">
+                  <div className="text-sm text-[var(--public-ink)] break-all">
                     {paymentLink}
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -909,14 +909,14 @@ export default function BookingsPage() {
                       href={`https://wa.me/?text=${encodeURIComponent(paymentMessage)}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-white/80 px-3 py-1.5 rounded-full"
+                      className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-[var(--public-ink)]/80 px-3 py-1.5 rounded-full"
                     >
                       WhatsApp
                     </a>
                     {paymentForm.guestPhone && (
                       <a
                         href={`sms:${paymentForm.guestPhone}?body=${encodeURIComponent(paymentMessage)}`}
-                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-white/80 px-3 py-1.5 rounded-full"
+                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-[var(--public-ink)]/80 px-3 py-1.5 rounded-full"
                       >
                         SMS
                       </a>
@@ -924,7 +924,7 @@ export default function BookingsPage() {
                     {paymentForm.guestEmail && (
                       <a
                         href={`mailto:${paymentForm.guestEmail}?subject=Booking%20payment&body=${encodeURIComponent(paymentMessage)}`}
-                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-white/80 px-3 py-1.5 rounded-full"
+                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-[var(--public-ink)]/80 px-3 py-1.5 rounded-full"
                       >
                         Email
                       </a>
@@ -933,19 +933,19 @@ export default function BookingsPage() {
                 </div>
               )}
             </div>
-            <div className="p-4 border-t border-white/10 flex items-center justify-between">
+            <div className="p-4 border-t border-[var(--public-line)] flex items-center justify-between">
               <div className="text-xs text-red-300">{paymentError}</div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowPaymentModal(false)}
-                  className="px-3 py-1.5 text-xs text-white/60 hover:text-white"
+                  className="px-3 py-1.5 text-xs text-[var(--public-ink)]/60 hover:text-[var(--public-ink)]"
                 >
                   Close
                 </button>
                 <button
                   onClick={handleCreatePaymentLink}
                   disabled={paymentLoading}
-                  className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg text-xs font-semibold disabled:opacity-60"
+                  className="px-4 py-2 bg-[var(--color-brand-red)] text-[var(--public-ink)] rounded-lg text-xs font-semibold disabled:opacity-60"
                 >
                   {paymentLoading
                     ? "Generating..."
@@ -961,23 +961,23 @@ export default function BookingsPage() {
 
       {showIdModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="bg-[var(--color-dashboard-surface)] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden">
-            <div className="p-4 border-b border-white/10 flex items-center justify-between">
-              <div className="text-sm font-semibold text-white">Request ID</div>
+          <div className="bg-[var(--color-dashboard-surface)] border border-[var(--public-line)] rounded-2xl w-full max-w-md overflow-hidden">
+            <div className="p-4 border-b border-[var(--public-line)] flex items-center justify-between">
+              <div className="text-sm font-semibold text-[var(--public-ink)]">Request ID</div>
               <button
                 onClick={() => setShowIdModal(false)}
-                className="p-2 hover:bg-white/5 rounded-full text-white/60"
+                className="p-2 hover:bg-white/5 rounded-full text-[var(--public-ink)]/60"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
             <div className="p-4 space-y-3">
               <div>
-                <div className="text-xs text-white/40 mb-1">ID Type</div>
+                <div className="text-xs text-[var(--public-ink)]/40 mb-1">ID Type</div>
                 <select
                   value={idType}
                   onChange={(e) => setIdType(e.target.value as any)}
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                  className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                 >
                   <option value="aadhaar">Aadhaar</option>
                   <option value="passport">Passport</option>
@@ -987,45 +987,45 @@ export default function BookingsPage() {
                 </select>
               </div>
               <div>
-                <div className="text-xs text-white/40 mb-1">
+                <div className="text-xs text-[var(--public-ink)]/40 mb-1">
                   Message (optional)
                 </div>
                 <textarea
                   value={idNote}
                   onChange={(e) => setIdNote(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
+                  className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
                   placeholder={`Hi! Please upload a government-issued ID to complete check-in compliance.`}
                 />
               </div>
               {idUploadUrl && (
-                <div className="text-xs text-white/60 break-all">
+                <div className="text-xs text-[var(--public-ink)]/60 break-all">
                   Upload link: {idUploadUrl}
                 </div>
               )}
               {idRequestMessage && (
-                <div className="text-xs text-white/60 break-all">
+                <div className="text-xs text-[var(--public-ink)]/60 break-all">
                   Message: {idRequestMessage}
                 </div>
               )}
               {idMessage && (
-                <div className="text-xs text-white/60">{idMessage}</div>
+                <div className="text-xs text-[var(--public-ink)]/60">{idMessage}</div>
               )}
             </div>
-            <div className="p-4 border-t border-white/10 flex items-center justify-between">
-              <div className="text-[10px] text-white/40">
+            <div className="p-4 border-t border-[var(--public-line)] flex items-center justify-between">
+              <div className="text-[10px] text-[var(--public-ink)]/40">
                 Nodebase will store IDs securely.
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowIdModal(false)}
-                  className="px-3 py-1.5 text-xs text-white/60 hover:text-white"
+                  className="px-3 py-1.5 text-xs text-[var(--public-ink)]/60 hover:text-[var(--public-ink)]"
                 >
                   Close
                 </button>
                 <button
                   onClick={requestGuestId}
                   disabled={requestingId}
-                  className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg text-xs font-semibold disabled:opacity-60"
+                  className="px-4 py-2 bg-[var(--color-brand-red)] text-[var(--public-ink)] rounded-lg text-xs font-semibold disabled:opacity-60"
                 >
                   {requestingId ? "Generating..." : "Generate link"}
                 </button>

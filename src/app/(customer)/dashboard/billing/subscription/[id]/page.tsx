@@ -35,19 +35,19 @@ export default async function SubscriptionDetailsPage({
   return (
     <div className="space-y-8 max-w-3xl">
       <div>
-        <Link href="/dashboard/billing" className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white mb-4 transition-colors">
+        <Link href="/dashboard/billing" className="inline-flex items-center gap-2 text-sm text-[var(--public-muted)] hover:text-[var(--public-ink)] mb-4 transition-colors">
           <ArrowLeft className="w-4 h-4" />
           Back to Billing
         </Link>
-        <h1 className="text-2xl font-bold text-white mb-1">Manage Subscription</h1>
-        <p className="text-zinc-400">
-          Plan details and management for <span className="text-white font-medium">{subscription.plan?.name}</span>
+        <h1 className="text-2xl font-bold text-[var(--public-ink)] mb-1">Manage Subscription</h1>
+        <p className="text-[var(--public-muted)]">
+          Plan details and management for <span className="text-[var(--public-ink)] font-medium">{subscription.plan?.name}</span>
         </p>
       </div>
 
       {/* Status Card */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-zinc-800">
+      <div className="public-panel border border-[var(--public-line)] rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-[var(--public-line)]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-lg ${
@@ -60,8 +60,8 @@ export default async function SubscriptionDetailsPage({
                 )}
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">{subscription.plan?.name}</h2>
-                <p className="text-sm text-zinc-400">
+                <h2 className="text-lg font-semibold text-[var(--public-ink)]">{subscription.plan?.name}</h2>
+                <p className="text-sm text-[var(--public-muted)]">
                   {subscription.plan?.currency} {subscription.plan?.price} / {subscription.plan?.interval}
                 </p>
               </div>
@@ -77,18 +77,18 @@ export default async function SubscriptionDetailsPage({
 
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="block text-zinc-500 mb-1">Current Period Start</span>
+              <span className="block text-[var(--public-muted)] mb-1">Current Period Start</span>
               <span className="text-zinc-300">{new Date(subscription.currentPeriodStart).toLocaleDateString()}</span>
             </div>
             <div>
-              <span className="block text-zinc-500 mb-1">Renews On</span>
+              <span className="block text-[var(--public-muted)] mb-1">Renews On</span>
               <span className="text-zinc-300">{new Date(subscription.currentPeriodEnd).toLocaleDateString()}</span>
             </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="p-6 bg-zinc-950/30 space-y-4">
+        <div className="p-6 bg-[var(--public-bg-soft)] text-[var(--public-ink)]/30 space-y-4">
           
           {subscription.cancelAtPeriodEnd ? (
              <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 mb-4">
@@ -109,7 +109,7 @@ export default async function SubscriptionDetailsPage({
             <div className="flex flex-col sm:flex-row gap-4">
                <button 
                 disabled
-                className="flex-1 px-4 py-2 bg-zinc-800 text-zinc-400 font-medium rounded-lg text-sm cursor-not-allowed border border-zinc-700"
+                className="flex-1 px-4 py-2 bg-[var(--public-panel-muted)] text-[var(--public-muted)] font-medium rounded-lg text-sm cursor-not-allowed border border-[var(--public-line)]"
                 title="Upgrade/Downgrade flows coming soon"
                >
                  Change Plan
@@ -127,7 +127,7 @@ export default async function SubscriptionDetailsPage({
           )}
           
           {!subscription.cancelAtPeriodEnd && (
-             <p className="text-xs text-zinc-500 text-center sm:text-left">
+             <p className="text-xs text-[var(--public-muted)] text-center sm:text-left">
               To upgrade or downgrade, please cancel your current plan first or contact support.
             </p>
           )}
@@ -136,7 +136,7 @@ export default async function SubscriptionDetailsPage({
 
       {/* Features Included */}
       <div>
-        <h3 className="text-lg font-semibold text-white mb-4">Included Features</h3>
+        <h3 className="text-lg font-semibold text-[var(--public-ink)] mb-4">Included Features</h3>
         <div className="grid sm:grid-cols-2 gap-3">
           {subscription.plan?.features.map((feature, i) => (
             <div key={i} className="flex items-center gap-2 text-zinc-300 text-sm">

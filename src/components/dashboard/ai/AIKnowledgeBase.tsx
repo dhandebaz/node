@@ -93,7 +93,7 @@ export function AIKnowledgeBase() {
   };
 
   return (
-    <Card className="bg-[var(--color-dashboard-surface)] border-white/10">
+    <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -101,8 +101,8 @@ export function AIKnowledgeBase() {
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <CardTitle className="text-white">Knowledge Base (RAG 2.0)</CardTitle>
-              <CardDescription className="text-white/50">
+              <CardTitle className="text-[var(--public-ink)]">Knowledge Base (RAG 2.0)</CardTitle>
+              <CardDescription className="text-[var(--public-ink)]/50">
                 Upload PDFs of house rules, guides, or manuals for Kaisa to learn from.
               </CardDescription>
             </div>
@@ -142,13 +142,13 @@ export function AIKnowledgeBase() {
         <div className="space-y-3">
           {loading ? (
             <div className="flex justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-white/20" />
+              <Loader2 className="w-6 h-6 animate-spin text-[var(--public-ink)]/20" />
             </div>
           ) : documents.length === 0 ? (
             <div className="text-center py-12 border-2 border-dashed border-white/5 rounded-2xl">
-              <FileText className="w-10 h-10 text-white/10 mx-auto mb-4" />
-              <h3 className="text-white font-medium">No documents yet</h3>
-              <p className="text-white/30 text-sm">Upload your first guide to train Kaisa.</p>
+              <FileText className="w-10 h-10 text-[var(--public-ink)]/10 mx-auto mb-4" />
+              <h3 className="text-[var(--public-ink)] font-medium">No documents yet</h3>
+              <p className="text-[var(--public-ink)]/30 text-sm">Upload your first guide to train Kaisa.</p>
             </div>
           ) : (
             documents.map((doc) => (
@@ -157,11 +157,11 @@ export function AIKnowledgeBase() {
                 className="group flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/30 transition-all"
               >
                 <div className="flex items-center gap-4">
-                  <div className="p-2 bg-white/5 rounded-lg text-white/40">
+                  <div className="p-2 bg-white/5 rounded-lg text-[var(--public-ink)]/40">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-white">{doc.name}</div>
+                    <div className="text-sm font-medium text-[var(--public-ink)]">{doc.name}</div>
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant="outline" className={cn(
                         "text-[10px] uppercase tracking-wider px-1.5 py-0 h-4 border-none",
@@ -171,7 +171,7 @@ export function AIKnowledgeBase() {
                       )}>
                         {doc.status}
                       </Badge>
-                      <span className="text-[10px] text-white/20 font-mono">
+                      <span className="text-[10px] text-[var(--public-ink)]/20 font-mono">
                         {doc.file_type.toUpperCase()} • {new Date(doc.created_at).toLocaleDateString()}
                       </span>
                     </div>
@@ -181,7 +181,7 @@ export function AIKnowledgeBase() {
                   variant="ghost"
                   size="icon"
                   onClick={() => handleDelete(doc.id)}
-                  className="opacity-0 group-hover:opacity-100 h-8 w-8 text-white/40 hover:text-red-400 hover:bg-red-500/10"
+                  className="opacity-0 group-hover:opacity-100 h-8 w-8 text-[var(--public-ink)]/40 hover:text-red-400 hover:bg-red-500/10"
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>

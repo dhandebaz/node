@@ -35,7 +35,7 @@ export function UPISettings() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-zinc-900 to-black rounded-2xl p-6 border border-zinc-800 shadow-xl relative overflow-hidden">
+    <div className="bg-gradient-to-br from-zinc-900 to-black rounded-2xl p-6 border border-[var(--public-line)] shadow-xl relative overflow-hidden">
       {/* Decorative Background */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       
@@ -45,8 +45,8 @@ export function UPISettings() {
             <Wallet className="w-5 h-5 text-purple-400" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white">Direct Payout Settings</h2>
-            <p className="text-zinc-400 text-sm">Configure your UPI details for instant settlements</p>
+            <h2 className="text-lg font-bold text-[var(--public-ink)]">Direct Payout Settings</h2>
+            <p className="text-[var(--public-muted)] text-sm">Configure your UPI details for instant settlements</p>
           </div>
         </div>
 
@@ -62,7 +62,7 @@ export function UPISettings() {
                 }
               })}
               placeholder="e.g. 9876543210@ybl"
-              className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
+              className="w-full public-panel/50 border border-[var(--public-line)] rounded-lg px-4 py-2.5 text-[var(--public-ink)] placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
             />
             {errors.upiId && (
               <p className="text-red-400 text-xs">{errors.upiId.message}</p>
@@ -74,7 +74,7 @@ export function UPISettings() {
             <input
               {...register("payeeName", { required: "Payee name is required" })}
               placeholder="Your business name"
-              className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg px-4 py-2.5 text-white placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
+              className="w-full public-panel/50 border border-[var(--public-line)] rounded-lg px-4 py-2.5 text-[var(--public-ink)] placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
             />
             {errors.payeeName && (
               <p className="text-red-400 text-xs">{errors.payeeName.message}</p>
@@ -85,7 +85,7 @@ export function UPISettings() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2.5 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-900/20"
+              className="w-full flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-500 text-[var(--public-ink)] px-4 py-2.5 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-900/20"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

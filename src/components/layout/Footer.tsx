@@ -16,7 +16,7 @@ export function Footer() {
               <div className="space-y-5">
                 <div className="public-pill public-eyebrow">Public site upgraded</div>
                 <div className="flex items-center gap-4">
-                  <div className="public-inset flex h-14 w-14 items-center justify-center rounded-[1.6rem] bg-[var(--public-accent)] text-white">
+                  <div className="public-inset flex h-14 w-14 items-center justify-center rounded-[1.6rem] bg-[var(--public-accent)] text-[var(--public-ink)]">
                     <Logo className="h-9 w-9" />
                   </div>
                   <div>

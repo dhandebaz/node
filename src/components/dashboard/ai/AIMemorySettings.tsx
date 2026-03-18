@@ -111,15 +111,15 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
   };
 
   return (
-    <Card className="bg-[var(--color-dashboard-surface)] border-white/10">
+    <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
       <CardHeader>
         <div className="flex items-center gap-3">
           <div className="p-2 bg-pink-500/10 rounded-lg text-pink-400">
             <Brain className="w-5 h-5" />
           </div>
           <div>
-            <CardTitle className="text-white">AI Memory (Beta)</CardTitle>
-            <CardDescription className="text-white/50">
+            <CardTitle className="text-[var(--public-ink)]">AI Memory (Beta)</CardTitle>
+            <CardDescription className="text-[var(--public-ink)]/50">
               Control what your AI remembers about your business and customers.
             </CardDescription>
           </div>
@@ -129,8 +129,8 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
         {/* Toggle Switch */}
         <div className="flex items-center justify-between p-4 rounded-lg bg-black/20 border border-white/5">
           <div className="space-y-0.5">
-            <Label className="text-white text-base">Enable Memory</Label>
-            <div className="text-sm text-white/50">
+            <Label className="text-[var(--public-ink)] text-base">Enable Memory</Label>
+            <div className="text-sm text-[var(--public-ink)]/50">
               Allow AI to remember preferences and rules to improve responses.
             </div>
           </div>
@@ -150,7 +150,7 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
                 value={newMemoryType} 
                 onValueChange={(v: string) => setNewMemoryType(v as MemoryType)}
               >
-                <SelectTrigger className="w-[140px] bg-black/20 border-white/10 text-white">
+                <SelectTrigger className="w-[140px] bg-black/20 border-[var(--public-line)] text-[var(--public-ink)]">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -163,13 +163,13 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
                 placeholder="Teach AI something (e.g., 'We don't allow pets on weekends')" 
                 value={newMemory}
                 onChange={(e) => setNewMemory(e.target.value)}
-                className="bg-black/20 border-white/10 text-white placeholder:text-white/20"
+                className="bg-black/20 border-[var(--public-line)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/20"
                 onKeyDown={(e) => e.key === 'Enter' && handleAddMemory()}
               />
               <Button 
                 onClick={handleAddMemory} 
                 disabled={isPending || !newMemory.trim()}
-                className="bg-pink-600 hover:bg-pink-700 text-white"
+                className="bg-pink-600 hover:bg-pink-700 text-[var(--public-ink)]"
               >
                 {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
               </Button>
@@ -177,7 +177,7 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
 
             {/* Filters */}
             <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-              <Filter className="w-4 h-4 text-white/40" />
+              <Filter className="w-4 h-4 text-[var(--public-ink)]/40" />
               <div className="flex gap-2">
                 {(['all', 'business', 'listing', 'interaction'] as const).map((type) => (
                   <button
@@ -186,8 +186,8 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
                     className={cn(
                       "text-xs px-2 py-1 rounded-full transition-colors",
                       filterType === type 
-                        ? "bg-white/10 text-white font-medium" 
-                        : "text-white/40 hover:text-white/60"
+                        ? "bg-white/10 text-[var(--public-ink)] font-medium" 
+                        : "text-[var(--public-ink)]/40 hover:text-[var(--public-ink)]/60"
                     )}
                   >
                     {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -200,10 +200,10 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
             <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
               {loading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-white/20" />
+                  <Loader2 className="w-6 h-6 animate-spin text-[var(--public-ink)]/20" />
                 </div>
               ) : memories.length === 0 ? (
-                <div className="text-center py-8 text-white/30 text-sm">
+                <div className="text-center py-8 text-[var(--public-ink)]/30 text-sm">
                   No memories found. AI will learn as it interacts.
                 </div>
               ) : (
@@ -222,16 +222,16 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
                         )}>
                           {memory.memory_type}
                         </Badge>
-                        <span className="text-[10px] text-white/30">
+                        <span className="text-[10px] text-[var(--public-ink)]/30">
                           {new Date(memory.created_at).toLocaleDateString()}
                         </span>
                         {memory.confidence < 1 && (
-                            <span className="text-[10px] text-white/30" title="Confidence">
+                            <span className="text-[10px] text-[var(--public-ink)]/30" title="Confidence">
                                 {Math.round(memory.confidence * 100)}%
                             </span>
                         )}
                       </div>
-                      <p className="text-sm text-white/90 leading-relaxed">
+                      <p className="text-sm text-[var(--public-ink)]/90 leading-relaxed">
                         {memory.summary}
                       </p>
                     </div>
@@ -240,7 +240,7 @@ export function AIMemorySettings({ initialEnabled }: AIMemorySettingsProps) {
                       size="icon"
                       onClick={() => handleDelete(memory.id)}
                       disabled={isPending}
-                      className="opacity-0 group-hover:opacity-100 h-8 w-8 text-white/40 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                      className="opacity-0 group-hover:opacity-100 h-8 w-8 text-[var(--public-ink)]/40 hover:text-red-400 hover:bg-red-500/10 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>

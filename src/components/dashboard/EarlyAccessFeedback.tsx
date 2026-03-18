@@ -37,23 +37,23 @@ export function EarlyAccessFeedback() {
 
       {isOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-md bg-zinc-900 border border-white/10 rounded-xl shadow-2xl p-6 relative animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-md public-panel border border-[var(--public-line)] rounded-xl shadow-2xl p-6 relative animate-in zoom-in-95 duration-200">
             
             <button 
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors"
+              className="absolute top-4 right-4 text-[var(--public-ink)]/40 hover:text-[var(--public-ink)] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-xl font-bold text-white mb-2">Early Access Feedback</h2>
-            <p className="text-sm text-white/60 mb-6">
+            <h2 className="text-xl font-bold text-[var(--public-ink)] mb-2">Early Access Feedback</h2>
+            <p className="text-sm text-[var(--public-ink)]/60 mb-6">
               You&apos;re one of our first 100 users. Your feedback shapes Nodebase directly.
             </p>
 
             <textarea
               placeholder="Report a bug, request a feature, or just say hi..."
-              className="w-full bg-black/50 border border-white/10 rounded-lg p-4 min-h-[120px] text-white focus:outline-none focus:border-yellow-500/50 mb-6 resize-none placeholder:text-white/20"
+              className="w-full bg-black/50 border border-[var(--public-line)] rounded-lg p-4 min-h-[120px] text-[var(--public-ink)] focus:outline-none focus:border-yellow-500/50 mb-6 resize-none placeholder:text-[var(--public-ink)]/20"
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               autoFocus
@@ -62,7 +62,7 @@ export function EarlyAccessFeedback() {
             <div className="flex justify-end gap-3">
                <button 
                  onClick={() => setIsOpen(false)} 
-                 className="px-4 py-2 text-sm font-medium text-white/60 hover:text-white transition-colors"
+                 className="px-4 py-2 text-sm font-medium text-[var(--public-ink)]/60 hover:text-[var(--public-ink)] transition-colors"
                >
                  Cancel
                </button>

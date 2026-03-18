@@ -117,7 +117,7 @@ export function Header({ viewer }: HeaderProps) {
                       className={cn(
                         "rounded-full px-4 py-2 text-sm font-semibold transition-all",
                         active
-                          ? "bg-[var(--public-accent)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]"
+                          ? "bg-[var(--public-accent)] text-[var(--public-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]"
                           : "text-[var(--public-muted)] hover:bg-white/70 hover:text-[var(--public-ink)]",
                       )}
                     >
@@ -143,7 +143,7 @@ export function Header({ viewer }: HeaderProps) {
                       onClick={() => setAccountOpen((open) => !open)}
                       className="public-inset flex items-center gap-3 rounded-full px-3 py-2"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--public-accent)] text-sm font-bold text-white">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--public-accent)] text-sm font-bold text-[var(--public-ink)]">
                         {initials || "NB"}
                       </div>
                       <div className="text-left">
@@ -255,7 +255,7 @@ export function Header({ viewer }: HeaderProps) {
                         className={cn(
                           "public-inset flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold",
                           active
-                            ? "bg-[var(--public-accent)] text-white"
+                            ? "bg-[var(--public-accent)] text-[var(--public-ink)]"
                             : "text-[var(--public-ink)]",
                         )}
                       >

@@ -243,8 +243,8 @@ export default function ListingIntegrationsPage() {
   return (
     <div className="space-y-6 pb-24 md:pb-0 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-white uppercase tracking-tight">Integrations</h1>
-        <p className="text-white/60">Manage your connected apps and services.</p>
+        <h1 className="text-2xl font-bold text-[var(--public-ink)] uppercase tracking-tight">Integrations</h1>
+        <p className="text-[var(--public-ink)]/60">Manage your connected apps and services.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -253,7 +253,7 @@ export default function ListingIntegrationsPage() {
 
         {/* Google Integration */}
         {capabilities.integrations.google && (
-          <Card className="bg-[var(--color-dashboard-surface)] border-white/10">
+          <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
             <CardHeader>
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-3">
@@ -261,8 +261,8 @@ export default function ListingIntegrationsPage() {
                             <img src="https://authjs.dev/img/providers/google.svg" alt="Google" className="w-6 h-6" />
                         </div>
                         <div>
-                            <CardTitle className="text-white">Google Calendar</CardTitle>
-                            <CardDescription className="text-white/50">Sync {labels.bookings.toLowerCase()} to your personal calendar</CardDescription>
+                            <CardTitle className="text-[var(--public-ink)]">Google Calendar</CardTitle>
+                            <CardDescription className="text-[var(--public-ink)]/50">Sync {labels.bookings.toLowerCase()} to your personal calendar</CardDescription>
                         </div>
                     </div>
                     {isGoogleConnected ? (
@@ -272,19 +272,19 @@ export default function ListingIntegrationsPage() {
                     ) : isGoogleError ? (
                       <Badge variant="outline" className="text-red-500 border-red-500/20 bg-red-500/10">Error</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-zinc-500 border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
+                      <Badge variant="outline" className="text-[var(--public-muted)] border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
                     )}
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className={`p-4 rounded-lg border space-y-3 ${isGoogleConnected ? 'bg-green-500/5 border-green-500/10' : isGoogleError ? 'bg-red-500/5 border-red-500/10' : 'bg-black/20 border-white/5 opacity-50'}`}>
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-white/70">Connected Account</span>
-                        <span className="text-white font-mono">{googleStatus?.connectedEmail || "-"}</span>
+                        <span className="text-[var(--public-ink)]/70">Connected Account</span>
+                        <span className="text-[var(--public-ink)] font-mono">{googleStatus?.connectedEmail || "-"}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-white/70">Last synced</span>
-                        <span className="text-white font-mono">
+                        <span className="text-[var(--public-ink)]/70">Last synced</span>
+                        <span className="text-[var(--public-ink)] font-mono">
                           {googleStatus?.lastSyncedAt ? new Date(googleStatus.lastSyncedAt).toLocaleString() : "-"}
                         </span>
                     </div>
@@ -339,16 +339,16 @@ export default function ListingIntegrationsPage() {
 
         {/* OTA Integrations (iCal) */}
         {capabilities.integrations.ical && (
-          <Card className="bg-[var(--color-dashboard-surface)] border-white/10 opacity-75">
+          <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)] opacity-75">
             <CardHeader>
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-[#FF5A5F] rounded-full flex items-center justify-center">
-                            <Puzzle className="w-6 h-6 text-white" />
+                            <Puzzle className="w-6 h-6 text-[var(--public-ink)]" />
                         </div>
                         <div>
-                            <CardTitle className="text-white">Airbnb, Booking.com, MMT</CardTitle>
-                            <CardDescription className="text-white/50">Channel manager & calendar sync</CardDescription>
+                            <CardTitle className="text-[var(--public-ink)]">Airbnb, Booking.com, MMT</CardTitle>
+                            <CardDescription className="text-[var(--public-ink)]/50">Channel manager & calendar sync</CardDescription>
                         </div>
                     </div>
                     <Badge variant="outline" className="text-blue-400 border-blue-400/20 bg-blue-400/10">
@@ -384,34 +384,34 @@ export default function ListingIntegrationsPage() {
 
         {/* Instagram Integration */}
         {capabilities.integrations.instagram && (
-          <Card className="bg-[var(--color-dashboard-surface)] border-white/10">
+          <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
             <CardHeader>
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] rounded-full flex items-center justify-center">
-                            <Puzzle className="w-6 h-6 text-white" />
+                            <Puzzle className="w-6 h-6 text-[var(--public-ink)]" />
                         </div>
                         <div>
-                            <CardTitle className="text-white">Instagram</CardTitle>
-                            <CardDescription className="text-white/50">Reply to DMs & Orders</CardDescription>
+                            <CardTitle className="text-[var(--public-ink)]">Instagram</CardTitle>
+                            <CardDescription className="text-[var(--public-ink)]/50">Reply to DMs & Orders</CardDescription>
                         </div>
                     </div>
                     {isInstagramConnected ? (
                       <Badge variant="outline" className="text-green-400 border-green-400/20 bg-green-400/10">Connected</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-zinc-500 border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
+                      <Badge variant="outline" className="text-[var(--public-muted)] border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
                     )}
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
                <div className={`p-4 rounded-lg border space-y-3 ${isInstagramConnected ? 'bg-gradient-to-tr from-[#f09433]/5 via-[#dc2743]/5 to-[#bc1888]/5 border-pink-500/10' : 'bg-black/20 border-white/5 opacity-50'}`}>
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-white/70">Connected Account</span>
-                        <span className="text-white font-mono">{instagramStatus?.connectedName || "-"}</span>
+                        <span className="text-[var(--public-ink)]/70">Connected Account</span>
+                        <span className="text-[var(--public-ink)] font-mono">{instagramStatus?.connectedName || "-"}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-white/70">Last synced</span>
-                        <span className="text-white font-mono">
+                        <span className="text-[var(--public-ink)]/70">Last synced</span>
+                        <span className="text-[var(--public-ink)] font-mono">
                           {instagramStatus?.lastSyncedAt ? new Date(instagramStatus.lastSyncedAt).toLocaleString() : "-"}
                         </span>
                     </div>
@@ -430,7 +430,7 @@ export default function ListingIntegrationsPage() {
                ) : (
                  <Button 
                    variant="default" 
-                   className="w-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white hover:opacity-90"
+                   className="w-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-[var(--public-ink)] hover:opacity-90"
                    onClick={handleConnectInstagram}
                    disabled={isConnectingInstagram || isLoading}
                  >

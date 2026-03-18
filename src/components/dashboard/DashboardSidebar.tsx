@@ -42,14 +42,14 @@ function SidebarItem({
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group relative",
         active
-          ? "skeuo-card bg-brand-red text-white border-transparent"
-          : "text-zinc-400 hover:text-white hover:bg-white/5",
+          ? "public-panel bg-brand-red text-[var(--public-ink)] border-transparent"
+          : "text-[var(--public-muted)] hover:text-[var(--public-ink)] hover:bg-white/5",
       )}
     >
       <Icon
         className={cn(
           "w-5 h-5 shrink-0",
-          active ? "text-white" : "text-zinc-400 group-hover:text-white",
+          active ? "text-[var(--public-ink)]" : "text-[var(--public-muted)] group-hover:text-[var(--public-ink)]",
         )}
       />
       {!collapsed && (
@@ -58,7 +58,7 @@ function SidebarItem({
         </span>
       )}
       {collapsed && (
-        <div className="absolute left-full ml-4 px-2 py-1 bg-zinc-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
+        <div className="absolute left-full ml-4 px-2 py-1 bg-[var(--public-panel-muted)] text-[var(--public-ink)] text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
           {label}
         </div>
       )}
@@ -111,7 +111,7 @@ export function DashboardSidebar() {
       {/* Toggle Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-24 w-6 h-6 bg-zinc-800 border border-white/10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-colors z-50"
+        className="absolute -right-3 top-24 w-6 h-6 bg-[var(--public-panel-muted)] border border-[var(--public-line)] rounded-full flex items-center justify-center text-[var(--public-muted)] hover:text-[var(--public-ink)] transition-colors z-50"
       >
         {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
       </button>
@@ -120,7 +120,7 @@ export function DashboardSidebar() {
       <div className="flex-1 px-4 space-y-2 overflow-y-auto no-scrollbar">
         <div className="mb-4 px-2">
           {!isCollapsed && (
-            <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+            <div className="text-[10px] font-bold text-[var(--public-muted)] uppercase tracking-widest">
               Main Menu
             </div>
           )}
