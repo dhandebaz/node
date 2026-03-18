@@ -19,7 +19,10 @@ export async function GET() {
     try {
       tenantId = await requireActiveTenant();
     } catch (e) {
-      return NextResponse.json({ error: "Tenant context missing" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Tenant context missing" },
+        { status: 400 },
+      );
     }
 
     const supabase = await getSupabaseServer();
@@ -30,27 +33,48 @@ export async function GET() {
       .eq("is_active", true)
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    // Ignore missing table error (PostgreSQL 42P01) or PostgREST specific missing relation errors
+    if (
+      error &&
+      error.code !== "42P01" &&
+      error.code !== "PGRST116" &&
+      error.code !== "PGRST204" &&
+      !(
+        error.message &&
+        error.message.includes("relation") &&
+        error.message.includes("does not exist")
+      )
+    ) {
+      throw error;
+    }
 
     const resultFailures: FailureRecord[] = failures || [];
 
     // Check for global incident mode
     const flags = await ControlService.getSystemFlags();
-    if (flags['incident_mode_enabled']) {
+    if (flags["incident_mode_enabled"]) {
       resultFailures.unshift({
-        id: 'system-incident',
+        id: "system-incident",
         tenant_id: tenantId,
-        category: 'system',
-        source: 'system',
-        severity: 'critical',
-        message: 'We are experiencing system-wide issues. Some features may be unavailable.',
+        category: "system",
+        source: "system",
+        severity: "critical",
+        message:
+          "We are experiencing system-wide issues. Some features may be unavailable.",
         is_active: true,
         metadata: {},
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       });
     }
 
-    return NextResponse.json({ failures: resultFailures });
+    return NextResponse.json(
+      { failures: resultFailures },
+      {
+        headers: {
+          "Cache-Control": "private, max-age=60, stale-while-revalidate=120",
+        },
+      },
+    );
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

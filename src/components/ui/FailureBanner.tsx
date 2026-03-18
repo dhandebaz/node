@@ -44,8 +44,8 @@ export function FailureBanner() {
 
     loadStatus();
 
-    // Poll every 30 seconds
-    const interval = setInterval(loadStatus, 30000);
+    // Poll every 5 minutes
+    const interval = setInterval(loadStatus, 300000);
     return () => {
       mounted = false;
       clearInterval(interval);

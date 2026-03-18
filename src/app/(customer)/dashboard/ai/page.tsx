@@ -126,7 +126,7 @@ export default async function AIDashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="skeuo-card">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
@@ -150,7 +150,7 @@ export default async function AIDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="skeuo-card">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
@@ -174,7 +174,7 @@ export default async function AIDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="skeuo-card">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-green-500/10 rounded-lg text-green-400">
@@ -198,7 +198,7 @@ export default async function AIDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="skeuo-card">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
@@ -222,7 +222,7 @@ export default async function AIDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-zinc-900 border-zinc-800">
+        <Card className="skeuo-card">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-orange-500/10 rounded-lg text-orange-400">
@@ -250,7 +250,7 @@ export default async function AIDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Activity */}
         <DashboardErrorBoundary>
-          <Card className="lg:col-span-2 bg-zinc-900 border-zinc-800">
+          <Card className="lg:col-span-2 skeuo-card">
             <CardHeader className="border-b border-zinc-800 pb-4">
               <CardTitle className="text-lg flex items-center gap-2 text-white">
                 <Activity className="w-5 h-5 text-zinc-500" />
@@ -320,7 +320,7 @@ export default async function AIDashboardPage() {
         {/* Sidebar Cards */}
         <div className="space-y-6">
           <DashboardErrorBoundary>
-            <Card className="bg-zinc-900 border-zinc-800">
+            <Card className="skeuo-card">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg text-white">AI Status</CardTitle>
               </CardHeader>

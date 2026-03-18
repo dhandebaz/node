@@ -54,17 +54,29 @@ function getCanvasCoordinates(
 ) {
   const rect = canvas.getBoundingClientRect();
   const point =
-    "touches" in event ? (event.touches[0] ?? event.changedTouches[0]) : event;
+    "touches" in event ? event.touches[0] : (event as React.MouseEvent);
+
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
 
   return {
-    x: point.clientX - rect.left,
-    y: point.clientY - rect.top,
+    x: (point.clientX - rect.left) * scaleX,
+    y: (point.clientY - rect.top) * scaleY,
   };
 }
 
 function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+
+  const clearPad = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    onEnd("");
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -117,17 +129,26 @@ function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="h-40 w-full touch-none rounded-lg border border-zinc-700 bg-zinc-900 cursor-crosshair"
-      onMouseDown={startDrawing}
-      onMouseMove={draw}
-      onMouseUp={stopDrawing}
-      onMouseLeave={stopDrawing}
-      onTouchStart={startDrawing}
-      onTouchMove={draw}
-      onTouchEnd={stopDrawing}
-    />
+    <div className="relative">
+      <canvas
+        ref={canvasRef}
+        className="h-40 w-full touch-none rounded-lg border border-zinc-700 bg-zinc-900 cursor-crosshair"
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={stopDrawing}
+        onMouseLeave={stopDrawing}
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={stopDrawing}
+      />
+      <button
+        type="button"
+        onClick={clearPad}
+        className="absolute bottom-2 right-2 rounded-md bg-zinc-800 px-3 py-1 text-xs text-zinc-400 hover:bg-zinc-700 hover:text-white"
+      >
+        Clear
+      </button>
+    </div>
   );
 }
 
@@ -346,7 +367,8 @@ export default function VerificationPage() {
     }, 450);
   }, []);
 
-  const handleUsernameSubmit = async () => {
+  const handleUsernameSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!handleAvailable || !handle || !tenantId) return;
 
     setLoading(true);
@@ -356,8 +378,9 @@ export default function VerificationPage() {
         body: JSON.stringify({ handle, tenantId }),
       });
       toast.success("Your public profile is live");
-      router.push("/dashboard");
-      router.refresh();
+
+      // Force a hard navigation to bypass VerificationGate caching stale kycStatus
+      window.location.href = "/dashboard";
     } catch (error: unknown) {
       toast.error(
         error instanceof Error
@@ -377,7 +400,7 @@ export default function VerificationPage() {
             <div
               className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
                 step >= currentStep
-                  ? "bg-purple-600 text-white"
+                  ? "bg-brand-red text-white"
                   : "bg-zinc-800 text-zinc-500"
               }`}
             >
@@ -386,7 +409,7 @@ export default function VerificationPage() {
             {currentStep < 4 && (
               <div
                 className={`mx-2 h-1 w-12 ${
-                  step > currentStep ? "bg-purple-600" : "bg-zinc-800"
+                  step > currentStep ? "bg-brand-red" : "bg-zinc-800"
                 }`}
               />
             )}
@@ -395,7 +418,7 @@ export default function VerificationPage() {
       </div>
 
       {step === 1 && (
-        <div className="space-y-6 rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+        <div className="space-y-6 rounded-xl skeuo-card p-6">
           <h2 className="text-xl font-bold">Business Details</h2>
           <form onSubmit={handleDetailsSubmit} className="space-y-4">
             <div className="grid gap-2">
@@ -465,10 +488,12 @@ export default function VerificationPage() {
       )}
 
       {step === 2 && (
-        <div className="space-y-6 rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-          <h2 className="text-xl font-bold">Identity Verification</h2>
+        <div className="space-y-6 rounded-xl skeuo-card p-6">
+          <h2 className="text-xl font-bold text-white">
+            Identity Verification
+          </h2>
           {!extractedData ? (
-            <div className="rounded-xl border-2 border-dashed border-zinc-700 p-8 text-center transition-colors hover:border-purple-500">
+            <div className="rounded-xl border-2 border-dashed border-zinc-700 p-8 text-center transition-colors hover:border-brand-red">
               <Upload className="mx-auto mb-4 h-12 w-12 text-zinc-500" />
               <p className="mb-4 text-zinc-400">
                 Upload Aadhaar, PAN, passport, or another government ID.
@@ -541,7 +566,7 @@ export default function VerificationPage() {
       )}
 
       {step === 3 && (
-        <div className="space-y-6 rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+        <div className="space-y-6 rounded-xl skeuo-card p-6">
           <h2 className="text-xl font-bold">Legal Agreement</h2>
           <div className="h-64 overflow-y-auto rounded-lg bg-white p-6 text-sm font-serif text-black">
             <h3 className="mb-4 text-lg font-bold">
@@ -592,7 +617,7 @@ export default function VerificationPage() {
       )}
 
       {step === 4 && (
-        <div className="space-y-6 rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center">
+        <div className="space-y-6 rounded-xl skeuo-card p-6 text-center">
           <h2 className="text-xl font-bold">Claim your Handle</h2>
           <p className="text-zinc-400">
             Choose a unique username for your public profile.

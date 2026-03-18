@@ -11,7 +11,14 @@ export async function GET() {
 
   try {
     const flags = await ControlService.getFeatureFlags(tenantId || undefined);
-    return NextResponse.json({ flags });
+    return NextResponse.json(
+      { flags },
+      {
+        headers: {
+          "Cache-Control": "private, max-age=60, stale-while-revalidate=120",
+        },
+      },
+    );
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
