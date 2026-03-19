@@ -27,25 +27,41 @@ export async function POST(request: Request) {
 
     const supabase = await getSupabaseServer();
 
-    await supabase.from("messages").insert({
-      tenant_id: tenantId,
-      direction: "inbound",
-      channel: "whatsapp",
-      content: text,
-      sender_id: sender,
-      timestamp: new Date().toISOString(),
-      read: false,
-    });
-
-    // Check for paused AI
-    const { data: existingGuest } = await supabase
+    // Get or create guest
+    let guestId = null;
+    let aiPaused = false;
+    let { data: existingGuest } = await supabase
       .from("guests")
-      .select("ai_paused")
+      .select("id, ai_paused")
       .eq("phone", sender)
       .eq("tenant_id", tenantId)
-      .single();
+      .maybeSingle();
 
-    if (existingGuest?.ai_paused) {
+    if (existingGuest) {
+      guestId = existingGuest.id;
+      aiPaused = existingGuest.ai_paused;
+    } else {
+      const { data: newGuest } = await supabase.from("guests").insert({
+        tenant_id: tenantId,
+        name: sender,
+        phone: sender,
+        channel: "whatsapp"
+      }).select("id").single();
+      guestId = newGuest?.id;
+    }
+
+    await supabase.from("messages").insert({
+      tenant_id: tenantId,
+      guest_id: guestId,
+      direction: "inbound",
+      role: "user",
+      channel: "whatsapp",
+      content: text,
+      timestamp: new Date().toISOString(),
+      is_read: false,
+    });
+
+    if (aiPaused) {
       return NextResponse.json({ success: true, ai_paused: true });
     }
 
@@ -162,12 +178,13 @@ export async function POST(request: Request) {
 
     await supabase.from("messages").insert({
       tenant_id: tenantId,
+      guest_id: guestId,
       direction: "outbound",
+      role: "assistant",
       channel: "whatsapp",
       content: aiReply,
-      sender_id: "ai_assistant",
       timestamp: new Date().toISOString(),
-      read: true,
+      is_read: true,
     });
 
     try {

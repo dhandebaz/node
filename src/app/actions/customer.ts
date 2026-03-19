@@ -17,8 +17,7 @@ async function getCurrentUser(): Promise<User> {
 
   if (!session?.userId) throw new Error("Unauthorized: No session");
 
-  const user = await userService.getUserById(session.userId);
-  if (user) return user;
+  // Bypassing userService.getUserById to use dashboard-specific complete queries
 
   const supabase = await getSupabaseServer();
   const {

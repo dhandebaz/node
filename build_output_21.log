@@ -1,0 +1,262 @@
+
+> node@0.1.0 prebuild
+> npm run verify
+
+
+> node@0.1.0 verify
+> node scripts/check-env.js
+
+
+[32mOK: All required environment variables are present.
+[0m
+[33mRecommended variables not set:[0m
+   - app URL: one of NEXT_PUBLIC_APP_URL, APP_URL
+[33mThe app has fallbacks for these values, but production behavior is safer when they are configured explicitly.
+[0m
+
+> node@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local, .env
+- Experiments (use with caution):
+  · optimizePackageImports
+  · serverActions
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 37.3s
+  Running TypeScript ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/102) ...
+  Generating static pages using 3 workers (25/102) 
+  Generating static pages using 3 workers (50/102) 
+  Generating static pages using 3 workers (76/102) 
+✓ Generating static pages using 3 workers (102/102) in 801.9ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /%40[handle]
+├ ƒ /admin
+├ ƒ /admin/ai-managers
+├ ƒ /admin/ai-rules
+├ ƒ /admin/analytics
+├ ƒ /admin/audit
+├ ƒ /admin/content
+├ ƒ /admin/customers
+├ ƒ /admin/customers/[id]
+├ ƒ /admin/dashboard
+├ ƒ /admin/failures
+├ ƒ /admin/features
+├ ƒ /admin/growth
+├ ƒ /admin/integrations
+├ ƒ /admin/kaisa
+├ ƒ /admin/launch
+├ ƒ /admin/logs
+├ ƒ /admin/overview
+├ ƒ /admin/pricing
+├ ƒ /admin/settings
+├ ƒ /admin/system
+├ ƒ /admin/usage
+├ ƒ /admin/users
+├ ƒ /admin/users/[id]
+├ ƒ /admin/vibecoding
+├ ƒ /api/admin/ai-managers
+├ ƒ /api/admin/ai-managers/update
+├ ƒ /api/admin/ai-rules
+├ ƒ /api/admin/ai-rules/update
+├ ƒ /api/admin/audit-events
+├ ƒ /api/admin/customers
+├ ƒ /api/admin/customers/[id]
+├ ƒ /api/admin/customers/[id]/controls
+├ ƒ /api/admin/customers/[id]/status
+├ ƒ /api/admin/customers/[id]/wallet
+├ ƒ /api/admin/failures
+├ ƒ /api/admin/features
+├ ƒ /api/admin/growth
+├ ƒ /api/admin/integrations/health
+├ ƒ /api/admin/logs
+├ ƒ /api/admin/overrides
+├ ƒ /api/admin/pricing-rules
+├ ƒ /api/admin/pricing/config/update
+├ ƒ /api/admin/pricing/estimate
+├ ƒ /api/admin/pricing/inputs/update
+├ ƒ /api/admin/pricing/settings
+├ ƒ /api/admin/pricing/update
+├ ƒ /api/admin/system/dashboard
+├ ƒ /api/admin/system/flags
+├ ƒ /api/admin/tenants/[id]/agreements
+├ ƒ /api/admin/tenants/[id]/control
+├ ƒ /api/admin/usage
+├ ƒ /api/admin/vibecoding
+├ ƒ /api/admin/vibecoding/execute
+├ ƒ /api/admin/wallet/adjust
+├ ƒ /api/ai-managers
+├ ƒ /api/ai-managers/[slug]
+├ ƒ /api/ai/activity
+├ ƒ /api/ai/settings
+├ ƒ /api/ai/settings/update
+├ ƒ /api/auth/google
+├ ƒ /api/auth/tenant-cookie/clear
+├ ƒ /api/billing/subscribe
+├ ƒ /api/billing/summary
+├ ƒ /api/billing/top-up
+├ ƒ /api/billing/top-up/create
+├ ƒ /api/billing/top-up/topup
+├ ƒ /api/billing/top-up/verify
+├ ƒ /api/bookings
+├ ƒ /api/bookings/[id]
+├ ƒ /api/bookings/[id]/cancel
+├ ƒ /api/bookings/[id]/events
+├ ƒ /api/business/details
+├ ƒ /api/calendar
+├ ƒ /api/calendar/block
+├ ƒ /api/chat/init
+├ ƒ /api/chat/messages
+├ ƒ /api/chat/send
+├ ƒ /api/debug/gemini
+├ ƒ /api/failures
+├ ƒ /api/features
+├ ƒ /api/guest-id/[id]
+├ ƒ /api/guest-id/[id]/image
+├ ƒ /api/guest-id/approve/[id]
+├ ƒ /api/guest-id/reject/[id]
+├ ƒ /api/guest-id/request
+├ ƒ /api/guest-id/upload
+├ ƒ /api/guests/[id]/upload-id
+├ ƒ /api/health
+├ ƒ /api/host/me
+├ ƒ /api/host/verification/agreement
+├ ƒ /api/host/verification/confirm
+├ ƒ /api/host/verification/upload
+├ ƒ /api/inbox/ai-suggest
+├ ƒ /api/inbox/context
+├ ƒ /api/inbox/conversations
+├ ƒ /api/inbox/messages
+├ ƒ /api/inbox/send
+├ ƒ /api/integrations
+├ ƒ /api/integrations/google/callback
+├ ƒ /api/integrations/google/connect
+├ ƒ /api/integrations/google/disconnect
+├ ƒ /api/integrations/google/refresh
+├ ƒ /api/integrations/google/status
+├ ƒ /api/integrations/instagram/connect
+├ ƒ /api/integrations/instagram/disconnect
+├ ƒ /api/integrations/instagram/status
+├ ƒ /api/integrations/webhook/booking
+├ ƒ /api/integrations/webhook/whatsapp
+├ ƒ /api/integrations/whatsapp/connect
+├ ƒ /api/integrations/whatsapp/disconnect
+├ ƒ /api/integrations/whatsapp/status
+├ ƒ /api/invoices
+├ ƒ /api/kyc/[token]
+├ ƒ /api/kyc/[token]/documents
+├ ƒ /api/kyc/consent-forms
+├ ƒ /api/kyc/consent-forms/[id]
+├ ƒ /api/kyc/consent-forms/ai-suggest
+├ ƒ /api/kyc/requests
+├ ƒ /api/kyc/requests/[id]
+├ ƒ /api/legal/agreement/latest
+├ ƒ /api/listings
+├ ƒ /api/listings/[id]
+├ ƒ /api/listings/[id]/calendar
+├ ƒ /api/listings/[id]/integrations
+├ ƒ /api/listings/[id]/settings
+├ ƒ /api/listings/[id]/sync/export
+├ ƒ /api/listings/[id]/sync/import
+├ ƒ /api/listings/[id]/sync/push
+├ ƒ /api/listings/[id]/update
+├ ƒ /api/listings/create
+├ ƒ /api/messages
+├ ƒ /api/messages/ai-reply
+├ ƒ /api/onboarding/status
+├ ƒ /api/payments/create-link
+├ ƒ /api/payments/link
+├ ƒ /api/payments/setup
+├ ƒ /api/payments/webhook
+├ ƒ /api/pricing/public
+├ ƒ /api/public/ical/[id]
+├ ƒ /api/team/agents
+├ ƒ /api/team/agents/[id]
+├ ƒ /api/team/members
+├ ƒ /api/team/members/[id]
+├ ƒ /api/team/members/invite
+├ ƒ /api/user/handle
+├ ƒ /api/voice/agent
+├ ƒ /api/wallet
+├ ƒ /api/wallet/topup
+├ ƒ /api/wallet/transactions
+├ ƒ /api/webhooks/razorpay
+├ ƒ /auth/callback
+├ ƒ /auth/google/callback
+├ ƒ /book/[id]
+├ ƒ /bookings/[id]/confirmation
+├ ƒ /chat/[businessId]
+├ ƒ /company
+├ ƒ /company/careers
+├ ƒ /company/contact
+├ ƒ /company/partners
+├ ƒ /company/partners/system-integrators
+├ ƒ /company/partners/technology
+├ ƒ /dashboard
+├ ƒ /dashboard/ai
+├ ƒ /dashboard/ai/activity
+├ ƒ /dashboard/ai/bookings
+├ ƒ /dashboard/ai/calendar
+├ ƒ /dashboard/ai/flows
+├ ƒ /dashboard/ai/growth
+├ ƒ /dashboard/ai/inbox
+├ ƒ /dashboard/ai/insights
+├ ƒ /dashboard/ai/integrations
+├ ƒ /dashboard/ai/listings
+├ ƒ /dashboard/ai/listings/[id]
+├ ƒ /dashboard/ai/listings/new
+├ ƒ /dashboard/ai/revenue
+├ ƒ /dashboard/ai/settings
+├ ƒ /dashboard/ai/team
+├ ƒ /dashboard/billing
+├ ƒ /dashboard/billing/history
+├ ƒ /dashboard/billing/payment-methods
+├ ƒ /dashboard/billing/subscription/[id]
+├ ƒ /dashboard/invite
+├ ƒ /dashboard/more
+├ ƒ /dashboard/settings
+├ ƒ /dashboard/settings/profile
+├ ƒ /dashboard/support
+├ ƒ /dashboard/verification
+├ ƒ /docs
+├ ƒ /docs/getting-started
+├ ƒ /docs/getting-started/quickstart
+├ ƒ /docs/kaisa
+├ ƒ /docs/kaisa/agents-api
+├ ƒ /docs/kaisa/integrations
+├ ƒ /employees
+├ ƒ /employees/dukan-ai
+├ ƒ /employees/host-ai
+├ ƒ /employees/nurse-ai
+├ ƒ /employees/thrift-ai
+├ ƒ /guest-id/[token]
+├ ƒ /legal/aup
+├ ƒ /legal/cookies
+├ ƒ /legal/privacy
+├ ƒ /legal/refund
+├ ƒ /legal/risk
+├ ƒ /legal/sla
+├ ƒ /legal/terms
+├ ƒ /login
+├ ○ /manifest.json
+├ ƒ /onboarding
+├ ƒ /pricing
+├ ƒ /projects
+├ ○ /robots.txt
+├ ƒ /signup
+├ ○ /sitemap.xml
+└ ƒ /trust
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

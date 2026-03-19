@@ -87,7 +87,7 @@ export const userService = {
       profile: null,
       status: {
         account: account?.status || "active",
-        kyc: "pending", // Default for now
+        kyc: tenant?.kyc_status || "pending",
         onboarding: account?.onboarding_status === 'complete' ? 'completed' : 'pending',
       },
       roles: {
@@ -114,6 +114,7 @@ export const userService = {
         ownerUserId: tenant.owner_user_id,
         businessType: tenant.business_type,
         earlyAccess: tenant.early_access,
+        kyc_status: tenant.kyc_status,
         createdAt: tenant.created_at
       } : undefined
     };

@@ -10,6 +10,9 @@ export async function getSupabaseServer() {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || "placeholder";
 
   return createServerClient(url, key, {
+    global: {
+      fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }),
+    },
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -47,6 +50,9 @@ export async function getSupabaseAdmin() {
 
   // Use standard createClient for admin/system actions to ensure RLS bypass
   return createClient(url, key, {
+    global: {
+      fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }),
+    },
     auth: {
       autoRefreshToken: false,
       persistSession: false

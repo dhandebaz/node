@@ -55,11 +55,11 @@ export async function sendManualMessageAction(guestId: string, text: string) {
     // Or just 'manager'. 
     // Let's use 'human_manager' to distinguish.
     direction: 'outbound',
+    role: 'host',
     channel: 'whatsapp',
     content: text,
-    sender_id: 'human_manager',
     timestamp: new Date().toISOString(),
-    read: true
+    is_read: true
   });
   
   if (msgError) throw new Error(msgError.message);
