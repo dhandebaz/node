@@ -87,7 +87,7 @@ function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    ctx.strokeStyle = "#fff";
+    ctx.strokeStyle = "#1f1a16";
     ctx.lineWidth = 2;
     ctx.lineCap = "round";
   }, []);

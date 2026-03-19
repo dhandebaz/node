@@ -1,5 +1,6 @@
 import { createHash } from "crypto";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { jsPDF } from "jspdf";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
@@ -184,6 +185,7 @@ export async function POST(req: Request) {
       );
     }
 
+    revalidatePath("/", "layout");
     return NextResponse.json({ success: true, redirectUrl: "/dashboard" });
   } catch (error: unknown) {
     const message =

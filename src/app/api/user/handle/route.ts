@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
 import { getAppUrl } from "@/lib/runtime-config";
 
@@ -130,6 +131,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    revalidatePath("/", "layout");
     return NextResponse.json({
       success: true,
       url: `${getAppUrl()}/@${handle}`,
