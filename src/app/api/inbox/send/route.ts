@@ -70,8 +70,8 @@ export async function POST(request: Request) {
         role: senderType === 'ai' ? 'assistant' : 'host',
         content: finalContent,
         channel: body?.channel || "web",
-        timestamp: new Date().toISOString(),
-        is_read: true
+        created_at: new Date().toISOString(),
+        metadata: { read: true }
     }).select().single();
 
     if (error) {
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
             senderType,
             channel: message.channel,
             content: message.content,
-            timestamp: message.timestamp
+            timestamp: message.created_at
         } 
     });
   } catch (error: any) {

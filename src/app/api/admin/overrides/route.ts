@@ -80,12 +80,10 @@ export async function POST(request: NextRequest) {
         .from('wallet_transactions')
         .insert({
           tenant_id: originalTx.tenant_id,
-          host_id: originalTx.host_id,
           type: 'credit',
           amount: originalTx.amount,
-          reason: `Reversal of ${id}: ${reason}`,
-          status: 'completed',
-          timestamp: new Date().toISOString()
+          metadata: { reason: `Reversal of ${id}: ${reason}`, status: 'completed' },
+          created_at: new Date().toISOString()
         })
         .select()
         .single();

@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     // Get or create guest
     let guestId = null;
     let aiPaused = false;
-    let { data: existingGuest } = await supabase
+    const { data: existingGuest } = await supabase
       .from("guests")
       .select("id, ai_paused")
       .eq("phone", sender)
@@ -57,8 +57,8 @@ export async function POST(request: Request) {
       role: "user",
       channel: "whatsapp",
       content: text,
-      timestamp: new Date().toISOString(),
-      is_read: false,
+      created_at: new Date().toISOString(),
+      metadata: { read: false }
     });
 
     if (aiPaused) {
@@ -116,7 +116,7 @@ export async function POST(request: Request) {
       tenant_id: tenantId,
       type: "deduction",
       amount: 1,
-      description: "WhatsApp AI Reply",
+      metadata: { description: "WhatsApp AI Reply" }
     });
 
     // Visual Flow Execution (Custom Logic Interception)
@@ -183,8 +183,8 @@ export async function POST(request: Request) {
       role: "assistant",
       channel: "whatsapp",
       content: aiReply,
-      timestamp: new Date().toISOString(),
-      is_read: true,
+      created_at: new Date().toISOString(),
+      metadata: { read: true }
     });
 
     try {

@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         amount,
         reason: "Wallet top-up",
         status: "completed",
-        timestamp: new Date().toISOString()
+        created_at: new Date().toISOString()
       });
 
     if (txError) {

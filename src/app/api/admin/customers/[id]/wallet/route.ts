@@ -44,12 +44,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     const { error: transactionError } = await supabase.from("wallet_transactions").insert({
-      host_id: customerId,
+      tenant_id: await getTenantIdForUser(customerId),
       type,
       amount: Math.abs(amount),
-      reason: reason || "Admin adjustment",
-      status: "completed",
-      timestamp: new Date().toISOString()
+      metadata: { reason: reason || "Admin adjustment", status: "completed", user_id: customerId },
+      created_at: new Date().toISOString()
     });
 
     if (transactionError) {

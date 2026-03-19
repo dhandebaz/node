@@ -108,8 +108,8 @@ export async function POST(request: Request) {
           channel: "whatsapp",
           direction: "outbound",
           content,
-          is_read: false,
-          timestamp: new Date().toISOString()
+          metadata: { read: false },
+          created_at: new Date().toISOString()
         });
 
         // Log AI Reply Sent (or System Message Sent)

@@ -101,8 +101,7 @@ export class WalletService {
         tenant_id: tenantId,
         amount: Math.abs(amount),
         type: "top_up",
-        description,
-        metadata
+        metadata: { ...metadata, description }
       });
 
     if (error) {
@@ -124,7 +123,7 @@ export class WalletService {
         tenant_id: tenantId,
         amount: amount,
         type: "admin_adjustment",
-        description: reason
+        metadata: { description: reason }
       });
 
     if (error) {
@@ -143,8 +142,7 @@ export class WalletService {
         tenant_id: tenantId,
         amount: Math.abs(amount),
         type,
-        description: `Credit: ${type}`,
-        metadata
+        metadata: { ...metadata, description: `Credit: ${type}` }
     });
     if (error) {
         log.error("Failed to add credits", error, { tenantId, amount, type });

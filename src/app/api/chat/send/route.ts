@@ -23,8 +23,8 @@ export async function POST(request: NextRequest) {
             channel: 'web',
             direction: sender === 'guest' ? 'inbound' : 'outbound',
             content,
-            is_read: false,
-            timestamp: new Date().toISOString()
+            metadata: { read: false },
+            created_at: new Date().toISOString()
         });
 
     if (error) throw error;

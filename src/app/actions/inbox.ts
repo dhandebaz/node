@@ -58,8 +58,8 @@ export async function sendManualMessageAction(guestId: string, text: string) {
     role: 'host',
     channel: 'whatsapp',
     content: text,
-    timestamp: new Date().toISOString(),
-    is_read: true
+    created_at: new Date().toISOString(),
+    metadata: { read: true }
   });
   
   if (msgError) throw new Error(msgError.message);
