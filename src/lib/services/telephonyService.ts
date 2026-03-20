@@ -31,7 +31,12 @@
  * NOTE: This file intentionally throws clear errors when no provider is configured to avoid silent mocks.
  */
 
-export type TelephonyProvider = "twilio" | "signalwire" | "plivo" | "sip" | "none";
+export type TelephonyProvider =
+  | "twilio"
+  | "signalwire"
+  | "plivo"
+  | "sip"
+  | "none";
 
 export type TelephonySession = {
   id: string;
@@ -65,7 +70,9 @@ export interface TelephonyProviderAdapter {
   // Hangup an active call (provider_reference or session id)
   hangup(providerReferenceOrSessionId: string): Promise<void>;
   // Get session/call status by provider reference or internal session id
-  getSession(providerReferenceOrSessionId: string): Promise<TelephonySession | null>;
+  getSession(
+    providerReferenceOrSessionId: string,
+  ): Promise<TelephonySession | null>;
 }
 
 /**
@@ -81,7 +88,8 @@ const inMemorySessions: Map<string, TelephonySession> = new Map();
  *   import { twilioAdapter } from "./providers/twilio"
  *   registerProviderAdapter(twilioAdapter)
  */
-const providerAdapters: Map<TelephonyProvider, TelephonyProviderAdapter> = new Map();
+const providerAdapters: Map<TelephonyProvider, TelephonyProviderAdapter> =
+  new Map();
 
 /**
  * Register a provider adapter at runtime. Adapters should be registered by an
@@ -153,7 +161,9 @@ export const telephonyService = {
     }
     const adapter = providerAdapters.get(provider);
     if (!adapter) {
-      throw new Error(`No telephony adapter registered for provider '${provider}' (hangup).`);
+      throw new Error(
+        `No telephony adapter registered for provider '${provider}' (hangup).`,
+      );
     }
 
     // Call provider adapter
@@ -161,7 +171,10 @@ export const telephonyService = {
 
     // If we have an in-memory session, update its status
     for (const [sid, s] of inMemorySessions.entries()) {
-      if (s.id === providerReferenceOrSessionId || s.provider_reference === providerReferenceOrSessionId) {
+      if (
+        s.id === providerReferenceOrSessionId ||
+        s.provider_reference === providerReferenceOrSessionId
+      ) {
         s.status = "completed";
         s.updated_at = new Date().toISOString();
         inMemorySessions.set(sid, s);
@@ -170,11 +183,16 @@ export const telephonyService = {
     }
   },
 
-  async getSession(providerReferenceOrSessionId: string): Promise<TelephonySession | null> {
+  async getSession(
+    providerReferenceOrSessionId: string,
+  ): Promise<TelephonySession | null> {
     const provider = resolveConfiguredProvider();
     // Try in-memory first
     for (const s of inMemorySessions.values()) {
-      if (s.id === providerReferenceOrSessionId || s.provider_reference === providerReferenceOrSessionId) {
+      if (
+        s.id === providerReferenceOrSessionId ||
+        s.provider_reference === providerReferenceOrSessionId
+      ) {
         return s;
       }
     }
@@ -182,7 +200,9 @@ export const telephonyService = {
     if (provider === "none") return null;
     const adapter = providerAdapters.get(provider);
     if (!adapter) {
-      throw new Error(`No telephony adapter registered for provider '${provider}' (getSession).`);
+      throw new Error(
+        `No telephony adapter registered for provider '${provider}' (getSession).`,
+      );
     }
 
     // Delegate to provider adapter to fetch latest status
@@ -235,5 +255,4 @@ export const telephonyService = {
  */
 
 /* Export types and utilities for external modules */
-export type { TelephonyProviderAdapter };
 export default telephonyService;

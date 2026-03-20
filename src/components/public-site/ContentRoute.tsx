@@ -1,6 +1,9 @@
 "use client";
 
-import { ArticlePage, DirectoryPage } from "@/components/public-site/primitives";
+import {
+  ArticlePage,
+  DirectoryPage,
+} from "@/components/public-site/primitives";
 import {
   careersPage,
   companyDirectoryPage,
@@ -28,6 +31,9 @@ const articlePageMap = {
   "docs-integrations": docsPages.integrations,
   "docs-kaisa": docsPages.kaisa,
   "docs-quickstart": docsPages.quickstart,
+  // Added Nodebase feature docs so RenderArticleRoute can render them by id
+  "nodebase-voice": docsPages["nodebase-voice"],
+  "nodebase-eyes": docsPages["nodebase-eyes"],
   "employee-dukan-ai": employeePages["dukan-ai"],
   "employee-host-ai": employeePages["host-ai"],
   "employee-nurse-ai": employeePages["nurse-ai"],
