@@ -12,7 +12,9 @@ export type SystemFlagKey =
   | "messaging_global_enabled"
   | "payments_global_enabled"
   | "signups_global_enabled"
-  | "sync_global_enabled";
+  | "sync_global_enabled"
+  | "voice_global_enabled"
+  | "eyes_global_enabled";
 
 export type TenantControlKey =
   | "is_ai_enabled"

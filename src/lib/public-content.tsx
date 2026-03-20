@@ -101,6 +101,10 @@ export const publicNavLinks = [
     href: "/employees",
   },
   {
+    label: "Integrations",
+    href: "/integrations",
+  },
+  {
     label: "Pricing",
     href: "/pricing",
   },
@@ -953,6 +957,24 @@ export const docsDirectoryPage: PublicDirectoryPageData = {
       eyebrow: "Connections",
       ctaLabel: "Review integrations",
     },
+    {
+      title: "Nodebase Voice (upcoming)",
+      description:
+        "AI Phone Agent for your business — integrated into omnichannel when launched. Admin-controlled rollout and waitlist.",
+      href: "/docs/nodebase-voice",
+      icon: TerminalSquare,
+      eyebrow: "Upcoming",
+      ctaLabel: "Join waitlist",
+    },
+    {
+      title: "Nodebase Eyes (upcoming)",
+      description:
+        "CCTV & Vision Intelligence for properties — tightly integrated with workflow and dashboards when released. Admin-controlled rollout.",
+      href: "/docs/nodebase-eyes",
+      icon: ServerCog,
+      eyebrow: "Upcoming",
+      ctaLabel: "Join waitlist",
+    },
   ],
   cta: {
     title: "Ready to save time and automate your inbox?",
@@ -1277,7 +1299,8 @@ log_mode: event_stream`,
     cta: {
       title:
         "If the integration increases operational reliability, it belongs in the stack.",
-      description: "If it only adds complexity and logos, it does not.",
+      description:
+        "If it only adds complexity and logos, it does not. Note: Nodebase Voice (telephony) and Nodebase Eyes (vision/CCTV) are upcoming platform features that will be integrated into the omnichannel stack once enabled by system administrators. See the voice and eyes docs pages for details and waitlist options.",
       primary: { label: "Return to docs", href: "/docs" },
       secondary: { label: "Talk to Nodebase", href: "/company/contact" },
     },

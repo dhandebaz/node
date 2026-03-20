@@ -1,21 +1,26 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { 
-  Users, 
-  Plus, 
-  Trash2, 
-  UserCircle, 
-  CheckCircle2, 
-  Loader2, 
+import {
+  Users,
+  Plus,
+  Trash2,
+  UserCircle,
+  CheckCircle2,
+  Loader2,
   ShieldCheck,
   Zap,
   MessageSquare,
   Settings2,
-  MoreVertical
+  MoreVertical,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -62,7 +67,9 @@ export default function TeamPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
-        <p className="text-[var(--public-ink)]/40 text-sm">Loading your AI team...</p>
+        <p className="text-[var(--public-ink)]/40 text-sm">
+          Loading your AI team...
+        </p>
       </div>
     );
   }
@@ -80,8 +87,16 @@ export default function TeamPage() {
             Manage specialized AI agents for different parts of your business.
           </p>
         </div>
-        <Button 
-          onClick={() => { setEditingAgent({ name: "", role: "Assistant", personality: "", instructions: "" }); setShowEditor(true); }}
+        <Button
+          onClick={() => {
+            setEditingAgent({
+              name: "",
+              role: "Assistant",
+              personality: "",
+              instructions: "",
+            });
+            setShowEditor(true);
+          }}
           className="bg-purple-600 hover:bg-purple-700 text-[var(--public-ink)] font-bold px-6 rounded-full"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -92,40 +107,55 @@ export default function TeamPage() {
       {/* Agents Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {agents.map((agent) => (
-          <Card key={agent.id} className="public-panel border-white/5 hover:border-purple-500/30 transition-all overflow-hidden group">
+          <Card
+            key={agent.id}
+            className="public-panel border-white/5 hover:border-purple-500/30 transition-all overflow-hidden group"
+          >
             <CardHeader className="pb-4 border-b border-white/5">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400">
                   <UserCircle className="w-8 h-8" />
                 </div>
-                <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-none uppercase tracking-widest text-[10px]">
+                <Badge
+                  variant="outline"
+                  className="bg-emerald-500/10 text-emerald-400 border-none uppercase tracking-widest text-[10px]"
+                >
                   {agent.status}
                 </Badge>
               </div>
-              <CardTitle className="text-[var(--public-ink)] text-lg">{agent.name}</CardTitle>
+              <CardTitle className="text-[var(--public-ink)] text-lg">
+                {agent.name}
+              </CardTitle>
               <CardDescription className="text-purple-400 font-bold uppercase tracking-tighter text-xs">
                 {agent.role}
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6 space-y-4">
               <div className="space-y-2">
-                <div className="text-[10px] text-[var(--public-muted)] uppercase font-bold tracking-widest">Personality</div>
-                <p className="text-xs text-[var(--public-ink)]/70 italic line-clamp-2">"{agent.personality || "No personality defined"}"</p>
+                <div className="text-[10px] text-[var(--public-muted)] uppercase font-bold tracking-widest">
+                  Personality
+                </div>
+                <p className="text-xs text-[var(--public-ink)]/70 italic line-clamp-2">
+                  "{agent.personality || "No personality defined"}"
+                </p>
               </div>
 
               <div className="flex items-center gap-2 pt-4 border-t border-white/5">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="flex-1 text-[var(--public-muted)] hover:text-[var(--public-ink)] hover:bg-white/5 text-xs font-bold"
-                  onClick={() => { setEditingAgent(agent); setShowEditor(true); }}
+                  onClick={() => {
+                    setEditingAgent(agent);
+                    setShowEditor(true);
+                  }}
                 >
                   <Settings2 className="w-3 h-3 mr-2" />
                   Configure
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="text-[var(--public-muted)] hover:text-red-400 hover:bg-red-500/10"
                   onClick={() => handleDelete(agent.id)}
                 >
@@ -137,71 +167,127 @@ export default function TeamPage() {
         ))}
       </div>
 
-      {/* Editor Modal Mock */}
+      {/* Editor Modal */}
       {showEditor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="agent-config-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+        >
           <Card className="w-full max-w-lg public-panel border-[var(--public-line)] shadow-2xl">
             <CardHeader className="border-b border-white/5">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-[var(--public-ink)]">Configure AI Agent</CardTitle>
-                <Button variant="ghost" size="sm" onClick={() => setShowEditor(false)} className="text-[var(--public-ink)]/40 hover:text-[var(--public-ink)]">Close</Button>
+                <CardTitle
+                  id="agent-config-title"
+                  className="text-[var(--public-ink)]"
+                >
+                  Configure AI Agent
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowEditor(false)}
+                  aria-label="Close agent configuration"
+                  className="text-[var(--public-ink)]/40 hover:text-[var(--public-ink)]"
+                >
+                  Close
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
-               <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">Agent Name</label>
-                    <input 
-                      type="text" 
-                      value={editingAgent?.name} 
-                      onChange={(e) => setEditingAgent({...editingAgent, name: e.target.value})}
-                      placeholder="e.g. Sarah"
-                      className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)]"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">Role</label>
-                    <input 
-                      type="text" 
-                      value={editingAgent?.role} 
-                      onChange={(e) => setEditingAgent({...editingAgent, role: e.target.value})}
-                      placeholder="e.g. Concierge"
-                      className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)]"
-                    />
-                  </div>
-               </div>
-
-               <div className="space-y-2">
-                  <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">Personality</label>
-                  <textarea 
-                    value={editingAgent?.personality} 
-                    onChange={(e) => setEditingAgent({...editingAgent, personality: e.target.value})}
-                    placeholder="e.g. Enthusiastic, professional, and very detail-oriented."
-                    className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)] h-20"
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">
+                    Agent Name
+                  </label>
+                  <input
+                    type="text"
+                    value={editingAgent?.name}
+                    onChange={(e) =>
+                      setEditingAgent({ ...editingAgent, name: e.target.value })
+                    }
+                    placeholder="e.g. Sarah"
+                    className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)]"
                   />
-               </div>
-
-               <div className="space-y-2">
-                  <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">System Instructions</label>
-                  <textarea 
-                    value={editingAgent?.instructions} 
-                    onChange={(e) => setEditingAgent({...editingAgent, instructions: e.target.value})}
-                    placeholder="e.g. Focus on recommending local restaurants and booking transport."
-                    className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)] h-24"
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">
+                    Role
+                  </label>
+                  <input
+                    type="text"
+                    value={editingAgent?.role}
+                    onChange={(e) =>
+                      setEditingAgent({ ...editingAgent, role: e.target.value })
+                    }
+                    placeholder="e.g. Concierge"
+                    className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)]"
                   />
-               </div>
+                </div>
+              </div>
 
-               <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
-                  <Button variant="ghost" onClick={() => setShowEditor(false)} className="text-[var(--public-muted)] font-bold">Discard</Button>
-                  <Button onClick={async () => {
-                    const method = editingAgent.id ? 'PUT' : 'POST';
-                    const url = editingAgent.id ? `/api/team/agents/${editingAgent.id}` : '/api/team/agents';
-                    await fetch(url, { method, body: JSON.stringify(editingAgent) });
+              <div className="space-y-2">
+                <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">
+                  Personality
+                </label>
+                <textarea
+                  value={editingAgent?.personality}
+                  onChange={(e) =>
+                    setEditingAgent({
+                      ...editingAgent,
+                      personality: e.target.value,
+                    })
+                  }
+                  placeholder="e.g. Enthusiastic, professional, and very detail-oriented."
+                  className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)] h-20"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">
+                  System Instructions
+                </label>
+                <textarea
+                  value={editingAgent?.instructions}
+                  onChange={(e) =>
+                    setEditingAgent({
+                      ...editingAgent,
+                      instructions: e.target.value,
+                    })
+                  }
+                  placeholder="e.g. Focus on recommending local restaurants and booking transport."
+                  className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)] h-24"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-white/5">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowEditor(false)}
+                  className="text-[var(--public-muted)] font-bold"
+                >
+                  Discard
+                </Button>
+                <Button
+                  onClick={async () => {
+                    const method = editingAgent.id ? "PUT" : "POST";
+                    const url = editingAgent.id
+                      ? `/api/team/agents/${editingAgent.id}`
+                      : "/api/team/agents";
+                    await fetch(url, {
+                      method,
+                      body: JSON.stringify(editingAgent),
+                    });
                     toast.success("Agent saved!");
                     setShowEditor(false);
                     fetchAgents();
-                  }} className="bg-white text-black hover:bg-zinc-200 font-bold">Save Agent</Button>
-               </div>
+                  }}
+                  className="bg-white text-black hover:bg-zinc-200 font-bold"
+                >
+                  Save Agent
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
