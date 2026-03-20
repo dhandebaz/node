@@ -19,7 +19,8 @@ type SessionStatusResponse = {
 function getBaseUrl() {
   const base = process.env.WAHA_SERVER_URL;
   if (!base) {
-    throw new Error('WAHA_SERVER_URL is not set');
+    console.warn('WAHA_SERVER_URL is not set. WhatsApp integration will fail.');
+    return 'http://localhost:3000'; // fallback just to not crash NextJS render
   }
   return base.replace(/\/+$/, '');
 }
