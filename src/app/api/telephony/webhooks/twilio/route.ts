@@ -35,7 +35,7 @@ function verifyTwilioSignature(
   authToken: string,
   requestUrl: string,
   params: Record<string, string>,
-  signatureHeader?: string | null
+  signatureHeader?: string | null,
 ): boolean {
   if (!signatureHeader) return false;
 
@@ -46,7 +46,10 @@ function verifyTwilioSignature(
     data += params[k];
   }
 
-  const hmac = crypto.createHmac("sha1", authToken).update(data, "utf8").digest("base64");
+  const hmac = crypto
+    .createHmac("sha1", authToken)
+    .update(data, "utf8")
+    .digest("base64");
   // Timing-safe compare
   const a = Buffer.from(hmac);
   const b = Buffer.from(signatureHeader);
@@ -76,13 +79,22 @@ export async function POST(request: Request) {
     const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN || null;
     if (twilioAuthToken) {
       const signatureHeader =
-        request.headers.get("x-twilio-signature") || request.headers.get("X-Twilio-Signature");
+        request.headers.get("x-twilio-signature") ||
+        request.headers.get("X-Twilio-Signature");
       // Use the absolute URL Twilio used when calling the webhook.
       // request.url should be the full URL served by Next (including path).
       const requestUrl = request.url;
-      const ok = verifyTwilioSignature(twilioAuthToken, requestUrl, params, signatureHeader);
+      const ok = verifyTwilioSignature(
+        twilioAuthToken,
+        requestUrl,
+        params,
+        signatureHeader,
+      );
       if (!ok) {
-        return NextResponse.json({ error: "Invalid Twilio signature" }, { status: 401 });
+        return NextResponse.json(
+          { error: "Invalid Twilio signature" },
+          { status: 401 },
+        );
       }
     }
 
@@ -118,7 +130,9 @@ export async function POST(request: Request) {
 
     // Attempt upsert: if the row exists, merge updates; otherwise insert new.
     // Use `telephony_sessions` table created by migrations.
-    await supabase.from("telephony_sessions").upsert(upsertPayload, { onConflict: "provider_reference", returning: "minimal" });
+    await supabase
+      .from("telephony_sessions")
+      .upsert([upsertPayload], { onConflict: "provider_reference" });
 
     // If you prefer to maintain a more detailed event log, consider inserting into a telephony_events table here.
 
