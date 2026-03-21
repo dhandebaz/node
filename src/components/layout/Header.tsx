@@ -12,12 +12,15 @@ import {
   Menu,
   Settings,
   Shield,
+  Sun,
+  Moon,
   X,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { cn } from "@/lib/utils";
 import { publicNavLinks } from "@/lib/public-content";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface HeaderViewer {
   authenticated?: boolean;
@@ -35,6 +38,7 @@ const menuTransition = { duration: 0.2, ease: "easeOut" } as const;
 export function Header({ viewer }: HeaderProps) {
   const pathname = usePathname();
   const { host, logout } = useAuthStore();
+  const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
 
@@ -218,6 +222,19 @@ export function Header({ viewer }: HeaderProps) {
                 </>
               )}
             </div>
+
+            <button
+              type="button"
+              onClick={() => toggleTheme()}
+              className="public-inset mr-2 flex h-11 w-11 items-center justify-center rounded-2xl"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5 text-[var(--public-ink)]" />
+              ) : (
+                <Moon className="h-5 w-5 text-[var(--public-ink)]" />
+              )}
+            </button>
 
             <button
               type="button"
