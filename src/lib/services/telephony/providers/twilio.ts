@@ -64,8 +64,8 @@ export function createTwilioAdapter(): TelephonyProviderAdapter {
 
   // Dynamically require Twilio at runtime so builds won't fail when the package
   // or types are not present in certain environments.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const TwilioLib = require("twilio");
+  // Use eval('require') to prevent bundlers from statically resolving the module.
+  const TwilioLib = eval("require")("twilio");
   const client = TwilioLib(accountSid, authToken);
 
   return {
