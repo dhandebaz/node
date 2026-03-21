@@ -166,7 +166,9 @@ export default function AddListingPage() {
 
       <div className="dashboard-surface p-6 space-y-6">
         <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-[var(--public-ink)]/50">
-          <span className={step >= 1 ? "text-[var(--public-ink)]" : ""}>1. Basic Info</span>
+          <span className={step >= 1 ? "text-[var(--public-ink)]" : ""}>
+            1. Basic Info
+          </span>
           {capabilities.calendar && (
             <>
               <span>•</span>
@@ -180,45 +182,69 @@ export default function AddListingPage() {
             </>
           )}
           <span>•</span>
-          <span className={step >= 4 ? "text-[var(--public-ink)]" : ""}>4. Review</span>
+          <span className={step >= 4 ? "text-[var(--public-ink)]" : ""}>
+            4. Review
+          </span>
         </div>
 
         {step === 1 && (
           <div className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <div className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider">
+                <label
+                  htmlFor="listing-name"
+                  className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+                >
                   {labels.listing} name
-                </div>
+                </label>
                 <input
+                  id="listing-name"
+                  name="listingName"
+                  type="text"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
-                  className="w-full bg-white/5 border border-[var(--public-line)] rounded-lg px-3 py-2 text-sm text-[var(--public-ink)]"
+                  placeholder={`Enter ${labels.listing} name`}
+                  aria-required="true"
+                  className="input"
                 />
               </div>
               <div className="space-y-2">
-                <div className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider">
+                <label
+                  htmlFor="listing-city"
+                  className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+                >
                   {tenant?.businessType === "kirana_store" ||
                   tenant?.businessType === "thrift_store"
                     ? "Address / Delivery Area"
                     : "City"}
-                </div>
+                </label>
                 <input
+                  id="listing-city"
+                  name="listingCity"
+                  type="text"
                   value={city}
                   onChange={(event) => setCity(event.target.value)}
-                  className="w-full bg-white/5 border border-[var(--public-line)] rounded-lg px-3 py-2 text-sm text-[var(--public-ink)]"
+                  placeholder="City or area (e.g., New Delhi)"
+                  aria-required="true"
+                  className="input"
                 />
               </div>
               <div className="space-y-2">
-                <div className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider">
+                <label
+                  htmlFor="listing-type"
+                  className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+                >
                   {labels.listing} type
-                </div>
+                </label>
                 <select
+                  id="listing-type"
+                  name="listingType"
                   value={type}
                   onChange={(event) =>
                     setType(event.target.value as ListingType)
                   }
-                  className="w-full bg-white/5 border border-[var(--public-line)] rounded-lg px-3 py-2 text-sm text-[var(--public-ink)]"
+                  aria-label={`${labels.listing} type`}
+                  className="input"
                 >
                   {listingTypes.map((option) => (
                     <option key={option} value={option}>
@@ -228,24 +254,41 @@ export default function AddListingPage() {
                 </select>
               </div>
               <div className="space-y-2">
-                <div className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider">
+                <label
+                  htmlFor="listing-timezone"
+                  className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+                >
                   Timezone
-                </div>
+                </label>
                 <input
+                  id="listing-timezone"
+                  name="listingTimezone"
                   value={timezone}
                   onChange={(event) => setTimezone(event.target.value)}
-                  className="w-full bg-white/5 border border-[var(--public-line)] rounded-lg px-3 py-2 text-sm text-[var(--public-ink)]"
+                  placeholder="e.g., Asia/Kolkata"
+                  aria-label="Time zone"
+                  className="input"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <div className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider">
-                Internal notes (optional)
-              </div>
+              <label
+                htmlFor="listing-notes"
+                className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+              >
+                Internal notes{" "}
+                <span className="text-xs text-[var(--public-muted)]">
+                  (optional)
+                </span>
+              </label>
               <textarea
+                id="listing-notes"
+                name="listingNotes"
                 value={internalNotes}
                 onChange={(event) => setInternalNotes(event.target.value)}
-                className="w-full bg-white/5 border border-[var(--public-line)] rounded-lg px-3 py-2 text-sm text-[var(--public-ink)] min-h-[80px]"
+                aria-label="Internal notes"
+                className="input min-h-[80px]"
+                placeholder="Internal notes for your team (optional)"
               />
             </div>
           </div>
@@ -342,7 +385,9 @@ export default function AddListingPage() {
 
         {step === 4 && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-[var(--public-ink)]">Review</h2>
+            <h2 className="text-lg font-semibold text-[var(--public-ink)]">
+              Review
+            </h2>
             <div className="grid gap-4 text-sm text-[var(--public-ink)]/70">
               <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-4 space-y-1">
                 <div className="text-xs uppercase tracking-widest text-[var(--public-ink)]/40">
@@ -382,7 +427,9 @@ export default function AddListingPage() {
           </div>
         )}
 
-        {message && <div className="text-xs text-[var(--public-ink)]/60">{message}</div>}
+        {message && (
+          <div className="text-xs text-[var(--public-ink)]/60">{message}</div>
+        )}
 
         <div className="flex flex-wrap gap-3 justify-between sticky bottom-0 bg-[#0A0A0A]/90 backdrop-blur py-4 border-t border-[var(--public-line)] z-20 mt-4">
           <button
@@ -394,7 +441,8 @@ export default function AddListingPage() {
           {step < 4 ? (
             <button
               onClick={nextStep}
-              className="px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold"
+              className="button button-primary"
+              aria-label="Continue to next step"
             >
               Continue
             </button>
@@ -402,7 +450,9 @@ export default function AddListingPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold disabled:opacity-60"
+              aria-busy={saving ? "true" : "false"}
+              className={`button button-primary ${saving ? "opacity-80 cursor-wait" : ""}`}
+              aria-label={`Save ${labels.listing}`}
             >
               {saving ? "Saving..." : `Save ${labels.listing}`}
             </button>

@@ -24,26 +24,31 @@ export default function ListingsPage() {
   }, [fetchDashboardData]);
 
   return (
-    <div className="space-y-6 pb-24 md:pb-0">
+    <section
+      className="space-y-6 pb-24 md:pb-0"
+      aria-label="Listings dashboard"
+    >
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[var(--public-ink)] uppercase tracking-tight">
+        <h1 className="text-2xl font-bold text-[var(--text-default)] uppercase tracking-tight">
           {labels.listings}
         </h1>
         {canAddListing ? (
           <Link
             href="/dashboard/ai/listings/new"
-            className="flex items-center gap-2 bg-[var(--color-brand-red)] text-[var(--public-ink)] px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors"
+            className="button button-primary flex items-center gap-2"
+            aria-label={`Add new ${labels.listing.toLowerCase()}`}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4" aria-hidden="true" />
             <span className="hidden md:inline">Add {labels.listing}</span>
           </Link>
         ) : (
           <button
             disabled
-            className="flex items-center gap-2 bg-white/5 text-[var(--public-ink)]/40 px-4 py-2 rounded-lg font-medium cursor-not-allowed"
+            className="button button-secondary opacity-60 cursor-not-allowed"
+            aria-disabled="true"
             title={`You can only have one ${labels.listing.toLowerCase()}`}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4" aria-hidden="true" />
             <span className="hidden md:inline">
               Max {labels.listings} reached
             </span>
@@ -52,93 +57,131 @@ export default function ListingsPage() {
       </div>
 
       {isLoading && listings.length === 0 ? (
-        <div className="flex justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
+        <div
+          className="flex justify-center py-20"
+          role="status"
+          aria-live="polite"
+          aria-label="Loading listings"
+        >
+          <Loader2 className="w-8 h-8 animate-spin text-[var(--text-muted)]" />
         </div>
       ) : listings.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-[var(--public-line)] rounded-xl bg-white/5">
-          <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-4">
-            <Home className="w-6 h-6 text-[var(--public-ink)]/40" />
+        <div
+          className="panel panel-muted p-12 text-center space-y-6 flex flex-col items-center"
+          role="region"
+          aria-label="Empty listings state"
+        >
+          <div className="w-12 h-12 bg-[var(--bg-soft)] rounded-full flex items-center justify-center">
+            <Home
+              className="w-6 h-6 text-[var(--text-muted)]"
+              aria-hidden="true"
+            />
           </div>
-          <h3 className="text-lg font-medium text-[var(--public-ink)] mb-1">
-            No {labels.listings.toLowerCase()} found
-          </h3>
-          <p className="text-sm text-[var(--public-ink)]/50 mb-6 max-w-sm">
-            {labels.emptyListings}
-          </p>
+          <div className="max-w-sm space-y-2">
+            <h2 className="text-lg font-semibold text-[var(--text-default)]">
+              No {labels.listings.toLowerCase()} found
+            </h2>
+            <p className="text-sm text-[var(--text-muted)]">
+              {labels.emptyListings}
+            </p>
+          </div>
           {canAddListing && (
             <Link
               href="/dashboard/ai/listings/new"
-              className="inline-flex items-center justify-center px-4 py-2 bg-white text-black font-semibold rounded-lg text-sm hover:bg-zinc-200 transition-colors"
+              className="button button-primary mt-4"
+              aria-label={`Create your first ${labels.listing.toLowerCase()}`}
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="w-4 h-4" aria-hidden="true" />
               Add {labels.listing}
             </Link>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          role="list"
+        >
           {listings.map((listing) => (
-            <Link
+            <article
               key={listing.id}
-              href={`/dashboard/ai/listings/${listing.id}`}
-              className="bg-[var(--color-dashboard-surface)] border border-[var(--public-line)] rounded-2xl overflow-hidden group hover:border-white/20 transition-colors"
+              role="listitem"
+              className="card-elevated group overflow-hidden hover:shadow-md transition-all"
             >
-              <div className="h-36 bg-white/5 relative">
-                <div className="absolute inset-0 flex items-center justify-center text-[var(--public-ink)]/10">
-                  <Home className="w-12 h-12" />
-                </div>
-                <div
-                  className={`absolute top-4 right-4 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
-                    listing.status === "active"
-                      ? "bg-emerald-500/20 text-emerald-200"
-                      : "bg-amber-500/20 text-amber-200"
-                  }`}
-                >
-                  {listing.status === "active" ? "Active" : "Incomplete"}
-                </div>
-              </div>
-              <div className="p-5">
-                <h3 className="text-lg font-bold text-[var(--public-ink)] mb-1 truncate">
-                  {listing.name}
-                </h3>
-                <p className="text-sm text-[var(--public-ink)]/60 mb-4 truncate">
-                  {listing.city}
-                </p>
-
-                <div className="grid gap-3 pt-4 border-t border-white/5">
-                  <div className="flex items-center justify-between text-xs text-[var(--public-ink)]/60">
-                    <span className="flex items-center gap-2">
-                      <Link2 className="w-3 h-3" />
-                      Platforms connected
-                    </span>
-                    <span className="text-[var(--public-ink)] font-semibold">
-                      {listing.platformsConnected?.length || 0}
-                    </span>
+              <Link
+                href={`/dashboard/ai/listings/${listing.id}`}
+                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--interactive)] focus-visible:ring-offset-2 rounded-lg"
+                aria-label={`Open ${listing.name} listing details`}
+              >
+                <div className="h-36 bg-[var(--bg-muted)] relative">
+                  <div className="absolute inset-0 flex items-center justify-center text-[var(--text-muted)]/20">
+                    <Home className="w-12 h-12" aria-hidden="true" />
                   </div>
-                  {showCalendar && (
-                    <div className="flex items-center justify-between text-xs text-[var(--public-ink)]/60">
+                  <div
+                    className={`absolute top-4 right-4 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                      listing.status === "active"
+                        ? "bg-[var(--success)]/15 text-[var(--success)]"
+                        : "bg-[var(--warning)]/15 text-[var(--warning)]"
+                    }`}
+                    role="status"
+                    aria-label={`Status: ${listing.status}`}
+                  >
+                    {listing.status === "active" ? "Active" : "Incomplete"}
+                  </div>
+                </div>
+                <div className="p-5 space-y-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-[var(--text-default)] truncate">
+                      {listing.name}
+                    </h3>
+                    <p className="text-sm text-[var(--text-muted)] truncate">
+                      {listing.city}
+                    </p>
+                  </div>
+
+                  <div
+                    className="grid gap-3 pt-4 border-t border-[var(--line)]"
+                    role="group"
+                    aria-label="Listing details"
+                  >
+                    <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
                       <span className="flex items-center gap-2">
-                        <Calendar className="w-3 h-3" />
-                        {labels.calendar} sync
+                        <Link2 className="w-3 h-3" aria-hidden="true" />
+                        Platforms connected
                       </span>
-                      <span className="text-[var(--public-ink)] font-semibold">
-                        {listing.calendarSyncStatus === "connected"
-                          ? "OK"
-                          : listing.calendarSyncStatus === "error"
-                            ? "Error"
-                            : listing.calendarSyncStatus === "never_synced"
-                              ? "Never synced"
-                              : "Not connected"}
+                      <span
+                        className="text-[var(--text-default)] font-semibold"
+                        aria-label={`${listing.platformsConnected?.length || 0} platforms connected`}
+                      >
+                        {listing.platformsConnected?.length || 0}
                       </span>
                     </div>
-                  )}
+                    {showCalendar && (
+                      <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+                        <span className="flex items-center gap-2">
+                          <Calendar className="w-3 h-3" aria-hidden="true" />
+                          {labels.calendar} sync
+                        </span>
+                        <span
+                          className="text-[var(--text-default)] font-semibold"
+                          aria-label={`Calendar sync: ${listing.calendarSyncStatus}`}
+                        >
+                          {listing.calendarSyncStatus === "connected"
+                            ? "OK"
+                            : listing.calendarSyncStatus === "error"
+                              ? "Error"
+                              : listing.calendarSyncStatus === "never_synced"
+                                ? "Never synced"
+                                : "Not connected"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </article>
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }
