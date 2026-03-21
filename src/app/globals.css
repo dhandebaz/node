@@ -102,9 +102,35 @@
     }
 
     .dashboard-surface {
-        background-color: var(--color-dashboard-surface);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        /* Lighter, neutral panel for listings/dashboard flows */
+        background-color: var(--public-panel);
+        border: 1px solid var(--public-line);
         border-radius: 1rem;
+        color: var(--public-ink);
+    }
+
+    /* Ensure any sticky footers inside dashboard surfaces are readable and match panel tone */
+    .dashboard-surface .sticky,
+    .dashboard-surface .sticky * {
+        background: linear-gradient(
+            180deg,
+            var(--public-panel) 0%,
+            var(--public-panel-muted) 100%
+        );
+        border-top: 1px solid var(--public-line);
+        color: var(--public-ink);
+    }
+
+    /* Make action buttons inside the sticky footer use a subtle accent that reads on the lighter surface */
+    .dashboard-surface .sticky .bg-white,
+    .dashboard-surface .sticky .bg-white:hover {
+        background: var(--public-accent);
+        color: white;
+    }
+
+    /* Slightly lift inner cards within dashboard surfaces for better separation */
+    .dashboard-surface > *:not(.sticky) {
+        background: transparent;
     }
 
     /* Subtle Grid Pattern */
