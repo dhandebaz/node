@@ -49,7 +49,7 @@ export type TelephonySession = {
 };
 
 export type StartCallOptions = {
-  tenantId: string;
+  tenantId?: string;
   to: string; // e.g. international E.164 phone number
   from?: string; // optional from number
   webhookUrl?: string; // provider callback url for call events
