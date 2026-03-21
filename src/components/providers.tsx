@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import NotificationProvider from "@/components/providers/NotificationProvider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -11,7 +13,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     navigator.serviceWorker
       .getRegistrations()
       .then(async (registrations) => {
-        const targets = registrations.filter((r) => r.active?.scriptURL.includes("/service-worker.js"));
+        const targets = registrations.filter((r) =>
+          r.active?.scriptURL.includes("/service-worker.js"),
+        );
         if (targets.length === 0) return;
 
         await Promise.all(targets.map((r) => r.unregister()));
@@ -24,10 +28,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthProvider>
-      <LanguageProvider>
-        {children}
-      </LanguageProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <LanguageProvider>
+          <NotificationProvider>{children}</NotificationProvider>
+        </LanguageProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
