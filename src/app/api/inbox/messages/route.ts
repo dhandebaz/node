@@ -36,7 +36,11 @@ export async function GET(request: NextRequest) {
       senderType: m.direction === 'inbound' ? 'customer' : (m.sender_id === 'ai_assistant' ? 'ai' : 'human'),
       content: m.content,
       timestamp: m.created_at || m.timestamp,
-      channel: m.channel
+      channel: m.channel,
+      mediaUrl: m.metadata?.media_url,
+      mediaType: m.metadata?.media_type,
+      caption: m.metadata?.caption,
+      status: m.status
   }));
 
   return NextResponse.json({ messages: formatted });

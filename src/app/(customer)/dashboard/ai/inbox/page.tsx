@@ -30,6 +30,7 @@ import {
   EyeOff,
   Building,
 } from "lucide-react";
+import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { cn, timeAgo } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchWithAuth } from "@/lib/api/fetcher";
@@ -92,6 +93,10 @@ type ConversationMessage = {
   content: string;
   timestamp: string;
   channel: Conversation["channel"];
+  mediaUrl?: string;
+  mediaType?: "image" | "video" | "audio" | "document";
+  caption?: string;
+  status?: string;
 };
 
 type ContextField = {
@@ -476,6 +481,108 @@ export default function InboxPage() {
     }, 15000);
     return () => clearInterval(interval);
   }, [selectedConversationId]);
+
+  // Supabase Realtime Subscriptions
+  useEffect(() => {
+    if (!tenant?.id) return;
+
+    const supabase = getSupabaseBrowser();
+    
+    // Subscribe to new messages for the tenant
+    const messagesChannel = supabase
+      .channel("realtime-messages")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `tenant_id=eq.${tenant.id}`,
+        },
+        (payload: any) => {
+          const newMessage = payload.new as any;
+          
+          // Only add if it belongs to the selected conversation
+          if (newMessage.conversation_id === selectedConversationId) {
+            setMessages((prev) => {
+              // Avoid duplicates if optimistic update already handled it
+              if (prev.some((m) => m.id === newMessage.id)) return prev;
+              
+              const formatted: ConversationMessage = {
+                id: newMessage.id,
+                conversationId: newMessage.conversation_id,
+                senderType: newMessage.direction === 'inbound' ? 'customer' : (newMessage.sender_id === 'ai_assistant' ? 'ai' : 'human'),
+                content: newMessage.content,
+                timestamp: newMessage.created_at || newMessage.timestamp,
+                channel: newMessage.channel
+              };
+              return [...prev, formatted];
+            });
+
+            // Also reload context when a new message arrives to keep it fresh
+            loadContext(newMessage.conversation_id);
+          }
+
+          // Update conversations list with the latest preview
+          setConversations((prev) => 
+            prev.map((conv) => 
+              conv.id === newMessage.conversation_id 
+                ? {
+                    ...conv,
+                    lastMessage: newMessage.content,
+                    lastMessageAt: newMessage.created_at || newMessage.timestamp,
+                    unreadCount: newMessage.direction === 'inbound' && selectedConversationId !== newMessage.conversation_id
+                      ? conv.unreadCount + 1 
+                      : conv.unreadCount
+                  } 
+                : conv
+            ).sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime())
+          );
+        }
+      )
+      .subscribe();
+
+    // Subscribe to conversation updates (status, etc.)
+    const conversationsChannel = supabase
+      .channel("realtime-conversations")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "conversations",
+          filter: `tenant_id=eq.${tenant.id}`,
+        },
+        (payload: any) => {
+          const updatedConv = payload.new as any;
+          setConversations((prev) => 
+            prev.map((conv) => 
+              conv.id === updatedConv.id 
+                ? {
+                    ...conv,
+                    customerName: updatedConv.contact_name || conv.customerName,
+                    customerPhone: updatedConv.external_id || conv.customerPhone,
+                    channel: updatedConv.channel || conv.channel,
+                    status: updatedConv.status || conv.status,
+                    lastMessageAt: updatedConv.last_message_at || conv.lastMessageAt,
+                    aiPaused: updatedConv.metadata?.ai_paused || false,
+                    unreadCount: updatedConv.metadata?.unread_count || 0,
+                    // Preserve properties that might not be in the direct payload
+                    lastMessage: updatedConv.metadata?.last_message_preview || conv.lastMessage,
+                    bookingId: updatedConv.metadata?.booking_id || conv.bookingId,
+                  } 
+                : conv
+            ).sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime())
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(messagesChannel);
+      supabase.removeChannel(conversationsChannel);
+    };
+  }, [tenant?.id, selectedConversationId]);
 
   const managerOptions = useMemo(() => {
     const unique = new Map<string, string>();
@@ -1488,7 +1595,7 @@ export default function InboxPage() {
                       >
                         <div
                           className={cn(
-                            "w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-[var(--public-ink)] mt-1",
+                            "w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-[var(--public-ink)] mt-1 relative",
                             isCustomer
                               ? "bg-gradient-to-br from-orange-400 to-red-500"
                               : "bg-white/10 border border-[var(--public-line)]",
@@ -1507,6 +1614,14 @@ export default function InboxPage() {
                           ) : (
                             <User className="w-4 h-4" />
                           )}
+                          
+                          {/* Channel Badge on Avatar */}
+                          <div className="absolute -bottom-1 -right-1 bg-black rounded-full p-0.5 border border-white/10 shadow-lg">
+                            {(() => {
+                                const Icon = channelIcon[message.channel];
+                                return <Icon className="w-2.5 h-2.5 text-[var(--public-ink)]/70" />;
+                            })()}
+                          </div>
                         </div>
                         <div>
                           <div
@@ -1519,6 +1634,37 @@ export default function InboxPage() {
                                   : "bg-white/10 border border-[var(--public-line)] rounded-tr-none text-[var(--public-ink)]",
                             )}
                           >
+                            {message.mediaUrl && (
+                              <div className="mb-3 rounded-lg overflow-hidden border border-white/5 bg-black/20">
+                                {message.mediaType === "image" ? (
+                                  <img 
+                                    src={message.mediaUrl} 
+                                    alt={message.caption || "Image"} 
+                                    className="max-w-full h-auto object-cover hover:scale-105 transition-transform cursor-pointer"
+                                    onClick={() => window.open(message.mediaUrl, '_blank')}
+                                  />
+                                ) : message.mediaType === "video" ? (
+                                  <video src={message.mediaUrl} controls className="max-w-full" />
+                                ) : message.mediaType === "audio" ? (
+                                  <audio src={message.mediaUrl} controls className="max-w-full" />
+                                ) : (
+                                  <a 
+                                    href={message.mediaUrl} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors"
+                                  >
+                                    <div className="p-2 bg-white/10 rounded-lg">
+                                      <Copy className="w-4 h-4" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-[11px] font-bold uppercase tracking-widest text-[var(--public-ink)]/40">Document</div>
+                                      <div className="text-xs truncate">{message.caption || "View Attachment"}</div>
+                                    </div>
+                                  </a>
+                                )}
+                              </div>
+                            )}
                             {message.content}
                           </div>
                           <div
@@ -1530,6 +1676,14 @@ export default function InboxPage() {
                             )}
                           >
                             <span>{timeAgo(message.timestamp)}</span>
+                            {message.status && !isCustomer && (
+                                <span className={cn(
+                                    "px-1 rounded-sm uppercase tracking-tighter font-bold",
+                                    message.status === 'read' ? 'text-emerald-400' : 'text-[var(--public-ink)]/20'
+                                )}>
+                                    {message.status}
+                                </span>
+                            )}
                             <span>
                               {isAi
                                 ? "AI"
@@ -1608,10 +1762,14 @@ export default function InboxPage() {
                         suggestions.slice(0, 3).map((suggestion) => (
                           <button
                             key={suggestion}
-                            onClick={() => setReplyText(suggestion)}
-                            className="text-xs text-[var(--public-ink)]/80 border border-[var(--public-line)] px-3 py-1.5 rounded-full hover:border-white/40"
+                            onClick={() => {
+                              setReplyText(suggestion);
+                              document.getElementById("message-input")?.focus();
+                            }}
+                            className="text-xs text-[var(--public-ink)]/80 border border-[var(--public-line)] px-3 py-1.5 rounded-full hover:border-white/40 hover:bg-white/5 transition-all flex items-center gap-2 group"
                           >
-                            {suggestion}
+                            <Sparkles className="w-3 h-3 text-emerald-400 group-hover:scale-110 transition-transform" />
+                            <span className="truncate max-w-[150px]">{suggestion}</span>
                           </button>
                         ))}
                     </div>

@@ -201,17 +201,19 @@ function OnboardingContent() {
       <div className="public-container py-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="public-inset flex h-12 w-12 items-center justify-center rounded-[1.4rem] bg-[var(--public-accent)] text-white">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
               <Logo className="h-8 w-8" />
             </div>
             <div>
-              <div className="public-display text-xl text-[var(--public-ink)]">
+              <div className="font-display text-2xl tracking-tighter text-foreground uppercase">
                 nodebase
               </div>
-              <div className="public-eyebrow">Onboarding</div>
+              <div className="font-sans text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                Onboarding
+              </div>
             </div>
           </Link>
-          <div className="public-pill text-xs font-semibold text-[var(--public-muted)]">
+          <div className="public-pill text-[10px] font-black uppercase tracking-widest text-muted-foreground ring-1 ring-border">
             {currentStepLabel}
           </div>
         </div>
@@ -226,15 +228,15 @@ function OnboardingContent() {
                 exit={{ opacity: 0, y: -18 }}
                 className="w-full space-y-6"
               >
-                <section className="public-panel px-6 py-8 sm:px-8 sm:py-10 lg:px-10">
-                  <div className="relative z-10 space-y-5 text-center">
-                    <div className="public-pill public-eyebrow">
+                <section className="public-panel px-6 py-12 sm:px-8 sm:py-16 lg:px-10 border-b-4 border-primary">
+                  <div className="relative z-10 space-y-6 text-center">
+                    <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
                       Welcome to Nodebase
                     </div>
-                    <h1 className="public-display text-4xl leading-[0.94] text-[var(--public-ink)] sm:text-5xl lg:text-6xl">
+                    <h1 className="font-display text-5xl leading-[0.9] text-foreground sm:text-6xl lg:text-7xl uppercase tracking-tighter">
                       Which workflow are you hiring for first?
                     </h1>
-                    <p className="mx-auto max-w-3xl text-base leading-7 text-[var(--public-muted)]">
+                    <p className="mx-auto max-w-2xl text-lg font-sans text-muted-foreground">
                       Pick the business lane so Nodebase can shape the initial
                       employee, control surfaces, and launch checklist around
                       real operations.
@@ -265,15 +267,15 @@ function OnboardingContent() {
                 exit={{ opacity: 0, x: -18 }}
                 className="mx-auto w-full max-w-3xl space-y-6"
               >
-                <section className="public-panel px-6 py-8 sm:px-8">
+                <section className="public-panel px-6 py-8 sm:px-8 border-b-2 border-primary/20">
                   <div className="relative z-10 space-y-4">
-                    <div className="public-pill public-eyebrow">
+                    <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
                       Setup details
                     </div>
-                    <h1 className="public-display text-4xl text-[var(--public-ink)] sm:text-5xl">
+                    <h1 className="font-display text-4xl text-foreground sm:text-5xl uppercase tracking-tighter leading-none">
                       Tell us how the workflow runs today.
                     </h1>
-                    <p className="max-w-2xl text-base leading-7 text-[var(--public-muted)]">
+                    <p className="max-w-xl text-lg text-muted-foreground">
                       This gives the system enough signal to prepare the first
                       employee and tailor the onboarding path.
                     </p>
@@ -306,16 +308,16 @@ function OnboardingContent() {
                 exit={{ opacity: 0, y: -18 }}
                 className="mx-auto w-full max-w-3xl space-y-6"
               >
-                <section className="public-panel px-6 py-8 text-center sm:px-8 sm:py-10">
-                  <div className="relative z-10 space-y-5">
-                    <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--public-accent-soft)]/75 text-[var(--public-accent-strong)]">
-                      <Sparkles className="h-8 w-8 animate-pulse" />
+                <section className="public-panel px-6 py-12 text-center sm:px-8 border-b-4 border-primary">
+                  <div className="relative z-10 space-y-6">
+                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/5 text-primary ring-1 ring-primary/20">
+                      <Sparkles className="h-10 w-10 animate-pulse" />
                     </div>
                     <div>
-                      <h1 className="public-display text-4xl text-[var(--public-ink)] sm:text-5xl">
-                        Provisioning your workspace
+                      <h1 className="font-display text-5xl text-foreground sm:text-6xl uppercase tracking-tighter leading-none">
+                        Provisioning workspace
                       </h1>
-                      <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-[var(--public-muted)]">
+                      <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
                         Hold for a moment while the employee role, initial
                         settings, and workspace structure are prepared.
                       </p>
@@ -332,38 +334,45 @@ function OnboardingContent() {
                       return (
                         <div
                           key={stepItem.id}
-                          className="public-inset flex items-center gap-4 rounded-[1.3rem] px-4 py-4"
+                          className="public-inset flex items-center justify-between gap-4 rounded-2xl px-6 py-4"
                         >
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[rgba(255,248,235,0.86)]">
-                            {isCompleted ? (
-                              <CheckCircle2 className="h-4 w-4 text-[var(--public-success)]" />
-                            ) : isCurrent ? (
-                              <Loader2 className="h-4 w-4 animate-spin text-[var(--public-accent-strong)]" />
-                            ) : (
-                              <div className="h-2 w-2 rounded-full bg-[rgba(61,44,25,0.2)]" />
-                            )}
+                          <div className="flex items-center gap-4">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-background border border-border">
+                              {isCompleted ? (
+                                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                              ) : isCurrent ? (
+                                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                              ) : (
+                                <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />
+                              )}
+                            </div>
+                            <span
+                              className={`text-sm font-bold uppercase tracking-tight ${
+                                isCompleted || isCurrent
+                                  ? "text-foreground"
+                                  : "text-muted-foreground"
+                              }`}
+                            >
+                              {stepItem.label}
+                            </span>
                           </div>
-                          <span
-                            className={`text-sm font-semibold ${
-                              isCompleted || isCurrent
-                                ? "text-[var(--public-ink)]"
-                                : "text-[var(--public-muted)]"
-                            }`}
-                          >
-                            {stepItem.label}
-                          </span>
+                          {isCurrent && (
+                            <span className="text-[10px] font-black uppercase tracking-widest text-primary animate-pulse">
+                              Processing
+                            </span>
+                          )}
                         </div>
                       );
                     })}
 
-                    <div className="rounded-full bg-[rgba(61,44,25,0.08)] p-1">
+                    <div className="rounded-full bg-border/40 p-1">
                       <div
-                        className="h-2 rounded-full bg-[var(--public-accent)] transition-all"
+                        className="h-2 rounded-full bg-primary transition-all duration-500 shadow-sm"
                         style={{ width: `${progress}%` }}
                       />
                     </div>
-                    <div className="text-right text-sm font-semibold text-[var(--public-muted)]">
-                      {Math.round(progress)}%
+                    <div className="text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                      {Math.round(progress)}% Complete
                     </div>
                   </div>
                 </section>

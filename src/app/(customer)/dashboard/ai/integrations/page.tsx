@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { 
   Puzzle,
@@ -39,6 +40,7 @@ interface GenericIntegrationStatus {
   status: "connected" | "disconnected";
   connectedName: string | null;
   lastSyncedAt: string | null;
+  metadata?: Record<string, any>;
 }
 
 export default function ListingIntegrationsPage() {
@@ -461,7 +463,13 @@ export default function ListingIntegrationsPage() {
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] rounded-full flex items-center justify-center">
-                            <Puzzle className="w-6 h-6 text-[var(--public-ink)]" />
+                            <Image 
+                              src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" 
+                              alt="Instagram" 
+                              width={24} 
+                              height={24} 
+                              className="w-6 h-6 invert"
+                            />
                         </div>
                         <div>
                             <CardTitle className="text-[var(--public-ink)]">Instagram</CardTitle>

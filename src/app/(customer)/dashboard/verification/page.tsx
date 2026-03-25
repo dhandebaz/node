@@ -87,7 +87,7 @@ function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    ctx.strokeStyle = "#1f1a16";
+    ctx.strokeStyle = "currentColor";
     ctx.lineWidth = 2;
     ctx.lineCap = "round";
   }, []);
@@ -132,7 +132,7 @@ function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
     <div className="relative">
       <canvas
         ref={canvasRef}
-        className="h-40 w-full touch-none rounded-lg border border-[var(--public-line)] public-panel cursor-crosshair"
+        className="h-40 w-full touch-none rounded-lg border border-border bg-card cursor-crosshair text-foreground"
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={stopDrawing}
@@ -144,7 +144,7 @@ function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
       <button
         type="button"
         onClick={clearPad}
-        className="absolute bottom-2 right-2 rounded-md bg-[var(--public-panel-muted)] px-3 py-1 text-xs text-[var(--public-muted)] hover:bg-zinc-700 hover:text-[var(--public-ink)]"
+        className="absolute bottom-2 right-2 rounded-md bg-muted px-3 py-1 text-xs text-muted-foreground hover:bg-muted-foreground hover:text-muted"
       >
         Clear
       </button>
@@ -400,8 +400,8 @@ export default function VerificationPage() {
             <div
               className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
                 step >= currentStep
-                  ? "bg-brand-red text-[var(--public-ink)]"
-                  : "bg-[var(--public-panel-muted)] text-[var(--public-muted)]"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground"
               }`}
             >
               {step > currentStep ? <CheckCircle2 size={16} /> : currentStep}
@@ -409,7 +409,7 @@ export default function VerificationPage() {
             {currentStep < 4 && (
               <div
                 className={`mx-2 h-1 w-12 ${
-                  step > currentStep ? "bg-brand-red" : "bg-[var(--public-panel-muted)]"
+                  step > currentStep ? "bg-primary" : "bg-muted"
                 }`}
               />
             )}
@@ -418,8 +418,8 @@ export default function VerificationPage() {
       </div>
 
       {step === 1 && (
-        <div className="space-y-6 rounded-xl public-panel p-6">
-          <h2 className="text-xl font-bold">Business Details</h2>
+        <div className="space-y-6 rounded-xl bg-card border border-border p-6 shadow-sm">
+          <h2 className="text-xl font-bold text-foreground">Business Details</h2>
           <form onSubmit={handleDetailsSubmit} className="space-y-4">
             <div className="grid gap-2">
               <Label>Business Name</Label>
@@ -429,7 +429,7 @@ export default function VerificationPage() {
                   setDetails({ ...details, name: event.target.value })
                 }
                 required
-                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
+                className="border-border bg-muted/50 text-foreground placeholder:text-muted-foreground/50"
               />
             </div>
             <div className="grid gap-2">
@@ -440,7 +440,7 @@ export default function VerificationPage() {
                   setDetails({ ...details, taxId: event.target.value })
                 }
                 placeholder="ABCDE1234F or 07ABCDE1234F1Z5"
-                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
+                className="border-border bg-muted/50 text-foreground placeholder:text-muted-foreground/50"
               />
             </div>
             <div className="grid gap-2">
@@ -451,7 +451,7 @@ export default function VerificationPage() {
                   setDetails({ ...details, address: event.target.value })
                 }
                 required
-                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
+                className="border-border bg-muted/50 text-foreground placeholder:text-muted-foreground/50"
               />
             </div>
             <div className="grid gap-2">
@@ -462,7 +462,7 @@ export default function VerificationPage() {
                   setDetails({ ...details, phone: event.target.value })
                 }
                 required
-                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
+                className="border-border bg-muted/50 text-foreground placeholder:text-muted-foreground/50"
               />
             </div>
             <div className="grid gap-2">
@@ -473,7 +473,7 @@ export default function VerificationPage() {
                   setDetails({ ...details, timezone: event.target.value })
                 }
                 required
-                className="border-[var(--public-line)] bg-[var(--public-bg-soft)] text-[var(--public-ink)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40"
+                className="border-border bg-muted/50 text-foreground placeholder:text-muted-foreground/50"
               />
             </div>
             <Button type="submit" disabled={loading} className="w-full public-button">
@@ -488,8 +488,8 @@ export default function VerificationPage() {
       )}
 
       {step === 2 && (
-        <div className="space-y-6 rounded-xl public-panel p-6">
-          <h2 className="text-xl font-bold text-[var(--public-ink)]">
+        <div className="space-y-6 rounded-xl bg-card border border-border p-6 shadow-sm">
+          <h2 className="text-xl font-bold text-foreground">
             Identity Verification
           </h2>
           {!extractedData ? (
@@ -518,22 +518,22 @@ export default function VerificationPage() {
                 </span>
               </div>
 
-              <div className="grid gap-4 rounded-lg bg-[var(--public-bg-soft)] text-[var(--public-ink)] p-4">
+              <div className="grid gap-4 rounded-lg bg-muted/50 text-foreground p-4 border border-border">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs text-[var(--public-muted)]">Name</Label>
+                    <Label className="text-xs text-muted-foreground">Name</Label>
                     <div className="font-medium">
                       {extractedData.name || "—"}
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs text-[var(--public-muted)]">DOB</Label>
+                    <Label className="text-xs text-muted-foreground">DOB</Label>
                     <div className="font-medium">
                       {extractedData.dob || "—"}
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs text-[var(--public-muted)]">
+                    <Label className="text-xs text-muted-foreground">
                       Document Type
                     </Label>
                     <div className="font-medium">
@@ -541,7 +541,7 @@ export default function VerificationPage() {
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs text-[var(--public-muted)]">Document No</Label>
+                    <Label className="text-xs text-muted-foreground">Document No</Label>
                     <div className="font-medium">
                       {extractedData.document_number || "—"}
                     </div>
@@ -566,8 +566,8 @@ export default function VerificationPage() {
       )}
 
       {step === 3 && (
-        <div className="space-y-6 rounded-xl public-panel p-6">
-          <h2 className="text-xl font-bold">Legal Agreement</h2>
+        <div className="space-y-6 rounded-xl bg-card border border-border p-6 shadow-sm">
+          <h2 className="text-xl font-bold text-foreground">Legal Agreement</h2>
           <div className="h-64 overflow-y-auto rounded-lg bg-white p-6 text-sm font-serif text-black">
             <h3 className="mb-4 text-lg font-bold">
               Zero-Liability & Platform Terms Acknowledgement
@@ -595,9 +595,9 @@ export default function VerificationPage() {
           </div>
 
           <div className="space-y-2">
-            <Label>Sign Below</Label>
+            <Label className="text-foreground">Sign Below</Label>
             <SignaturePad onEnd={setSignature} />
-            <p className="text-xs text-[var(--public-muted)]">
+            <p className="text-xs text-muted-foreground">
               Draw your signature using mouse or touch.
             </p>
           </div>
@@ -617,14 +617,14 @@ export default function VerificationPage() {
       )}
 
       {step === 4 && (
-        <div className="space-y-6 rounded-xl public-panel p-6 text-center">
-          <h2 className="text-xl font-bold">Claim your Handle</h2>
-          <p className="text-[var(--public-muted)]">
+        <div className="space-y-6 rounded-xl bg-card border border-border p-6 text-center shadow-sm">
+          <h2 className="text-xl font-bold text-foreground">Claim your Handle</h2>
+          <p className="text-muted-foreground">
             Choose a unique username for your public profile.
           </p>
 
           <div className="mx-auto flex max-w-sm items-center justify-center gap-2">
-            <span className="text-[var(--public-muted)]">{publicProfilePrefix}</span>
+            <span className="text-muted-foreground">{publicProfilePrefix}</span>
             <Input
               value={handle}
               onChange={(event) =>
@@ -633,7 +633,7 @@ export default function VerificationPage() {
                 )
               }
               placeholder="my-business"
-              className="bg-[var(--public-bg-soft)] text-[var(--public-ink)]"
+              className="bg-muted/50 text-foreground border-border"
             />
           </div>
 

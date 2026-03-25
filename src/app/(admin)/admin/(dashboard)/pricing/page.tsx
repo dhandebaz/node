@@ -27,32 +27,50 @@ export default async function AdminPricingPage() {
     .order('price', { ascending: true });
 
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-12">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-          <DollarSign className="w-8 h-8 text-brand-red" />
-          Pricing & Plans
-        </h1>
-        <p className="text-zinc-400">
-          Manage subscription plans and the underlying AI cost model.
-        </p>
+    <div className="space-y-12 pb-20">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-10 mb-10">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 shadow-inner">
+              <DollarSign className="w-6 h-6 text-primary" />
+            </div>
+            <h1 className="text-4xl font-black uppercase tracking-[-0.02em] text-foreground">
+              Pricing <span className="text-primary/40">& Revenue</span>
+            </h1>
+          </div>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground/50 ml-1">
+            Subscription tiers & algorithmic cost orchestration
+          </p>
+        </div>
       </div>
 
-      <section>
-        <div className="flex items-center gap-2 mb-6">
-            <Tag className="w-5 h-5 text-blue-400" />
-            <h2 className="text-xl font-bold text-white">Subscription Plans</h2>
-        </div>
-        <PlansEditor plans={plans || []} />
-      </section>
+      <div className="grid grid-cols-1 gap-12">
+        <section className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm group">
+          <div className="p-8 border-b border-border bg-muted/30 flex items-center justify-between">
+            <div className="space-y-1">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-foreground">Subscription_Substrate</h3>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/30">Registry of all authorized billing tiers</p>
+            </div>
+            <Tag className="w-4 h-4 text-muted-foreground/20" />
+          </div>
+          <div className="p-8">
+            <PlansEditor plans={plans || []} />
+          </div>
+        </section>
 
-      <section className="pt-8 border-t border-zinc-800">
-        <div className="flex items-center gap-2 mb-6">
-            <DollarSign className="w-5 h-5 text-green-400" />
-            <h2 className="text-xl font-bold text-white">AI Cost Model</h2>
-        </div>
-        <PricingEditor config={config} />
-      </section>
+        <section className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm group border-dashed">
+          <div className="p-8 border-b border-border bg-muted/30 flex items-center justify-between">
+            <div className="space-y-1">
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-foreground">Ai_Compute_Model</h3>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/30">Algorithmic token valuation & margin tuning</p>
+            </div>
+            <DollarSign className="w-4 h-4 text-muted-foreground/20" />
+          </div>
+          <div className="p-8">
+            <PricingEditor config={config} />
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

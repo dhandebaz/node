@@ -35,7 +35,7 @@ export async function GET() {
   } catch {}
   const { data, error } = await supabase
     .from("integrations")
-    .select("tenant_id, status, connected_name, last_synced_at")
+    .select("tenant_id, status, connected_name, last_synced_at, metadata")
     .eq("tenant_id", tenantId)
     .eq("provider", "whatsapp")
     .maybeSingle();

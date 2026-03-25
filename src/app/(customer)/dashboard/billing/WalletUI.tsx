@@ -181,9 +181,9 @@ export function WalletUI({
       {/* Top Up Modal */}
       {isTopUpOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h3 className="text-xl font-bold">Top Up Wallet</h3>
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md overflow-hidden border border-border">
+            <div className="p-6 border-b border-border flex justify-between items-center">
+              <h3 className="text-xl font-bold text-foreground">Top Up Wallet</h3>
               <button
                 onClick={() => setIsTopUpOpen(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -204,8 +204,8 @@ export function WalletUI({
                       onClick={() => setTopUpAmount(amt)}
                       className={`py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${
                         topUpAmount === amt
-                          ? "bg-black text-[var(--public-ink)] border-black"
-                          : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-background text-foreground border-border hover:border-muted-foreground"
                       }`}
                     >
                       {amt} Credits
@@ -243,7 +243,7 @@ export function WalletUI({
               <button
                 onClick={handleTopUp}
                 disabled={loading || topUpAmount < 100}
-                className="w-full bg-black text-[var(--public-ink)] py-3 rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -266,7 +266,7 @@ export function WalletUI({
         </div>
         <button
           onClick={() => setIsTopUpOpen(true)}
-          className="bg-black text-[var(--public-ink)] px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-800"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-sm font-medium"
         >
           <CreditCard className="w-4 h-4" />
           Top Up Credits
@@ -275,16 +275,16 @@ export function WalletUI({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Balance Card */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+        <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+            <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-600">
               <Wallet className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">
+              <p className="text-sm font-medium text-muted-foreground">
                 Available Balance
               </p>
-              <h3 className="text-2xl font-bold">
+              <h3 className="text-2xl font-bold text-foreground">
                 {balance.toFixed(2)} Credits
               </h3>
             </div>
@@ -313,14 +313,14 @@ export function WalletUI({
         </div>
 
         {/* Plan Card */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+        <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+            <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600">
               <CreditCard className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">Current Plan</p>
-              <h3 className="text-2xl font-bold capitalize">{plan}</h3>
+              <p className="text-sm font-medium text-muted-foreground">Current Plan</p>
+              <h3 className="text-2xl font-bold capitalize text-foreground">{plan}</h3>
             </div>
           </div>
           <p className="text-xs text-green-600 font-medium flex items-center gap-1">
@@ -397,7 +397,7 @@ export function WalletUI({
               <button
                 onClick={() => handleUpgrade("pro")}
                 disabled={loading}
-                className="w-full py-2 bg-black text-[var(--public-ink)] rounded-lg font-medium hover:bg-gray-800"
+                className="w-full py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
               >
                 Upgrade to Pro
               </button>
@@ -437,7 +437,7 @@ export function WalletUI({
               <button
                 onClick={() => handleUpgrade("business")}
                 disabled={loading}
-                className="w-full py-2 bg-black text-[var(--public-ink)] rounded-lg font-medium hover:bg-gray-800"
+                className="w-full py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
               >
                 Upgrade to Business
               </button>

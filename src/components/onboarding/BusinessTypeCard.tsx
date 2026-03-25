@@ -27,18 +27,18 @@ export function BusinessTypeCard({
       aria-label={`Select ${title} business type`}
       className={cn(
         "public-panel-soft group h-full p-6 text-left transition-all duration-200 hover:-translate-y-1",
-        selected && "ring-2 ring-[rgba(146,43,34,0.22)]",
+        selected && "ring-2 ring-primary/20 bg-primary/5",
       )}
     >
       <div className="flex h-full flex-col gap-4">
-        <div className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/72 text-[var(--public-accent-strong)]">
+        <div className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Icon className="h-5 w-5" />
         </div>
         <div>
-          <h3 className="text-xl font-semibold text-[var(--public-ink)]">{title}</h3>
-          <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">{description}</p>
+          <h3 className="text-xl font-bold tracking-tight text-foreground font-sans uppercase">{title}</h3>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
         </div>
-        <div className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-[var(--public-accent-strong)]">
+        <div className="mt-auto inline-flex items-center gap-2 text-sm font-black uppercase tracking-wider text-primary">
           Select role
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </div>

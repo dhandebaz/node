@@ -111,37 +111,37 @@ function PricingCard({ frame, index }: { frame: Frame; index: number }) {
       variants={fadeUp}
       transition={{ duration: 0.45, delay: index * 0.08 }}
       className={cn(
-        "p-6 sm:p-7",
-        frame.featured ? "public-panel" : "public-panel-soft",
+        "p-6 sm:p-8",
+        frame.featured ? "public-panel border-b-8 border-primary" : "public-panel-soft",
       )}
     >
-      <div className="relative z-10 space-y-5">
+      <div className="relative z-10 space-y-6">
         <div className="flex items-start justify-between gap-4">
-          <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
-            <Icon className="h-5 w-5" />
+          <div className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
+            <Icon className="h-6 w-6" />
           </div>
-          <span className="public-pill text-xs font-semibold text-[var(--public-muted)]">
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded-full border border-primary/10">
             {frame.eyebrow}
           </span>
         </div>
         <div>
-          <h2 className="text-2xl font-semibold text-[var(--public-ink)]">
+          <h2 className="text-xl font-bold text-foreground uppercase tracking-tight">
             {frame.title}
           </h2>
-          <div className="mt-2 text-2xl font-semibold text-[var(--public-accent-strong)]">
+          <div className="mt-3 text-2xl font-black text-primary uppercase tracking-tighter">
             {frame.price}
           </div>
-          <p className="mt-3 text-sm leading-6 text-[var(--public-muted)]">
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground font-sans">
             {frame.description}
           </p>
         </div>
-        <ul className="space-y-3">
+        <ul className="space-y-4 pt-2">
           {frame.highlights.map((highlight) => (
             <li
               key={highlight}
-              className="flex gap-3 text-sm leading-6 text-[var(--public-muted)]"
+              className="flex gap-3 text-sm font-bold text-foreground uppercase tracking-tight"
             >
-              <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[var(--public-accent-strong)]" />
+              <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
               <span>{highlight}</span>
             </li>
           ))}
@@ -161,30 +161,31 @@ export function PricingSurface() {
             animate="visible"
             variants={fadeUp}
             transition={{ duration: 0.5 }}
-            className="public-panel px-6 py-8 sm:px-8 sm:py-10 lg:px-10"
+            className="public-panel px-6 py-8 sm:px-12 sm:py-16 lg:px-16"
           >
-            <div className="relative z-10 space-y-6">
-              <div className="public-pill public-eyebrow">Pricing</div>
-              <h1 className="public-display max-w-4xl text-4xl leading-[0.92] text-[var(--public-ink)] sm:text-5xl lg:text-6xl">
-                Price the workflow operating system, not the hype layer around
-                it.
+            <div className="relative z-10 space-y-8">
+              <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
+                Pricing
+              </div>
+              <h1 className="font-display max-w-4xl text-5xl leading-[0.9] text-foreground sm:text-6xl lg:text-7xl uppercase tracking-tighter">
+                Price the operating system, not the hype.
               </h1>
-              <p className="max-w-3xl text-base leading-7 text-[var(--public-muted)] sm:text-lg">
+              <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground font-sans">
                 Nodebase pricing is structured around the platform retainer,
                 real usage, and rollout help where the workflow deserves it. The
                 goal is practical economics with visible controls.
               </p>
-              <div className="flex flex-col gap-3 sm:flex-row">
+              <div className="flex flex-col gap-4 sm:flex-row pt-4">
                 <Link
-                  href="/company/contact"
-                  className="public-button px-6 py-3 text-sm font-semibold"
+                   href="/company/contact"
+                   className="public-button px-8 py-4 text-sm"
                 >
                   Scope a deployment
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/docs/getting-started/quickstart"
-                  className="public-button-secondary px-6 py-3 text-sm font-semibold"
+                  className="public-button-secondary px-8 py-4 text-sm"
                 >
                   Review the quickstart
                 </Link>
@@ -197,37 +198,37 @@ export function PricingSurface() {
             animate="visible"
             variants={fadeUp}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="public-panel-soft p-6 sm:p-7"
+            className="public-panel-soft p-6 sm:p-8"
           >
-            <div className="space-y-5">
-              <div className="flex items-center gap-3">
-                <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
-                  <CreditCard className="h-5 w-5" />
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <div className="public-inset flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
+                  <CreditCard className="h-7 w-7" />
                 </div>
                 <div>
-                  <div className="public-eyebrow">Commercial posture</div>
-                  <h2 className="text-xl font-semibold text-[var(--public-ink)]">
-                    Built for operators who care about unit economics
+                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Commercial posture</div>
+                  <h2 className="text-xl font-bold text-foreground uppercase tracking-tight mt-1">
+                    Built for operators
                   </h2>
                 </div>
               </div>
-              <div className="grid gap-3">
-                <div className="public-inset rounded-[1.4rem] px-4 py-4">
-                  <div className="public-eyebrow">Base</div>
-                  <div className="mt-2 text-lg font-semibold text-[var(--public-ink)]">
+              <div className="grid gap-4">
+                <div className="public-inset rounded-2xl px-5 py-4 border-l-4 border-l-primary/10">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Base</div>
+                  <div className="mt-2 text-base font-bold text-foreground uppercase tracking-tight">
                     Subscription plus usage
                   </div>
                 </div>
-                <div className="public-inset rounded-[1.4rem] px-4 py-4">
-                  <div className="public-eyebrow">Revenue model</div>
-                  <div className="mt-2 text-lg font-semibold text-[var(--public-ink)]">
-                    No commission on sales or bookings
+                <div className="public-inset rounded-2xl px-5 py-4 border-l-4 border-l-primary/10">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Revenue model</div>
+                  <div className="mt-2 text-base font-bold text-foreground uppercase tracking-tight">
+                    No commission on sales
                   </div>
                 </div>
-                <div className="public-inset rounded-[1.4rem] px-4 py-4">
-                  <div className="public-eyebrow">Operator control</div>
-                  <div className="mt-2 text-lg font-semibold text-[var(--public-ink)]">
-                    Budget thresholds and approvals stay configurable
+                <div className="public-inset rounded-2xl px-5 py-4 border-l-4 border-l-primary/10">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Operator control</div>
+                  <div className="mt-2 text-base font-bold text-foreground uppercase tracking-tight">
+                    Budget thresholds stay configurable
                   </div>
                 </div>
               </div>
@@ -242,23 +243,22 @@ export function PricingSurface() {
         </section>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,0.88fr)_minmax(18rem,1.12fr)]">
-          <section className="public-panel-soft p-6 sm:p-8">
-            <div className="space-y-5">
-              <div className="public-pill public-eyebrow">
+          <section className="public-panel-soft p-8 sm:p-12 border-l-4 border-l-primary/20">
+            <div className="space-y-8">
+              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
                 How to think about spend
               </div>
-              <h2 className="public-display text-3xl text-[var(--public-ink)] sm:text-4xl">
-                The real comparison is against manual drift and missed
-                follow-through.
+              <h2 className="font-display text-4xl text-foreground sm:text-5xl uppercase tracking-tighter leading-[0.9]">
+                Compare against manual drift.
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {operatingRules.map((rule) => (
                   <div
                     key={rule}
-                    className="public-inset flex gap-3 rounded-[1.4rem] px-4 py-4"
+                    className="public-inset flex gap-6 rounded-2xl px-6 py-5 border-l-4 border-l-primary/10"
                   >
-                    <Activity className="mt-1 h-4 w-4 shrink-0 text-[var(--public-accent-strong)]" />
-                    <p className="text-sm leading-6 text-[var(--public-muted)]">
+                    <Activity className="h-6 w-6 shrink-0 text-primary" />
+                    <p className="text-sm font-bold text-foreground uppercase tracking-tight leading-relaxed">
                       {rule}
                     </p>
                   </div>
@@ -267,22 +267,22 @@ export function PricingSurface() {
             </div>
           </section>
 
-          <section className="public-panel p-6 sm:p-8">
-            <div className="relative z-10 space-y-5">
-              <div className="public-eyebrow">Example monthly frame</div>
-              <h2 className="public-display text-3xl text-[var(--public-ink)]">
-                A simple ledger, not a pricing maze.
+          <section className="public-panel p-8 sm:p-12 border-r-4 border-r-primary">
+            <div className="relative z-10 space-y-8">
+              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Example monthly frame</div>
+              <h2 className="font-display text-4xl text-foreground uppercase tracking-tighter leading-[0.9]">
+                A simple ledger.
               </h2>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {sampleLedger.map((entry) => (
                   <div
                     key={entry.label}
-                    className="public-inset flex items-center justify-between gap-4 rounded-[1.4rem] px-4 py-4"
+                    className="public-inset flex items-center justify-between gap-6 rounded-2xl px-6 py-5 border-l-4 border-l-primary/10"
                   >
-                    <div className="text-sm font-semibold text-[var(--public-ink)]">
+                    <div className="text-sm font-bold text-foreground uppercase tracking-tight">
                       {entry.label}
                     </div>
-                    <div className="text-sm text-[var(--public-muted)]">
+                    <div className="text-sm font-black text-primary uppercase tracking-widest">
                       {entry.value}
                     </div>
                   </div>
@@ -313,27 +313,27 @@ export function PricingSurface() {
           ))}
         </section>
 
-        <section className="public-panel public-shimmer p-6 sm:p-8 lg:p-10">
-          <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-3xl">
-              <div className="public-pill public-eyebrow">
+        <section className="public-panel p-8 sm:p-16 border-t-8 border-primary bg-primary/5">
+          <div className="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-4xl">
+              <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
                 Commercial review
               </div>
-              <h2 className="public-display mt-4 text-3xl text-[var(--public-ink)] sm:text-4xl">
+              <h2 className="font-display mt-8 text-5xl text-foreground sm:text-6xl uppercase tracking-tighter leading-[0.85]">
                 If the workflow is real, we can price it clearly.
               </h2>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-4 sm:flex-row">
               <Link
                 href="/company/contact"
-                className="public-button px-6 py-3 text-sm font-semibold"
+                className="public-button px-10 py-5 text-sm"
               >
                 Talk to sales
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/employees"
-                className="public-button-secondary px-6 py-3 text-sm font-semibold"
+                className="public-button-secondary px-10 py-5 text-sm"
               >
                 Compare employees
               </Link>

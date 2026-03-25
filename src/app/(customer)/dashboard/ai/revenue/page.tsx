@@ -17,20 +17,28 @@ import {
   DollarSign
 } from "lucide-react";
 import { getRevenueDataAction, generatePriceSuggestionsAction, applyPriceSuggestionAction } from "@/app/actions/revenue";
+import { getPersonaMetricsAction } from "@/app/actions/analytics";
+import { useDashboardStore } from "@/store/useDashboardStore";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function RevenuePage() {
+  const { tenant } = useDashboardStore();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState<any>({ suggestions: [] });
+  const [metrics, setMetrics] = useState<any>(null);
 
   const fetchData = async () => {
     try {
-      const result = await getRevenueDataAction();
-      setData(result);
+      const [revResult, metricsResult] = await Promise.all([
+        getRevenueDataAction(),
+        getPersonaMetricsAction(tenant?.businessType || 'airbnb_host', '30d')
+      ]);
+      setData(revResult);
+      setMetrics(metricsResult);
     } catch (e) {
       toast.error("Failed to load revenue data");
     } finally {
@@ -104,7 +112,9 @@ export default function RevenuePage() {
         <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
             <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Suggested Uplift</CardDescription>
-            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">+₹2,400</CardTitle>
+            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">
+              +₹{(data.suggestions || []).reduce((sum: number, s: any) => sum + (s.suggestedPrice - s.currentPrice), 0).toLocaleString()}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-emerald-400">
@@ -115,25 +125,34 @@ export default function RevenuePage() {
         </Card>
         <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Average Occupancy</CardDescription>
-            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">68%</CardTitle>
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">
+              {tenant?.businessType === 'airbnb_host' ? 'Average Occupancy' : 'Total Orders'}
+            </CardDescription>
+            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">
+              {tenant?.businessType === 'airbnb_host' 
+                ? `${metrics?.occupancyRate || 0}%`
+                : (metrics?.ordersCount || 0)
+              }
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-emerald-400">
               <CheckCircle2 className="w-3 h-3" />
-              <span>Above market average (54%)</span>
+              <span>Last 30 days</span>
             </div>
           </CardContent>
         </Card>
         <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
             <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Total Revenue</CardDescription>
-            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">₹48,200</CardTitle>
+            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">
+              ₹{(metrics?.revenue || 0).toLocaleString()}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-[var(--public-muted)]">
               <DollarSign className="w-3 h-3" />
-              <span>This month</span>
+              <span>Last 30 days</span>
             </div>
           </CardContent>
         </Card>
@@ -258,15 +277,17 @@ export default function RevenuePage() {
             </CardContent>
           </Card>
 
-          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl space-y-3">
-             <div className="flex items-center gap-2 text-emerald-400">
-               <Sparkles className="w-4 h-4" />
-               <span className="text-xs font-bold uppercase tracking-tight">AI Insight</span>
-             </div>
-             <p className="text-[11px] text-emerald-200/70 leading-relaxed">
-               Weekend occupancy for Homestays in your area is up 12% for the coming month. Kaisa has automatically increased suggested weekend rates to capture this surplus.
-             </p>
-          </div>
+          {data.suggestions.length > 0 && (
+            <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl space-y-3">
+               <div className="flex items-center gap-2 text-emerald-400">
+                 <Sparkles className="w-4 h-4" />
+                 <span className="text-xs font-bold uppercase tracking-tight">AI Insight</span>
+               </div>
+               <p className="text-[11px] text-emerald-200/70 leading-relaxed">
+                 Kaisa found <span className="text-emerald-400 font-bold">{data.suggestions.length}</span> pricing opportunities for your listings. Review and apply them to optimize your revenue.
+               </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { IntegrationConfig } from "@/types/settings";
 import { toggleIntegrationAction, updateIntegrationAction } from "@/app/actions/settings";
 import { useState } from "react";
 import { Plug, CheckCircle, XCircle, Settings as SettingsIcon, Save } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function IntegrationSettingsPanel({ integrations }: { integrations: IntegrationConfig[] }) {
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -34,8 +35,8 @@ export function IntegrationSettingsPanel({ integrations }: { integrations: Integ
   };
 
   const renderConfigFields = (id: string) => {
-    const inputClass = "w-full bg-black border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200 focus:border-purple-500 focus:outline-none";
-    const labelClass = "text-xs text-zinc-500 font-mono mb-1 block";
+    const inputClass = "w-full bg-muted/20 border border-border rounded-xl px-4 py-3 text-sm text-foreground focus:ring-2 focus:ring-primary/20 outline-none transition-all font-mono font-bold placeholder:opacity-20";
+    const labelClass = "text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-2 ml-1 block";
 
     if (id === "int_paddle") {
       return (
@@ -169,75 +170,80 @@ export function IntegrationSettingsPanel({ integrations }: { integrations: Integ
   };
 
   return (
-    <div className="bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden">
-      <div className="p-6 border-b border-white/10 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-purple-500/10 rounded-lg">
-            <Plug className="w-5 h-5 text-purple-400" />
+    <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm group">
+      <div className="p-8 border-b border-border flex justify-between items-center bg-muted/5">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 shadow-inner">
+            <Plug className="w-6 h-6 text-primary" />
           </div>
-          <h2 className="text-lg font-bold text-white">Integrations</h2>
+          <div>
+            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-foreground">External Interfaces</h2>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground opacity-60">Connected authority & payment gateways.</p>
+          </div>
         </div>
       </div>
 
-      <div className="divide-y divide-white/5">
+      <div className="divide-y divide-border">
         {integrations.map((integration) => (
-          <div key={integration.id} className="p-6 hover:bg-white/5 transition-colors">
+          <div key={integration.id} className="p-8 hover:bg-muted/10 transition-colors group/item">
             <div className="flex items-start justify-between">
               <div>
-                <div className="flex items-center gap-3 mb-1">
-                  <h3 className="font-bold text-white">{integration.name}</h3>
+                <div className="flex items-center gap-4 mb-2">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-foreground group-hover/item:text-primary transition-colors">{integration.name}</h3>
                   {integration.enabled ? (
-                    <span className="flex items-center gap-1 text-[10px] uppercase font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">
-                      <CheckCircle className="w-3 h-3" /> Active
+                    <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-success bg-success/10 px-2.5 py-1 rounded-full border border-success/20 shadow-sm">
+                      <div className="w-1 h-1 rounded-full bg-success animate-pulse" /> Compliance Verified
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-[10px] uppercase font-bold text-zinc-500 bg-zinc-500/10 px-2 py-0.5 rounded-full">
-                      <XCircle className="w-3 h-3" /> Inactive
+                    <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 bg-muted px-2.5 py-1 rounded-full border border-border">
+                      Interface Offline
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-zinc-500 font-mono text-[10px] uppercase tracking-wider">{integration.id}</p>
+                <p className="text-muted-foreground/30 font-mono text-[10px] font-black uppercase tracking-[0.2em]">{integration.id}</p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-6">
                 <button
                   onClick={() => editingId === integration.id ? setEditingId(null) : startEdit(integration)}
-                  className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                  className="w-10 h-10 flex items-center justify-center text-muted-foreground/40 hover:text-primary hover:bg-primary/5 rounded-xl transition-all active:scale-90 border border-transparent hover:border-primary/20"
                 >
-                  <SettingsIcon className="w-4 h-4" />
+                  <SettingsIcon className="w-5 h-5" />
                 </button>
                 <div 
                   onClick={() => handleToggle(integration.id, integration.enabled)}
-                  className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
-                    integration.enabled ? "bg-green-500" : "bg-zinc-700"
-                  }`}
+                  className={cn(
+                    "w-12 h-6 rounded-full relative cursor-pointer transition-all duration-300 shadow-inner",
+                    integration.enabled ? "bg-success shadow-success/20" : "bg-muted border border-border"
+                  )}
                 >
-                  <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${
-                    integration.enabled ? "left-6" : "left-1"
-                  }`} />
+                  <div className={cn(
+                    "absolute top-1 w-4 h-4 rounded-full transition-all duration-300 shadow-md",
+                    integration.enabled ? "left-7 bg-white" : "left-1 bg-muted-foreground/30"
+                  )} />
                 </div>
               </div>
             </div>
 
             {/* Edit Mode */}
             {editingId === integration.id && (
-              <div className="mt-6 pt-6 border-t border-white/5 animate-in fade-in slide-in-from-top-2">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="mt-8 pt-8 border-t border-border animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                   {renderConfigFields(integration.id)}
                 </div>
-                <div className="flex justify-end gap-3">
+                <div className="flex justify-end gap-6">
                   <button 
                     onClick={() => setEditingId(null)}
-                    className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white"
+                    className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-foreground transition-colors"
                   >
-                    Cancel
+                    Abort Edit
                   </button>
                   <button 
                     onClick={() => saveEdit(integration.id)}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2 bg-white text-black text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-zinc-200 transition-colors"
+                    className="flex items-center gap-3 px-6 py-3 bg-foreground text-background text-[10px] font-black uppercase tracking-widest rounded-xl hover:opacity-90 transition-all shadow-lg active:scale-95 disabled:opacity-30"
                   >
-                    <Save className="w-3 h-3" /> Save Changes
+                    <Save className="w-4 h-4" /> Commit Authority
                   </button>
                 </div>
               </div>

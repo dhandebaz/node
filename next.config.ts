@@ -41,6 +41,7 @@ const nextConfig: NextConfig = {
     },
     optimizePackageImports: ['lucide-react', 'recharts', 'date-fns', 'framer-motion'],
   },
+  serverExternalPackages: ['jspdf', 'fflate'],
   env: {
     // Map system env vars to client-side env vars if missing
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL,

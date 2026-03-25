@@ -15,7 +15,7 @@ export default async function AdminDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-brand-red)] text-white font-sans flex flex-col md:flex-row selection:bg-white selection:text-[var(--color-brand-red)]">
+    <div className="min-h-screen bg-background selection:bg-primary selection:text-primary-foreground font-sans flex flex-col md:flex-row">
       <AdminSidebar />
       <main className="flex-1 p-4 md:p-8 pt-20 md:pt-8 overflow-x-hidden">
         {children}

@@ -1,7 +1,6 @@
 import { createHash } from "crypto";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { jsPDF } from "jspdf";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
 
@@ -90,6 +89,8 @@ export async function POST(req: Request) {
       `Tenant ID: ${resolvedTenantId}`,
     ].join("\n");
 
+    // Dynamic import to avoid turbopack bundling fflate's Node Worker
+    const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     doc.setProperties({
       title: `Nodebase Agreement - ${tenant.name}`,

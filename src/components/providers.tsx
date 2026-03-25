@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import NotificationProvider from "@/components/providers/NotificationProvider";
+import { NotificationProvider } from "@/components/providers/NotificationProvider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {

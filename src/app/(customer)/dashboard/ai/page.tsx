@@ -96,10 +96,10 @@ export default async function AIDashboardPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--public-ink)] mb-1">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground mb-1">
             Overview
           </h1>
-          <p className="text-[var(--public-muted)]">
+          <p className="text-muted-foreground">
             Welcome back, {tenant?.name}. Here&apos;s what&apos;s happening.
           </p>
         </div>
@@ -126,7 +126,7 @@ export default async function AIDashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Card className="public-panel">
+        <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
@@ -134,23 +134,23 @@ export default async function AIDashboardPage() {
               </div>
               <Link
                 href="/dashboard/billing"
-                className="text-xs text-[var(--public-muted)] hover:text-[var(--public-ink)] transition-colors flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 Top Up <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[var(--public-ink)] mb-1">
+              <div className="text-2xl font-bold text-foreground mb-1">
                 ₹{walletBalance}
               </div>
-              <div className="text-xs text-[var(--public-muted)] font-medium uppercase tracking-wide">
+              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
                 Wallet Balance
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="public-panel">
+        <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
@@ -158,23 +158,23 @@ export default async function AIDashboardPage() {
               </div>
               <Link
                 href="/dashboard/ai/inbox"
-                className="text-xs text-[var(--public-muted)] hover:text-[var(--public-ink)] transition-colors flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 View Inbox <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[var(--public-ink)] mb-1">
+              <div className="text-2xl font-bold text-foreground mb-1">
                 {manualMessageCount || 0}
               </div>
-              <div className="text-xs text-[var(--public-muted)] font-medium uppercase tracking-wide">
+              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
                 Manual Replies
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="public-panel">
+        <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-green-500/10 rounded-lg text-green-400">
@@ -182,23 +182,23 @@ export default async function AIDashboardPage() {
               </div>
               <Link
                 href="/dashboard/ai/activity"
-                className="text-xs text-[var(--public-muted)] hover:text-[var(--public-ink)] transition-colors flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 View Log <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[var(--public-ink)] mb-1">
+              <div className="text-2xl font-bold text-foreground mb-1">
                 {messageCount || 0}
               </div>
-              <div className="text-xs text-[var(--public-muted)] font-medium uppercase tracking-wide">
+              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
                 AI Replies Sent
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="public-panel">
+        <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
@@ -206,23 +206,23 @@ export default async function AIDashboardPage() {
               </div>
               <Link
                 href="/dashboard/ai/bookings"
-                className="text-xs text-[var(--public-muted)] hover:text-[var(--public-ink)] transition-colors flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 View All <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[var(--public-ink)] mb-1">
+              <div className="text-2xl font-bold text-foreground mb-1">
                 {bookingCount || 0}
               </div>
-              <div className="text-xs text-[var(--public-muted)] font-medium uppercase tracking-wide">
+              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
                 Total Bookings
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="public-panel">
+        <Card className="bg-card border-border shadow-sm">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-orange-500/10 rounded-lg text-orange-400">
@@ -230,16 +230,16 @@ export default async function AIDashboardPage() {
               </div>
               <Link
                 href="/dashboard/ai/listings"
-                className="text-xs text-[var(--public-muted)] hover:text-[var(--public-ink)] transition-colors flex items-center gap-1"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
               >
                 Manage <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-[var(--public-ink)] mb-1">
+              <div className="text-2xl font-bold text-foreground mb-1">
                 {listingCount || 0}
               </div>
-              <div className="text-xs text-[var(--public-muted)] font-medium uppercase tracking-wide">
+              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
                 Active Listings
               </div>
             </div>
@@ -250,16 +250,16 @@ export default async function AIDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Activity */}
         <DashboardErrorBoundary>
-          <Card className="lg:col-span-2 public-panel">
-            <CardHeader className="border-b border-[var(--public-line)] pb-4">
-              <CardTitle className="text-lg flex items-center gap-2 text-[var(--public-ink)]">
-                <Activity className="w-5 h-5 text-[var(--public-muted)]" />
+          <Card className="lg:col-span-2 bg-card border-border shadow-sm overflow-hidden">
+            <CardHeader className="border-b border-border pb-4">
+              <CardTitle className="text-lg flex items-center gap-2 text-foreground">
+                <Activity className="w-5 h-5 text-muted-foreground" />
                 Recent Activity
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {!recentActivity || recentActivity.length === 0 ? (
-                <div className="p-8 text-center text-[var(--public-muted)] text-sm">
+                <div className="p-8 text-center text-muted-foreground text-sm">
                   No recent activity recorded.
                 </div>
               ) : (
@@ -284,10 +284,10 @@ export default async function AIDashboardPage() {
                       return (
                         <div
                           key={activity.id}
-                          className="p-4 flex items-center gap-4 hover:bg-[var(--public-panel-muted)]/20 transition-colors"
+                          className="p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors"
                         >
                           <div
-                            className={`p-2.5 rounded-full ${isError ? "bg-red-500/10 text-red-400" : isAiEvent ? "bg-brand-red/10 text-brand-red" : "bg-[var(--public-panel-muted)] text-[var(--public-muted)]"}`}
+                            className={`p-2.5 rounded-full ${isError ? "bg-red-500/10 text-red-400" : isAiEvent ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}
                           >
                             {isError ? (
                               <AlertTriangle className="w-4 h-4" />
@@ -298,10 +298,10 @@ export default async function AIDashboardPage() {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm text-[var(--public-ink)] font-medium truncate flex items-center gap-2">
+                            <div className="text-sm text-foreground font-medium truncate flex items-center gap-2">
                               {eventType.replace(/_/g, " ")}
                             </div>
-                            <div className="text-xs text-[var(--public-muted)] truncate mt-0.5">
+                            <div className="text-xs text-muted-foreground truncate mt-0.5">
                               {createdAt}
                               {createdAt && actorType ? " • " : ""}
                               {actorType}
@@ -320,9 +320,9 @@ export default async function AIDashboardPage() {
         {/* Sidebar Cards */}
         <div className="space-y-6">
           <DashboardErrorBoundary>
-            <Card className="public-panel">
+            <Card className="bg-card border-border shadow-sm">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg text-[var(--public-ink)]">AI Status</CardTitle>
+                <CardTitle className="text-lg text-foreground">AI Status</CardTitle>
               </CardHeader>
               <CardContent>
                 <div
@@ -343,18 +343,18 @@ export default async function AIDashboardPage() {
                     >
                       {isAiPaused ? "AI is Paused" : "AI is Active"}
                     </div>
-                    <p className="text-xs text-[var(--public-muted)] mt-1 leading-relaxed">
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                       {isAiPaused
                         ? "Your AI is currently not replying to incoming messages. Check your settings."
                         : "Your AI is monitoring your inbox 24/7 and responding to guests."}
                     </p>
                   </div>
                 </div>
-
+ 
                 <Button
                   asChild
                   variant="outline"
-                  className="w-full bg-[var(--public-panel-muted)] border-[var(--public-line)] text-[var(--public-ink)] hover:bg-zinc-700 hover:text-[var(--public-ink)]"
+                  className="w-full"
                 >
                   <Link href="/dashboard/ai/settings">
                     Configure AI Settings
@@ -362,22 +362,23 @@ export default async function AIDashboardPage() {
                 </Button>
               </CardContent>
             </Card>
+
           </DashboardErrorBoundary>
 
           <DashboardErrorBoundary>
-            <Card className="bg-gradient-to-br from-brand-red to-brand-deep-red border-0 text-[var(--public-ink)] relative overflow-hidden">
+            <Card className="bg-primary border-0 text-white relative overflow-hidden">
               <CardContent className="p-6 relative z-10">
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-5 h-5 text-[var(--public-ink)]/90" />
+                  <Sparkles className="w-5 h-5 text-white/90" />
                   <h3 className="font-bold text-lg">Refer & Earn</h3>
                 </div>
-                <p className="text-sm text-[var(--public-ink)]/80 mb-6 leading-relaxed">
+                <p className="text-sm text-white/80 mb-6 leading-relaxed">
                   Get ₹500 in free AI credits for every friend you invite to the
                   platform.
                 </p>
                 <Button
                   asChild
-                  className="w-full bg-white text-brand-red hover:bg-white/90 font-bold"
+                  className="w-full bg-white text-primary hover:bg-white/90 font-bold"
                 >
                   <Link href="/dashboard/invite">Invite Friends</Link>
                 </Button>

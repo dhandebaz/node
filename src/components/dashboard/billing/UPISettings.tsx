@@ -35,18 +35,18 @@ export function UPISettings() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-zinc-900 to-black rounded-2xl p-6 border border-[var(--public-line)] shadow-xl relative overflow-hidden">
+    <div className="bg-card rounded-2xl p-6 border border-border shadow-xl relative overflow-hidden">
       {/* Decorative Background */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       
       <div className="relative z-10">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-            <Wallet className="w-5 h-5 text-purple-400" />
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
+            <Wallet className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-[var(--public-ink)]">Direct Payout Settings</h2>
-            <p className="text-[var(--public-muted)] text-sm">Configure your UPI details for instant settlements</p>
+            <h2 className="text-lg font-bold text-foreground">Direct Payout Settings</h2>
+            <p className="text-muted-foreground text-sm">Configure your UPI details for instant settlements</p>
           </div>
         </div>
 
@@ -62,7 +62,7 @@ export function UPISettings() {
                 }
               })}
               placeholder="e.g. 9876543210@ybl"
-              className="w-full public-panel/50 border border-[var(--public-line)] rounded-lg px-4 py-2.5 text-[var(--public-ink)] placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
+              className="w-full bg-muted/50 border border-border rounded-lg px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
             />
             {errors.upiId && (
               <p className="text-red-400 text-xs">{errors.upiId.message}</p>
@@ -74,7 +74,7 @@ export function UPISettings() {
             <input
               {...register("payeeName", { required: "Payee name is required" })}
               placeholder="Your business name"
-              className="w-full public-panel/50 border border-[var(--public-line)] rounded-lg px-4 py-2.5 text-[var(--public-ink)] placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 transition-all"
+              className="w-full bg-muted/50 border border-border rounded-lg px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
             />
             {errors.payeeName && (
               <p className="text-red-400 text-xs">{errors.payeeName.message}</p>
@@ -85,7 +85,7 @@ export function UPISettings() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-500 text-[var(--public-ink)] px-4 py-2.5 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-900/20"
+              className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

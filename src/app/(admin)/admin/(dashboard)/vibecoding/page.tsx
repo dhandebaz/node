@@ -101,40 +101,43 @@ export default function VibecodingPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-theme(spacing.24))] flex flex-col space-y-4">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-brand-red" />
-            Vibecoding
-          </h1>
-          <p className="text-zinc-400">
-            AI-powered code generation & execution environment.
+    <div className="space-y-12 pb-20">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-10 mb-10">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 shadow-inner">
+              <Sparkles className="w-6 h-6 text-primary" />
+            </div>
+            <h1 className="text-4xl font-black uppercase tracking-[-0.02em] text-foreground">
+              Vibe<span className="text-primary/40">coding</span>
+            </h1>
+          </div>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground/50 ml-1">
+            Neural code orchestration & hybrid vps execution
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className={cn(
-              "p-2 rounded-lg transition-colors border",
-              showSettings
-                ? "bg-zinc-800 text-white border-zinc-700"
-                : "text-zinc-400 border-transparent hover:bg-zinc-900",
-            )}
-          >
-            <Settings className="w-5 h-5" />
-          </button>
-        </div>
+        <button 
+          onClick={() => setShowSettings(!showSettings)}
+          className={cn(
+            "px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3 active:scale-95 group border-2",
+            showSettings 
+              ? "bg-foreground text-background border-foreground shadow-[0_0_20px_rgba(0,0,0,0.1)]" 
+              : "bg-background text-foreground border-border hover:border-primary/40 shadow-sm"
+          )}
+        >
+          <Settings className={cn("w-4 h-4 transition-transform", showSettings ? "rotate-90" : "group-hover:rotate-12")} />
+          Kernel_Config
+        </button>
       </div>
 
       {showSettings && (
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-top-2">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">
-                Provider & Model
+        <div className="bg-card border border-border rounded-3xl p-10 grid grid-cols-1 md:grid-cols-2 gap-12 animate-in fade-in slide-in-from-top-4 duration-500 shadow-sm border-dashed">
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">
+                Llm_Substrate_Protocol
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-4">
                 <select
                   value={provider}
                   onChange={(e) => {
@@ -142,10 +145,10 @@ export default function VibecodingPage() {
                     setProvider(newProvider);
                     setModel(getAIModelOptions(newProvider)[0].id);
                   }}
-                  className="bg-zinc-950 border border-zinc-800 text-white text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-brand-red outline-none"
+                  className="bg-muted/50 border border-border text-foreground text-xs font-black uppercase tracking-widest rounded-xl px-4 py-3 focus:ring-1 focus:ring-primary outline-none transition-all"
                 >
                   {Object.entries(AI_PROVIDER_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>
+                    <option key={value} value={value} className="bg-card">
                       {label}
                     </option>
                   ))}
@@ -153,10 +156,10 @@ export default function VibecodingPage() {
                 <select
                   value={model}
                   onChange={(e) => setModel(e.target.value as AIModel)}
-                  className="flex-1 bg-zinc-950 border border-zinc-800 text-white text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-brand-red outline-none"
+                  className="flex-1 bg-muted/50 border border-border text-foreground text-xs font-black uppercase tracking-widest rounded-xl px-4 py-3 focus:ring-1 focus:ring-primary outline-none transition-all"
                 >
                   {getAIModelOptions(provider).map((option) => (
-                    <option key={option.id} value={option.id}>
+                    <option key={option.id} value={option.id} className="bg-card">
                       {option.label}
                     </option>
                   ))}
@@ -164,71 +167,68 @@ export default function VibecodingPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-2">
+            <div className="space-y-4">
+              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-2">
                 <Key className="w-3 h-3" />
-                API Key (Optional - BYOK)
+                Identity_Auth_Token (BYOK_MODE)
               </label>
-              <input
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder={getProviderApiKeyPlaceholder(provider)}
-                className="w-full bg-zinc-950 border border-zinc-800 text-white text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-brand-red outline-none placeholder:text-zinc-700"
-              />
-              <p className="text-[10px] text-zinc-600">
-                Leave empty to use system default keys.
+              <div className="relative">
+                <input
+                  type="password"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder={getProviderApiKeyPlaceholder(provider)}
+                  className="w-full bg-muted/50 border border-border text-foreground text-xs font-mono rounded-xl px-4 py-3 focus:ring-1 focus:ring-primary outline-none placeholder:text-muted-foreground/20 transition-all border-dashed"
+                />
+              </div>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/30">
+                Fallback to architectural defaults if nullified.
               </p>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-2">
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-2">
                 <Server className="w-3 h-3" />
-                Execution Environment
+                Computational_Node_Environment
               </label>
               <div
                 onClick={() => setUseVPS(!useVPS)}
                 className={cn(
-                  "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
+                  "flex items-center justify-between p-6 rounded-2xl border-2 cursor-pointer transition-all active:scale-[0.98]",
                   useVPS
-                    ? "bg-blue-950/20 border-blue-900/50"
-                    : "bg-zinc-950 border-zinc-800",
+                    ? "bg-primary/5 border-primary shadow-[0_0_30px_rgba(214,0,28,0.05)]"
+                    : "bg-muted/20 border-border border-dashed opacity-60"
                 )}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <div
                     className={cn(
-                      "w-2 h-2 rounded-full",
+                      "w-3 h-3 rounded-full",
                       useVPS
-                        ? "bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.5)]"
-                        : "bg-zinc-700",
+                        ? "bg-primary shadow-[0_0_15px_rgba(214,0,28,0.5)] animate-pulse"
+                        : "bg-muted-foreground/30",
                     )}
                   />
                   <div>
-                    <div
-                      className={cn(
-                        "text-sm font-medium",
-                        useVPS ? "text-blue-200" : "text-zinc-400",
-                      )}
-                    >
-                      High-Performance VPS
+                    <div className="text-xs font-black uppercase tracking-widest text-foreground">
+                      Neural_Compute_VPS
                     </div>
-                    <div className="text-xs text-zinc-600">
-                      Offload heavy computation to dedicated server
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mt-1">
+                      Offload logic to isolated cluster
                     </div>
                   </div>
                 </div>
                 <div
                   className={cn(
-                    "text-xs font-bold px-2 py-1 rounded",
+                    "text-[8px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-lg border",
                     useVPS
-                      ? "bg-blue-900/50 text-blue-300"
-                      : "bg-zinc-900 text-zinc-600",
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-muted text-muted-foreground border-border"
                   )}
                 >
-                  {useVPS ? "ACTIVE" : "INACTIVE"}
+                  {useVPS ? "ENGAGED" : "DORMANT"}
                 </div>
               </div>
             </div>
@@ -236,181 +236,192 @@ export default function VibecodingPage() {
         </div>
       )}
 
-      <div className="bg-zinc-950 rounded-xl border border-zinc-800 overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
-          <div className="flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-zinc-400" />
-            <div className="text-sm font-semibold text-white">
-              Execution Runner
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm flex flex-col min-h-[500px] border-dashed">
+          <div className="px-8 py-6 border-b border-border bg-muted/30 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center border border-border/50">
+                <Cpu className="w-4 h-4 text-foreground/40" />
+              </div>
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-foreground">Exec_Subsystem</h3>
+            </div>
+            <div className={cn(
+              "text-[8px] font-black uppercase tracking-[0.3em] px-2 py-1 rounded-md border shadow-sm",
+              useVPS ? "bg-primary/10 text-primary border-primary/20" : "bg-muted text-muted-foreground/40 border-border"
+            )}>
+              {useVPS ? "HYBRID_VPS" : "SANDBOX_LOCK"}
             </div>
           </div>
-          <div
-            className={cn(
-              "text-xs font-bold px-2 py-1 rounded",
-              useVPS
-                ? "bg-blue-900/50 text-blue-300"
-                : "bg-zinc-900 text-zinc-600",
-            )}
-          >
-            {useVPS ? "VPS" : "DISABLED"}
-          </div>
-        </div>
 
-        <div className="p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <select
-              value={execLanguage}
-              onChange={(e) =>
-                setExecLanguage(
-                  e.target.value as "javascript" | "python" | "bash",
-                )
-              }
-              className="bg-zinc-950 border border-zinc-800 text-white text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-brand-red outline-none"
-            >
-              <option value="javascript">JavaScript (Node)</option>
-              <option value="python">Python</option>
-              <option value="bash">Bash</option>
-            </select>
-            <button
-              type="button"
-              onClick={runExecution}
-              disabled={execRunning}
-              className="ml-auto px-3 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {execRunning ? "Running..." : "Run"}
-            </button>
-          </div>
+          <div className="p-8 flex-1 flex flex-col space-y-6">
+            <div className="flex items-center gap-4">
+              <select
+                value={execLanguage}
+                onChange={(e) => setExecLanguage(e.target.value as any)}
+                className="bg-muted/50 border border-border text-foreground text-[10px] font-black uppercase tracking-[0.2em] rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary outline-none transition-all"
+              >
+                <option value="javascript">JS_NODE</option>
+                <option value="python">PY_NEURAL</option>
+                <option value="bash">SH_KERNEL</option>
+              </select>
+              <button
+                type="button"
+                onClick={runExecution}
+                disabled={execRunning}
+                className="ml-auto px-6 py-2.5 rounded-xl bg-foreground text-background text-[10px] font-black uppercase tracking-[0.2em] hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 shadow-lg shadow-foreground/10"
+              >
+                {execRunning ? "Executing..." : "Invoke_Chain"}
+              </button>
+            </div>
 
-          <textarea
-            value={execCode}
-            onChange={(e) => setExecCode(e.target.value)}
-            placeholder="Paste code to execute on the VPS..."
-            className="w-full min-h-[120px] bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-brand-red/50 focus:border-brand-red/50 transition-all font-mono text-xs"
-          />
+            <div className="relative group flex-1">
+              <textarea
+                value={execCode}
+                onChange={(e) => setExecCode(e.target.value)}
+                placeholder="// Kernel sequence requested..."
+                className="w-full h-full min-h-[250px] bg-muted/20 border border-border rounded-2xl p-6 text-foreground placeholder:text-muted-foreground/10 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all font-mono text-[11px] leading-relaxed resize-none shadow-inner"
+              />
+            </div>
 
-          {(execError || execStdout || execStderr || execExitCode !== null) && (
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-3 space-y-2">
-              {execError && (
-                <div className="text-sm text-red-300">{execError}</div>
-              )}
-              {execExitCode !== null && (
-                <div className="text-xs text-zinc-400">
-                  Exit code:{" "}
-                  <span className="font-mono text-zinc-200">
-                    {execExitCode}
-                  </span>
+            {(execError || execStdout || execStderr || execExitCode !== null) && (
+              <div className="bg-foreground text-background rounded-2xl p-6 space-y-4 font-mono overflow-auto max-h-[200px] shadow-2xl border-2 border-primary/20">
+                <div className="flex items-center justify-between border-b border-background/20 pb-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-40">Console_Pulse</span>
+                  {execExitCode !== null && (
+                    <span className={cn(
+                      "text-[9px] font-bold uppercase py-0.5 px-2 rounded",
+                      execExitCode === 0 
+                        ? "bg-green-500/20 text-green-400" 
+                        : "bg-red-500/20 text-red-400"
+                    )}>
+                      EXIT_{execExitCode}
+                    </span>
+                  )}
                 </div>
-              )}
-              {execStdout !== null && execStdout !== "" && (
-                <pre className="text-xs text-zinc-200 whitespace-pre-wrap font-mono">
-                  {execStdout}
-                </pre>
-              )}
-              {execStderr !== null && execStderr !== "" && (
-                <pre className="text-xs text-amber-200 whitespace-pre-wrap font-mono">
-                  {execStderr}
-                </pre>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="flex-1 bg-zinc-950 rounded-xl border border-zinc-800 overflow-hidden flex flex-col relative">
-        {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
-          {messages.length === 0 && (
-            <div className="h-full flex flex-col items-center justify-center text-zinc-600 space-y-4">
-              <div className="w-16 h-16 rounded-2xl bg-zinc-900 flex items-center justify-center">
-                <Terminal className="w-8 h-8 opacity-50" />
+                {execError && (
+                  <div className="text-xs text-red-400 font-black">ERR: {execError}</div>
+                )}
+                {execStdout && (
+                  <pre className="text-[11px] leading-relaxed opacity-90 whitespace-pre-wrap">{execStdout}</pre>
+                )}
+                {execStderr && (
+                  <pre className="text-[11px] leading-relaxed text-red-400 opacity-80 italic whitespace-pre-wrap underline decoration-red-400/20">{execStderr}</pre>
+                )}
               </div>
-              <p>Ready to vibe. Select a model and start coding.</p>
-            </div>
-          )}
+            )}
+          </div>
+        </div>
 
-          {messages.map((m) => (
-            <div
-              key={m.id}
-              className={cn(
-                "flex gap-4 max-w-4xl mx-auto",
-                m.role === "user" ? "flex-row-reverse" : "",
-              )}
-            >
+        <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm flex flex-col min-h-[500px]">
+          <div className="px-8 py-6 border-b border-border bg-muted/30 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center border border-border/50">
+                <Terminal className="w-4 h-4 text-foreground/40" />
+              </div>
+              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-foreground">Neural_Interface</h3>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[8px] font-black uppercase tracking-[0.2em] text-muted-foreground/30">Llm_Socket_Ready</span>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+            {messages.length === 0 && (
+              <div className="h-full flex flex-col items-center justify-center text-muted-foreground/20 space-y-6">
+                <div className="w-20 h-20 rounded-[2.5rem] bg-muted/50 flex items-center justify-center border-2 border-dashed border-border group-hover:rotate-6 transition-transform">
+                  <Bot className="w-10 h-10 opacity-20" />
+                </div>
+                <div className="text-center space-y-2">
+                  <p className="text-xs font-black uppercase tracking-[0.3em]">Cognitive_Link_Idle</p>
+                  <p className="text-[10px] uppercase font-bold tracking-widest opacity-50">Initiate architectural discourse...</p>
+                </div>
+              </div>
+            )}
+
+            {messages.map((m) => (
               <div
+                key={m.id}
                 className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
-                  m.role === "user"
-                    ? "bg-white text-black"
-                    : "bg-brand-red text-white",
+                  "flex gap-6 animate-in fade-in slide-in-from-bottom-2 duration-300",
+                  m.role === "user" ? "flex-row-reverse" : "",
                 )}
               >
-                {m.role === "user" ? (
-                  <span className="font-bold text-xs">YOU</span>
-                ) : (
+                <div
+                  className={cn(
+                    "w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border shadow-sm",
+                    m.role === "user"
+                      ? "bg-foreground text-background border-foreground"
+                      : "bg-background text-foreground border-border",
+                  )}
+                >
+                  {m.role === "user" ? (
+                    <span className="font-black text-[10px] tracking-tight">YOU</span>
+                  ) : (
+                    <Bot className="w-5 h-5" />
+                  )}
+                </div>
+                <div
+                  className={cn(
+                    "rounded-3xl px-6 py-4 text-sm leading-relaxed whitespace-pre-wrap max-w-[85%] border shadow-sm",
+                    m.role === "user"
+                      ? "bg-muted/50 text-foreground border-border rounded-tr-none text-right"
+                      : "bg-background text-foreground/80 border-border rounded-tl-none font-medium text-left",
+                  )}
+                >
+                  {(m as any).content}
+                </div>
+              </div>
+            ))}
+
+            {isLoading && (
+              <div className="flex gap-6">
+                <div className="w-10 h-10 rounded-2xl bg-background border border-border text-foreground flex items-center justify-center shrink-0 animate-pulse">
                   <Bot className="w-5 h-5" />
-                )}
+                </div>
+                <div className="flex items-center gap-1.5 h-10">
+                  <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]" />
+                  <div className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]" />
+                  <div className="w-1 h-1 bg-primary rounded-full animate-bounce" />
+                </div>
               </div>
-              <div
-                className={cn(
-                  "rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap",
-                  m.role === "user"
-                    ? "bg-zinc-900 text-zinc-200"
-                    : "bg-transparent text-zinc-300",
-                )}
-              >
-                {(m.parts || [])
-                  .map((part) => (part.type === "text" ? part.text : ""))
-                  .join("")}
-              </div>
-            </div>
-          ))}
+            )}
+          </div>
 
-          {isLoading && (
-            <div className="flex gap-4 max-w-4xl mx-auto">
-              <div className="w-8 h-8 rounded-full bg-brand-red text-white flex items-center justify-center shrink-0 animate-pulse">
-                <Bot className="w-5 h-5" />
-              </div>
-              <div className="flex items-center gap-1 h-10">
-                <div className="w-1.5 h-1.5 bg-zinc-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                <div className="w-1.5 h-1.5 bg-zinc-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                <div className="w-1.5 h-1.5 bg-zinc-600 rounded-full animate-bounce" />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Input Area */}
-        <div className="p-4 bg-zinc-900/50 border-t border-zinc-800">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!chatInput.trim() || status !== "ready") return;
-              sendMessage({ text: chatInput });
-              setChatInput("");
-            }}
-            className="max-w-4xl mx-auto relative"
-          >
-            <input
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              placeholder="Describe the functionality or ask a question..."
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-4 pr-12 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-brand-red/50 focus:border-brand-red/50 transition-all shadow-lg"
-            />
-            <button
-              type="submit"
-              disabled={isLoading || !chatInput.trim() || status !== "ready"}
-              className="absolute right-2 top-2 p-1.5 bg-white text-black rounded-lg hover:bg-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          <div className="p-8 bg-muted/20 border-t border-border">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!chatInput.trim() || status !== "ready") return;
+                sendMessage({ text: chatInput });
+                setChatInput("");
+              }}
+              className="relative group"
             >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
-          <div className="text-center mt-2">
-            <p className="text-[10px] text-zinc-600">
-              Running on{" "}
-              <span className="text-zinc-400 font-mono">{model}</span> via{" "}
-              {provider} •{" "}
-              {useVPS ? "VPS Execution Active" : "Local/Serverless Mode"}
-            </p>
+              <input
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Architectural prompt interface..."
+                className="w-full bg-background border-2 border-border rounded-2xl pl-6 pr-16 py-4 text-sm text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:border-primary/40 focus:ring-4 focus:ring-primary/5 transition-all shadow-xl shadow-foreground/[0.02]"
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !chatInput.trim() || status !== "ready"}
+                className="absolute right-3 top-3 p-2 bg-foreground text-background rounded-xl hover:bg-foreground/90 disabled:opacity-20 disabled:cursor-not-allowed transition-all active:scale-90 shadow-lg"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
+            <div className="flex justify-between items-center mt-4">
+              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/20">
+                Kernel: <span className="text-muted-foreground/40">{model}</span> • 
+                {useVPS ? " VPS_HYPERVISOR_LINK" : " LOCAL_SUBSTRATE"}
+              </p>
+              <div className="flex gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 opacity-50" />
+                <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/20" />
+              </div>
+            </div>
           </div>
         </div>
       </div>

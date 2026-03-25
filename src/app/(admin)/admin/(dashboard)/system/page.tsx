@@ -14,7 +14,8 @@ import {
   CheckCircle,
   AlertTriangle,
   XCircle,
-  ShieldCheck
+  ShieldCheck,
+  Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SystemFlagKey } from "@/lib/services/controlService";
@@ -77,33 +78,48 @@ export default function AdminSystemPage() {
   if (loading) return <div>Loading system status...</div>;
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold mb-2">System Controls</h1>
-        <p className="text-white/60">Monitor health and manage global kill switches.</p>
+    <div className="space-y-12 pb-20">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-10 mb-10">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 shadow-inner">
+              <ShieldCheck className="w-6 h-6 text-primary" />
+            </div>
+            <h1 className="text-4xl font-black uppercase tracking-[-0.02em] text-foreground">
+              Core <span className="text-primary/40">Infrastructure</span>
+            </h1>
+          </div>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground/50 ml-1">
+            Global architectural status & emergency containment systems
+          </p>
+        </div>
+        <div className="flex items-center gap-3 bg-muted/30 px-6 py-4 rounded-2xl border border-border shadow-inner">
+          <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">Systems Nominal</span>
+        </div>
       </div>
 
       {/* Incident Mode Banner (Admin View) */}
       <div className={cn(
-        "p-6 rounded-2xl border-2 flex items-center justify-between transition-colors",
+        "p-10 rounded-3xl border-2 flex flex-col md:flex-row items-center justify-between gap-8 transition-all duration-300 shadow-lg relative overflow-hidden group",
         flags['incident_mode_enabled'] 
-          ? "bg-red-500/20 border-red-500" 
-          : "bg-white/5 border-white/10"
+          ? "bg-destructive/10 border-destructive shadow-destructive/20 animate-pulse" 
+          : "bg-surface border-border shadow-inner"
       )}>
-        <div className="flex items-center gap-4">
+        {flags['incident_mode_enabled'] && <div className="absolute inset-0 bg-destructive/5 animate-pulse" />}
+        <div className="flex items-center gap-6 relative z-10">
           <div className={cn(
-            "p-3 rounded-full",
-            flags['incident_mode_enabled'] ? "bg-red-500 text-white" : "bg-white/10 text-white/60"
+            "w-20 h-20 rounded-3xl flex items-center justify-center shadow-inner transition-all",
+            flags['incident_mode_enabled'] ? "bg-destructive text-destructive-foreground rotate-12" : "bg-muted text-muted-foreground"
           )}>
-            <AlertOctagon className="w-8 h-8" />
+            <AlertOctagon className="w-10 h-10" />
           </div>
-          <div>
-            <h2 className="text-xl font-bold">Incident Mode</h2>
-            <p className="text-white/60">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-black uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors">Incident Containment</h2>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
               {flags['incident_mode_enabled'] 
-                ? "ACTIVE: Users see warning banner, high-risk actions blocked." 
-                : "Inactive: System operating normally."}
+                ? "CRITICAL: ARCHITECTURAL LOCKDOWN ACTIVE" 
+                : "Operational status: Unrestricted"}
             </p>
           </div>
         </div>
@@ -111,13 +127,13 @@ export default function AdminSystemPage() {
           onClick={() => toggleFlag('incident_mode_enabled', flags['incident_mode_enabled'])}
           disabled={!!toggling}
           className={cn(
-            "px-6 py-3 rounded-xl font-bold uppercase tracking-wide transition-all",
+            "w-full md:w-auto px-10 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] transition-all shadow-xl active:scale-95 disabled:opacity-50 relative z-10",
             flags['incident_mode_enabled']
-              ? "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/20"
-              : "bg-white/10 text-white hover:bg-white/20"
+              ? "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-destructive/40"
+              : "bg-foreground text-background hover:bg-foreground/90"
           )}
         >
-          {toggling === 'incident_mode_enabled' ? "Updating..." : flags['incident_mode_enabled'] ? "Deactivate Incident Mode" : "Activate Incident Mode"}
+          {toggling === 'incident_mode_enabled' ? "EXECUTING..." : flags['incident_mode_enabled'] ? "DEACTIVATE_PROTOCOL" : "INITIATE_CONTAINMENT"}
         </button>
       </div>
 
@@ -152,9 +168,9 @@ export default function AdminSystemPage() {
 
       {/* Global Kill Switches */}
       <div>
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-          <Power className="w-5 h-5 text-[var(--color-brand-red)]" />
-          Global Kill Switches
+        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-8 flex items-center gap-3 ml-2">
+          <Power className="w-5 h-5 text-primary" />
+          Architectural Kill Switches
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <KillSwitch 
@@ -218,37 +234,46 @@ function HealthCard({ title, icon: Icon, health }: { title: string; icon: any; h
   const isDegraded = health.status === 'degraded';
 
   return (
-    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2 text-white/80">
-          <Icon className="w-4 h-4" />
-          <span className="text-sm font-bold uppercase">{title}</span>
+    <div className="bg-card rounded-3xl p-6 border border-border shadow-sm group hover:border-primary/40 transition-all duration-300 hover:shadow-lg">
+      <div className="flex items-center justify-between mb-6">
+        <div className={cn(
+          "w-10 h-10 rounded-2xl flex items-center justify-center border shadow-inner transition-colors",
+          isHealthy ? "bg-success/5 text-success/40 group-hover:bg-success/10 group-hover:text-success border-success/10" :
+          isDegraded ? "bg-warning/5 text-warning/40 group-hover:bg-warning/10 group-hover:text-warning border-warning/10" :
+          "bg-destructive/5 text-destructive/40 group-hover:bg-destructive/10 group-hover:text-destructive border-destructive/10"
+        )}>
+          <Icon className="w-5 h-5" />
         </div>
         {isHealthy ? (
-          <CheckCircle className="w-4 h-4 text-green-400" />
+          <CheckCircle className="w-4 h-4 text-success/20 group-hover:text-success transition-colors" />
         ) : isDegraded ? (
-          <AlertTriangle className="w-4 h-4 text-amber-400" />
+          <AlertTriangle className="w-4 h-4 text-warning/20 group-hover:text-warning transition-colors" />
         ) : (
-          <XCircle className="w-4 h-4 text-red-400" />
+          <XCircle className="w-4 h-4 text-destructive/20 group-hover:text-destructive transition-colors" />
         )}
       </div>
-      <div className="flex items-end justify-between">
-        <div className={cn(
-          "text-xs font-mono px-2 py-0.5 rounded",
-          isHealthy ? "bg-green-500/20 text-green-300" : 
-          isDegraded ? "bg-amber-500/20 text-amber-300" : 
-          "bg-red-500/20 text-red-300"
-        )}>
-          {health.status.toUpperCase()}
-        </div>
-        {health.latency && (
-          <div className="text-xs text-white/40 font-mono">
-            {health.latency}ms
+      <div className="space-y-4">
+        <div>
+          <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 group-hover:text-foreground transition-colors">{title}</h4>
+          <div className={cn(
+            "text-[9px] font-black uppercase tracking-tighter px-2 py-0.5 rounded-md border w-fit mt-1.5",
+            isHealthy ? "bg-success/10 text-success border-success/20" : 
+            isDegraded ? "bg-warning/10 text-warning border-warning/20" : 
+            "bg-destructive/10 text-destructive border-destructive/20"
+          )}>
+            {health.status.toUpperCase()}
           </div>
-        )}
-      </div>
-      <div className="text-[10px] text-white/20 mt-2 font-mono">
-        Last: {new Date(health.last_checked).toLocaleTimeString()}
+        </div>
+        <div className="flex items-center justify-between pt-4 border-t border-border border-dashed">
+          <div className="text-[9px] text-muted-foreground/30 font-mono italic">
+            {new Date(health.last_checked).toLocaleTimeString()}
+          </div>
+          {health.latency && (
+            <div className="text-[9px] text-muted-foreground/50 font-black font-mono bg-muted px-1.5 py-0.5 rounded">
+              {health.latency}MS
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -257,33 +282,38 @@ function HealthCard({ title, icon: Icon, health }: { title: string; icon: any; h
 function KillSwitch({ label, description, flagKey, enabled, onToggle, toggling }: any) {
   return (
     <div className={cn(
-      "p-4 rounded-xl border transition-all",
-      enabled ? "bg-white/5 border-white/10" : "bg-red-500/10 border-red-500/30"
+      "p-8 rounded-3xl border transition-all shadow-sm group relative overflow-hidden",
+      enabled ? "bg-card border-border hover:border-primary/40 shadow-inner" : "bg-destructive/5 border-destructive/20 shadow-lg shadow-destructive/5"
     )}>
-      <div className="flex items-start justify-between">
-        <div>
-          <h4 className="font-bold text-lg flex items-center gap-2">
-            {label}
-            {!enabled && <span className="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded font-bold uppercase">Disabled</span>}
-          </h4>
-          <p className="text-sm text-white/60 mt-1">{description}</p>
+      <div className="flex items-start justify-between relative z-10">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <h4 className="font-black text-xs uppercase tracking-widest text-foreground group-hover:text-primary transition-colors">
+              {label}
+            </h4>
+            {!enabled && <span className="text-[8px] bg-destructive text-destructive-foreground px-2 py-0.5 rounded-full font-black uppercase tracking-[0.2em]">Off_Protocol</span>}
+          </div>
+          <p className="text-[10px] font-bold uppercase tracking-tight text-muted-foreground/50 leading-relaxed max-w-[240px]">{description}</p>
         </div>
         <button
           onClick={onToggle}
           disabled={toggling}
           className={cn(
-            "w-12 h-6 rounded-full relative transition-colors duration-200",
-            enabled ? "bg-green-500/20" : "bg-red-500/20"
+            "w-12 h-6 rounded-full relative transition-all duration-500 shadow-inner",
+            enabled ? "bg-success/20" : "bg-destructive/20"
           )}
         >
           <div className={cn(
-            "absolute top-1 w-4 h-4 rounded-full transition-transform duration-200",
-            enabled ? "left-7 bg-green-400" : "left-1 bg-red-400"
+            "absolute top-1 w-4 h-4 rounded-full transition-all duration-500 shadow-lg",
+            enabled ? "left-7 bg-success shadow-success/40" : "left-1 bg-destructive shadow-destructive/40"
           )} />
         </button>
       </div>
-      <div className="mt-3 text-xs font-mono text-white/30">
-        KEY: {flagKey}
+      <div className="mt-8 pt-4 border-t border-border border-dashed flex items-center justify-between relative z-10">
+        <div className="text-[9px] font-mono text-muted-foreground/20 font-black uppercase tracking-widest">
+          ID: {flagKey}
+        </div>
+        {toggling && <Loader2 className="w-3 h-3 animate-spin text-primary/40" />}
       </div>
     </div>
   );

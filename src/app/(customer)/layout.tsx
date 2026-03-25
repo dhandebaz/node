@@ -59,7 +59,7 @@ export default async function CustomerLayout({
     }
 
     return (
-      <div className="min-h-screen public-site selection:bg-[var(--color-brand-red)] selection:text-[var(--public-ink)] font-sans">
+      <div className="min-h-screen bg-background selection:bg-primary selection:text-primary-foreground font-sans">
         <StoreInitializer tenant={profile.tenant} />
 
         {/* Universal Top Navigation */}

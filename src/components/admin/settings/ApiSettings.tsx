@@ -7,6 +7,7 @@ import {
 } from "@/app/actions/settings";
 import { useState } from "react";
 import { Server, RefreshCw, Radio, Key, Globe, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   AI_PROVIDER_LABELS,
   getAIModelOptions,
@@ -60,10 +61,12 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-      <h3 className="font-medium text-white flex items-center gap-2 mb-6">
-        <Server className="w-5 h-5 text-cyan-400" />
-        API & Webhooks
+    <div className="bg-card border border-border rounded-2xl p-8 shadow-sm group">
+      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground flex items-center gap-3 mb-10">
+        <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 shadow-inner">
+          <Server className="w-5 h-5 text-primary" />
+        </div>
+        Interconnect Protocols
       </h3>
 
       <div className="space-y-6">
@@ -76,11 +79,12 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
             <button
               onClick={() => handleToggle("publicApiEnabled")}
               disabled={loading}
-              className={`p-4 rounded-lg border flex items-center justify-between ${
+              className={cn(
+                "p-5 rounded-2xl border flex items-center justify-between transition-all duration-300 active:scale-95 shadow-sm",
                 settings.publicApiEnabled
-                  ? "bg-cyan-900/10 border-cyan-900/50"
-                  : "bg-zinc-950 border-zinc-800"
-              }`}
+                  ? "bg-primary/10 border-primary/30"
+                  : "bg-muted/30 border-border"
+              )}
             >
               <div className="flex items-center gap-3">
                 <Globe
@@ -88,9 +92,12 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
                 />
                 <div className="text-left">
                   <div
-                    className={`text-sm font-medium ${settings.publicApiEnabled ? "text-cyan-100" : "text-zinc-400"}`}
+                    className={cn(
+                      "text-xs font-black uppercase tracking-widest",
+                      settings.publicApiEnabled ? "text-primary" : "text-muted-foreground"
+                    )}
                   >
-                    Public API
+                    Public Protocol
                   </div>
                   <div className="text-xs text-zinc-500">
                     External developer access
@@ -107,11 +114,12 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
             <button
               onClick={() => handleToggle("partnerApiEnabled")}
               disabled={loading}
-              className={`p-4 rounded-lg border flex items-center justify-between ${
+              className={cn(
+                "p-5 rounded-2xl border flex items-center justify-between transition-all duration-300 active:scale-95 shadow-sm",
                 settings.partnerApiEnabled
-                  ? "bg-cyan-900/10 border-cyan-900/50"
-                  : "bg-zinc-950 border-zinc-800"
-              }`}
+                  ? "bg-primary/10 border-primary/30"
+                  : "bg-muted/30 border-border"
+              )}
             >
               <div className="flex items-center gap-3">
                 <Key
@@ -119,9 +127,12 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
                 />
                 <div className="text-left">
                   <div
-                    className={`text-sm font-medium ${settings.partnerApiEnabled ? "text-cyan-100" : "text-zinc-400"}`}
+                    className={cn(
+                      "text-xs font-black uppercase tracking-widest",
+                      settings.partnerApiEnabled ? "text-primary" : "text-muted-foreground"
+                    )}
                   >
-                    Partner API
+                    Authority API
                   </div>
                   <div className="text-xs text-zinc-500">
                     B2B integration endpoints
@@ -139,11 +150,12 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
           <button
             onClick={() => handleToggle("webhookOutgoingEnabled")}
             disabled={loading}
-            className={`w-full p-4 rounded-lg border flex items-center justify-between ${
+            className={cn(
+              "w-full p-5 rounded-2xl border flex items-center justify-between transition-all duration-300 active:scale-[0.98] shadow-sm",
               settings.webhookOutgoingEnabled
-                ? "bg-purple-900/10 border-purple-900/50"
-                : "bg-zinc-950 border-zinc-800"
-            }`}
+                ? "bg-accent/10 border-accent/30"
+                : "bg-muted/30 border-border"
+            )}
           >
             <div className="flex items-center gap-3">
               <Radio
@@ -151,9 +163,12 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
               />
               <div className="text-left">
                 <div
-                  className={`text-sm font-medium ${settings.webhookOutgoingEnabled ? "text-purple-100" : "text-zinc-400"}`}
+                  className={cn(
+                    "text-xs font-black uppercase tracking-widest",
+                    settings.webhookOutgoingEnabled ? "text-accent" : "text-muted-foreground"
+                  )}
                 >
-                  Outgoing Webhooks
+                  Signal Transmissions
                 </div>
                 <div className="text-xs text-zinc-500">
                   Global kill switch for all webhook events
@@ -161,25 +176,30 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
               </div>
             </div>
             <div
-              className={`text-xs font-bold ${settings.webhookOutgoingEnabled ? "text-purple-400" : "text-zinc-600"}`}
+              className={cn(
+                "text-[10px] font-black uppercase tracking-[0.2em]",
+                settings.webhookOutgoingEnabled ? "text-accent" : "text-muted-foreground/30"
+              )}
             >
-              {settings.webhookOutgoingEnabled ? "ACTIVE" : "PAUSED"}
+              {settings.webhookOutgoingEnabled ? "BROADCASTING" : "SILENCED"}
             </div>
           </button>
         </div>
 
-        <div className="pt-4 border-t border-zinc-800">
-          <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4">
-            AI Integration
+          <h4 className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.3em] mb-6 ml-2">
+            Intelligence Engine Configuration
           </h4>
-          <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg space-y-5">
-            <div className="flex items-start gap-4">
-              <div className="p-2 bg-emerald-900/20 rounded-lg">
-                <Sparkles className="w-5 h-5 text-emerald-400" />
+          <div className="p-8 bg-muted/20 border border-border rounded-2xl space-y-8 relative overflow-hidden group/ai">
+            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover/ai:opacity-10 transition-opacity">
+              <Sparkles className="w-24 h-24 text-primary" />
+            </div>
+            <div className="flex items-start gap-6 relative z-10">
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 shadow-inner shrink-0">
+                <Sparkles className="w-6 h-6 text-primary" />
               </div>
               <div className="flex-1">
-                <label className="text-sm font-medium text-white block mb-1">
-                  Kaisa Runtime
+                <label className="text-xs font-black uppercase tracking-widest text-foreground block mb-2">
+                  Kaisa Neural Runtime
                 </label>
                 <p className="text-xs text-zinc-500 mb-3">
                   Super admin only. This controls the model Kaisa uses across
@@ -193,7 +213,7 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
                       setRuntimeProvider(provider);
                       setRuntimeModel(getAIModelOptions(provider)[0].id);
                     }}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-emerald-500 transition-colors"
+                    className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold"
                   >
                     {Object.entries(AI_PROVIDER_LABELS).map(
                       ([value, label]) => (
@@ -206,7 +226,7 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
                   <select
                     value={runtimeModel}
                     onChange={(e) => setRuntimeModel(e.target.value as AIModel)}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-emerald-500 transition-colors"
+                    className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold"
                   >
                     {getAIModelOptions(runtimeProvider).map((model) => (
                       <option key={model.id} value={model.id}>
@@ -224,45 +244,49 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
                   <button
                     onClick={handleRuntimeSave}
                     disabled={loading}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded border border-emerald-500/60 transition-colors disabled:opacity-60"
+                    className="px-6 py-2.5 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-primary/10 hover:opacity-90 active:scale-95 disabled:opacity-30"
                   >
-                    Save Kaisa Runtime
+                    Sync Intelligence Model
                   </button>
                 </div>
               </div>
             </div>
-            <div className="flex items-start gap-4 mb-4">
-              <div className="p-2 bg-blue-900/20 rounded-lg">
-                <Sparkles className="w-5 h-5 text-blue-400" />
+            <div className="flex items-start gap-6 pt-8 border-t border-border/50">
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center border border-accent/20 shadow-inner shrink-0">
+                <Key className="w-6 h-6 text-accent" />
               </div>
               <div className="flex-1">
-                <label className="text-sm font-medium text-white block mb-1">
-                  Gemini API Key
+                <label className="text-xs font-black uppercase tracking-widest text-foreground block mb-2">
+                  Gemini Cryptic Key
                 </label>
                 <p className="text-xs text-zinc-500 mb-3">
                   Required for automated identity verification (KYC) processing.
                 </p>
                 <input
                   type="password"
-                  placeholder="Enter Gemini API Key"
+                  placeholder="Insert encrypted signature..."
                   value={settings.geminiApiKey || ""}
                   onChange={(e) => handleGeminiKeyUpdate(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-blue-500 transition-colors"
+                  className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 text-foreground text-sm focus:ring-2 focus:ring-accent/20 outline-none transition-all font-mono font-bold"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="pt-4 border-t border-zinc-800">
-          <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4">
-            Key Management
+        <div className="pt-10">
+          <h4 className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.3em] mb-6 ml-2">
+            Authority Rotation Ledger
           </h4>
-          <div className="flex items-center justify-between p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
-            <div>
-              <div className="text-sm font-medium text-white">
-                Internal API Keys
+          <div className="flex items-center justify-between p-6 bg-muted/10 border border-border rounded-2xl relative overflow-hidden group/rotation">
+            <div className="flex items-center gap-5 relative z-10">
+              <div className="w-12 h-12 bg-foreground/5 rounded-xl flex items-center justify-center border border-border/50">
+                <RefreshCw className={cn("w-6 h-6 text-foreground/40", loading ? "animate-spin" : "")} />
               </div>
+              <div>
+                <div className="text-sm font-black uppercase tracking-widest text-foreground mb-0.5">
+                  Internal Core Secrets
+                </div>
               <div className="text-xs text-zinc-500">
                 Last rotation:{" "}
                 {settings.rotationLastPerformed
@@ -273,12 +297,9 @@ export function ApiSettingsPanel({ settings }: { settings: ApiSettings }) {
             <button
               onClick={handleRotation}
               disabled={loading}
-              className="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold rounded border border-zinc-700 transition-colors"
+              className="px-6 py-2.5 bg-foreground text-background text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md hover:opacity-90 active:scale-95 disabled:opacity-30"
             >
-              <RefreshCw
-                className={`w-3 h-3 ${loading ? "animate-spin" : ""}`}
-              />
-              Rotate Keys
+              Rotate Authority Keys
             </button>
           </div>
         </div>

@@ -86,7 +86,7 @@ export default async function AIInsightsPage({
           title: "Store Performance",
           metrics: [
             { title: "Orders Count", value: personaMetrics.ordersCount || 0, icon: ShoppingBag, description: "Total orders processed via WhatsApp.", color: "green" },
-            { title: "Repeat Customers", value: personaMetrics.repeatCustomers || 12, icon: Users, description: "Returning customers this month.", color: "emerald" },
+            { title: "Repeat Customers", value: personaMetrics.repeatCustomers || 0, icon: Users, description: "Returning customers this month.", color: "emerald" },
             { title: "Avg Order Value", value: `₹${Math.round(personaMetrics.avgOrderValue || 0)}`, icon: DollarSign, description: "Median spend per customer order.", color: "blue" }
           ]
         };
@@ -95,8 +95,8 @@ export default async function AIInsightsPage({
           title: "Clinic Operations",
           metrics: [
             { title: "Appointments", value: personaMetrics.appointmentsCount || 0, icon: Stethoscope, description: "Consultations scheduled via AI.", color: "red" },
-            { title: "No-Show Rate", value: `${personaMetrics.noShowRate || 5}%`, icon: Users, description: "Confirmed guests who didn't arrive.", color: "rose" },
-            { title: "Reminder Efficacy", value: `${personaMetrics.reminderEffectiveness || 92}%`, icon: Zap, description: "Percentage of no-shows prevented by AI.", color: "orange" }
+            { title: "No-Show Rate", value: `${personaMetrics.noShowRate || 0}%`, icon: Users, description: "Confirmed guests who didn't arrive.", color: "rose" },
+            { title: "Reminder Efficacy", value: `${personaMetrics.reminderEffectiveness || 0}%`, icon: Zap, description: "Percentage of no-shows prevented by AI.", color: "orange" }
           ]
         };
       case 'thrift_store':
@@ -104,8 +104,8 @@ export default async function AIInsightsPage({
           title: "Instagram Insights",
           metrics: [
             { title: "DMs Converted", value: personaMetrics.dmsConverted || 0, icon: MessageSquare, description: "DM inquiries turned into sales.", color: "purple" },
-            { title: "Inventory Tags", value: 145, icon: Tags, description: "New items processed and tagged by AI.", color: "fuchsia" },
-            { title: "Response Speed", value: "Instant", icon: Zap, description: "Average delay in DM responses.", color: "pink" }
+            { title: "Inventory Tags", value: 0, icon: Tags, description: "New items processed and tagged by AI.", color: "fuchsia" },
+            { title: "Response Speed", value: personaMetrics.aiResponseSpeed ? `${personaMetrics.aiResponseSpeed}s` : "Instant", icon: Zap, description: "Average delay in DM responses.", color: "pink" }
           ]
         };
       default:
@@ -152,7 +152,6 @@ export default async function AIInsightsPage({
         <MetricCard 
           title="Net Revenue" 
           value={`₹${Math.round(personaMetrics.revenue || 0)}`} 
-          change={12} 
           icon={DollarSign} 
           description="Total income from all channels."
           color="emerald"
@@ -178,7 +177,7 @@ export default async function AIInsightsPage({
                   <div className="text-xs text-[var(--public-muted)] font-bold uppercase tracking-widest mb-2">Replies Sent</div>
                   <div className="text-4xl font-bold text-[var(--public-ink)] font-mono">{aiRoi.aiRepliesSent}</div>
                   <div className="h-1.5 skeuo-progress-bg mt-4">
-                     <div className="h-full skeuo-progress-fill w-[75%]" />
+                     <div className="h-full skeuo-progress-fill" style={{ width: '100%' }} />
                   </div>
                </div>
                <div>
@@ -187,7 +186,7 @@ export default async function AIInsightsPage({
                      {aiRoi.aiRepliesSent ? Math.round((aiRoi.outcomes / aiRoi.aiRepliesSent) * 100) : 0}%
                   </div>
                   <div className="h-1.5 skeuo-progress-bg mt-4">
-                     <div className="h-full skeuo-progress-fill w-[45%] bg-green-500" />
+                     <div className="h-full skeuo-progress-fill bg-green-500" style={{ width: `${aiRoi.aiRepliesSent ? Math.min(100, (aiRoi.outcomes / aiRoi.aiRepliesSent) * 100) : 0}%` }} />
                   </div>
                </div>
                <div>
@@ -196,7 +195,7 @@ export default async function AIInsightsPage({
                      ₹{aiRoi.outcomes ? Math.round(aiRoi.creditsUsed / aiRoi.outcomes) : 0}
                   </div>
                   <div className="h-1.5 skeuo-progress-bg mt-4">
-                     <div className="h-full skeuo-progress-fill w-[30%] bg-blue-500" />
+                     <div className="h-full skeuo-progress-fill bg-blue-500" style={{ width: `${aiRoi.outcomes ? '100%' : '0%'}` }} />
                   </div>
                </div>
             </div>

@@ -1,4 +1,6 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { Users } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 type CustomerRow = {
@@ -83,77 +85,96 @@ export default async function AdminCustomersPage() {
   });
 
   return (
-    <div className="space-y-8 pb-10">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Customers</h1>
-        <p className="text-zinc-400">
-          Active businesses and their AI Manager status.
-        </p>
+    <div className="space-y-10 pb-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-10 mb-10">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20 shadow-inner">
+              <Users className="w-6 h-6 text-primary" />
+            </div>
+            <h1 className="text-4xl font-black uppercase tracking-[-0.02em] text-foreground">
+              Market <span className="text-primary/40">Intelligence</span>
+            </h1>
+          </div>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground/50 ml-1">
+            Active neural clusters and business authority management
+          </p>
+        </div>
+        <div className="flex items-center gap-3 bg-muted/30 px-6 py-4 rounded-2xl border border-border shadow-inner">
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/60">{customers.length} ACTIVE_CHANNELS</span>
+        </div>
       </div>
 
-      <div className="border border-zinc-800 rounded-lg overflow-auto bg-zinc-950/60">
-        <table className="w-full text-left text-sm text-zinc-300">
-          <thead className="bg-zinc-950 text-zinc-500 uppercase text-xs sticky top-0">
-            <tr>
-              <th className="px-4 py-3">Business Name</th>
-              <th className="px-4 py-3">Phone Number</th>
-              <th className="px-4 py-3">AI Manager Hired</th>
-              <th className="px-4 py-3">Plan Price</th>
-              <th className="px-4 py-3">Wallet Balance</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Created At</th>
-              <th className="px-4 py-3 text-right">View</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-800">
+      <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm group">
+        <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-muted-foreground">
+              <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] font-black tracking-[0.3em] border-b border-border">
+                <tr>
+                  <th className="px-8 py-6">Business_Unit</th>
+                  <th className="px-8 py-6">Comm_Link</th>
+                  <th className="px-8 py-6">Neural_Agent</th>
+                  <th className="px-8 py-6">Asset_Value</th>
+                  <th className="px-8 py-6">Wallet_Credit</th>
+                  <th className="px-8 py-6">Status_Gate</th>
+                  <th className="px-8 py-6 text-right">Action</th>
+                </tr>
+              </thead>
+          <tbody className="divide-y divide-border">
             {customers.map((customer) => (
-              <tr key={customer.id} className="hover:bg-zinc-900/40">
-                <td className="px-4 py-3 text-white font-medium">
-                  {customer.businessName}
-                </td>
-                <td className="px-4 py-3 text-zinc-400">
-                  {customer.phone || "—"}
-                </td>
-                <td className="px-4 py-3">{customer.aiManager || "—"}</td>
-                <td className="px-4 py-3">
-                  ₹
-                  {new Intl.NumberFormat("en-IN").format(
-                    customer.planPrice || 0,
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  ₹
-                  {new Intl.NumberFormat("en-IN").format(
-                    customer.walletBalance || 0,
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`px-2 py-0.5 rounded text-xs border uppercase tracking-wider ${customer.status === "active" ? "bg-emerald-900/30 text-emerald-300 border-emerald-900" : "bg-zinc-800 text-zinc-400 border-zinc-700"}`}
-                  >
-                    {customer.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-zinc-500">
-                  {customer.createdAt
-                    ? new Date(customer.createdAt).toLocaleDateString()
-                    : "—"}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <Link
-                    href={`/admin/customers/${customer.id}`}
-                    className="text-xs text-white hover:text-blue-300"
-                  >
-                    Open
-                  </Link>
-                </td>
-              </tr>
+                  <tr key={customer.id} className="hover:bg-muted/30 transition-all group/row border-b border-border/50 last:border-0 border-dashed">
+                    <td className="px-8 py-6">
+                      <div className="text-foreground font-black uppercase tracking-widest text-[10px] group-hover/row:text-primary transition-colors">
+                        {customer.businessName}
+                      </div>
+                      <div className="text-[9px] font-bold text-muted-foreground/30 mt-1 uppercase tracking-tighter">
+                        ID: {customer.id.split("-")[0]}...
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 text-[10px] font-mono font-bold text-muted-foreground/60">
+                      {customer.phone || "—"}
+                    </td>
+                    <td className="px-8 py-6">
+                      <span className="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-tighter bg-accent/10 text-accent border border-accent/20">
+                        {customer.aiManager || "UNASSIGNED"}
+                      </span>
+                    </td>
+                    <td className="px-8 py-6 text-[10px] font-bold text-foreground">
+                      ₹{new Intl.NumberFormat("en-IN").format(customer.planPrice || 0)}
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="text-[10px] font-bold text-foreground">₹{new Intl.NumberFormat("en-IN").format(customer.walletBalance || 0)}</div>
+                      <div className="w-20 h-1 bg-muted rounded-full mt-2 overflow-hidden">
+                        <div className="h-full bg-success/40" style={{ width: `${Math.min(100, (customer.walletBalance / 5000) * 100)}%` }} />
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <span
+                        className={cn(
+                          "px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border transition-all",
+                          customer.status === "active" 
+                            ? "bg-success/10 text-success border-success/30 shadow-[0_0_10px_rgba(34,197,94,0.1)]" 
+                            : "bg-muted text-muted-foreground/40 border-border"
+                        )}
+                      >
+                        {customer.status}
+                      </span>
+                    </td>
+                    <td className="px-8 py-6 text-right">
+                      <Link
+                        href={`/admin/customers/${customer.id}`}
+                        className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:text-primary/80 transition-all group/btn"
+                      >
+                        MANAGE_ACCESS
+                        <span className="group-hover/btn:translate-x-1 transition-transform">→</span>
+                      </Link>
+                    </td>
+                  </tr>
             ))}
             {customers.length === 0 && (
               <tr>
                 <td
                   colSpan={8}
-                  className="px-6 py-10 text-center text-zinc-500"
+                  className="px-6 py-12 text-center text-muted-foreground"
                 >
                   No customers found.
                 </td>
@@ -163,5 +184,6 @@ export default async function AdminCustomersPage() {
         </table>
       </div>
     </div>
+  </div>
   );
 }

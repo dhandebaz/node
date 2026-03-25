@@ -93,36 +93,35 @@ export function Header({ viewer }: HeaderProps) {
       <div className="public-container pt-4 sm:pt-5">
         <div className="public-nav-shell rounded-[2rem] px-4 py-3 sm:px-5">
           <div className="flex items-center gap-4">
-            <Link href="/" className="flex shrink-0 items-center gap-3">
-              <div className="public-inset flex h-12 w-12 items-center justify-center rounded-[1.4rem] bg-[var(--public-accent)]/95">
-                <Logo className="h-8 w-8" />
+            <Link href="/" className="flex shrink-0 items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/20">
+                <Logo className="h-8 w-8 text-white" />
               </div>
               <div className="hidden sm:block">
-                <div className="public-display text-lg text-[var(--public-ink)]">
+                <div className="font-display text-2xl text-foreground uppercase tracking-tighter leading-none">
                   nodebase
                 </div>
-                <div className="public-eyebrow">
-                  AI assistants for your business
+                <div className="text-[10px] font-black uppercase tracking-widest text-primary mt-1">
+                  AI employees for your business
                 </div>
               </div>
             </Link>
 
-            <nav className="hidden flex-1 items-center justify-center md:flex">
-              <div className="public-inset flex items-center gap-1 rounded-full px-2 py-2">
+              <div className="public-inset flex items-center gap-1 rounded-full p-1.5 border border-border/40">
                 {publicNavLinks.map((item) => {
                   const active =
                     pathname === item.href ||
                     pathname.startsWith(`${item.href}/`);
-
+ 
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
                       className={cn(
-                        "rounded-full px-4 py-2 text-sm font-semibold transition-all",
+                        "rounded-full px-5 py-2 text-sm font-bold uppercase tracking-tight transition-all",
                         active
-                          ? "bg-[var(--public-accent)] text-[var(--public-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]"
-                          : "text-[var(--public-muted)] hover:bg-white/70 hover:text-[var(--public-ink)]",
+                          ? "bg-primary text-primary-foreground shadow-md shadow-primary/10"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
                       )}
                     >
                       {item.label}
@@ -130,7 +129,6 @@ export function Header({ viewer }: HeaderProps) {
                   );
                 })}
               </div>
-            </nav>
 
             <div className="ml-auto hidden items-center gap-3 md:flex">
               {isAuthenticated ? (
@@ -171,31 +169,31 @@ export function Header({ viewer }: HeaderProps) {
                           <div className="relative z-10 space-y-2">
                             <Link
                               href={dashboardHref}
-                              className="public-inset flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]"
+                              className="public-inset flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold uppercase tracking-tight text-foreground hover:border-primary/30 transition-all"
                             >
-                              <LayoutDashboard className="h-4 w-4 text-[var(--public-accent-strong)]" />
+                              <LayoutDashboard className="h-4 w-4 text-primary" />
                               Dashboard
                             </Link>
                             <Link
                               href="/dashboard/billing"
-                              className="public-inset flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]"
+                              className="public-inset flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold uppercase tracking-tight text-foreground hover:border-primary/30 transition-all"
                             >
-                              <CreditCard className="h-4 w-4 text-[var(--public-accent-strong)]" />
+                              <CreditCard className="h-4 w-4 text-primary" />
                               Billing & usage
                             </Link>
                             <Link
                               href="/dashboard/settings"
-                              className="public-inset flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--public-ink)]"
+                              className="public-inset flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold uppercase tracking-tight text-foreground hover:border-primary/30 transition-all"
                             >
-                              <Settings className="h-4 w-4 text-[var(--public-accent-strong)]" />
+                              <Settings className="h-4 w-4 text-primary" />
                               Settings
                             </Link>
                             <button
                               type="button"
                               onClick={handleLogout}
-                              className="public-inset flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-[var(--public-ink)]"
+                              className="public-inset flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold uppercase tracking-tight text-red-500 hover:bg-red-500/5 transition-all"
                             >
-                              <LogOut className="h-4 w-4 text-[var(--public-accent-strong)]" />
+                              <LogOut className="h-4 w-4" />
                               Sign out
                             </button>
                           </div>
@@ -208,13 +206,13 @@ export function Header({ viewer }: HeaderProps) {
                 <>
                   <Link
                     href="/login"
-                    className="public-button-secondary px-5 py-3 text-sm font-semibold"
+                    className="public-button-secondary px-8 py-3.5 text-sm"
                   >
                     Log in
                   </Link>
                   <Link
                     href="/signup"
-                    className="public-button px-5 py-3 text-sm font-semibold"
+                    className="public-button px-8 py-3.5 text-sm"
                   >
                     Get Started Free
                     <ArrowRight className="h-4 w-4" />

@@ -5,6 +5,7 @@ import { NotificationSettings } from "@/types/settings";
 import { updateNotificationsAction } from "@/app/actions/settings";
 import { useState } from "react";
 import { Bell, Mail, MessageSquare, AlertTriangle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function NotificationSettingsPanel({ settings }: { settings: NotificationSettings }) {
   const [loading, setLoading] = useState(false);
@@ -25,81 +26,92 @@ export function NotificationSettingsPanel({ settings }: { settings: Notification
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-      <h3 className="font-medium text-white flex items-center gap-2 mb-6">
-        <Bell className="w-5 h-5 text-yellow-400" />
-        Notifications & Messages
+    <div className="bg-card border border-border rounded-2xl p-8 shadow-sm group">
+      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground flex items-center gap-3 mb-10">
+        <div className="w-10 h-10 bg-warning/10 rounded-xl flex items-center justify-center border border-warning/20 shadow-inner text-warning">
+          <Bell className="w-5 h-5" />
+        </div>
+        Protocol Broadcasts
       </h3>
 
       <div className="space-y-6">
-        <div className="space-y-4">
-            <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Channels</h4>
+        <div className="space-y-6">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 ml-2">Active Transmission Channels</h4>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                 <button
+                  <button
                     onClick={() => handleToggle("systemMessagesEnabled")}
                     disabled={loading}
-                    className={`p-3 rounded border flex items-center gap-3 ${
-                        settings.systemMessagesEnabled
-                            ? "bg-blue-900/10 border-blue-900/50 text-blue-400"
-                            : "bg-zinc-950 border-zinc-800 text-zinc-500"
-                    }`}
-                 >
-                    <Bell className="w-4 h-4" />
-                    <span className="text-sm font-medium">In-App System</span>
-                 </button>
+                    className={cn(
+                      "p-5 rounded-2xl border flex flex-col items-center justify-center gap-4 transition-all duration-300 active:scale-95 shadow-sm",
+                      settings.systemMessagesEnabled
+                          ? "bg-primary/10 border-primary/30 text-primary"
+                          : "bg-muted/30 border-border text-muted-foreground/40"
+                    )}
+                  >
+                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center border", settings.systemMessagesEnabled ? "bg-primary/10 border-primary/20" : "bg-muted border-border")}>
+                      <Bell className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Neural Direct</span>
+                  </button>
 
-                 <button
+                  <button
                     onClick={() => handleToggle("emailChannelEnabled")}
                     disabled={loading}
-                    className={`p-3 rounded border flex items-center gap-3 ${
-                        settings.emailChannelEnabled
-                            ? "bg-green-900/10 border-green-900/50 text-green-400"
-                            : "bg-zinc-950 border-zinc-800 text-zinc-500"
-                    }`}
-                 >
-                    <Mail className="w-4 h-4" />
-                    <span className="text-sm font-medium">Email Channel</span>
-                 </button>
+                    className={cn(
+                      "p-5 rounded-2xl border flex flex-col items-center justify-center gap-4 transition-all duration-300 active:scale-95 shadow-sm",
+                      settings.emailChannelEnabled
+                          ? "bg-success/10 border-success/30 text-success"
+                          : "bg-muted/30 border-border text-muted-foreground/40"
+                    )}
+                  >
+                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center border", settings.emailChannelEnabled ? "bg-success/10 border-success/20" : "bg-muted border-border")}>
+                      <Mail className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest">SMTP Relay</span>
+                  </button>
 
-                 <button
+                  <button
                     onClick={() => handleToggle("smsChannelEnabled")}
                     disabled={loading}
-                    className={`p-3 rounded border flex items-center gap-3 ${
-                        settings.smsChannelEnabled
-                            ? "bg-purple-900/10 border-purple-900/50 text-purple-400"
-                            : "bg-zinc-950 border-zinc-800 text-zinc-500"
-                    }`}
-                 >
-                    <MessageSquare className="w-4 h-4" />
-                    <span className="text-sm font-medium">SMS Channel</span>
-                 </button>
+                    className={cn(
+                      "p-5 rounded-2xl border flex flex-col items-center justify-center gap-4 transition-all duration-300 active:scale-95 shadow-sm",
+                      settings.smsChannelEnabled
+                          ? "bg-accent/10 border-accent/30 text-accent"
+                          : "bg-muted/30 border-border text-muted-foreground/40"
+                    )}
+                  >
+                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center border", settings.smsChannelEnabled ? "bg-accent/10 border-accent/20" : "bg-muted border-border")}>
+                      <MessageSquare className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Cellular Link</span>
+                  </button>
             </div>
         </div>
 
-        <div className="space-y-2 pt-4 border-t border-zinc-800">
-            <label className="text-xs text-zinc-400 font-medium uppercase flex items-center gap-2">
-                <AlertTriangle className="w-3 h-3 text-red-400" />
-                Global Emergency Banner
+        <div className="space-y-4 pt-10 border-t border-border mt-4 group/emergency">
+            <label className="text-[10px] font-black uppercase tracking-[0.3em] text-destructive flex items-center gap-4 ml-2">
+                <div className="w-2 h-2 rounded-full bg-destructive animate-ping" />
+                Global Override Signal
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-4">
                 <input 
                     type="text"
-                    placeholder="Enter alert message to display on all pages (leave empty to disable)"
+                    placeholder="Input emergency broadcast payload..."
                     value={banner}
                     onChange={(e) => setBanner(e.target.value)}
-                    className="flex-1 bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-red-900 placeholder:text-zinc-600"
+                    className="flex-1 bg-muted/30 border border-border rounded-xl px-4 py-4 text-sm text-foreground focus:ring-2 focus:ring-destructive/20 font-bold outline-none transition-all placeholder:opacity-20 shadow-inner"
                 />
                 <button
                     onClick={saveBanner}
                     disabled={loading || banner === (settings.emergencyBanner || "")}
-                    className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold rounded transition-colors disabled:opacity-50"
+                    className="px-8 py-4 bg-destructive text-destructive-foreground text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-destructive/20 disabled:opacity-20 active:scale-95"
                 >
-                    Update
+                    Broadcast
                 </button>
             </div>
-            <p className="text-[10px] text-zinc-500">
-                Visible to all users immediately. Use for outages or critical announcements only.
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30 ml-2">
+                Transmission will be immediate and visible on all authority-controlled interfaces.
             </p>
         </div>
       </div>

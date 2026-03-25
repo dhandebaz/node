@@ -127,8 +127,8 @@ export function BusinessDetailsForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="space-y-3">
-        <label className="block text-sm font-semibold text-[var(--public-ink)]">
+      <div className="space-y-4">
+        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-primary">
           {config.countLabel}
         </label>
         <input
@@ -138,18 +138,20 @@ export function BusinessDetailsForm({
           onChange={(event) =>
             setPropertyCount(Number.parseInt(event.target.value || "0", 10))
           }
-          className="public-input"
+          className="public-input focus:ring-2 focus:ring-primary/20 font-bold text-lg px-6 py-4"
           required
         />
       </div>
 
-      <div className="space-y-4">
-        <label className="block text-sm font-semibold text-[var(--public-ink)]">
-          {config.platformLabel}
-        </label>
-        <p className="text-sm leading-6 text-[var(--public-muted)]">
-          Select every channel that actually shapes the workflow today.
-        </p>
+      <div className="space-y-6">
+        <div>
+          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+            {config.platformLabel}
+          </label>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground font-sans">
+            Select every channel that actually shapes the workflow today.
+          </p>
+        </div>
         <div className="grid gap-3 md:grid-cols-2">
           {config.platforms.map((platform) => {
             const selected = platforms.includes(platform.id);
@@ -160,21 +162,24 @@ export function BusinessDetailsForm({
                 type="button"
                 onClick={() => togglePlatform(platform.id)}
                 className={cn(
-                  "public-inset flex items-center gap-3 rounded-[1.2rem] px-4 py-4 text-left transition-all",
-                  selected && "border-[rgba(146,43,34,0.28)] bg-[rgba(214,88,74,0.08)]",
+                  "public-inset flex items-center gap-4 rounded-2xl px-5 py-5 text-left transition-all hover:border-primary/30",
+                  selected && "border-primary bg-primary/5 shadow-sm shadow-primary/5",
                 )}
               >
                 <div
                   className={cn(
-                    "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
+                    "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all",
                     selected
-                      ? "border-[var(--public-accent)] bg-[var(--public-accent)] text-white"
-                      : "border-[rgba(61,44,25,0.18)] text-transparent",
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-background text-transparent",
                   )}
                 >
-                  <Check className="h-3 w-3" />
+                  <Check className="h-4 w-4" />
                 </div>
-                <span className="text-sm font-semibold text-[var(--public-ink)]">
+                <span className={cn(
+                  "text-sm font-bold uppercase tracking-tight transition-colors",
+                  selected ? "text-foreground" : "text-muted-foreground"
+                )}>
                   {platform.label}
                 </span>
               </button>
@@ -186,13 +191,13 @@ export function BusinessDetailsForm({
       <button
         type="submit"
         disabled={loading}
-        className="public-button w-full px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+        className="public-button w-full px-8 py-5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+        {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
         Configure my AI employee
       </button>
 
-      <p className="text-center text-sm leading-6 text-[var(--public-muted)]">
+      <p className="text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-relaxed max-w-sm mx-auto">
         Setup usually takes a couple of minutes. No card or platform passwords are
         needed at this step.
       </p>

@@ -49,59 +49,59 @@ export function PricingEditor({ config }: { config: any }) {
 
   return (
     <div className="max-w-xl">
-      <div className="bg-gradient-to-br from-zinc-900 to-black border border-zinc-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-brand-red/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="bg-card border border-border rounded-2xl p-8 shadow-xl relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-500" />
         
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-brand-red/10 flex items-center justify-center border border-brand-red/20">
-              <Sparkles className="w-6 h-6 text-brand-red" />
+          <div className="flex items-center gap-4 mb-10">
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+              <Sparkles className="w-7 h-7 text-primary" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">AI SaaS Pricing</h2>
-              <p className="text-zinc-400 text-sm">Configure global subscription & usage rates</p>
+              <h2 className="text-xl font-black uppercase tracking-widest text-foreground">AI Revenue Model</h2>
+              <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest opacity-60">Global usage & subscription rates</p>
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Monthly Subscription Price (INR)</label>
+          <div className="space-y-8">
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Monthly Platform Access (INR)</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">₹</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 font-mono text-lg">₹</span>
                 <input 
                   type="number" 
                   value={pricing.ai_monthly_price}
                   onChange={(e) => setPricing({...pricing, ai_monthly_price: Number(e.target.value)})}
-                  className="w-full bg-zinc-900/50 border border-zinc-700 rounded-xl pl-8 pr-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 transition-all font-mono text-lg"
+                  className="w-full bg-muted/30 border border-border rounded-xl pl-10 pr-4 py-4 text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-mono text-xl font-black"
                 />
               </div>
-              <p className="text-xs text-zinc-500">Base monthly fee for platform access.</p>
+              <p className="text-[10px] text-muted-foreground/50 font-bold uppercase tracking-tight">Standard base fee for all active subscriptions.</p>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-zinc-300">Price per AI Reply (INR)</label>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Unit Cost per AI Execution (INR)</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">₹</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 font-mono text-lg">₹</span>
                 <input 
                   type="number" 
                   step="0.01"
                   value={pricing.ai_message_cost}
                   onChange={(e) => setPricing({...pricing, ai_message_cost: Number(e.target.value)})}
-                  className="w-full bg-zinc-900/50 border border-zinc-700 rounded-xl pl-8 pr-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 transition-all font-mono text-lg"
+                  className="w-full bg-muted/30 border border-border rounded-xl pl-10 pr-4 py-4 text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-mono text-xl font-black"
                 />
               </div>
-              <p className="text-xs text-zinc-500">Cost deducted from wallet for each generated reply.</p>
+              <p className="text-[10px] text-muted-foreground/50 font-bold uppercase tracking-tight">Variable cost deducted per generated AI interaction.</p>
             </div>
           </div>
 
-          <div className="pt-8">
+          <div className="pt-10">
             <button 
               onClick={handleSave}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-brand-red hover:bg-red-600 text-white px-6 py-3.5 rounded-xl font-bold transition-all disabled:opacity-50 shadow-lg shadow-brand-red/20"
+              className="w-full flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-4 rounded-xl font-black uppercase tracking-[0.2em] transition-all disabled:opacity-50 hover:shadow-xl hover:shadow-primary/20 hover:scale-[1.01] active:scale-[0.98] text-xs shadow-lg shadow-primary/10"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-              Update Global Pricing
+              Commit Pricing Structure
             </button>
           </div>
         </div>

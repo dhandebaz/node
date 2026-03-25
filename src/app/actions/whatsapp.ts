@@ -9,12 +9,28 @@ export async function generateWhatsAppQRAction() {
   const tenantId = await requireActiveTenant();
 
   try {
+    const supabase = await getSupabaseServer();
     const webhookUrl = `${getAppUrl()}/api/integrations/webhook/whatsapp?tenantId=${tenantId}`;
-    const { qrUrl } = await wahaService.startSession({
+    const { qrUrl, status } = await wahaService.startSession({
       sessionName: tenantId,
       webhooks: [{ url: webhookUrl, events: ["message"] }],
     });
-    return { success: true, qrUrl };
+
+    // Persist QR URL in metadata for recovery
+    if (qrUrl) {
+      await supabase.from("integrations").upsert(
+        {
+          tenant_id: tenantId,
+          provider: "whatsapp",
+          status: "pending_qr",
+          metadata: { qr_url: qrUrl, last_qr_generated_at: new Date().toISOString() },
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "tenant_id, provider" }
+      );
+    }
+
+    return { success: true, qrUrl, status };
   } catch (error) {
     console.error("Generate WhatsApp QR Error:", error);
     return { success: false, error: "Failed to generate QR code" };
@@ -27,6 +43,7 @@ export async function checkWhatsAppStatusAction() {
 
   try {
     const session = await wahaService.getSession({ sessionName: tenantId });
+    
     if (session.status === "WORKING") {
       const { error } = await supabase.from("integrations").upsert(
         {
@@ -34,6 +51,7 @@ export async function checkWhatsAppStatusAction() {
           provider: "whatsapp",
           status: "active",
           credentials: { type: "baileys" },
+          metadata: { qr_url: null }, // Clear QR URL on success
           updated_at: new Date().toISOString(),
         },
         { onConflict: "tenant_id, provider" },
@@ -41,12 +59,12 @@ export async function checkWhatsAppStatusAction() {
 
       if (error) throw new Error(error.message);
 
-      return { connected: true };
+      return { connected: true, status: session.status };
     }
 
-    return { connected: false };
+    return { connected: false, status: session.status };
   } catch (error) {
     console.error("Check WhatsApp Status Error:", error);
-    return { connected: false };
+    return { connected: false, status: "ERROR" };
   }
 }

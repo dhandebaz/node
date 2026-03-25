@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { logEvent } from "@/lib/events";
 import { log } from "@/lib/logger";
 import { EVENT_TYPES } from "@/types/events";
+import { ChannelService } from "@/lib/services/channelService";
 
 type Payload = {
   paymentId?: string;
@@ -92,9 +93,23 @@ export async function POST(request: Request) {
 
       const { data: booking } = await supabase
         .from("bookings")
-        .select("listing_id, guest_id, start_date, end_date, guest_contact")
+        .select(`
+          listing_id, 
+          guest_id, 
+          start_date, 
+          end_date, 
+          guest_contact,
+          guests (
+            channel,
+            phone
+          )
+        `)
         .eq("id", payment.booking_id)
         .maybeSingle();
+
+      const guestData = (booking as any)?.guests;
+      const channel = guestData?.channel || "whatsapp";
+      const recipientId = guestData?.phone || booking?.guest_id;
 
       if (booking?.listing_id && booking?.guest_id) {
         const startLabel = new Date(booking.start_date).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
@@ -102,15 +117,27 @@ export async function POST(request: Request) {
         const content = `Booking confirmed. Your stay from ${startLabel} to ${endLabel} is locked. You will receive details shortly.`;
         
         await supabase.from("messages").insert({
-          tenant_id: tenantId, // Ensure tenant_id is set
+          tenant_id: tenantId, 
           listing_id: booking.listing_id,
           guest_id: booking.guest_id,
-          channel: "whatsapp",
+          channel,
           direction: "outbound",
           content,
-          metadata: { read: false },
+          metadata: { read: false, trigger: 'booking_confirmed' },
           created_at: new Date().toISOString()
         });
+
+        // Dispatch to external channel
+        try {
+          await ChannelService.sendMessage({
+            tenantId,
+            recipientId,
+            content,
+            channel: channel as any
+          });
+        } catch (dispatchError) {
+          log.error("Dispatch confirmed message error", dispatchError, { tenantId, recipientId, channel });
+        }
 
         // Log AI Reply Sent (or System Message Sent)
         // User classified this as "AI_REPLY_SENT" or just "Message"?
@@ -123,7 +150,7 @@ export async function POST(request: Request) {
           actor_type: 'system',
           event_type: EVENT_TYPES.AI_REPLY_SENT,
           entity_type: 'message',
-          metadata: { channel: 'whatsapp', trigger: 'booking_confirmed' }
+          metadata: { channel, trigger: 'booking_confirmed' }
         });
       }
     }

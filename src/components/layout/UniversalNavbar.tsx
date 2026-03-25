@@ -65,11 +65,11 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 h-16 public-nav-shell backdrop-blur-md border-b border-white/5 flex items-center justify-between px-4 md:px-6 select-none">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-background/80 backdrop-blur-lg border-b border-border flex items-center justify-between px-4 md:px-6 select-none">
         {/* Left Zone: Logo & Mobile Toggle */}
         <div className="flex items-center gap-3">
           <button 
-            className="md:hidden text-[var(--public-muted)] hover:text-[var(--public-ink)] transition-colors"
+            className="md:hidden text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -94,11 +94,11 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                 className={cn(
                   "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2",
                   isActive
-                    ? "skeuo-button text-[var(--public-ink)] shadow-sm"
-                    : "text-[var(--public-muted)] hover:text-[var(--public-ink)] hover:bg-white/5"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
               >
-                <item.icon size={14} className={isActive ? "text-[var(--public-ink)]" : "text-[var(--public-muted)] group-hover:text-[var(--public-ink)]"} />
+                <item.icon size={14} className={isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"} />
                 {item.label}
               </Link>
             );
@@ -116,12 +116,12 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             <div className="text-right hidden sm:block">
-              <div className="text-sm font-medium text-[var(--public-ink)] group-hover:text-zinc-200">{tenantName || "My Business"}</div>
-              <div className="text-xs text-[var(--public-muted)] hidden lg:block max-w-[150px] truncate">{userEmail}</div>
+              <div className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{tenantName || "My Business"}</div>
+              <div className="text-xs text-muted-foreground hidden lg:block max-w-[150px] truncate">{userEmail}</div>
             </div>
-            <Avatar className={cn("w-9 h-9 border border-[var(--public-line)] transition-transform group-hover:scale-105", avatarBg)}>
+            <Avatar className={cn("w-9 h-9 border border-border transition-transform group-hover:scale-105", avatarBg)}>
               <AvatarImage src={userAvatar} />
-              <AvatarFallback className="text-[var(--public-ink)] font-bold text-xs">
+              <AvatarFallback className="text-white font-bold text-xs">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -134,19 +134,19 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="absolute right-0 top-full mt-2 w-56 public-panel shadow-2xl overflow-hidden py-1 z-[60]"
+                className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-zinc-950 border border-border shadow-2xl rounded-2xl overflow-hidden py-1 z-[60]"
               >
-                <div className="px-3 py-2 border-b border-white/5 mb-1 sm:hidden">
-                  <p className="text-xs font-medium text-zinc-200 truncate">{tenantName || "My Business"}</p>
-                  <p className="text-[10px] font-medium text-[var(--public-muted)] truncate">{userEmail}</p>
+                <div className="px-3 py-2 border-b border-border mb-1 sm:hidden">
+                  <p className="text-xs font-medium text-foreground truncate">{tenantName || "My Business"}</p>
+                  <p className="text-[10px] font-medium text-muted-foreground truncate">{userEmail}</p>
                 </div>
-                <div className="px-3 py-2 border-b border-white/5 mb-1 hidden sm:block">
-                  <p className="text-xs font-medium text-[var(--public-muted)] uppercase tracking-wider">My Account</p>
+                <div className="px-3 py-2 border-b border-border mb-1 hidden sm:block">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">My Account</p>
                 </div>
                 
                 <Link 
                   href="/dashboard/settings" 
-                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-[var(--public-ink)] transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                   onClick={() => setIsDropdownOpen(false)}
                 >
                   <Settings size={16} />
@@ -155,7 +155,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                 
                 <Link 
                   href="/dashboard/account" 
-                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-[var(--public-ink)] transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                   onClick={() => setIsDropdownOpen(false)}
                 >
                   <User size={16} />

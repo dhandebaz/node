@@ -3,7 +3,7 @@
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { ControlService } from "@/lib/services/controlService";
-import { wahaService } from "@/lib/services/wahaService";
+import { ChannelService } from "@/lib/services/channelService";
 
 export async function toggleAIPauseAction(guestId: string, paused: boolean) {
   const tenantId = await requireActiveTenant();
@@ -29,14 +29,19 @@ export async function sendManualMessageAction(guestId: string, text: string) {
   // Fetch guest
   const { data: guest, error: guestError } = await supabase
     .from('guests')
-    .select('phone')
+    .select('phone, channel')
     .eq('id', guestId)
     .eq('tenant_id', tenantId)
     .single();
 
   if (guestError || !guest) throw new Error('Guest not found');
 
-  await wahaService.sendText({ sessionName: tenantId, chatId: guest.phone, text });
+  await ChannelService.sendMessage({
+    tenantId,
+    recipientId: guest.phone || guestId,
+    content: text,
+    channel: (guest.channel as any) || 'whatsapp'
+  });
 
   // Insert outbound message
   const { error: msgError } = await supabase.from('messages').insert({
@@ -56,7 +61,7 @@ export async function sendManualMessageAction(guestId: string, text: string) {
     // Let's use 'human_manager' to distinguish.
     direction: 'outbound',
     role: 'host',
-    channel: 'whatsapp',
+    channel: guest.channel || 'whatsapp',
     content: text,
     created_at: new Date().toISOString(),
     metadata: { read: true }

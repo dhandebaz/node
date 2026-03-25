@@ -6,7 +6,11 @@ import { Booking } from "@/types";
 import { Loader2, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-export function CentralCalendar() {
+interface CentralCalendarProps {
+  listingId?: string;
+}
+
+export function CentralCalendar({ listingId = "demo-listing" }: CentralCalendarProps) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -15,7 +19,7 @@ export function CentralCalendar() {
     const fetchCalendar = async () => {
       setLoading(true);
       try {
-        const data = await listingsApi.getCalendar("demo-listing", {
+        const data = await listingsApi.getCalendar(listingId, {
           start: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).toISOString(),
           end: new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).toISOString(),
         });
@@ -104,6 +108,20 @@ export function CentralCalendar() {
             })}
           </div>
         )}
+      </div>
+      <div className="p-4 border-t border-brand-bone/10 bg-black/40 flex gap-4 text-xs font-mono">
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded bg-green-500/20 border border-green-500/30" />
+          <span className="text-brand-bone/60">Confirmed</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded bg-red-500/20 border border-red-500/30" />
+          <span className="text-brand-bone/60">Blocked</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded bg-blue-500/20 border border-blue-500/30" />
+          <span className="text-brand-bone/60">External</span>
+        </div>
       </div>
     </div>
   );

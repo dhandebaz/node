@@ -77,14 +77,14 @@ export function SystemHealthCheck({ flags, walletBalance, tenant, integrations }
       {alerts.map((alert, i) => (
         <div 
           key={i} 
-          className={`p-4 rounded-xl border flex items-start gap-4 ${
+          className={`p-4 rounded-xl border flex items-start gap-4 transition-all duration-200 ${
             alert.type === 'critical' 
-              ? "bg-red-500/10 border-red-500/30 text-red-200" 
-              : "bg-yellow-500/10 border-yellow-500/30 text-yellow-200"
+              ? "bg-destructive/10 border-destructive/20 text-foreground" 
+              : "bg-amber-500/10 border-amber-500/20 text-foreground"
           }`}
         >
           <div className={`p-2 rounded-lg ${
-            alert.type === 'critical' ? "bg-red-500/20" : "bg-yellow-500/20"
+            alert.type === 'critical' ? "bg-destructive/10 text-destructive" : "bg-amber-500/10 text-amber-500"
           }`}>
             <alert.icon className="w-5 h-5" />
           </div>
@@ -96,8 +96,8 @@ export function SystemHealthCheck({ flags, walletBalance, tenant, integrations }
                 href={alert.action.href}
                 className={`text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg transition-colors inline-block ${
                   alert.type === 'critical' 
-                    ? "bg-red-500 text-white hover:bg-red-600" 
-                    : "bg-yellow-500 text-black hover:bg-yellow-400"
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm" 
+                    : "bg-amber-500 text-black hover:bg-amber-400 shadow-sm"
                 }`}
               >
                 {alert.action.label}

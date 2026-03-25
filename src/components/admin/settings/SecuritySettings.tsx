@@ -5,6 +5,7 @@ import { SecuritySettings } from "@/types/settings";
 import { updateSecurityAction, forceLogoutAllAction } from "@/app/actions/settings";
 import { useState } from "react";
 import { ShieldAlert, LogOut, Clock, Lock, AlertTriangle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function SecuritySettingsPanel({ settings }: { settings: SecuritySettings }) {
   const [loading, setLoading] = useState(false);
@@ -31,71 +32,74 @@ export function SecuritySettingsPanel({ settings }: { settings: SecuritySettings
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-      <h3 className="font-medium text-white flex items-center gap-2 mb-6">
-        <ShieldAlert className="w-5 h-5 text-red-400" />
-        Security Controls
+    <div className="bg-card border border-border rounded-2xl p-8 shadow-sm group">
+      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground flex items-center gap-3 mb-10">
+        <div className="w-10 h-10 bg-destructive/10 rounded-xl flex items-center justify-center border border-destructive/20 shadow-inner">
+          <ShieldAlert className="w-5 h-5 text-destructive" />
+        </div>
+        Security Protocols
       </h3>
 
       <div className="space-y-6">
         
         {/* Session Timeout */}
-        <div className="flex items-end gap-4">
-            <div className="flex-1 space-y-2">
-                <label className="text-xs text-zinc-400 font-medium uppercase flex items-center gap-2">
-                    <Clock className="w-3 h-3" />
-                    Session Timeout (Minutes)
+        <div className="flex items-end gap-4 bg-muted/20 p-5 rounded-2xl border border-border/50">
+            <div className="flex-1 space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-primary" />
+                    Session Validity Threshold (m)
                 </label>
                 <input 
                   type="number"
                   value={timeout}
                   onChange={(e) => setTimeout(parseInt(e.target.value))}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-700"
+                  className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 text-foreground text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all font-mono font-bold"
                 />
             </div>
             <button
                 onClick={handleTimeoutSave}
                 disabled={loading || timeout === settings.sessionTimeoutMinutes}
-                className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold rounded transition-colors disabled:opacity-50"
+                className="px-6 py-3 bg-foreground text-background text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md disabled:opacity-30 active:scale-95 mb-[3px]"
             >
-                Update
+                Commit
             </button>
         </div>
 
-        <div className="border-t border-zinc-800 pt-6 space-y-4">
-            <h4 className="text-xs font-bold text-red-500 uppercase tracking-wider flex items-center gap-2">
-                <AlertTriangle className="w-3 h-3" />
-                Danger Zone
+        <div className="pt-10 space-y-6">
+            <h4 className="text-[10px] font-black text-destructive uppercase tracking-[0.3em] flex items-center gap-3 ml-2">
+              <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+              Containment Protocols
             </h4>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <button
                     onClick={toggleAdminLock}
                     disabled={loading}
-                    className={`p-4 rounded-lg border flex flex-col items-center justify-center gap-2 transition-colors ${
-                        settings.adminAccessLocked
-                        ? "bg-red-900/20 border-red-900 text-red-400 hover:bg-red-900/30"
-                        : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-red-900 hover:text-red-400"
-                    }`}
+                    className={cn(
+                      "p-8 rounded-2xl border flex flex-col items-center justify-center gap-4 transition-all duration-300 active:scale-95 shadow-sm",
+                      settings.adminAccessLocked
+                      ? "bg-destructive text-destructive-foreground border-destructive shadow-lg shadow-destructive/20"
+                      : "bg-muted/30 border-border text-muted-foreground hover:border-destructive/50 hover:text-destructive hover:bg-destructive/5"
+                    )}
                 >
-                    <Lock className="w-6 h-6" />
-                    <span className="font-bold text-sm">
-                        {settings.adminAccessLocked ? "Unlock Admin Access" : "Lock Admin Access"}
+                    <Lock className={cn("w-8 h-8", settings.adminAccessLocked ? "animate-bounce" : "")} />
+                    <span className="font-black text-[10px] uppercase tracking-widest">
+                        {settings.adminAccessLocked ? "Release Admin Lock" : "Engage Admin Lock"}
                     </span>
                 </button>
 
                 <button
                     onClick={handleForceLogout}
                     disabled={loading}
-                    className="p-4 rounded-lg border bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-red-900 hover:text-red-400 hover:bg-red-900/10 flex flex-col items-center justify-center gap-2 transition-colors"
+                    className="p-8 rounded-2xl border bg-muted/30 border-border text-muted-foreground hover:border-destructive/50 hover:text-destructive hover:bg-destructive/5 flex flex-col items-center justify-center gap-4 transition-all duration-300 active:scale-95 shadow-sm"
                 >
-                    <LogOut className="w-6 h-6" />
-                    <span className="font-bold text-sm">Force Logout All Sessions</span>
+                    <LogOut className="w-8 h-8" />
+                    <span className="font-black text-[10px] uppercase tracking-widest">Global Session Evacuation</span>
                 </button>
             </div>
             {settings.forceLogoutTriggeredAt && (
-                <div className="text-center text-xs text-zinc-500">
-                    Last forced logout: {new Date(settings.forceLogoutTriggeredAt).toLocaleString()}
+                <div className="text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 mt-6">
+                    Last Global Evacuation Triggered: {new Date(settings.forceLogoutTriggeredAt).toLocaleString()}
                 </div>
             )}
         </div>

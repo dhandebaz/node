@@ -13,11 +13,13 @@ interface WhatsAppBYONCardProps {
 }
 
 export function WhatsAppBYONCard({ initialStatus }: WhatsAppBYONCardProps) {
-  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [qrCode, setQrCode] = useState<string | null>(initialStatus?.metadata?.qr_url || null);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'generating' | 'scanning' | 'connected'>(
-    initialStatus?.status === 'active' ? 'connected' : 'idle'
-  );
+  const [status, setStatus] = useState<'idle' | 'generating' | 'scanning' | 'connected'>(() => {
+    if (initialStatus?.status === 'active') return 'connected';
+    if (initialStatus?.metadata?.qr_url) return 'scanning';
+    return 'idle';
+  });
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;

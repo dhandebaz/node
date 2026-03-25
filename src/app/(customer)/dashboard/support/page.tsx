@@ -37,11 +37,11 @@ export default async function CustomerSupportPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-[var(--public-ink)] mb-2 flex items-center gap-3">
-          <LifeBuoy className="w-8 h-8 text-brand-red" />
+        <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
+          <LifeBuoy className="w-8 h-8 text-primary" />
           Support Center
         </h1>
-        <p className="text-[var(--public-muted)]">
+        <p className="text-muted-foreground">
           Get help with your products, account, and technical issues.
         </p>
       </div>
@@ -60,46 +60,46 @@ export default async function CustomerSupportPage() {
       <SupportTicketList tickets={tickets} />
 
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="public-panel border border-[var(--public-line)] rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-[var(--public-ink)] mb-4">Contact Us</h2>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-foreground mb-4">Contact Us</h2>
           <div className="space-y-4">
             <a
               href="mailto:support@nodebase.space"
-              className="flex items-center gap-4 p-4 bg-[var(--public-bg-soft)] text-[var(--public-ink)] rounded-lg border border-[var(--public-line)] hover:bg-[var(--public-panel-muted)] transition-colors group"
+              className="flex items-center gap-4 p-4 bg-muted/50 text-foreground rounded-lg border border-border hover:bg-muted transition-colors group"
             >
-              <div className="p-2 public-panel rounded-md text-blue-500 group-hover:bg-[var(--public-bg-soft)] text-[var(--public-ink)]">
+              <div className="p-2 bg-card rounded-md text-primary group-hover:bg-muted/50">
                 <Mail className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-medium text-[var(--public-ink)]">Email Support</div>
-                <div className="text-sm text-[var(--public-muted)]">
+                <div className="font-medium text-foreground">Email Support</div>
+                <div className="text-sm text-muted-foreground">
                   Response within 24 hours
                 </div>
               </div>
             </a>
-
-            <button className="w-full flex items-center gap-4 p-4 bg-[var(--public-bg-soft)] text-[var(--public-ink)] rounded-lg border border-[var(--public-line)] hover:bg-[var(--public-panel-muted)] transition-colors group text-left">
-              <div className="p-2 public-panel rounded-md text-green-500 group-hover:bg-[var(--public-bg-soft)] text-[var(--public-ink)]">
+ 
+            <button className="w-full flex items-center gap-4 p-4 bg-muted/50 text-foreground rounded-lg border border-border hover:bg-muted transition-colors group text-left">
+              <div className="p-2 bg-card rounded-md text-primary group-hover:bg-muted/50">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-medium text-[var(--public-ink)]">Live Chat</div>
-                <div className="text-sm text-[var(--public-muted)]">
+                <div className="font-medium text-foreground">Live Chat</div>
+                <div className="text-sm text-muted-foreground">
                   Available Mon-Fri, 9am-5pm EST
                 </div>
               </div>
             </button>
-
+ 
             <a
               href="tel:+18005550123"
-              className="flex items-center gap-4 p-4 bg-[var(--public-bg-soft)] text-[var(--public-ink)] rounded-lg border border-[var(--public-line)] hover:bg-[var(--public-panel-muted)] transition-colors group"
+              className="flex items-center gap-4 p-4 bg-muted/50 text-foreground rounded-lg border border-border hover:bg-muted transition-colors group"
             >
-              <div className="p-2 public-panel rounded-md text-purple-500 group-hover:bg-[var(--public-bg-soft)] text-[var(--public-ink)]">
+              <div className="p-2 bg-card rounded-md text-primary group-hover:bg-muted/50">
                 <Phone className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-medium text-[var(--public-ink)]">Phone Support</div>
-                <div className="text-sm text-[var(--public-muted)]">
+                <div className="font-medium text-foreground">Phone Support</div>
+                <div className="text-sm text-muted-foreground">
                   Priority support for Pro plans
                 </div>
               </div>
@@ -107,42 +107,42 @@ export default async function CustomerSupportPage() {
           </div>
         </div>
 
-        <div className="public-panel border border-[var(--public-line)] rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-[var(--public-ink)] mb-4">
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             Documentation
           </h2>
           <div className="space-y-4">
-            <div className="p-4 bg-[var(--public-bg-soft)] text-[var(--public-ink)] rounded-lg border border-[var(--public-line)]">
-              <h3 className="font-medium text-[var(--public-ink)] mb-2 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[var(--public-muted)]" />
+            <div className="p-4 bg-muted/50 text-foreground rounded-lg border border-border">
+              <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-muted-foreground" />
                 Quick Start Guides
               </h3>
-              <ul className="space-y-2 text-sm text-[var(--public-muted)]">
-                <li className="hover:text-blue-400 cursor-pointer">
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="hover:text-primary cursor-pointer transition-colors">
                   Getting started with kaisa AI
                 </li>
-                <li className="hover:text-blue-400 cursor-pointer">
+                <li className="hover:text-primary cursor-pointer transition-colors">
                   Deploying your first Space Cloud site
                 </li>
-                <li className="hover:text-blue-400 cursor-pointer">
+                <li className="hover:text-primary cursor-pointer transition-colors">
                   Managing billing and invoices
                 </li>
               </ul>
             </div>
-
-            <div className="p-4 bg-[var(--public-bg-soft)] text-[var(--public-ink)] rounded-lg border border-[var(--public-line)]">
-              <h3 className="font-medium text-[var(--public-ink)] mb-2 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[var(--public-muted)]" />
+ 
+            <div className="p-4 bg-muted/50 text-foreground rounded-lg border border-border">
+              <h3 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-muted-foreground" />
                 API Reference
               </h3>
-              <ul className="space-y-2 text-sm text-[var(--public-muted)]">
-                <li className="hover:text-blue-400 cursor-pointer">
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="hover:text-primary cursor-pointer transition-colors">
                   Authentication
                 </li>
-                <li className="hover:text-blue-400 cursor-pointer">
+                <li className="hover:text-primary cursor-pointer transition-colors">
                   Endpoints
                 </li>
-                <li className="hover:text-blue-400 cursor-pointer">Webhooks</li>
+                <li className="hover:text-primary cursor-pointer transition-colors">Webhooks</li>
               </ul>
             </div>
           </div>
