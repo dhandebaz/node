@@ -59,8 +59,14 @@ export default async function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${inter.variable} ${outfit.variable} ${ibmPlexMono.variable} font-sans antialiased min-h-screen flex flex-col`}
+        className={`${inter.variable} ${outfit.variable} ${ibmPlexMono.variable} font-sans antialiased min-h-screen flex flex-col relative bg-background`}
       >
+        {/* Abstract gradient mesh layer for Glassmorphism base */}
+        <div className="fixed inset-0 z-[-1] h-full w-full overflow-hidden pointer-events-none">
+          <div className="absolute top-[-10%] right-[-5%] h-[50vw] w-[50vw] rounded-full bg-primary/10 blur-[120px]" />
+          <div className="absolute bottom-[-20%] left-[-10%] h-[60vw] w-[60vw] rounded-full bg-sky-500/10 blur-[140px]" />
+        </div>
+        
         <Providers>
           {children}
           <Toaster />

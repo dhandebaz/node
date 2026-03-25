@@ -6,11 +6,11 @@
 
 @theme {
     /* Core Brand Palette - Nodebase Unified */
-    --color-brand-red: #d6001c;
+    --color-brand-blue: #1a73e8;
+    --color-brand-surface: #f8f9fa;
     --color-brand-white: #ffffff;
     --color-brand-black: #000000;
-    --color-brand-bone: #f5f0e8;
-    --color-brand-deep-red: #1a0506;
+    --color-brand-deep-blue: #174ea6;
     
     /* Semantic Layout Variables */
     --color-background: var(--background);
@@ -59,26 +59,26 @@
         --background: oklch(1 0 0);
         --foreground: oklch(0.145 0 0);
         
-        --primary: var(--color-brand-red);
+        --primary: var(--color-brand-blue);
         --primary-foreground: oklch(1 0 0);
         
         --secondary: oklch(0.97 0 0);
         --secondary-foreground: oklch(0.145 0 0);
         
-        --muted: oklch(0.97 0 0);
+        --muted: var(--color-brand-surface);
         --muted-foreground: oklch(0.556 0 0);
         
-        --accent: var(--color-brand-red);
-        --accent-foreground: oklch(1 0 0);
+        --accent: var(--color-brand-surface);
+        --accent-foreground: var(--color-brand-blue);
         
         --border: oklch(0.922 0 0);
         --input: oklch(0.922 0 0);
-        --ring: var(--color-brand-red);
+        --ring: var(--color-brand-blue);
 
-        --card: oklch(1 0 0);
+        --card: oklch(1 0 0 / 0.65);
         --card-foreground: oklch(0.145 0 0);
         
-        --popover: oklch(1 0 0);
+        --popover: oklch(1 0 0 / 0.8);
         --popover-foreground: oklch(0.145 0 0);
 
         --success: oklch(0.627 0.194 149.214);
@@ -93,7 +93,7 @@
         --background: oklch(0.145 0 0);
         --foreground: oklch(0.985 0 0);
         
-        --primary: var(--color-brand-red);
+        --primary: var(--color-brand-blue);
         --primary-foreground: oklch(1 0 0);
         
         --secondary: oklch(0.269 0 0);
@@ -102,17 +102,17 @@
         --muted: oklch(0.269 0 0);
         --muted-foreground: oklch(0.708 0 0);
         
-        --accent: var(--color-brand-red);
+        --accent: var(--color-brand-blue);
         --accent-foreground: oklch(1 0 0);
         
         --border: oklch(1 0 0 / 10%);
         --input: oklch(1 0 0 / 15%);
-        --ring: var(--color-brand-red);
+        --ring: var(--color-brand-blue);
 
-        --card: oklch(0.205 0 0);
+        --card: oklch(1 0 0 / 0.03);
         --card-foreground: oklch(0.985 0 0);
         
-        --popover: oklch(0.205 0 0);
+        --popover: oklch(0.145 0 0 / 0.85);
         --popover-foreground: oklch(0.985 0 0);
 
         --success: oklch(0.627 0.194 149.214);
@@ -130,6 +130,18 @@
         color: var(--foreground);
         -webkit-font-smoothing: antialiased;
         @apply bg-background text-foreground;
+    }
+
+    /* Global Glassmorphism intercept for Shadcn components */
+    .bg-card, .bg-popover {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+    .dark .bg-card {
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+    .dark .bg-popover {
+        border-color: rgba(255, 255, 255, 0.1);
     }
 
     * {

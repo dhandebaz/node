@@ -88,10 +88,10 @@ export function HomePage() {
             animate="visible"
             variants={reveal}
             transition={{ duration: 0.5 }}
-            className="public-panel overflow-hidden px-6 py-8 sm:px-8 sm:py-10 lg:px-10"
+            className="glass-panel relative overflow-hidden px-6 py-8 sm:px-8 sm:py-10 lg:px-10"
           >
-            <div className="absolute right-[-5rem] top-[-3rem] h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(214,0,28,0.15),transparent_68%)] animate-pulse" />
-            <div className="absolute bottom-[-6rem] left-[-5rem] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(214,0,28,0.05),transparent_72%)]" />
+            <div className="absolute right-[-5rem] top-[-3rem] h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(26,115,232,0.15),transparent_68%)] animate-pulse" />
+            <div className="absolute bottom-[-6rem] left-[-5rem] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(26,115,232,0.05),transparent_72%)]" />
             <div className="relative z-10 space-y-10">
               <div className="space-y-8">
                 <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
@@ -143,7 +143,7 @@ export function HomePage() {
               animate="visible"
               variants={reveal}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="public-panel p-5 sm:p-6"
+              className="glass-panel p-5 sm:p-6"
             >
               <div className="relative z-10 space-y-5">
                 <div className="flex items-center justify-between">
@@ -230,7 +230,7 @@ export function HomePage() {
                     animate="visible"
                     variants={reveal}
                     transition={{ duration: 0.45, delay: 0.14 + index * 0.08 }}
-                    className="public-panel-soft p-5"
+                    className="glass-card p-5"
                   >
                     <div className="flex items-start gap-4">
                       <div className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
@@ -265,7 +265,7 @@ export function HomePage() {
                 viewport={{ once: true, amount: 0.3 }}
                 variants={reveal}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="public-panel-soft p-6"
+                className="glass-card p-6"
               >
                 <div className="public-inset flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
                   <Icon className="h-7 w-7" />
@@ -281,7 +281,7 @@ export function HomePage() {
           })}
         </section>
 
-        <section className="public-panel p-6 sm:p-12 lg:p-16 border-b-8 border-primary">
+        <section className="glass-panel p-6 sm:p-12 lg:p-16">
           <div className="relative z-10 space-y-12">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-4xl">
@@ -317,7 +317,7 @@ export function HomePage() {
                       href={item.href || "/employees"}
                       className="block h-full"
                     >
-                      <div className="public-panel-soft group h-full p-6 transition-transform duration-200 hover:-translate-y-1">
+                      <div className="glass-card group h-full p-6 transition-transform duration-200 hover:-translate-y-1 hover:bg-white/60 dark:hover:bg-white/5">
                         <div className="flex items-start justify-between gap-4">
                           <div className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
                             {Icon ? <Icon className="h-6 w-6" /> : null}
@@ -351,7 +351,7 @@ export function HomePage() {
         </section>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,0.86fr)_minmax(18rem,1.14fr)]">
-          <section className="public-panel-soft p-8 sm:p-12 border-l-4 border-l-primary/20">
+          <section className="glass-card p-8 sm:p-12 border-l-4 border-l-primary/20">
             <div className="space-y-6">
               <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide w-fit">
                 Rollout Posture
@@ -390,7 +390,7 @@ export function HomePage() {
             </div>
           </section>
 
-          <section className="public-panel p-8 sm:p-12 border-r-4 border-r-primary">
+          <section className="glass-panel p-8 sm:p-12">
             <div className="relative z-10 space-y-8">
               <div>
                 <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
@@ -419,7 +419,7 @@ export function HomePage() {
           </section>
         </div>
 
-        <section className="public-panel p-8 sm:p-16 lg:p-24 border-t-8 border-primary bg-primary/5">
+        <section className="glass-panel p-8 sm:p-16 lg:p-24 bg-primary/5">
           <div className="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-4xl">
               <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">

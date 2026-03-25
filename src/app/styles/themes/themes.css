@@ -183,15 +183,15 @@ a:hover, a:focus {
 
 /* Primary */
 .button-primary {
-  background: linear-gradient(180deg, var(--interactive) 0%, color-mix(in srgb, var(--interactive) 85%, black) 100%);
+  background: linear-gradient(180deg, var(--interactive) 0%, color-mix(in srgb, var(--interactive) 90%, black) 100%);
   color: var(--interactive-foreground);
   border-color: color-mix(in srgb, var(--interactive) 75%, transparent);
-  box-shadow: 0 4px 12px rgba(214, 0, 28, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 6px rgba(26, 115, 232, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 .button-primary:hover { 
   background: linear-gradient(180deg, color-mix(in srgb, var(--interactive) 95%, white) 0%, var(--interactive) 100%);
-  box-shadow: 0 6px 16px rgba(214, 0, 28, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
 
@@ -223,7 +223,6 @@ a:hover, a:focus {
   pointer-events: none;
 }
 
-/* -------------------------------------------------------------------------- */
 /* Panels, cards and surfaces                                                  */
 /* -------------------------------------------------------------------------- */
 .panel {
@@ -231,8 +230,41 @@ a:hover, a:focus {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
   color: var(--text-default);
+}
+
+/* Glassmorphism Structural Base */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  color: var(--text-default);
+}
+
+.dark .glass-panel {
+  background: rgba(20, 20, 22, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.dark .glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* A muted version for placeholders/empty states */
@@ -246,7 +278,7 @@ a:hover, a:focus {
   background: var(--bg-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
   border: 1px solid var(--line-strong);
 }
 

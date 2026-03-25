@@ -65,7 +65,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-background/80 backdrop-blur-lg border-b border-border flex items-center justify-between px-4 md:px-6 select-none">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl border-b border-border/50 flex items-center justify-between px-4 md:px-6 select-none shadow-sm">
         {/* Left Zone: Logo & Mobile Toggle */}
         <div className="flex items-center gap-3">
           <button 
@@ -134,7 +134,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-zinc-950 border border-border shadow-2xl rounded-2xl overflow-hidden py-1 z-[60]"
+                className="absolute right-0 top-full mt-2 w-56 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl border border-border/50 shadow-2xl rounded-2xl overflow-hidden py-1 z-[60]"
               >
                 <div className="px-3 py-2 border-b border-border mb-1 sm:hidden">
                   <p className="text-xs font-medium text-foreground truncate">{tenantName || "My Business"}</p>
@@ -187,7 +187,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed top-16 left-0 right-0 public-nav-shell backdrop-blur-xl border-b border-[var(--public-line)] z-40 md:hidden overflow-hidden"
+            className="fixed top-16 left-0 right-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-3xl border-b border-border/50 z-40 md:hidden overflow-hidden shadow-md"
           >
             <div className="flex flex-col p-4 gap-3">
               <div className="mb-1 px-2 text-[10px] font-bold text-[var(--public-muted)] uppercase tracking-[0.2em]">Navigation</div>

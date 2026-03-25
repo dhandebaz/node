@@ -104,14 +104,14 @@ export function DashboardSidebar() {
       initial={false}
       animate={{ width: isCollapsed ? 80 : 260 }}
       className={cn(
-        "fixed left-0 top-0 bottom-0 z-40 bg-zinc-950 border-r border-white/10 flex flex-col transition-all duration-300 ease-in-out",
+        "fixed left-0 top-0 bottom-0 z-40 bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl border-r border-border/50 flex flex-col transition-all duration-300 ease-in-out",
         "pt-20 pb-6", // Offset for top navbar
       )}
     >
       {/* Toggle Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-24 w-6 h-6 bg-zinc-900 border border-white/10 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors z-50 shadow-lg"
+        className="absolute -right-3 top-24 w-6 h-6 bg-background border border-border/50 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors z-50 shadow-sm"
       >
         {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
       </button>
