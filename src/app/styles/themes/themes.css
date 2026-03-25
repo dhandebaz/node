@@ -166,13 +166,14 @@ a:hover, a:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5ch;
-  font-weight: 600;
+  gap: 0.75ch;
+  font-weight: 500;
   border-radius: var(--radius-md);
-  padding: calc(var(--space-sm)) calc(var(--space-md));
+  padding: 10px 20px;
   border: 1px solid transparent;
   cursor: pointer;
   transition: all var(--motion-medium) var(--motion-ease);
+  letter-spacing: -0.01em;
 }
 
 .button:focus {
@@ -182,21 +183,30 @@ a:hover, a:focus {
 
 /* Primary */
 .button-primary {
-  background: var(--interactive);
+  background: linear-gradient(180deg, var(--interactive) 0%, color-mix(in srgb, var(--interactive) 85%, black) 100%);
   color: var(--interactive-foreground);
   border-color: color-mix(in srgb, var(--interactive) 75%, transparent);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(214, 0, 28, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
-.button-primary:hover { filter: brightness(0.95); }
+.button-primary:hover { 
+  background: linear-gradient(180deg, color-mix(in srgb, var(--interactive) 95%, white) 0%, var(--interactive) 100%);
+  box-shadow: 0 6px 16px rgba(214, 0, 28, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
 
 /* Secondary (white-on-panel in light theme, soft on dark) */
 .button-secondary {
-  background: var(--bg-surface);
+  background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-soft) 100%);
   color: var(--text-default);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .button-secondary:hover {
-  background: color-mix(in srgb, var(--bg-surface) 88%, var(--interactive) 12%);
+  background: var(--bg-surface);
+  border-color: color-mix(in srgb, var(--line-strong) 80%, black);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Ghost */

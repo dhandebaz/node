@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Alfa_Slab_One } from "next/font/google";
-import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import { Outfit, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/components/providers";
@@ -9,22 +8,21 @@ import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
 export const dynamic = "force-dynamic";
 
-const alfaSlabOne = Alfa_Slab_One({
-  variable: "--font-alfa-slab-one",
-  weight: "400",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
 });
@@ -61,7 +59,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${alfaSlabOne.className} ${alfaSlabOne.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${inter.variable} ${outfit.variable} ${ibmPlexMono.variable} font-sans antialiased min-h-screen flex flex-col`}
       >
         <Providers>
           {children}

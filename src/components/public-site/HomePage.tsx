@@ -92,15 +92,15 @@ export function HomePage() {
           >
             <div className="absolute right-[-5rem] top-[-3rem] h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(214,0,28,0.15),transparent_68%)] animate-pulse" />
             <div className="absolute bottom-[-6rem] left-[-5rem] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(214,0,28,0.05),transparent_72%)]" />
-            <div className="relative z-10 space-y-8">
-              <div className="space-y-6">
-                <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
+            <div className="relative z-10 space-y-10">
+              <div className="space-y-8">
+                <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
                   The AI assistant for local businesses
                 </div>
-                <h1 className="font-display max-w-4xl text-5xl leading-[0.9] text-foreground sm:text-6xl lg:text-8xl uppercase tracking-tighter">
+                <h1 className="font-display max-w-4xl text-5xl leading-tight text-foreground sm:text-6xl lg:text-[5.5rem] lg:leading-[1.05] tracking-tight">
                   The smart assistant that runs your business while you sleep.
                 </h1>
-                <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground font-sans">
+                <p className="max-w-xl text-lg sm:text-xl leading-relaxed text-muted-foreground font-sans">
                   Nodebase connects to your WhatsApp and website to instantly
                   answer customer questions, schedule bookings, and collect
                   payments automatically—24 hours a day, 7 days a week.
@@ -148,8 +148,8 @@ export function HomePage() {
               <div className="relative z-10 space-y-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-[10px] font-black uppercase tracking-widest text-primary">Unified Inbox</div>
-                    <h2 className="font-display mt-3 text-3xl text-foreground uppercase tracking-tight leading-none">
+                    <div className="text-xs font-semibold tracking-wide text-primary">Unified Inbox</div>
+                    <h2 className="font-display mt-3 text-3xl text-foreground tracking-tight leading-tight">
                       Everything in one place
                     </h2>
                   </div>
@@ -237,8 +237,8 @@ export function HomePage() {
                         <Icon className="h-6 w-6" />
                       </div>
                       <div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-primary">{card.eyebrow}</div>
-                        <h3 className="mt-2 text-lg font-bold text-foreground uppercase tracking-tight">
+                        <div className="text-xs font-semibold tracking-wide text-primary">{card.eyebrow}</div>
+                        <h3 className="mt-2 text-lg font-semibold text-foreground tracking-tight">
                           {card.title}
                         </h3>
                         <p className="mt-3 text-sm leading-6 text-muted-foreground">
@@ -270,7 +270,7 @@ export function HomePage() {
                 <div className="public-inset flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
                   <Icon className="h-7 w-7" />
                 </div>
-                <h2 className="mt-6 text-xl font-bold text-foreground uppercase tracking-tight">
+                <h2 className="mt-6 text-xl font-semibold text-foreground tracking-tight">
                   {pillar.title}
                 </h2>
                 <p className="mt-4 text-sm leading-6 text-muted-foreground">
@@ -285,10 +285,10 @@ export function HomePage() {
           <div className="relative z-10 space-y-12">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-4xl">
-                <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
+                <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
                   Choose the employee
                 </div>
-                <h2 className="font-display mt-6 text-4xl text-foreground sm:text-5xl uppercase tracking-tighter leading-[0.9]">
+                <h2 className="font-display mt-6 text-4xl text-foreground sm:text-5xl tracking-tight leading-tight">
                   Hire by business lane, not general-purpose model
                 </h2>
               </div>
@@ -353,8 +353,10 @@ export function HomePage() {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,0.86fr)_minmax(18rem,1.14fr)]">
           <section className="public-panel-soft p-8 sm:p-12 border-l-4 border-l-primary/20">
             <div className="space-y-6">
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Rollout posture</div>
-              <h2 className="font-display text-4xl text-foreground sm:text-5xl uppercase tracking-tighter leading-[0.9]">
+              <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide w-fit">
+                Rollout Posture
+              </div>
+              <h2 className="font-display mt-6 text-4xl text-foreground sm:text-5xl tracking-tight leading-tight">
                 Upgrade the workflow, then the page surface.
               </h2>
               <p className="text-lg leading-relaxed text-muted-foreground font-sans max-w-2xl">
@@ -391,8 +393,10 @@ export function HomePage() {
           <section className="public-panel p-8 sm:p-12 border-r-4 border-r-primary">
             <div className="relative z-10 space-y-8">
               <div>
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Practical launch sequence</div>
-                <h2 className="font-display mt-6 text-4xl text-foreground uppercase tracking-tighter leading-[0.9]">
+                <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
+                  Practical Launch Sequence
+                </div>
+                <h2 className="font-display mt-6 text-4xl text-foreground tracking-tight leading-tight">
                   Ship with the operating model attached.
                 </h2>
               </div>
@@ -418,10 +422,10 @@ export function HomePage() {
         <section className="public-panel p-8 sm:p-16 lg:p-24 border-t-8 border-primary bg-primary/5">
           <div className="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-4xl">
-              <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
+              <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
                 Ready to deploy
               </div>
-              <h2 className="font-display mt-8 text-5xl text-foreground sm:text-6xl lg:text-7xl uppercase tracking-tighter leading-[0.85]">
+              <h2 className="font-display mt-8 text-5xl text-foreground sm:text-6xl lg:text-[4.5rem] tracking-tight leading-tight">
                 Launch with the right employee and the right controls.
               </h2>
             </div>

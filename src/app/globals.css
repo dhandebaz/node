@@ -46,8 +46,8 @@
     --color-surface-border: rgba(255, 255, 255, 0.1);
 
     /* Typography */
-    --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
-    --font-display: var(--font-alfa-slab-one), system-ui, sans-serif;
+    --font-sans: var(--font-inter), system-ui, sans-serif;
+    --font-display: var(--font-outfit), system-ui, sans-serif;
     --font-mono: var(--font-ibm-plex-mono), monospace;
 }
 
