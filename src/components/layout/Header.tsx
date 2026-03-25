@@ -91,7 +91,7 @@ export function Header({ viewer }: HeaderProps) {
   return (
     <header className="public-shell fixed inset-x-0 top-0 z-50">
       <div className="public-container pt-4 sm:pt-5">
-        <div className="public-nav-shell rounded-[2rem] px-4 py-3 sm:px-5">
+        <div className="glass-panel border-border/50 rounded-full px-4 py-3 sm:px-5">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex shrink-0 items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/20">
@@ -120,8 +120,8 @@ export function Header({ viewer }: HeaderProps) {
                       className={cn(
                         "rounded-full px-5 py-2 text-sm font-bold uppercase tracking-tight transition-all",
                         active
-                          ? "bg-primary text-primary-foreground shadow-md shadow-primary/10"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                          ? "bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_rgba(66,133,244,0.15)]"
+                          : "text-muted-foreground hover:text-foreground hover:bg-white/5",
                       )}
                     >
                       {item.label}
@@ -164,7 +164,7 @@ export function Header({ viewer }: HeaderProps) {
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 12, scale: 0.98 }}
                           transition={menuTransition}
-                          className="public-panel absolute right-0 top-[calc(100%+0.75rem)] w-72 p-3"
+                          className="glass-panel absolute right-0 top-[calc(100%+0.75rem)] w-72 p-3"
                         >
                           <div className="relative z-10 space-y-2">
                             <Link

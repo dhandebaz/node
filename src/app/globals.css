@@ -5,16 +5,21 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    /* Core Brand Palette - Nodebase Unified */
-    --color-brand-blue: #1a73e8;
-    --color-brand-surface: #f8f9fa;
+    /* Core Brand Palette - GCP 2027 UI */
+    --color-brand-blue: #4285F4;
+    --color-brand-deep-blue: #174EA6;
+    --color-brand-green: #34A853;
+    --color-brand-red: #EA4335;
+    --color-brand-yellow: #FBBC04;
+    --color-brand-grey: #9AA0A6;
+    --color-brand-slate: #757575;
+    --color-brand-surface: #121212;
     --color-brand-white: #ffffff;
     --color-brand-black: #000000;
-    --color-brand-deep-blue: #174ea6;
     
-    /* Legacy aliases to sustain abandoned components during Tailwind build */
+    /* Legacy aliases */
     --color-brand-bone: #f4f4f5;
-    --color-brand-deep-red: #1a73e8;
+    --color-brand-deep-red: #EA4335;
     
     /* Semantic Layout Variables */
     --color-background: var(--background);
@@ -94,37 +99,37 @@
     }
 
     .dark {
-        --background: oklch(0.145 0 0);
-        --foreground: oklch(0.985 0 0);
+        --background: #000000;
+        --foreground: #F7F7F7;
         
         --primary: var(--color-brand-blue);
-        --primary-foreground: oklch(1 0 0);
+        --primary-foreground: #ffffff;
         
-        --secondary: oklch(0.269 0 0);
-        --secondary-foreground: oklch(0.985 0 0);
+        --secondary: #121212;
+        --secondary-foreground: #F7F7F7;
         
-        --muted: oklch(0.269 0 0);
-        --muted-foreground: oklch(0.708 0 0);
+        --muted: #121212;
+        --muted-foreground: var(--color-brand-grey);
         
-        --accent: var(--color-brand-blue);
-        --accent-foreground: oklch(1 0 0);
+        --accent: var(--color-brand-deep-blue);
+        --accent-foreground: #ffffff;
         
-        --border: oklch(1 0 0 / 10%);
-        --input: oklch(1 0 0 / 15%);
+        --border: rgba(255, 255, 255, 0.1);
+        --input: rgba(255, 255, 255, 0.1);
         --ring: var(--color-brand-blue);
 
-        --card: oklch(1 0 0 / 0.03);
-        --card-foreground: oklch(0.985 0 0);
+        --card: rgba(0, 0, 0, 0.4);
+        --card-foreground: #F7F7F7;
         
-        --popover: oklch(0.145 0 0 / 0.85);
-        --popover-foreground: oklch(0.985 0 0);
+        --popover: rgba(0, 0, 0, 0.85);
+        --popover-foreground: #F7F7F7;
 
-        --success: oklch(0.627 0.194 149.214);
-        --success-foreground: oklch(1 0 0);
-        --warning: oklch(0.769 0.188 70.08);
-        --warning-foreground: oklch(0.145 0 0);
-        --destructive: oklch(0.577 0.245 27.325);
-        --destructive-foreground: oklch(1 0 0);
+        --success: var(--color-brand-green);
+        --success-foreground: #ffffff;
+        --warning: var(--color-brand-yellow);
+        --warning-foreground: #000000;
+        --destructive: var(--color-brand-red);
+        --destructive-foreground: #ffffff;
     }
 
     html,
@@ -138,14 +143,7 @@
 
     /* Global Glassmorphism intercept for Shadcn components */
     .bg-card, .bg-popover {
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-    }
-    .dark .bg-card {
-        border-color: rgba(255, 255, 255, 0.08);
-    }
-    .dark .bg-popover {
-        border-color: rgba(255, 255, 255, 0.1);
+        @apply backdrop-blur-md bg-background/40 border border-white/10 shadow-lg;
     }
 
     * {
@@ -194,8 +192,8 @@
         letter-spacing: 0.02em;
     }
 
-    .glass-card {
-        @apply bg-brand-bone/5 backdrop-blur-md border border-brand-bone/10 shadow-sm;
+    .glass-panel {
+        @apply bg-background/40 backdrop-blur-md border border-white/10 shadow-lg;
     }
 
     .dashboard-surface {

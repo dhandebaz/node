@@ -69,7 +69,7 @@ export function AdminSidebar() {
 
       {/* Sidebar Container */}
       <div className={cn(
-        "fixed md:sticky top-0 left-0 h-screen w-72 bg-card border-r border-border flex flex-col z-40 transition-transform duration-300 md:translate-x-0 shrink-0 shadow-xl",
+        "fixed md:sticky top-0 left-0 h-screen w-72 bg-background/60 backdrop-blur-lg border-r border-white/10 flex flex-col z-40 transition-transform duration-300 md:translate-x-0 shrink-0 shadow-xl",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         {/* Header */}
@@ -96,8 +96,8 @@ export function AdminSidebar() {
                     className={cn(
                       "flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest rounded-xl transition-all",
                       isActive 
-                        ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-[1.02]" 
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        ? "bg-primary/20 text-primary border-l-2 border-primary shadow-[0_0_15px_rgba(66,133,244,0.15)] scale-[1.02]" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                     )}
                   >
                     <item.icon className={cn("w-5 h-5", isActive ? "text-primary-foreground" : "opacity-70 group-hover:opacity-100")} />

@@ -15,10 +15,10 @@ export function Logo({ className }: LogoProps) {
           y="55" 
           dominantBaseline="central" 
           textAnchor="middle" 
-          fill="white" 
-          stroke="black" 
-          strokeWidth="3" 
-          style={{ fontFamily: 'var(--font-alfa-slab-one), system-ui, sans-serif' }}
+          fill="currentColor" 
+          stroke="currentColor" 
+          strokeWidth="1" 
+          style={{ fontFamily: 'var(--font-display), system-ui, sans-serif' }}
           className="text-[80px]"
         >
           nb

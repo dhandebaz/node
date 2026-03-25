@@ -49,13 +49,13 @@ const NavItem = ({ href, label, icon: Icon, exact = false }: NavItemProps) => {
     <Link 
       href={href} 
       className={cn(
-        "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm font-medium",
+        "flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-sm font-medium",
         active 
-          ? "bg-white/10 text-white" 
+          ? "bg-primary/20 text-primary border-l-2 border-primary shadow-[0_0_15px_rgba(66,133,244,0.15)]" 
           : "text-zinc-400 hover:text-white hover:bg-white/5"
       )}
     >
-      <Icon className={cn("w-4 h-4", active ? "text-[var(--color-brand-red)]" : "text-zinc-500")} />
+      <Icon className={cn("w-4 h-4", active ? "text-primary" : "text-zinc-500")} />
       {label}
     </Link>
   );
@@ -75,7 +75,7 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
   const labels = getBusinessLabels(tenant?.businessType);
 
   return (
-    <aside className="w-64 fixed inset-y-0 left-0 z-50 bg-[#1A1A1A] border-r border-white/5 flex flex-col">
+    <aside className="w-64 fixed inset-y-0 left-0 z-50 bg-background/60 backdrop-blur-lg border-r border-white/10 flex flex-col">
       {/* Brand */}
       <div className="h-16 flex items-center px-5 border-b border-white/5">
         <Link href="/" className="flex items-center gap-2">

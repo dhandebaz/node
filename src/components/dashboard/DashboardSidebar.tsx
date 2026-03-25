@@ -42,14 +42,14 @@ function SidebarItem({
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group relative",
         active
-          ? "bg-primary text-primary-foreground shadow-sm"
+          ? "bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_rgba(66,133,244,0.15)]"
           : "text-muted-foreground hover:text-foreground hover:bg-white/5",
       )}
     >
       <Icon
         className={cn(
           "w-5 h-5 shrink-0",
-          active ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground",
+          active ? "text-primary flex-shrink-0" : "text-muted-foreground group-hover:text-foreground",
         )}
       />
       {!collapsed && (
@@ -104,7 +104,7 @@ export function DashboardSidebar() {
       initial={false}
       animate={{ width: isCollapsed ? 80 : 260 }}
       className={cn(
-        "fixed left-0 top-0 bottom-0 z-40 bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl border-r border-border/50 flex flex-col transition-all duration-300 ease-in-out",
+        "fixed left-0 top-0 bottom-0 z-40 bg-background/60 backdrop-blur-lg border-r border-white/10 flex flex-col transition-all duration-300 ease-in-out",
         "pt-20 pb-6", // Offset for top navbar
       )}
     >

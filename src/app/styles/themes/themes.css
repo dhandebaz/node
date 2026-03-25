@@ -92,47 +92,47 @@
 /* -------------------------------------------------------------------------- */
 :root.dark,
 .dark {
-  --brand-red: #ff6b6b;
-  --brand-accent: #ff6b6b;
+  --brand-red: #EA4335;
+  --brand-accent: #4285F4;
 
-  --bg-page: #0b0b0d;
-  --bg-surface: #101014;
-  --bg-muted: #0f1113;
-  --bg-soft: #0d0d0f;
+  --bg-page: #000000;
+  --bg-surface: #121212;
+  --bg-muted: #1a1a1a;
+  --bg-soft: #080808;
 
-  --text-default: #f5f4f3;
-  --text-muted: #bfb7ad;
+  --text-default: #F7F7F7;
+  --text-muted: #9AA0A6;
   --text-inverse: #000000;
 
-  --line: rgba(255, 255, 255, 0.06);
-  --line-strong: rgba(255, 255, 255, 0.12);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.15);
 
   --interactive: var(--brand-accent);
-  --interactive-foreground: var(--text-inverse);
-  --success: #5ad3a6;
-  --warning: #ffb564;
-  --danger: #ff6b6b;
+  --interactive-foreground: #ffffff;
+  --success: #34A853;
+  --warning: #FBBC04;
+  --danger: #EA4335;
 
   --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
   --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.7);
 
-  --focus-color: rgba(255, 107, 107, 0.22);
+  --focus-color: rgba(66, 133, 244, 0.3);
 }
 
 /* Also support system dark preference as fallback if .dark class not set */
 @media (prefers-color-scheme: dark) {
   :root:not(.light):not(.no-system-dark) {
-    --brand-red: #ff6b6b;
-    --brand-accent: #ff6b6b;
-    --bg-page: #0b0b0d;
-    --bg-surface: #101014;
-    --bg-muted: #0f1113;
-    --text-default: #f5f4f3;
-    --text-muted: #bfb7ad;
-    --line: rgba(255,255,255,0.06);
+    --brand-red: #EA4335;
+    --brand-accent: #4285F4;
+    --bg-page: #000000;
+    --bg-surface: #121212;
+    --bg-muted: #1a1a1a;
+    --text-default: #F7F7F7;
+    --text-muted: #9AA0A6;
+    --line: rgba(255,255,255,0.1);
     --interactive: var(--brand-accent);
-    --focus-color: rgba(255,107,107,0.22);
+    --focus-color: rgba(66, 133, 244, 0.3);
   }
 }
 
@@ -183,15 +183,14 @@ a:hover, a:focus {
 
 /* Primary */
 .button-primary {
-  background: linear-gradient(180deg, var(--interactive) 0%, color-mix(in srgb, var(--interactive) 90%, black) 100%);
-  color: var(--interactive-foreground);
-  border-color: color-mix(in srgb, var(--interactive) 75%, transparent);
-  box-shadow: 0 2px 6px rgba(26, 115, 232, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  background: var(--interactive);
+  color: #ffffff;
+  border: 1px solid var(--interactive);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .button-primary:hover { 
-  background: linear-gradient(180deg, color-mix(in srgb, var(--interactive) 95%, white) 0%, var(--interactive) 100%);
-  box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, var(--interactive) 85%, black);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transform: translateY(-1px);
 }
 
@@ -236,20 +235,11 @@ a:hover, a:focus {
 
 /* Glassmorphism Structural Base */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: var(--radius-lg);
-  padding: var(--space-md);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  color: var(--text-default);
+  @apply bg-background/40 backdrop-blur-md border border-white/10 shadow-lg;
 }
 
 .dark .glass-panel {
-  background: rgba(20, 20, 22, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  @apply bg-background/40 border-white/10;
 }
 
 .glass-card {
