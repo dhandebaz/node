@@ -12,6 +12,10 @@
     --color-brand-black: #000000;
     --color-brand-deep-blue: #174ea6;
     
+    /* Legacy aliases to sustain abandoned components during Tailwind build */
+    --color-brand-bone: #f4f4f5;
+    --color-brand-deep-red: #1a73e8;
+    
     /* Semantic Layout Variables */
     --color-background: var(--background);
     --color-foreground: var(--foreground);
