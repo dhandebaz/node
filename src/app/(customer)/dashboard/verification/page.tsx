@@ -493,9 +493,9 @@ export default function VerificationPage() {
             Identity Verification
           </h2>
           {!extractedData ? (
-            <div className="rounded-xl border-2 border-dashed border-[var(--public-line)] p-8 text-center transition-colors hover:border-brand-red">
-              <Upload className="mx-auto mb-4 h-12 w-12 text-[var(--public-muted)]" />
-              <p className="mb-4 text-[var(--public-muted)]">
+            <div className="rounded-xl border-2 border-dashed border-border p-8 text-center transition-colors hover:border-brand-red">
+              <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <p className="mb-4 text-muted-foreground">
                 Upload Aadhaar, PAN, passport, or another government ID.
               </p>
               <Input
@@ -638,7 +638,7 @@ export default function VerificationPage() {
           </div>
 
           {handleChecking ? (
-            <p className="flex items-center justify-center gap-1 text-sm text-[var(--public-muted)]">
+            <p className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
               <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-zinc-400 border-t-transparent" />
               Checking…
             </p>

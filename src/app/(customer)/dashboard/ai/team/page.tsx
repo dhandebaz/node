@@ -66,8 +66,8 @@ export default function TeamPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
-        <p className="text-[var(--public-ink)]/40 text-sm">
+        <Loader2 className="w-8 h-8 animate-spin text-foreground/40" />
+        <p className="text-foreground/40 text-sm">
           Loading your AI team...
         </p>
       </div>
@@ -79,11 +79,11 @@ export default function TeamPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--public-ink)] uppercase tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground uppercase tracking-tight flex items-center gap-3">
             <Users className="text-purple-500 w-8 h-8" />
             AI Team
           </h1>
-          <p className="text-[var(--public-ink)]/50 text-sm">
+          <p className="text-foreground/50 text-sm">
             Manage specialized AI agents for different parts of your business.
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function TeamPage() {
             });
             setShowEditor(true);
           }}
-          className="bg-purple-600 hover:bg-purple-700 text-[var(--public-ink)] font-bold px-6 rounded-full"
+          className="bg-purple-600 hover:bg-purple-700 text-foreground font-bold px-6 rounded-full"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Agent
@@ -123,7 +123,7 @@ export default function TeamPage() {
                   {agent.status}
                 </Badge>
               </div>
-              <CardTitle className="text-[var(--public-ink)] text-lg">
+              <CardTitle className="text-foreground text-lg">
                 {agent.name}
               </CardTitle>
               <CardDescription className="text-purple-400 font-bold uppercase tracking-tighter text-xs">
@@ -132,10 +132,10 @@ export default function TeamPage() {
             </CardHeader>
             <CardContent className="pt-6 space-y-4">
               <div className="space-y-2">
-                <div className="text-[10px] text-[var(--public-muted)] uppercase font-bold tracking-widest">
+                <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
                   Personality
                 </div>
-                <p className="text-xs text-[var(--public-ink)]/70 italic line-clamp-2">
+                <p className="text-xs text-foreground/70 italic line-clamp-2">
                   "{agent.personality || "No personality defined"}"
                 </p>
               </div>
@@ -144,7 +144,7 @@ export default function TeamPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex-1 text-[var(--public-muted)] hover:text-[var(--public-ink)] hover:bg-white/5 text-xs font-bold"
+                  className="flex-1 text-muted-foreground hover:text-foreground hover:bg-white/5 text-xs font-bold"
                   onClick={() => {
                     setEditingAgent(agent);
                     setShowEditor(true);
@@ -156,7 +156,7 @@ export default function TeamPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-[var(--public-muted)] hover:text-red-400 hover:bg-red-500/10"
+                  className="text-muted-foreground hover:text-red-400 hover:bg-red-500/10"
                   onClick={() => handleDelete(agent.id)}
                 >
                   <Trash2 className="w-3 h-3" />
@@ -175,12 +175,12 @@ export default function TeamPage() {
           aria-labelledby="agent-config-title"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
         >
-          <Card className="w-full max-w-lg public-panel border-[var(--public-line)] shadow-2xl">
+          <Card className="w-full max-w-lg public-panel border-border shadow-2xl">
             <CardHeader className="border-b border-white/5">
               <div className="flex items-center justify-between">
                 <CardTitle
                   id="agent-config-title"
-                  className="text-[var(--public-ink)]"
+                  className="text-foreground"
                 >
                   Configure AI Agent
                 </CardTitle>
@@ -189,7 +189,7 @@ export default function TeamPage() {
                   size="sm"
                   onClick={() => setShowEditor(false)}
                   aria-label="Close agent configuration"
-                  className="text-[var(--public-ink)]/40 hover:text-[var(--public-ink)]"
+                  className="text-foreground/40 hover:text-foreground"
                 >
                   Close
                 </Button>
@@ -198,7 +198,7 @@ export default function TeamPage() {
             <CardContent className="p-6 space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">
+                  <label className="text-[10px] text-muted-foreground uppercase font-bold">
                     Agent Name
                   </label>
                   <input
@@ -208,11 +208,11 @@ export default function TeamPage() {
                       setEditingAgent({ ...editingAgent, name: e.target.value })
                     }
                     placeholder="e.g. Sarah"
-                    className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)]"
+                    className="w-full bg-black/20 border border-border rounded-md p-2 text-sm text-foreground"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">
+                  <label className="text-[10px] text-muted-foreground uppercase font-bold">
                     Role
                   </label>
                   <input
@@ -222,13 +222,13 @@ export default function TeamPage() {
                       setEditingAgent({ ...editingAgent, role: e.target.value })
                     }
                     placeholder="e.g. Concierge"
-                    className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)]"
+                    className="w-full bg-black/20 border border-border rounded-md p-2 text-sm text-foreground"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">
+                <label className="text-[10px] text-muted-foreground uppercase font-bold">
                   Personality
                 </label>
                 <textarea
@@ -240,12 +240,12 @@ export default function TeamPage() {
                     })
                   }
                   placeholder="e.g. Enthusiastic, professional, and very detail-oriented."
-                  className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)] h-20"
+                  className="w-full bg-black/20 border border-border rounded-md p-2 text-sm text-foreground h-20"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] text-[var(--public-muted)] uppercase font-bold">
+                <label className="text-[10px] text-muted-foreground uppercase font-bold">
                   System Instructions
                 </label>
                 <textarea
@@ -257,7 +257,7 @@ export default function TeamPage() {
                     })
                   }
                   placeholder="e.g. Focus on recommending local restaurants and booking transport."
-                  className="w-full bg-black/20 border border-[var(--public-line)] rounded-md p-2 text-sm text-[var(--public-ink)] h-24"
+                  className="w-full bg-black/20 border border-border rounded-md p-2 text-sm text-foreground h-24"
                 />
               </div>
 
@@ -265,7 +265,7 @@ export default function TeamPage() {
                 <Button
                   variant="ghost"
                   onClick={() => setShowEditor(false)}
-                  className="text-[var(--public-muted)] font-bold"
+                  className="text-muted-foreground font-bold"
                 >
                   Discard
                 </Button>

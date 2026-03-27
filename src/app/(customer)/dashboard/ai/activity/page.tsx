@@ -26,8 +26,8 @@ export default async function KaisaActivityPage() {
             <div key={item.id} className="flex gap-4">
               <div className="mt-1">
                 {item.type === "system_action" && (
-                  <div className="w-8 h-8 rounded-full bg-[var(--color-brand-accent)]/10 flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--color-brand-accent)]" />
+                  <div className="w-8 h-8 rounded-full bg-[var(--brand-accent)]/10 flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-[var(--brand-accent)]" />
                   </div>
                 )}
                 {item.type === "user_command" && (

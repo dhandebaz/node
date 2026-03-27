@@ -59,7 +59,7 @@ const fadeUp = {
 };
 
 const fieldClassName =
-  "w-full rounded-[1.2rem] border border-[var(--public-line)] bg-[rgba(255,251,244,0.92)] px-4 py-3 text-sm text-[var(--public-ink)] shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] outline-none transition focus:border-[rgba(146,43,34,0.42)] focus:ring-4 focus:ring-[rgba(214,88,74,0.12)]";
+  "w-full rounded-[1.2rem] border border-border bg-background/95 px-4 py-3 text-sm text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/15";
 
 export function ContactSurface() {
   const [formState, setFormState] = useState({
@@ -101,10 +101,10 @@ export function ContactSurface() {
         >
           <div className="relative z-10 space-y-6">
             <div className="public-pill public-eyebrow">Contact Nodebase</div>
-            <h1 className="public-display max-w-4xl text-4xl leading-[0.92] text-[var(--public-ink)] sm:text-5xl lg:text-6xl">
+            <h1 className="public-display max-w-4xl text-4xl leading-[0.92] text-foreground sm:text-5xl lg:text-6xl">
               Bring the workflow, the bottleneck, and the constraints.
             </h1>
-            <p className="max-w-3xl text-base leading-7 text-[var(--public-muted)] sm:text-lg">
+            <p className="max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">
               The fastest way to get a useful answer is to describe the operating lane
               you want the employee to own, the systems already in play, and where human
               approval still needs to remain.
@@ -129,18 +129,18 @@ export function ContactSurface() {
                   className="public-panel-soft p-6"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+                    <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
                       <Icon className="h-5 w-5" />
                     </div>
                     <div>
                       <div className="public-eyebrow">{channel.title}</div>
-                      <p className="mt-3 text-sm leading-6 text-[var(--public-muted)]">
+                      <p className="mt-3 text-sm leading-6 text-muted-foreground">
                         {channel.description}
                       </p>
                       {isExternal ? (
                         <a
                           href={channel.href}
-                          className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--public-accent-strong)]"
+                          className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary"
                         >
                           {channel.cta}
                           <ArrowRight className="h-4 w-4" />
@@ -148,7 +148,7 @@ export function ContactSurface() {
                       ) : (
                         <Link
                           href={channel.href}
-                          className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--public-accent-strong)]"
+                          className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary"
                         >
                           {channel.cta}
                           <ArrowRight className="h-4 w-4" />
@@ -162,12 +162,12 @@ export function ContactSurface() {
 
             <div className="public-panel-soft p-6">
               <div className="flex items-start gap-3">
-                <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+                <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
                   <MapPin className="h-5 w-5" />
                 </div>
                 <div>
                   <div className="public-eyebrow">Headquarters</div>
-                  <p className="mt-3 text-sm leading-6 text-[var(--public-muted)]">
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
                     {COMPANY_CONFIG.headquarters.address}
                   </p>
                 </div>
@@ -186,7 +186,7 @@ export function ContactSurface() {
             <div className="relative z-10 space-y-6">
               <div>
                 <div className="public-eyebrow">Workflow intake</div>
-                <h2 className="public-display mt-3 text-3xl text-[var(--public-ink)] sm:text-4xl">
+                <h2 className="public-display mt-3 text-3xl text-foreground sm:text-4xl">
                   Send enough signal that we can respond usefully.
                 </h2>
               </div>
@@ -194,15 +194,15 @@ export function ContactSurface() {
               <div className="grid gap-3">
                 {prepNotes.map((note) => (
                   <div key={note} className="public-inset flex gap-3 rounded-[1.4rem] px-4 py-4">
-                    <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-[var(--public-accent-strong)]" />
-                    <p className="text-sm leading-6 text-[var(--public-muted)]">{note}</p>
+                    <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" />
+                    <p className="text-sm leading-6 text-muted-foreground">{note}</p>
                   </div>
                 ))}
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="space-y-2 text-sm font-semibold text-[var(--public-ink)]">
+                  <label className="space-y-2 text-sm font-semibold text-foreground">
                     Name
                     <input
                       required
@@ -214,7 +214,7 @@ export function ContactSurface() {
                       placeholder="Your name"
                     />
                   </label>
-                  <label className="space-y-2 text-sm font-semibold text-[var(--public-ink)]">
+                  <label className="space-y-2 text-sm font-semibold text-foreground">
                     Email
                     <input
                       required
@@ -229,7 +229,7 @@ export function ContactSurface() {
                   </label>
                 </div>
 
-                <label className="block space-y-2 text-sm font-semibold text-[var(--public-ink)]">
+                <label className="block space-y-2 text-sm font-semibold text-foreground">
                   Company
                   <input
                     value={formState.company}
@@ -241,7 +241,7 @@ export function ContactSurface() {
                   />
                 </label>
 
-                <label className="block space-y-2 text-sm font-semibold text-[var(--public-ink)]">
+                <label className="block space-y-2 text-sm font-semibold text-foreground">
                   Workflow summary
                   <textarea
                     required
@@ -261,7 +261,7 @@ export function ContactSurface() {
                   </button>
                   <a
                     href="mailto:sales@nodebase.space"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--public-accent-strong)]"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary"
                   >
                     <Mail className="h-4 w-4" />
                     sales@nodebase.space
@@ -269,7 +269,7 @@ export function ContactSurface() {
                 </div>
 
                 {submitted ? (
-                  <div className="rounded-[1.4rem] border border-[var(--public-line)] bg-[var(--public-accent-soft)]/65 px-4 py-3 text-sm leading-6 text-[var(--public-ink)]">
+                  <div className="rounded-[1.4rem] border border-border bg-primary/10/65 px-4 py-3 text-sm leading-6 text-foreground">
                     Your email client should open with the workflow draft. If it does not,
                     send the same details directly to sales@nodebase.space.
                   </div>

@@ -118,12 +118,12 @@ function StatCard({
 }) {
   return (
     <div className={cn(
-      "skeuo-card p-6 min-h-[160px] flex flex-col justify-between group transition-all duration-500 hover:scale-[1.02]",
+      "glass-panel rounded-2xl p-6 min-h-[160px] flex flex-col justify-between group transition-all duration-500 hover:scale-[1.02]",
       alert ? "border-destructive/30 shadow-destructive/10" : "border-white/5"
     )}>
       <div className="flex justify-between items-start">
         <div className={cn(
-          "p-3 rounded-xl skeuo-inset",
+          "p-3 rounded-xl border border-white/10",
           alert ? "text-destructive" : "text-primary/60 group-hover:text-primary"
         )}>
           <Icon className="w-5 h-5" />

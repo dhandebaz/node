@@ -21,7 +21,7 @@ export function InviteCopyButton({ text }: { text: string }) {
     <Button 
       variant="outline" 
       onClick={handleCopy}
-      className="bg-white/5 border-[var(--public-line)] hover:bg-white/10 hover:text-[var(--public-ink)] text-[var(--public-ink)]/70"
+      className="bg-white/5 border-border hover:bg-white/10 hover:text-foreground text-foreground/70"
     >
       {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
     </Button>

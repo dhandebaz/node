@@ -72,8 +72,8 @@ export default function GrowthPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
-        <p className="text-[var(--public-ink)]/40 text-sm">Loading Kaisa's Growth Engine...</p>
+        <Loader2 className="w-8 h-8 animate-spin text-foreground/40" />
+        <p className="text-foreground/40 text-sm">Loading Kaisa's Growth Engine...</p>
       </div>
     );
   }
@@ -83,18 +83,18 @@ export default function GrowthPage() {
       {/* Header with Stats */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--public-ink)] uppercase tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground uppercase tracking-tight flex items-center gap-3">
             <Rocket className="text-orange-500 w-8 h-8" />
             Autonomous Growth
           </h1>
-          <p className="text-[var(--public-ink)]/50 text-sm">
+          <p className="text-foreground/50 text-sm">
             Kaisa proactively finds gaps in your calendar and reaches out to potential leads.
           </p>
         </div>
         <Button 
           onClick={handleScan} 
           disabled={scanning}
-          className="bg-orange-500 hover:bg-orange-600 text-[var(--public-ink)] font-bold px-6 rounded-full"
+          className="bg-orange-500 hover:bg-orange-600 text-foreground font-bold px-6 rounded-full"
         >
           {scanning ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Zap className="w-4 h-4 mr-2" />}
           Scan for Gaps
@@ -105,8 +105,8 @@ export default function GrowthPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Gaps Detected</CardDescription>
-            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">{data.opportunities.length}</CardTitle>
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Gaps Detected</CardDescription>
+            <CardTitle className="text-3xl font-bold text-foreground">{data.opportunities.length}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-orange-400">
@@ -117,8 +117,8 @@ export default function GrowthPage() {
         </Card>
         <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Active Campaigns</CardDescription>
-            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">{data.campaigns.length}</CardTitle>
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Active Campaigns</CardDescription>
+            <CardTitle className="text-3xl font-bold text-foreground">{data.campaigns.length}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-emerald-400">
@@ -129,11 +129,11 @@ export default function GrowthPage() {
         </Card>
         <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Revenue Generated</CardDescription>
-            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">₹0</CardTitle>
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Revenue Generated</CardDescription>
+            <CardTitle className="text-3xl font-bold text-foreground">₹0</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-2 text-xs text-[var(--public-muted)]">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <RefreshCw className="w-3 h-3" />
               <span>Last sync: Just now</span>
             </div>
@@ -144,21 +144,21 @@ export default function GrowthPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Feed: Opportunities */}
         <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-lg font-bold text-[var(--public-ink)] uppercase tracking-wider flex items-center gap-2">
+          <h2 className="text-lg font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
             <Target className="w-5 h-5 text-orange-500" />
             Kaisa's Suggestions
           </h2>
 
           {data.opportunities.length === 0 ? (
             <div className="public-panel/50 border border-white/5 rounded-2xl p-12 text-center space-y-4">
-              <div className="p-4 bg-white/5 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-[var(--public-ink)]/20">
+              <div className="p-4 bg-white/5 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-foreground/20">
                 <Sparkles className="w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-[var(--public-ink)] font-bold">No opportunities found</h3>
-                <p className="text-[var(--public-ink)]/40 text-sm">Try scanning for availability gaps or check your integrations.</p>
+                <h3 className="text-foreground font-bold">No opportunities found</h3>
+                <p className="text-foreground/40 text-sm">Try scanning for availability gaps or check your integrations.</p>
               </div>
-              <Button variant="outline" onClick={handleScan} className="border-[var(--public-line)] text-[var(--public-ink)] hover:bg-white/5">
+              <Button variant="outline" onClick={handleScan} className="border-border text-foreground hover:bg-white/5">
                 Refresh Calendar
               </Button>
             </div>
@@ -174,8 +174,8 @@ export default function GrowthPage() {
                             {o.guestName.charAt(0)}
                           </div>
                           <div>
-                            <div className="text-sm font-bold text-[var(--public-ink)]">{o.guestName}</div>
-                            <div className="text-[10px] text-[var(--public-muted)] uppercase tracking-widest">{o.listingTitle}</div>
+                            <div className="text-sm font-bold text-foreground">{o.guestName}</div>
+                            <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{o.listingTitle}</div>
                           </div>
                         </div>
                         <div className="flex items-center gap-2 bg-orange-500/10 px-2 py-1 rounded text-[10px] font-bold text-orange-400 uppercase tracking-tighter">
@@ -184,11 +184,11 @@ export default function GrowthPage() {
                         </div>
                       </div>
 
-                      <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-sm text-[var(--public-ink)]/80 leading-relaxed italic">
+                      <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-sm text-foreground/80 leading-relaxed italic">
                         "{o.message}"
                       </div>
 
-                      <div className="flex items-center gap-4 text-[11px] text-[var(--public-muted)]">
+                      <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <User className="w-3 h-3" />
                           Target: Returning Guest
@@ -208,7 +208,7 @@ export default function GrowthPage() {
                       </Button>
                       <Button 
                         variant="ghost" 
-                        className="flex-1 text-[var(--public-muted)] hover:text-red-400 hover:bg-red-500/10 text-xs font-bold py-1"
+                        className="flex-1 text-muted-foreground hover:text-red-400 hover:bg-red-500/10 text-xs font-bold py-1"
                       >
                         Dismiss
                       </Button>
@@ -222,26 +222,26 @@ export default function GrowthPage() {
 
         {/* Sidebar: Campaigns & Performance */}
         <div className="space-y-6">
-          <h2 className="text-lg font-bold text-[var(--public-ink)] uppercase tracking-wider flex items-center gap-2">
+          <h2 className="text-lg font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
             <Zap className="w-5 h-5 text-emerald-500" />
             Campaigns
           </h2>
           
           <Card className="public-panel border-white/5">
             <CardHeader className="pb-4 border-b border-white/5">
-              <CardTitle className="text-sm text-[var(--public-ink)]">Gap Filler</CardTitle>
+              <CardTitle className="text-sm text-foreground">Gap Filler</CardTitle>
               <CardDescription className="text-xs">Fills contiguous empty dates automatically</CardDescription>
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-[var(--public-muted)] uppercase font-bold tracking-tighter">Status</span>
+                <span className="text-muted-foreground uppercase font-bold tracking-tighter">Status</span>
                 <span className="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">Active</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-[var(--public-muted)] uppercase font-bold tracking-tighter">Conversion Rate</span>
-                <span className="text-[var(--public-ink)] font-bold">0%</span>
+                <span className="text-muted-foreground uppercase font-bold tracking-tighter">Conversion Rate</span>
+                <span className="text-foreground font-bold">0%</span>
               </div>
-              <Button variant="outline" className="w-full border-[var(--public-line)] text-[var(--public-ink)]/70 text-xs font-bold hover:bg-white/5">
+              <Button variant="outline" className="w-full border-border text-foreground/70 text-xs font-bold hover:bg-white/5">
                 Configure Rules
               </Button>
             </CardContent>
@@ -249,14 +249,14 @@ export default function GrowthPage() {
 
           <Card className="public-panel border-white/5 opacity-50">
             <CardHeader className="pb-4 border-b border-white/5">
-              <CardTitle className="text-sm text-[var(--public-ink)] flex items-center gap-2">
+              <CardTitle className="text-sm text-foreground flex items-center gap-2">
                 Review Boost
-                <span className="text-[10px] bg-white/10 text-[var(--public-ink)]/60 px-1.5 py-0.5 rounded uppercase tracking-tighter font-bold">Soon</span>
+                <span className="text-[10px] bg-white/10 text-foreground/60 px-1.5 py-0.5 rounded uppercase tracking-tighter font-bold">Soon</span>
               </CardTitle>
               <CardDescription className="text-xs">Follows up with guests after checkout</CardDescription>
             </CardHeader>
             <CardContent className="pt-4">
-              <Button disabled className="w-full bg-white/10 text-[var(--public-ink)]/30 text-xs font-bold">
+              <Button disabled className="w-full bg-white/10 text-foreground/30 text-xs font-bold">
                 Coming Soon
               </Button>
             </CardContent>

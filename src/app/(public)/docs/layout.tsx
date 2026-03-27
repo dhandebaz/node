@@ -25,7 +25,7 @@ export default function DocsLayout({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="public-pill whitespace-nowrap text-sm font-semibold text-[var(--public-ink)]"
+                  className="public-pill whitespace-nowrap text-sm font-semibold text-foreground"
                 >
                   {item.label}
                 </Link>
@@ -36,12 +36,12 @@ export default function DocsLayout({
           <section className="public-panel-soft p-5 sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
-                <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+                <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
                   <BookMarked className="h-5 w-5" />
                 </div>
                 <div>
                   <div className="public-eyebrow">Documentation</div>
-                  <h1 className="public-display mt-2 text-2xl text-[var(--public-ink)]">
+                  <h1 className="public-display mt-2 text-2xl text-foreground">
                     Deployment notes, control surfaces, and implementation detail
                   </h1>
                 </div>

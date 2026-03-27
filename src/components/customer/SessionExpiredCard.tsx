@@ -7,7 +7,7 @@ export function SessionExpiredCard({ className }: { className?: string }) {
       <p className="text-sm text-white/60 mb-4">Please sign in again to continue.</p>
       <Link
         href="/login"
-        className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-white text-[var(--color-brand-red)] text-sm font-semibold"
+        className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-white text-primary text-sm font-semibold"
       >
         Re-login
       </Link>

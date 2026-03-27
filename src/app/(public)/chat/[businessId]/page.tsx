@@ -210,8 +210,8 @@ export default function PublicChatPage() {
   if (initializing) {
     return (
       <div className="public-container pb-20 pt-28 sm:pt-32 lg:pt-36">
-        <div className="mx-auto flex max-w-3xl items-center justify-center rounded-[2rem] border border-[var(--public-line)] bg-[rgba(255,251,244,0.82)] px-6 py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-[var(--public-accent-strong)]" />
+        <div className="mx-auto flex max-w-3xl items-center justify-center rounded-[2rem] border border-border bg-background/90 px-6 py-16">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       </div>
     );
@@ -224,23 +224,23 @@ export default function PublicChatPage() {
           <section className="public-panel px-6 py-8 sm:px-8 sm:py-10">
             <div className="relative z-10 space-y-6">
               <div className="public-pill public-eyebrow">Guest messaging portal</div>
-              <h1 className="public-display text-4xl leading-[0.94] text-[var(--public-ink)] sm:text-5xl">
+              <h1 className="public-display text-4xl leading-[0.94] text-foreground sm:text-5xl">
                 Start a direct conversation without calling the host repeatedly.
               </h1>
-              <p className="max-w-2xl text-base leading-7 text-[var(--public-muted)]">
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground">
                 This chat surface is designed for guest questions, arrival coordination,
                 and operational follow-up. Start with your name, then message as needed.
               </p>
               <div className="grid gap-3">
                 <div className="public-inset rounded-[1.3rem] px-4 py-4">
                   <div className="public-eyebrow">Use this for</div>
-                  <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                  <div className="mt-2 text-sm font-semibold text-foreground">
                     Arrival questions, check-in coordination, and host follow-up
                   </div>
                 </div>
                 <div className="public-inset rounded-[1.3rem] px-4 py-4">
                   <div className="public-eyebrow">What happens next</div>
-                  <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                  <div className="mt-2 text-sm font-semibold text-foreground">
                     Your chat thread stays tied to the business workflow rather than a generic web form.
                   </div>
                 </div>
@@ -252,16 +252,16 @@ export default function PublicChatPage() {
             <div className="space-y-6">
               <div>
                 <div className="public-eyebrow">Start chat</div>
-                <h2 className="mt-3 text-2xl font-semibold text-[var(--public-ink)]">
+                <h2 className="mt-3 text-2xl font-semibold text-foreground">
                   Tell the host who you are.
                 </h2>
               </div>
 
               <form onSubmit={handleStartChat} className="grid gap-4">
-                <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                <label className="grid gap-2 text-sm font-semibold text-foreground">
                   Name
                   <div className="relative">
-                    <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--public-muted)]" />
+                    <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <input
                       required
                       value={name}
@@ -272,10 +272,10 @@ export default function PublicChatPage() {
                   </div>
                 </label>
 
-                <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                <label className="grid gap-2 text-sm font-semibold text-foreground">
                   Phone (optional)
                   <div className="relative">
-                    <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--public-muted)]" />
+                    <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <input
                       value={phone}
                       onChange={(event) => setPhone(event.target.value)}
@@ -286,7 +286,7 @@ export default function PublicChatPage() {
                 </label>
 
                 {error ? (
-                  <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-[var(--public-accent-strong)]">
+                  <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-primary">
                     {error}
                   </div>
                 ) : null}
@@ -312,15 +312,15 @@ export default function PublicChatPage() {
         <section className="public-panel-soft p-5 sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
-              <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+              <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
                 <MessageSquareShare className="h-5 w-5" />
               </div>
               <div>
                 <div className="public-eyebrow">Active conversation</div>
-                <h1 className="mt-2 text-2xl font-semibold text-[var(--public-ink)]">
+                <h1 className="mt-2 text-2xl font-semibold text-foreground">
                   Guest thread for {session.name}
                 </h1>
-                <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   Use this window to message the business. Replies refresh automatically.
                 </p>
               </div>
@@ -339,18 +339,18 @@ export default function PublicChatPage() {
           <div className="relative z-10 grid gap-4">
             <div
               ref={scrollRef}
-              className="min-h-[28rem] max-h-[34rem] space-y-3 overflow-y-auto rounded-[1.6rem] border border-[var(--public-line)] bg-[rgba(255,251,244,0.72)] p-4"
+              className="min-h-[28rem] max-h-[34rem] space-y-3 overflow-y-auto rounded-[1.6rem] border border-border bg-[rgba(255,251,244,0.72)] p-4"
             >
               {messages.length === 0 ? (
                 <div className="flex h-full min-h-[20rem] items-center justify-center">
                   <div className="max-w-md text-center">
-                    <div className="public-inset mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[var(--public-accent-soft)]/75 text-[var(--public-accent-strong)]">
+                    <div className="public-inset mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10/75 text-primary">
                       <MessageSquareShare className="h-6 w-6" />
                     </div>
-                    <h2 className="mt-4 text-xl font-semibold text-[var(--public-ink)]">
+                    <h2 className="mt-4 text-xl font-semibold text-foreground">
                       Conversation opened
                     </h2>
-                    <p className="mt-3 text-sm leading-6 text-[var(--public-muted)]">
+                    <p className="mt-3 text-sm leading-6 text-muted-foreground">
                       Send the first message when you are ready. This is the cleanest
                       way to coordinate with the business without switching channels.
                     </p>
@@ -369,14 +369,14 @@ export default function PublicChatPage() {
                         className={[
                           "max-w-[85%] rounded-[1.4rem] px-4 py-3 text-sm leading-6 shadow-[0_10px_18px_rgba(43,29,16,0.06)]",
                           isGuest
-                            ? "bg-[var(--public-accent)] text-white"
-                            : "border border-[var(--public-line)] bg-white text-[var(--public-ink)]",
+                            ? "bg-primary text-white"
+                            : "border border-border bg-white text-foreground",
                         ].join(" ")}
                       >
                         <div>{message.content}</div>
                         <div
                           className={`mt-2 flex items-center gap-2 text-[11px] ${
-                            isGuest ? "text-white/75" : "text-[var(--public-muted)]"
+                            isGuest ? "text-white/75" : "text-muted-foreground"
                           }`}
                         >
                           <span>
@@ -398,7 +398,7 @@ export default function PublicChatPage() {
                         <button
                           type="button"
                           onClick={() => handleRetry(message)}
-                          className="mt-2 inline-flex items-center gap-2 text-xs font-semibold text-[var(--public-accent-strong)]"
+                          className="mt-2 inline-flex items-center gap-2 text-xs font-semibold text-primary"
                         >
                           <RefreshCw className="h-3 w-3" />
                           Retry
@@ -426,9 +426,9 @@ export default function PublicChatPage() {
               </button>
             </form>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--public-muted)]">
+            <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
               <div>This thread refreshes automatically every few seconds.</div>
-              <div className="public-pill text-[11px] font-semibold text-[var(--public-muted)]">
+              <div className="public-pill text-[11px] font-semibold text-muted-foreground">
                 Workflow-linked guest conversation
               </div>
             </div>

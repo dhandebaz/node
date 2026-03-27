@@ -78,7 +78,7 @@ export default function AISettingsPage() {
   if (!host) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
+        <Loader2 className="w-8 h-8 animate-spin text-foreground/40" />
       </div>
     );
   }
@@ -86,10 +86,10 @@ export default function AISettingsPage() {
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-24 md:pb-0">
       <div>
-        <h1 className="text-2xl font-bold text-[var(--public-ink)] mb-2">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
           Kaisa AI Settings
         </h1>
-        <p className="text-[var(--public-ink)]/60">
+        <p className="text-foreground/60">
           Configure how your AI Employee interacts with{" "}
           {labels.customers.toLowerCase()}.
         </p>
@@ -98,7 +98,7 @@ export default function AISettingsPage() {
       <div className="grid gap-6">
         {/* Master AI Toggle */}
         <Card className="public-panel border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.05)]">
-          <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-[var(--public-line)]/50">
+          <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-border/50">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <Zap
@@ -106,14 +106,14 @@ export default function AISettingsPage() {
                     "w-5 h-5",
                     tenant?.is_ai_enabled
                       ? "text-emerald-500"
-                      : "text-[var(--public-muted)]",
+                      : "text-muted-foreground",
                   )}
                 />
-                <CardTitle className="text-[var(--public-ink)]">
+                <CardTitle className="text-foreground">
                   AI Employee Activation
                 </CardTitle>
               </div>
-              <CardDescription className="text-[var(--public-muted)]">
+              <CardDescription className="text-muted-foreground">
                 Switch your AI Employee on or off. When off, Kaisa will not
                 reply to any customers.
               </CardDescription>
@@ -151,7 +151,7 @@ export default function AISettingsPage() {
         />
 
         {/* Tone of Voice */}
-        <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
+        <Card className="bg-transparent border-border">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -159,18 +159,18 @@ export default function AISettingsPage() {
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <div>
-                  <CardTitle className="text-[var(--public-ink)]">
+                  <CardTitle className="text-foreground">
                     How should Kaisa AI talk to {labels.customers.toLowerCase()}
                     ?
                   </CardTitle>
-                  <CardDescription className="text-[var(--public-ink)]/50">
+                  <CardDescription className="text-foreground/50">
                     Set the personality of your AI ({aiDefaults.role}).
                   </CardDescription>
                 </div>
               </div>
               <div className="text-xs font-medium h-6 flex items-center justify-end sm:justify-start">
                 {saveStatus === "saving" && (
-                  <span className="text-[var(--public-muted)] animate-pulse">Saving...</span>
+                  <span className="text-muted-foreground animate-pulse">Saving...</span>
                 )}
                 {saveStatus === "saved" && (
                   <span className="text-emerald-400">Saved</span>
@@ -186,13 +186,13 @@ export default function AISettingsPage() {
                   "p-4 rounded-lg border cursor-pointer transition-colors",
                   tone === "professional"
                     ? "border-white/30 bg-white/5"
-                    : "border-[var(--public-line)] bg-black/20 hover:border-white/20",
+                    : "border-border bg-black/20 hover:border-white/20",
                 )}
               >
-                <div className="font-medium text-[var(--public-ink)] mb-1">
+                <div className="font-medium text-foreground mb-1">
                   Professional & Polite
                 </div>
-                <div className="text-sm text-[var(--public-ink)]/50">
+                <div className="text-sm text-foreground/50">
                   Formal, respectful, and efficient. Best for business{" "}
                   {labels.customers.toLowerCase()}.
                 </div>
@@ -202,50 +202,50 @@ export default function AISettingsPage() {
                 className={cn(
                   "p-4 rounded-lg border cursor-pointer transition-colors",
                   tone === "friendly"
-                    ? "border-[var(--color-brand-red)] bg-[var(--color-brand-red)]/10"
-                    : "border-[var(--public-line)] bg-black/20 hover:border-white/20",
+                    ? "border-primary bg-primary/10"
+                    : "border-border bg-black/20 hover:border-white/20",
                 )}
               >
                 <div
                   className={cn(
                     "font-medium mb-1",
                     tone === "friendly"
-                      ? "text-[var(--color-brand-red)]"
-                      : "text-[var(--public-ink)]",
+                      ? "text-primary"
+                      : "text-foreground",
                   )}
                 >
                   Warm & Friendly
                 </div>
-                <div className="text-sm text-[var(--public-ink)]/50">
+                <div className="text-sm text-foreground/50">
                   Casual, welcoming, and helpful. Best for casual{" "}
                   {labels.listings.toLowerCase()}.
                 </div>
               </div>
             </div>
             <div className="pt-4">
-              <Label className="text-[var(--public-ink)] mb-2 block">
+              <Label className="text-foreground mb-2 block">
                 Custom Instructions
               </Label>
               <Textarea
                 placeholder="e.g. Always mention we have a friendly dog named Max."
                 value={customInstructions}
                 onChange={(event) => setCustomInstructions(event.target.value)}
-                className="bg-black/20 border-[var(--public-line)] text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/20 min-h-[100px]"
+                className="bg-black/20 border-border text-foreground placeholder:text-foreground/20 min-h-[100px]"
               />
             </div>
           </CardContent>
         </Card>
 
         {/* Allowed Actions */}
-        <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
+        <Card className="bg-transparent border-border">
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
                 <Shield className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-[var(--public-ink)]">Allowed Actions</CardTitle>
-                <CardDescription className="text-[var(--public-ink)]/50">
+                <CardTitle className="text-foreground">Allowed Actions</CardTitle>
+                <CardDescription className="text-foreground/50">
                   Control what your AI can and cannot do.
                 </CardDescription>
               </div>
@@ -254,10 +254,10 @@ export default function AISettingsPage() {
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-[var(--public-ink)] text-base">
+                <Label className="text-foreground text-base">
                   Accept {labels.bookings}
                 </Label>
-                <div className="text-sm text-[var(--public-ink)]/50">
+                <div className="text-sm text-foreground/50">
                   Allow AI to confirm {labels.bookings.toLowerCase()}{" "}
                   automatically if criteria are met.
                 </div>
@@ -266,8 +266,8 @@ export default function AISettingsPage() {
             </div>
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-[var(--public-ink)] text-base">Process Refunds</Label>
-                <div className="text-sm text-[var(--public-ink)]/50">
+                <Label className="text-foreground text-base">Process Refunds</Label>
+                <div className="text-sm text-foreground/50">
                   Allow AI to process refunds up to a certain limit.
                 </div>
               </div>
@@ -275,10 +275,10 @@ export default function AISettingsPage() {
             </div>
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-[var(--public-ink)] text-base">
+                <Label className="text-foreground text-base">
                   Send Special Offers
                 </Label>
-                <div className="text-sm text-[var(--public-ink)]/50">
+                <div className="text-sm text-foreground/50">
                   Allow AI to propose discounts to close a deal.
                 </div>
               </div>
@@ -288,15 +288,15 @@ export default function AISettingsPage() {
         </Card>
 
         {/* Knowledge Base */}
-        <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
+        <Card className="bg-transparent border-border">
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-400">
                 <Brain className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-[var(--public-ink)]">Knowledge Base</CardTitle>
-                <CardDescription className="text-[var(--public-ink)]/50">
+                <CardTitle className="text-foreground">Knowledge Base</CardTitle>
+                <CardDescription className="text-foreground/50">
                   Your AI learns from your {labels.listings.toLowerCase()}, but
                   you can add general rules here.
                 </CardDescription>
@@ -304,11 +304,11 @@ export default function AISettingsPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-center py-8 border-2 border-dashed border-[var(--public-line)] rounded-lg">
-              <div className="text-[var(--public-ink)]/40 mb-2">
+            <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
+              <div className="text-foreground/40 mb-2">
                 No custom documents uploaded
               </div>
-              <div className="text-sm text-[var(--public-ink)]/30">
+              <div className="text-sm text-foreground/30">
                 Upload {labels.listing.toLowerCase()} rules, local guides, or
                 FAQs.
               </div>

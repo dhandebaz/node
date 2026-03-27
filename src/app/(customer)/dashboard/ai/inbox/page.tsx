@@ -671,7 +671,7 @@ export default function InboxPage() {
   if (loadingList && listings.length === 0) {
     return (
       <div className="flex justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
+        <Loader2 className="w-8 h-8 animate-spin text-foreground/40" />
       </div>
     );
   }
@@ -679,12 +679,12 @@ export default function InboxPage() {
   if (listings.length === 0 && !loadingList) {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
-        <div className="p-4 rounded-full bg-white/5 text-[var(--public-ink)]/40">
+        <div className="p-4 rounded-full bg-white/5 text-foreground/40">
           <MessageSquare className="w-8 h-8" />
         </div>
         <div className="space-y-2">
-          <h3 className="text-xl font-semibold text-[var(--public-ink)]">Inbox is locked</h3>
-          <p className="text-[var(--public-ink)]/60 max-w-sm">
+          <h3 className="text-xl font-semibold text-foreground">Inbox is locked</h3>
+          <p className="text-foreground/60 max-w-sm">
             Add a {labels.listing.toLowerCase()} to start receiving messages
             from {labels.customers.toLowerCase()}.
           </p>
@@ -1003,23 +1003,23 @@ export default function InboxPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] flex bg-[var(--color-dashboard-surface)] rounded-2xl border border-[var(--public-line)] overflow-hidden relative">
+    <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] flex bg-transparent rounded-2xl border border-border overflow-hidden relative">
       <div
         className={cn(
-          "w-full md:w-80 lg:w-96 bg-[var(--color-dashboard-surface)] border-r border-[var(--public-line)] flex flex-col absolute md:relative inset-0 z-10 transition-transform duration-300",
+          "w-full md:w-80 lg:w-96 bg-transparent border-r border-border flex flex-col absolute md:relative inset-0 z-10 transition-transform duration-300",
           showThread ? "-translate-x-full md:translate-x-0" : "translate-x-0",
         )}
       >
-        <div className="p-4 border-b border-[var(--public-line)] bg-[var(--color-dashboard-surface)] space-y-4">
+        <div className="p-4 border-b border-border bg-transparent space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold text-[var(--public-ink)] tracking-tight">
+              <h1 className="text-xl font-bold text-foreground tracking-tight">
                 Inbox
               </h1>
-              <div className="flex items-center gap-2 bg-white/5 border border-[var(--public-line)] rounded-full px-3 py-1 ml-2">
+              <div className="flex items-center gap-2 bg-white/5 border border-border rounded-full px-3 py-1 ml-2">
                 <Label
                   htmlFor="default-ai-toggle"
-                  className="text-[10px] font-medium text-[var(--public-ink)]/60 cursor-pointer"
+                  className="text-[10px] font-medium text-foreground/60 cursor-pointer"
                 >
                   Default AI Paused
                 </Label>
@@ -1034,29 +1034,29 @@ export default function InboxPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowFilters(true)}
-                className="p-2 hover:bg-white/5 rounded-full text-[var(--public-ink)]/60"
+                className="p-2 hover:bg-white/5 rounded-full text-foreground/60"
               >
                 <Filter className="w-5 h-5" />
               </button>
             </div>
           </div>
-          <div className="flex items-center gap-2 bg-white/5 border border-[var(--public-line)] rounded-xl px-3 py-2">
-            <Search className="w-4 h-4 text-[var(--public-ink)]/40" />
+          <div className="flex items-center gap-2 bg-white/5 border border-border rounded-xl px-3 py-2">
+            <Search className="w-4 h-4 text-foreground/40" />
             <input
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               placeholder="Search name or phone"
-              className="bg-transparent text-sm text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/40 focus:outline-none flex-1"
+              className="bg-transparent text-sm text-foreground placeholder:text-foreground/40 focus:outline-none flex-1"
             />
           </div>
-          <div className="hidden md:flex items-center gap-2 text-xs text-[var(--public-ink)]/50 flex-wrap">
+          <div className="hidden md:flex items-center gap-2 text-xs text-foreground/50 flex-wrap">
             <button
               onClick={() => setAwaitingReplyOnly((prev) => !prev)}
               className={cn(
                 "px-3 py-1 rounded-full border transition-colors flex items-center gap-1",
                 awaitingReplyOnly
                   ? "border-amber-400 text-amber-400 bg-amber-400/10"
-                  : "border-[var(--public-line)] hover:border-white/40 text-[var(--public-ink)]/70",
+                  : "border-border hover:border-white/40 text-foreground/70",
               )}
             >
               <Clock className="w-3 h-3" />
@@ -1067,13 +1067,13 @@ export default function InboxPage() {
               className={cn(
                 "px-3 py-1 rounded-full border transition-colors",
                 unreadOnly
-                  ? "border-white/60 text-[var(--public-ink)]"
-                  : "border-[var(--public-line)] hover:border-white/40",
+                  ? "border-white/60 text-foreground"
+                  : "border-border hover:border-white/40",
               )}
             >
               Unread
             </button>
-            <div className="flex items-center gap-1 border border-[var(--public-line)] rounded-full px-3 py-1">
+            <div className="flex items-center gap-1 border border-border rounded-full px-3 py-1">
               <span>
                 {channelFilter === "all"
                   ? "All channels"
@@ -1081,7 +1081,7 @@ export default function InboxPage() {
               </span>
               <ChevronDown className="w-3 h-3" />
             </div>
-            <div className="flex items-center gap-1 border border-[var(--public-line)] rounded-full px-3 py-1">
+            <div className="flex items-center gap-1 border border-border rounded-full px-3 py-1">
               <span>
                 {managerFilter === "all"
                   ? "All AI Managers"
@@ -1091,7 +1091,7 @@ export default function InboxPage() {
               </span>
               <ChevronDown className="w-3 h-3" />
             </div>
-            <div className="flex items-center gap-1 border border-[var(--public-line)] rounded-full px-3 py-1">
+            <div className="flex items-center gap-1 border border-border rounded-full px-3 py-1">
               <span>
                 {statusFilter === "all" ? "All status" : statusFilter}
               </span>
@@ -1101,7 +1101,7 @@ export default function InboxPage() {
         </div>
 
         {systemMeta && (
-          <div className="p-4 space-y-3 border-b border-[var(--public-line)]">
+          <div className="p-4 space-y-3 border-b border-border">
             {systemMeta.integrationStatus !== "connected" && (
               <div className="flex items-start gap-3 bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs text-amber-200">
                 <AlertTriangle className="w-4 h-4 mt-0.5" />
@@ -1151,11 +1151,11 @@ export default function InboxPage() {
             </div>
           )}
           {listError && (
-            <div className="p-6 text-sm text-[var(--public-ink)]/60 space-y-3">
+            <div className="p-6 text-sm text-foreground/60 space-y-3">
               <div>{listError}</div>
               <button
                 onClick={loadConversations}
-                className="inline-flex items-center gap-2 text-sm text-[var(--public-ink)] border border-white/20 px-3 py-2 rounded-lg hover:border-white/40"
+                className="inline-flex items-center gap-2 text-sm text-foreground border border-white/20 px-3 py-2 rounded-lg hover:border-white/40"
               >
                 <RefreshCw className="w-4 h-4" />
                 Retry
@@ -1163,10 +1163,10 @@ export default function InboxPage() {
             </div>
           )}
           {showEmptyState && (
-            <div className="p-8 text-center text-[var(--public-ink)]/40">
+            <div className="p-8 text-center text-foreground/40">
               <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-20" />
               <p>No conversations yet</p>
-              <p className="text-xs text-[var(--public-ink)]/30 mt-2">
+              <p className="text-xs text-foreground/30 mt-2">
                 Connect a channel to start receiving messages.
               </p>
             </div>
@@ -1185,7 +1185,7 @@ export default function InboxPage() {
                     className={cn(
                       "group w-full text-left flex hover:bg-white/5 transition-colors border-l-2",
                       selectedConversationId === conversation.id
-                        ? "bg-white/5 border-[var(--color-brand-red)]"
+                        ? "bg-white/5 border-primary"
                         : "border-transparent",
                     )}
                   >
@@ -1195,7 +1195,7 @@ export default function InboxPage() {
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-2">
-                          <div className="p-1.5 rounded-lg bg-black/40 text-[var(--public-ink)]/70">
+                          <div className="p-1.5 rounded-lg bg-black/40 text-foreground/70">
                             <ChannelIcon className="w-4 h-4" />
                           </div>
                           <div>
@@ -1204,8 +1204,8 @@ export default function InboxPage() {
                                 className={cn(
                                   "text-sm font-semibold",
                                   conversation.unreadCount
-                                    ? "text-[var(--public-ink)]"
-                                    : "text-[var(--public-ink)]/70",
+                                    ? "text-foreground"
+                                    : "text-foreground/70",
                                 )}
                               >
                                 {conversation.customerName ||
@@ -1213,7 +1213,7 @@ export default function InboxPage() {
                                   "Unknown"}
                               </span>
                               {conversation.unreadCount > 0 && (
-                                <span className="text-[10px] font-semibold text-[var(--public-ink)] bg-[var(--color-brand-red)] rounded-full px-2 py-0.5">
+                                <span className="text-[10px] font-semibold text-foreground bg-primary rounded-full px-2 py-0.5">
                                   {conversation.unreadCount}
                                 </span>
                               )}
@@ -1228,19 +1228,19 @@ export default function InboxPage() {
                                 </span>
                               )}
                             </div>
-                            <div className="text-[11px] text-[var(--public-ink)]/40">
+                            <div className="text-[11px] text-foreground/40">
                               {conversation.manager.name}
                             </div>
                           </div>
                         </div>
-                        <div className="text-[10px] text-[var(--public-ink)]/40 whitespace-nowrap">
+                        <div className="text-[10px] text-foreground/40 whitespace-nowrap">
                           {timeAgo(conversation.lastMessageAt)}
                         </div>
                       </div>
-                      <div className="mt-2 text-xs text-[var(--public-ink)]/60 line-clamp-2">
+                      <div className="mt-2 text-xs text-foreground/60 line-clamp-2">
                         {conversation.lastMessage}
                       </div>
-                      <div className="mt-3 flex items-center justify-between text-[10px] text-[var(--public-ink)]/30 uppercase tracking-wider">
+                      <div className="mt-3 flex items-center justify-between text-[10px] text-foreground/30 uppercase tracking-wider">
                         <span>{channelLabel[conversation.channel]}</span>
                         <span
                           className={cn(
@@ -1260,7 +1260,7 @@ export default function InboxPage() {
                           e.stopPropagation();
                           handleResolve(conversation.id);
                         }}
-                        className="p-2 hover:bg-white/10 rounded-full text-[var(--public-ink)]/40 hover:text-emerald-400 transition-colors"
+                        className="p-2 hover:bg-white/10 rounded-full text-foreground/40 hover:text-emerald-400 transition-colors"
                         title="Mark as Resolved"
                       >
                         <CheckCircle className="w-4 h-4" />
@@ -1276,21 +1276,21 @@ export default function InboxPage() {
 
       <div
         className={cn(
-          "flex-1 bg-[var(--color-dashboard-surface)] flex flex-col absolute md:relative inset-0 z-20 transition-transform duration-300",
+          "flex-1 bg-transparent flex flex-col absolute md:relative inset-0 z-20 transition-transform duration-300",
           showThread ? "translate-x-0" : "translate-x-full md:translate-x-0",
         )}
       >
         {selectedConversation ? (
           <>
-            <div className="h-16 px-4 border-b border-[var(--public-line)] flex items-center justify-between bg-[var(--color-dashboard-surface)]">
+            <div className="h-16 px-4 border-b border-border flex items-center justify-between bg-transparent">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setSelectedConversationId(null)}
-                  className="md:hidden p-2 -ml-2 hover:bg-white/5 rounded-full text-[var(--public-ink)]/60"
+                  className="md:hidden p-2 -ml-2 hover:bg-white/5 rounded-full text-foreground/60"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-xs font-bold text-[var(--public-ink)]">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-xs font-bold text-foreground">
                   {(
                     selectedConversation.customerName ||
                     selectedConversation.customerPhone ||
@@ -1299,7 +1299,7 @@ export default function InboxPage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-sm font-bold text-[var(--public-ink)]">
+                    <h2 className="text-sm font-bold text-foreground">
                       {selectedConversation.customerName ||
                         selectedConversation.customerPhone ||
                         "Unknown"}
@@ -1313,10 +1313,10 @@ export default function InboxPage() {
                       )}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] text-[var(--public-ink)]/50">
+                    <span className="text-[10px] text-foreground/50">
                       {channelLabel[selectedConversation.channel]}
                     </span>
-                    <span className="text-[var(--public-ink)]/20">•</span>
+                    <span className="text-foreground/20">•</span>
                     <select
                       value={selectedConversation.status}
                       onChange={(e) =>
@@ -1329,7 +1329,7 @@ export default function InboxPage() {
                         "text-[10px] bg-transparent border-none p-0 uppercase tracking-wider focus:ring-0 cursor-pointer font-semibold",
                         selectedConversation.status === "payment_pending"
                           ? "text-orange-400"
-                          : "text-[var(--public-ink)]/50",
+                          : "text-foreground/50",
                       )}
                     >
                       <option className="public-panel" value="open">
@@ -1361,10 +1361,10 @@ export default function InboxPage() {
                       AI Paused - Human taking over
                     </span>
                   )}
-                  <div className="flex items-center gap-2 bg-white/5 border border-[var(--public-line)] rounded-full px-3 py-1">
+                  <div className="flex items-center gap-2 bg-white/5 border border-border rounded-full px-3 py-1">
                     <Label
                       htmlFor="ai-toggle"
-                      className="text-[10px] font-medium text-[var(--public-ink)] cursor-pointer"
+                      className="text-[10px] font-medium text-foreground cursor-pointer"
                     >
                       AI Autopilot
                     </Label>
@@ -1408,17 +1408,17 @@ export default function InboxPage() {
                     });
                     setShowSmartLinkModal(true);
                   }}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-600 text-[var(--public-ink)] hover:bg-emerald-700 transition-colors"
+                  className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-600 text-foreground hover:bg-emerald-700 transition-colors"
                 >
                   Send booking link
                 </button>
                 <button
                   onClick={openPaymentModal}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 text-[var(--public-ink)]/80 hover:border-white/50"
+                  className="text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 text-foreground/80 hover:border-white/50"
                 >
                   Send payment link
                 </button>
-                <div className="flex items-center gap-2 text-[10px] text-[var(--public-ink)]/40">
+                <div className="flex items-center gap-2 text-[10px] text-foreground/40">
                   <Calendar className="w-4 h-4" />
                   {timeAgo(selectedConversation.lastMessageAt)}
                 </div>
@@ -1427,10 +1427,10 @@ export default function InboxPage() {
 
             <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
               <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="md:hidden border-b border-[var(--public-line)] bg-[var(--color-dashboard-surface)]">
+                <div className="md:hidden border-b border-border bg-transparent">
                   <button
                     onClick={() => setShowContext((prev) => !prev)}
-                    className="w-full px-4 py-3 flex items-center justify-between text-xs text-[var(--public-ink)]/70"
+                    className="w-full px-4 py-3 flex items-center justify-between text-xs text-foreground/70"
                   >
                     <span>{context?.managerName || "Context"}</span>
                     <ChevronDown
@@ -1443,7 +1443,7 @@ export default function InboxPage() {
                   {showContext && (
                     <div className="px-4 pb-4">
                       {contextError && (
-                        <div className="text-xs text-[var(--public-ink)]/50">
+                        <div className="text-xs text-foreground/50">
                           {contextError}
                         </div>
                       )}
@@ -1460,7 +1460,7 @@ export default function InboxPage() {
                       )}
                       {context && (
                         <div className="space-y-3">
-                          <div className="text-xs text-[var(--public-ink)]/40">
+                          <div className="text-xs text-foreground/40">
                             Updated {timeAgo(context.updatedAt)}
                           </div>
                           <div className="grid grid-cols-2 gap-2 text-xs">
@@ -1474,18 +1474,18 @@ export default function InboxPage() {
                                       `${field.label}: ${field.value}`,
                                   )
                                 }
-                                className="bg-white/5 hover:bg-white/10 text-left border border-[var(--public-line)] rounded-lg p-2 transition-colors group cursor-pointer"
+                                className="bg-white/5 hover:bg-white/10 text-left border border-border rounded-lg p-2 transition-colors group cursor-pointer"
                                 title="Click to insert into reply"
                               >
                                 <div className="flex justify-between items-center">
-                                  <div className="text-[var(--public-ink)]/40 text-[10px] uppercase tracking-wider group-hover:text-[var(--public-ink)]/60">
+                                  <div className="text-foreground/40 text-[10px] uppercase tracking-wider group-hover:text-foreground/60">
                                     {field.label}
                                   </div>
-                                  <Copy className="w-3 h-3 text-[var(--public-ink)]/20 group-hover:text-[var(--public-ink)]/60 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  <Copy className="w-3 h-3 text-foreground/20 group-hover:text-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </div>
                                 <div
                                   className={cn(
-                                    "text-[var(--public-ink)] mt-1 text-xs",
+                                    "text-foreground mt-1 text-xs",
                                     field.tone === "good" && "text-emerald-300",
                                     field.tone === "warn" && "text-amber-300",
                                     field.tone === "bad" && "text-red-300",
@@ -1524,14 +1524,14 @@ export default function InboxPage() {
                                     key={action.id}
                                     onClick={() => handleQuickAction(action)}
                                     disabled={action.disabled || sending}
-                                    className="text-xs text-[var(--public-ink)]/80 border border-white/20 px-3 py-1.5 rounded-lg disabled:opacity-50"
+                                    className="text-xs text-foreground/80 border border-white/20 px-3 py-1.5 rounded-lg disabled:opacity-50"
                                   >
                                     {action.label}
                                   </button>
                                 ))}
                             </div>
                           )}
-                          <div className="text-[10px] text-[var(--public-ink)]/40">
+                          <div className="text-[10px] text-foreground/40">
                             {channelConstraint[selectedConversation.channel]}
                           </div>
                         </div>
@@ -1540,7 +1540,7 @@ export default function InboxPage() {
                   )}
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--color-dashboard-surface)]">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-transparent">
                   {loadingThread && (
                     <div className="space-y-4">
                       {[1, 2, 3].map((i) => (
@@ -1573,10 +1573,10 @@ export default function InboxPage() {
                     </div>
                   )}
                   {threadError && (
-                    <div className="text-sm text-[var(--public-ink)]/50">{threadError}</div>
+                    <div className="text-sm text-foreground/50">{threadError}</div>
                   )}
                   {!loadingThread && !threadError && messages.length === 0 && (
-                    <div className="text-sm text-[var(--public-ink)]/40">
+                    <div className="text-sm text-foreground/40">
                       No messages in this conversation yet.
                     </div>
                   )}
@@ -1595,10 +1595,10 @@ export default function InboxPage() {
                       >
                         <div
                           className={cn(
-                            "w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-[var(--public-ink)] mt-1 relative",
+                            "w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-foreground mt-1 relative",
                             isCustomer
                               ? "bg-gradient-to-br from-orange-400 to-red-500"
-                              : "bg-white/10 border border-[var(--public-line)]",
+                              : "bg-white/10 border border-border",
                           )}
                         >
                           {isCustomer ? (
@@ -1619,7 +1619,7 @@ export default function InboxPage() {
                           <div className="absolute -bottom-1 -right-1 bg-black rounded-full p-0.5 border border-white/10 shadow-lg">
                             {(() => {
                                 const Icon = channelIcon[message.channel];
-                                return <Icon className="w-2.5 h-2.5 text-[var(--public-ink)]/70" />;
+                                return <Icon className="w-2.5 h-2.5 text-foreground/70" />;
                             })()}
                           </div>
                         </div>
@@ -1628,10 +1628,10 @@ export default function InboxPage() {
                             className={cn(
                               "rounded-2xl p-3 text-sm leading-relaxed shadow-sm whitespace-pre-wrap",
                               isCustomer
-                                ? "bg-[var(--color-dashboard-surface)] border border-[var(--public-line)] rounded-tl-none text-[var(--public-ink)]/90"
+                                ? "bg-transparent border border-border rounded-tl-none text-foreground/90"
                                 : isInternal
                                   ? "bg-amber-500/10 border border-amber-500/20 text-amber-200"
-                                  : "bg-white/10 border border-[var(--public-line)] rounded-tr-none text-[var(--public-ink)]",
+                                  : "bg-white/10 border border-border rounded-tr-none text-foreground",
                             )}
                           >
                             {message.mediaUrl && (
@@ -1658,7 +1658,7 @@ export default function InboxPage() {
                                       <Copy className="w-4 h-4" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <div className="text-[11px] font-bold uppercase tracking-widest text-[var(--public-ink)]/40">Document</div>
+                                      <div className="text-[11px] font-bold uppercase tracking-widest text-foreground/40">Document</div>
                                       <div className="text-xs truncate">{message.caption || "View Attachment"}</div>
                                     </div>
                                   </a>
@@ -1671,15 +1671,15 @@ export default function InboxPage() {
                             className={cn(
                               "text-[10px] mt-1 flex items-center gap-2",
                               isCustomer
-                                ? "text-[var(--public-ink)]/30 ml-1"
-                                : "text-[var(--public-ink)]/40 justify-end mr-1",
+                                ? "text-foreground/30 ml-1"
+                                : "text-foreground/40 justify-end mr-1",
                             )}
                           >
                             <span>{timeAgo(message.timestamp)}</span>
                             {message.status && !isCustomer && (
                                 <span className={cn(
                                     "px-1 rounded-sm uppercase tracking-tighter font-bold",
-                                    message.status === 'read' ? 'text-emerald-400' : 'text-[var(--public-ink)]/20'
+                                    message.status === 'read' ? 'text-emerald-400' : 'text-foreground/20'
                                 )}>
                                     {message.status}
                                 </span>
@@ -1700,14 +1700,14 @@ export default function InboxPage() {
                   })}
                 </div>
 
-                <div className="p-3 bg-[var(--color-dashboard-surface)] border-t border-[var(--public-line)] pb-safe md:pb-3 space-y-3">
+                <div className="p-3 bg-transparent border-t border-border pb-safe md:pb-3 space-y-3">
                   <div className="flex items-center gap-4 px-2 mb-1">
-                    <label className="flex items-center gap-2 text-xs text-[var(--public-ink)]/50 hover:text-[var(--public-ink)] cursor-pointer transition-colors">
+                    <label className="flex items-center gap-2 text-xs text-foreground/50 hover:text-foreground cursor-pointer transition-colors">
                       <input
                         type="checkbox"
                         checked={isInternalNote}
                         onChange={(e) => setIsInternalNote(e.target.checked)}
-                        className="rounded border-white/20 bg-white/5 text-brand-red focus:ring-0"
+                        className="rounded border-white/20 bg-white/5 text-primary focus:ring-0"
                       />
                       <EyeOff className="w-3 h-3" />
                       Internal Note
@@ -1715,10 +1715,10 @@ export default function InboxPage() {
                   </div>
                   <div
                     className={cn(
-                      "flex items-end gap-2 bg-[var(--color-dashboard-surface)] border rounded-2xl p-2 transition-colors",
+                      "flex items-end gap-2 bg-transparent border rounded-2xl p-2 transition-colors",
                       isInternalNote
                         ? "border-amber-500/50 focus-within:border-amber-500 bg-amber-500/5"
-                        : "border-[var(--public-line)] focus-within:border-white/30",
+                        : "border-border focus-within:border-white/30",
                     )}
                   >
                     <textarea
@@ -1734,7 +1734,7 @@ export default function InboxPage() {
                         "flex-1 bg-transparent text-sm focus:outline-none max-h-32 py-2 resize-none",
                         isInternalNote
                           ? "text-amber-100 placeholder:text-amber-500/50"
-                          : "text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/30",
+                          : "text-foreground placeholder:text-foreground/30",
                       )}
                       rows={1}
                     />
@@ -1745,7 +1745,7 @@ export default function InboxPage() {
                         "p-2 rounded-full disabled:opacity-50 transition-colors",
                         isInternalNote
                           ? "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30"
-                          : "bg-white/10 text-[var(--public-ink)] hover:bg-white/20",
+                          : "bg-white/10 text-foreground hover:bg-white/20",
                       )}
                     >
                       <Send className="w-4 h-4" />
@@ -1754,7 +1754,7 @@ export default function InboxPage() {
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex flex-wrap gap-2">
                       {loadingSuggestions && (
-                        <span className="text-[10px] text-[var(--public-ink)]/40">
+                        <span className="text-[10px] text-foreground/40">
                           Loading AI replies...
                         </span>
                       )}
@@ -1766,7 +1766,7 @@ export default function InboxPage() {
                               setReplyText(suggestion);
                               document.getElementById("message-input")?.focus();
                             }}
-                            className="text-xs text-[var(--public-ink)]/80 border border-[var(--public-line)] px-3 py-1.5 rounded-full hover:border-white/40 hover:bg-white/5 transition-all flex items-center gap-2 group"
+                            className="text-xs text-foreground/80 border border-border px-3 py-1.5 rounded-full hover:border-white/40 hover:bg-white/5 transition-all flex items-center gap-2 group"
                           >
                             <Sparkles className="w-3 h-3 text-emerald-400 group-hover:scale-110 transition-transform" />
                             <span className="truncate max-w-[150px]">{suggestion}</span>
@@ -1776,32 +1776,32 @@ export default function InboxPage() {
                     <button
                       onClick={() => handleSend("ai")}
                       disabled={!replyText.trim() || sending}
-                      className="text-xs font-semibold bg-[var(--color-brand-red)] text-[var(--public-ink)] px-4 py-2 rounded-full disabled:opacity-50"
+                      className="text-xs font-semibold bg-primary text-foreground px-4 py-2 rounded-full disabled:opacity-50"
                     >
                       Send as AI
                     </button>
                   </div>
-                  <div className="text-[10px] text-[var(--public-ink)]/40 flex items-center gap-2">
+                  <div className="text-[10px] text-foreground/40 flex items-center gap-2">
                     <ArrowDownLeft className="w-3 h-3" />
                     Sending as AI uses credits
                   </div>
                 </div>
               </div>
 
-              <div className="hidden md:flex w-80 bg-[#140707] border-l border-[var(--public-line)] flex-col p-4 space-y-4">
+              <div className="hidden md:flex w-80 bg-[#140707] border-l border-border flex-col p-4 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-[var(--public-ink)]/40">
+                    <div className="text-xs uppercase tracking-widest text-foreground/40">
                       Context
                     </div>
-                    <div className="text-sm font-semibold text-[var(--public-ink)]">
+                    <div className="text-sm font-semibold text-foreground">
                       {context?.managerName ||
                         selectedConversation.manager.name}
                     </div>
                   </div>
                   <button
                     onClick={() => loadContext(selectedConversation.id)}
-                    className="text-xs text-[var(--public-ink)]/40 hover:text-[var(--public-ink)]"
+                    className="text-xs text-foreground/40 hover:text-foreground"
                   >
                     Refresh
                   </button>
@@ -1817,11 +1817,11 @@ export default function InboxPage() {
                   </div>
                 )}
                 {contextError && (
-                  <div className="text-xs text-[var(--public-ink)]/50">{contextError}</div>
+                  <div className="text-xs text-foreground/50">{contextError}</div>
                 )}
                 {context && (
                   <>
-                    <div className="text-[10px] text-[var(--public-ink)]/40">
+                    <div className="text-[10px] text-foreground/40">
                       Updated {timeAgo(context.updatedAt)}
                     </div>
                     <div className="grid grid-cols-1 gap-3 text-xs">
@@ -1835,19 +1835,19 @@ export default function InboxPage() {
                                 `${getDisplayLabel(field.label)}: ${field.value}`,
                             )
                           }
-                          className="bg-white/5 hover:bg-white/10 text-left border border-[var(--public-line)] rounded-lg p-3 transition-colors group cursor-pointer"
+                          className="bg-white/5 hover:bg-white/10 text-left border border-border rounded-lg p-3 transition-colors group cursor-pointer"
                           title="Click to insert into reply"
                         >
                           <div className="flex justify-between items-center">
-                            <div className="text-[var(--public-ink)]/40 uppercase tracking-wider text-[10px] group-hover:text-[var(--public-ink)]/60">
+                            <div className="text-foreground/40 uppercase tracking-wider text-[10px] group-hover:text-foreground/60">
                               {getDisplayLabel(field.label)}
                             </div>
-                            <Copy className="w-3 h-3 text-[var(--public-ink)]/20 group-hover:text-[var(--public-ink)]/60 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <Copy className="w-3 h-3 text-foreground/20 group-hover:text-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                           <div className="flex items-center justify-between w-full">
                             <div
                               className={cn(
-                                "text-[var(--public-ink)] mt-1 text-left flex-1",
+                                "text-foreground mt-1 text-left flex-1",
                                 field.tone === "good" && "text-emerald-300",
                                 field.tone === "warn" && "text-amber-300",
                                 field.tone === "bad" && "text-red-300",
@@ -1881,15 +1881,15 @@ export default function InboxPage() {
                               className="p-1 hover:bg-white/10 rounded ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
                               title="Edit value"
                             >
-                              <Pencil className="w-3 h-3 text-[var(--public-ink)]/40 hover:text-[var(--public-ink)]" />
+                              <Pencil className="w-3 h-3 text-foreground/40 hover:text-foreground" />
                             </button>
                           </div>
                         </button>
                       ))}
                     </div>
 
-                    <div className="border-t border-[var(--public-line)] pt-4 mt-2">
-                      <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-[var(--public-ink)]/40 mb-3">
+                    <div className="border-t border-border pt-4 mt-2">
+                      <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-foreground/40 mb-3">
                         <Building className="w-3 h-3" />
                         Quick Facts
                       </div>
@@ -1907,10 +1907,10 @@ export default function InboxPage() {
                                 (prev) => (prev ? prev + "\n" : "") + fact,
                               )
                             }
-                            className="bg-white/5 hover:bg-white/10 text-[10px] text-left border border-[var(--public-line)] rounded p-2 transition-colors group"
+                            className="bg-white/5 hover:bg-white/10 text-[10px] text-left border border-border rounded p-2 transition-colors group"
                             title="Click to insert"
                           >
-                            <div className="text-[var(--public-ink)]/70 truncate">{fact}</div>
+                            <div className="text-foreground/70 truncate">{fact}</div>
                           </button>
                         ))}
                       </div>
@@ -1941,20 +1941,20 @@ export default function InboxPage() {
                               key={action.id}
                               onClick={() => handleQuickAction(action)}
                               disabled={action.disabled || sending}
-                              className="text-xs text-[var(--public-ink)]/80 border border-white/20 px-3 py-1.5 rounded-lg disabled:opacity-50"
+                              className="text-xs text-foreground/80 border border-white/20 px-3 py-1.5 rounded-lg disabled:opacity-50"
                             >
                               {action.label}
                             </button>
                           ))}
                       </div>
                     )}
-                    <div className="text-[10px] text-[var(--public-ink)]/40">
+                    <div className="text-[10px] text-foreground/40">
                       {channelConstraint[selectedConversation.channel]}
                     </div>
                   </>
                 )}
                 {!context && !loadingContext && (
-                  <div className="text-xs text-[var(--public-ink)]/40">
+                  <div className="text-xs text-foreground/40">
                     Context will appear here once available.
                   </div>
                 )}
@@ -1962,7 +1962,7 @@ export default function InboxPage() {
             </div>
           </>
         ) : (
-          <div className="hidden md:flex flex-col items-center justify-center h-full text-[var(--public-ink)]/30">
+          <div className="hidden md:flex flex-col items-center justify-center h-full text-foreground/30">
             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-4">
               <MessageSquare className="w-8 h-8 opacity-50" />
             </div>
@@ -1973,24 +1973,24 @@ export default function InboxPage() {
 
       {showFilters && (
         <div className="fixed inset-0 z-50 flex items-end md:hidden bg-black/70">
-          <div className="bg-[var(--color-dashboard-surface)] border-t border-[var(--public-line)] rounded-t-2xl w-full p-6 space-y-4">
+          <div className="bg-transparent border-t border-border rounded-t-2xl w-full p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold text-[var(--public-ink)]">Filters</div>
+              <div className="text-sm font-semibold text-foreground">Filters</div>
               <button
                 onClick={() => setShowFilters(false)}
-                className="text-xs text-[var(--public-ink)]/50"
+                className="text-xs text-foreground/50"
               >
                 Close
               </button>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-widest text-[var(--public-ink)]/40 mb-2">
+              <div className="text-xs uppercase tracking-widest text-foreground/40 mb-2">
                 Listing
               </div>
               <select
                 value={listingFilter}
                 onChange={(e) => setListingFilter(e.target.value)}
-                className="w-full bg-white/5 border border-[var(--public-line)] rounded-lg px-3 py-2 text-sm text-[var(--public-ink)] focus:outline-none focus:border-white/30"
+                className="w-full bg-white/5 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-white/30"
               >
                 <option value="all">All Listings</option>
                 {listings.map((l) => (
@@ -2007,7 +2007,7 @@ export default function InboxPage() {
                   "px-3 py-2 rounded-full text-xs border flex items-center gap-1",
                   awaitingReplyOnly
                     ? "border-amber-400 text-amber-400 bg-amber-400/10"
-                    : "border-[var(--public-line)] text-[var(--public-ink)]/70",
+                    : "border-border text-foreground/70",
                 )}
               >
                 <Clock className="w-3 h-3" />
@@ -2018,8 +2018,8 @@ export default function InboxPage() {
                 className={cn(
                   "px-3 py-2 rounded-full text-xs border",
                   unreadOnly
-                    ? "border-white/60 text-[var(--public-ink)]"
-                    : "border-[var(--public-line)] text-[var(--public-ink)]/70",
+                    ? "border-white/60 text-foreground"
+                    : "border-border text-foreground/70",
                 )}
               >
                 Unread only
@@ -2033,8 +2033,8 @@ export default function InboxPage() {
                   className={cn(
                     "px-3 py-2 rounded-full text-xs border",
                     channelFilter === channel
-                      ? "border-white/60 text-[var(--public-ink)]"
-                      : "border-[var(--public-line)] text-[var(--public-ink)]/70",
+                      ? "border-white/60 text-foreground"
+                      : "border-border text-foreground/70",
                   )}
                 >
                   {channel === "all" ? "All channels" : channelLabel[channel]}
@@ -2042,7 +2042,7 @@ export default function InboxPage() {
               ))}
             </div>
             <div>
-              <div className="text-xs uppercase tracking-widest text-[var(--public-ink)]/40 mb-2">
+              <div className="text-xs uppercase tracking-widest text-foreground/40 mb-2">
                 AI Manager
               </div>
               <div className="flex flex-wrap gap-2">
@@ -2051,8 +2051,8 @@ export default function InboxPage() {
                   className={cn(
                     "px-3 py-2 rounded-full text-xs border",
                     managerFilter === "all"
-                      ? "border-white/60 text-[var(--public-ink)]"
-                      : "border-[var(--public-line)] text-[var(--public-ink)]/70",
+                      ? "border-white/60 text-foreground"
+                      : "border-border text-foreground/70",
                   )}
                 >
                   All AI Managers
@@ -2064,8 +2064,8 @@ export default function InboxPage() {
                     className={cn(
                       "px-3 py-2 rounded-full text-xs border",
                       managerFilter === slug
-                        ? "border-white/60 text-[var(--public-ink)]"
-                        : "border-[var(--public-line)] text-[var(--public-ink)]/70",
+                        ? "border-white/60 text-foreground"
+                        : "border-border text-foreground/70",
                     )}
                   >
                     {name}
@@ -2074,7 +2074,7 @@ export default function InboxPage() {
               </div>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-widest text-[var(--public-ink)]/40 mb-2">
+              <div className="text-xs uppercase tracking-widest text-foreground/40 mb-2">
                 Status
               </div>
               <div className="flex flex-wrap gap-2">
@@ -2095,8 +2095,8 @@ export default function InboxPage() {
                     className={cn(
                       "px-3 py-2 rounded-full text-xs border",
                       statusFilter === status
-                        ? "border-white/60 text-[var(--public-ink)]"
-                        : "border-[var(--public-line)] text-[var(--public-ink)]/70",
+                        ? "border-white/60 text-foreground"
+                        : "border-border text-foreground/70",
                     )}
                   >
                     {status === "all" ? "All status" : status.replace("_", " ")}
@@ -2110,14 +2110,14 @@ export default function InboxPage() {
 
       {showPaymentModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="bg-[var(--color-dashboard-surface)] border border-[var(--public-line)] rounded-2xl w-full max-w-2xl overflow-hidden">
-            <div className="p-4 border-b border-[var(--public-line)] flex items-center justify-between">
-              <div className="text-sm font-semibold text-[var(--public-ink)]">
+          <div className="bg-transparent border border-border rounded-2xl w-full max-w-2xl overflow-hidden">
+            <div className="p-4 border-b border-border flex items-center justify-between">
+              <div className="text-sm font-semibold text-foreground">
                 Send payment link
               </div>
               <button
                 onClick={() => setShowPaymentModal(false)}
-                className="p-2 hover:bg-white/5 rounded-full text-[var(--public-ink)]/60"
+                className="p-2 hover:bg-white/5 rounded-full text-foreground/60"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -2125,7 +2125,7 @@ export default function InboxPage() {
             <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
+                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
                     Property
                   </label>
                   <select
@@ -2136,7 +2136,7 @@ export default function InboxPage() {
                         listingId: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   >
                     <option value="">Select property</option>
                     {listings.map((listing) => (
@@ -2147,7 +2147,7 @@ export default function InboxPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
+                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
                     Amount
                   </label>
                   <input
@@ -2159,12 +2159,12 @@ export default function InboxPage() {
                         amount: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="Amount in INR"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
+                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
                     Guest name
                   </label>
                   <input
@@ -2176,12 +2176,12 @@ export default function InboxPage() {
                         guestName: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="Guest name"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
+                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
                     Guest phone
                   </label>
                   <input
@@ -2193,12 +2193,12 @@ export default function InboxPage() {
                         guestPhone: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="+91 90000 00000"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
+                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
                     Guest email
                   </label>
                   <input
@@ -2210,12 +2210,12 @@ export default function InboxPage() {
                         guestEmail: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                     placeholder="guest@email.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
+                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
                     Check-in
                   </label>
                   <input
@@ -2227,11 +2227,11 @@ export default function InboxPage() {
                         checkIn: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
+                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
                     Check-out
                   </label>
                   <input
@@ -2243,13 +2243,13 @@ export default function InboxPage() {
                         checkOut: event.target.value,
                       }))
                     }
-                    className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[var(--public-ink)]/60 mb-1">
+                <label className="block text-xs font-semibold text-foreground/60 mb-1">
                   Notes (optional)
                 </label>
                 <textarea
@@ -2260,23 +2260,23 @@ export default function InboxPage() {
                       notes: event.target.value,
                     }))
                   }
-                  className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
+                  className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
                   placeholder="Add any notes for the guest"
                 />
               </div>
 
               {paymentLink && (
-                <div className="space-y-3 border border-[var(--public-line)] rounded-xl p-4 bg-white/5">
-                  <div className="text-xs font-semibold text-[var(--public-ink)]/70 uppercase tracking-wider">
+                <div className="space-y-3 border border-border rounded-xl p-4 bg-white/5">
+                  <div className="text-xs font-semibold text-foreground/70 uppercase tracking-wider">
                     Payment link
                   </div>
-                  <div className="text-sm text-[var(--public-ink)] break-all">
+                  <div className="text-sm text-foreground break-all">
                     {paymentLink}
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={handleCopyLink}
-                      className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-[var(--public-ink)]/80 px-3 py-1.5 rounded-full"
+                      className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-foreground/80 px-3 py-1.5 rounded-full"
                     >
                       <Copy className="w-3 h-3" />
                       Copy link
@@ -2293,7 +2293,7 @@ export default function InboxPage() {
                         href={whatsappUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-[var(--public-ink)]/80 px-3 py-1.5 rounded-full"
+                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-foreground/80 px-3 py-1.5 rounded-full"
                       >
                         WhatsApp
                       </a>
@@ -2301,7 +2301,7 @@ export default function InboxPage() {
                     {smsUrl && (
                       <a
                         href={smsUrl}
-                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-[var(--public-ink)]/80 px-3 py-1.5 rounded-full"
+                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-foreground/80 px-3 py-1.5 rounded-full"
                       >
                         SMS
                       </a>
@@ -2309,7 +2309,7 @@ export default function InboxPage() {
                     {emailUrl && (
                       <a
                         href={emailUrl}
-                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-[var(--public-ink)]/80 px-3 py-1.5 rounded-full"
+                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-foreground/80 px-3 py-1.5 rounded-full"
                       >
                         Email
                       </a>
@@ -2323,19 +2323,19 @@ export default function InboxPage() {
                 </div>
               )}
             </div>
-            <div className="p-4 border-t border-[var(--public-line)] flex items-center justify-between">
+            <div className="p-4 border-t border-border flex items-center justify-between">
               <div className="text-xs text-red-300">{paymentError}</div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowPaymentModal(false)}
-                  className="px-3 py-1.5 text-xs text-[var(--public-ink)]/60 hover:text-[var(--public-ink)]"
+                  className="px-3 py-1.5 text-xs text-foreground/60 hover:text-foreground"
                 >
                   Close
                 </button>
                 <button
                   onClick={handleCreatePaymentLink}
                   disabled={paymentLoading}
-                  className="px-4 py-2 bg-[var(--color-brand-red)] text-[var(--public-ink)] rounded-lg text-xs font-semibold disabled:opacity-60"
+                  className="px-4 py-2 bg-primary text-foreground rounded-lg text-xs font-semibold disabled:opacity-60"
                 >
                   {paymentLoading
                     ? "Generating..."
@@ -2351,23 +2351,23 @@ export default function InboxPage() {
 
       {showIdModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="bg-[var(--color-dashboard-surface)] border border-[var(--public-line)] rounded-2xl w-full max-w-md overflow-hidden">
-            <div className="p-4 border-b border-[var(--public-line)] flex items-center justify-between">
-              <div className="text-sm font-semibold text-[var(--public-ink)]">Request ID</div>
+          <div className="bg-transparent border border-border rounded-2xl w-full max-w-md overflow-hidden">
+            <div className="p-4 border-b border-border flex items-center justify-between">
+              <div className="text-sm font-semibold text-foreground">Request ID</div>
               <button
                 onClick={() => setShowIdModal(false)}
-                className="p-2 hover:bg-white/5 rounded-full text-[var(--public-ink)]/60"
+                className="p-2 hover:bg-white/5 rounded-full text-foreground/60"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
             <div className="p-4 space-y-3">
               <div>
-                <div className="text-xs text-[var(--public-ink)]/40 mb-1">Booking</div>
+                <div className="text-xs text-foreground/40 mb-1">Booking</div>
                 <select
                   value={idBookingId}
                   onChange={(e) => setIdBookingId(e.target.value)}
-                  className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                  className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                 >
                   {bookingOptions.map((option) => (
                     <option key={option.id} value={option.id}>
@@ -2377,11 +2377,11 @@ export default function InboxPage() {
                 </select>
               </div>
               <div>
-                <div className="text-xs text-[var(--public-ink)]/40 mb-1">ID Type</div>
+                <div className="text-xs text-foreground/40 mb-1">ID Type</div>
                 <select
                   value={idType}
                   onChange={(e) => setIdType(e.target.value as any)}
-                  className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                  className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                 >
                   <option value="aadhaar">Aadhaar</option>
                   <option value="passport">Passport</option>
@@ -2391,42 +2391,42 @@ export default function InboxPage() {
                 </select>
               </div>
               <div>
-                <div className="text-xs text-[var(--public-ink)]/40 mb-1">
+                <div className="text-xs text-foreground/40 mb-1">
                   Message (optional)
                 </div>
                 <textarea
                   value={idNote}
                   onChange={(e) => setIdNote(e.target.value)}
-                  className="w-full bg-white/5 border border-[var(--public-line)] text-[var(--public-ink)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
+                  className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
                   placeholder="Hi! Please upload a government-issued ID to complete check-in compliance."
                 />
               </div>
               {idUploadUrl && (
-                <div className="text-xs text-[var(--public-ink)]/60 break-all">
+                <div className="text-xs text-foreground/60 break-all">
                   Upload link: {idUploadUrl}
                 </div>
               )}
               {idRequestMessage && (
-                <div className="text-xs text-[var(--public-ink)]/60 break-all">
+                <div className="text-xs text-foreground/60 break-all">
                   Message: {idRequestMessage}
                 </div>
               )}
             </div>
-            <div className="p-4 border-t border-[var(--public-line)] flex items-center justify-between">
-              <div className="text-[10px] text-[var(--public-ink)]/40">
+            <div className="p-4 border-t border-border flex items-center justify-between">
+              <div className="text-[10px] text-foreground/40">
                 Nodebase will store IDs securely.
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowIdModal(false)}
-                  className="px-3 py-1.5 text-xs text-[var(--public-ink)]/60 hover:text-[var(--public-ink)]"
+                  className="px-3 py-1.5 text-xs text-foreground/60 hover:text-foreground"
                 >
                   Close
                 </button>
                 <button
                   onClick={handleRequestId}
                   disabled={idRequesting}
-                  className="px-4 py-2 bg-[var(--color-brand-red)] text-[var(--public-ink)] rounded-lg text-xs font-semibold disabled:opacity-60"
+                  className="px-4 py-2 bg-primary text-foreground rounded-lg text-xs font-semibold disabled:opacity-60"
                 >
                   {idRequesting ? "Generating..." : "Generate link"}
                 </button>
@@ -2439,10 +2439,10 @@ export default function InboxPage() {
       {/* Smart Booking Link Modal */}
       {showSmartLinkModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <Card className="w-full max-w-md public-panel border-[var(--public-line)] shadow-2xl">
+          <Card className="w-full max-w-md public-panel border-border shadow-2xl">
             <CardHeader className="border-b border-white/5">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-[var(--public-ink)] text-lg flex items-center gap-2">
+                <CardTitle className="text-foreground text-lg flex items-center gap-2">
                   <Zap className="text-emerald-500 w-5 h-5" />
                   Generate Smart Link
                 </CardTitle>
@@ -2450,7 +2450,7 @@ export default function InboxPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowSmartLinkModal(false)}
-                  className="text-[var(--public-ink)]/40 hover:text-[var(--public-ink)]"
+                  className="text-foreground/40 hover:text-foreground"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -2461,17 +2461,17 @@ export default function InboxPage() {
             </CardHeader>
             <CardContent className="p-6 space-y-4">
               <div className="space-y-2">
-                <Label className="text-[var(--public-ink)]">Select Listing</Label>
+                <Label className="text-foreground">Select Listing</Label>
                 <Select
                   value={smartLinkForm.listingId}
                   onValueChange={(v: string) =>
                     setSmartLinkData({ ...smartLinkForm, listingId: v })
                   }
                 >
-                  <SelectTrigger className="bg-black/20 border-[var(--public-line)] text-[var(--public-ink)]">
+                  <SelectTrigger className="bg-black/20 border-border text-foreground">
                     <SelectValue placeholder="Select Listing" />
                   </SelectTrigger>
-                  <SelectContent className="public-panel border-[var(--public-line)] text-[var(--public-ink)]">
+                  <SelectContent className="public-panel border-border text-foreground">
                     {listings.map((l) => (
                       <SelectItem key={l.id} value={l.id}>
                         {l.name}
@@ -2482,7 +2482,7 @@ export default function InboxPage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[var(--public-ink)]">Amount (₹)</Label>
+                <Label className="text-foreground">Amount (₹)</Label>
                 <Input
                   type="number"
                   placeholder="e.g. 2500"
@@ -2493,13 +2493,13 @@ export default function InboxPage() {
                       amount: e.target.value,
                     })
                   }
-                  className="bg-black/20 border-[var(--public-line)] text-[var(--public-ink)]"
+                  className="bg-black/20 border-border text-foreground"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-[var(--public-ink)]">Check-in</Label>
+                  <Label className="text-foreground">Check-in</Label>
                   <Input
                     type="date"
                     value={smartLinkForm.startDate}
@@ -2509,11 +2509,11 @@ export default function InboxPage() {
                         startDate: e.target.value,
                       })
                     }
-                    className="bg-black/20 border-[var(--public-line)] text-[var(--public-ink)]"
+                    className="bg-black/20 border-border text-foreground"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[var(--public-ink)]">Check-out</Label>
+                  <Label className="text-foreground">Check-out</Label>
                   <Input
                     type="date"
                     value={smartLinkForm.endDate}
@@ -2523,7 +2523,7 @@ export default function InboxPage() {
                         endDate: e.target.value,
                       })
                     }
-                    className="bg-black/20 border-[var(--public-line)] text-[var(--public-ink)]"
+                    className="bg-black/20 border-border text-foreground"
                   />
                 </div>
               </div>
@@ -2532,7 +2532,7 @@ export default function InboxPage() {
                 <Button
                   onClick={handleCreateSmartLink}
                   disabled={smartLinkLoading}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-[var(--public-ink)] font-bold"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-foreground font-bold"
                 >
                   {smartLinkLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />

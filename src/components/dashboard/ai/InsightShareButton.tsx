@@ -69,7 +69,7 @@ export function InsightShareButton({
         variant="ghost"
         size="sm"
         onClick={handleCopy}
-        className="text-[var(--public-ink)]/60 hover:text-[var(--public-ink)] transition-colors"
+        className="text-foreground/60 hover:text-foreground transition-colors"
       >
         {copied ? (
           <Check className="w-4 h-4 mr-2" />

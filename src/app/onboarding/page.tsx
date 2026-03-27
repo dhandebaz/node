@@ -389,14 +389,14 @@ function OnboardingContent() {
               >
                 <section className="public-panel px-6 py-8 text-center sm:px-8 sm:py-10">
                   <div className="relative z-10 space-y-5">
-                    <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(214,88,74,0.08)] text-[var(--public-accent-strong)]">
+                    <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(214,88,74,0.08)] text-primary">
                       <AlertTriangle className="h-8 w-8" />
                     </div>
                     <div>
-                      <h1 className="public-display text-4xl text-[var(--public-ink)]">
+                      <h1 className="public-display text-4xl text-foreground">
                         Setup is taking longer than expected
                       </h1>
-                      <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-[var(--public-muted)]">
+                      <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-muted-foreground">
                         The workspace may still finish in the background, but
                         the safest next step is to retry or return to the
                         details form.
@@ -426,11 +426,11 @@ function OnboardingContent() {
           </AnimatePresence>
         </div>
 
-        <div className="pb-6 text-center text-sm text-[var(--public-muted)]">
+        <div className="pb-6 text-center text-sm text-muted-foreground">
           Need help?{" "}
           <a
             href="mailto:support@nodebase.space"
-            className="font-semibold text-[var(--public-accent-strong)]"
+            className="font-semibold text-primary"
           >
             Contact support
           </a>
@@ -446,7 +446,7 @@ export default function OnboardingPage() {
       fallback={
         <div className="public-site min-h-screen">
           <div className="public-container flex min-h-screen items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-[var(--public-accent-strong)]" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         </div>
       }

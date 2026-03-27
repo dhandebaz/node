@@ -155,34 +155,34 @@ export default function AddListingPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-8 pb-24 md:pb-0">
       <div>
-        <h1 className="text-2xl font-bold text-[var(--public-ink)] mb-1">
+        <h1 className="text-2xl font-bold text-foreground mb-1">
           Add {labels.listing}
         </h1>
-        <p className="text-[var(--public-ink)]/60 text-sm">
+        <p className="text-foreground/60 text-sm">
           Step-by-step setup for your {labels.listing.toLowerCase()} and
           calendar sync.
         </p>
       </div>
 
       <div className="dashboard-surface p-6 space-y-6">
-        <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-[var(--public-ink)]/50">
-          <span className={step >= 1 ? "text-[var(--public-ink)]" : ""}>
+        <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-foreground/50">
+          <span className={step >= 1 ? "text-foreground" : ""}>
             1. Basic Info
           </span>
           {capabilities.calendar && (
             <>
               <span>•</span>
-              <span className={step >= 2 ? "text-[var(--public-ink)]" : ""}>
+              <span className={step >= 2 ? "text-foreground" : ""}>
                 2. External Platforms
               </span>
               <span>•</span>
-              <span className={step >= 3 ? "text-[var(--public-ink)]" : ""}>
+              <span className={step >= 3 ? "text-foreground" : ""}>
                 3. Nodebase Calendar
               </span>
             </>
           )}
           <span>•</span>
-          <span className={step >= 4 ? "text-[var(--public-ink)]" : ""}>
+          <span className={step >= 4 ? "text-foreground" : ""}>
             4. Review
           </span>
         </div>
@@ -193,7 +193,7 @@ export default function AddListingPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="listing-name"
-                  className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+                  className="text-xs text-foreground/50 uppercase tracking-wider"
                 >
                   {labels.listing} name
                 </label>
@@ -211,7 +211,7 @@ export default function AddListingPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="listing-city"
-                  className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+                  className="text-xs text-foreground/50 uppercase tracking-wider"
                 >
                   {tenant?.businessType === "kirana_store" ||
                   tenant?.businessType === "thrift_store"
@@ -232,7 +232,7 @@ export default function AddListingPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="listing-type"
-                  className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+                  className="text-xs text-foreground/50 uppercase tracking-wider"
                 >
                   {labels.listing} type
                 </label>
@@ -256,7 +256,7 @@ export default function AddListingPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="listing-timezone"
-                  className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+                  className="text-xs text-foreground/50 uppercase tracking-wider"
                 >
                   Timezone
                 </label>
@@ -274,10 +274,10 @@ export default function AddListingPage() {
             <div className="space-y-2">
               <label
                 htmlFor="listing-notes"
-                className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider"
+                className="text-xs text-foreground/50 uppercase tracking-wider"
               >
                 Internal notes{" "}
-                <span className="text-xs text-[var(--public-muted)]">
+                <span className="text-xs text-muted-foreground">
                   (optional)
                 </span>
               </label>
@@ -297,10 +297,10 @@ export default function AddListingPage() {
         {step === 2 && (
           <div className="space-y-5">
             <div>
-              <h2 className="text-lg font-semibold text-[var(--public-ink)]">
+              <h2 className="text-lg font-semibold text-foreground">
                 Where is this {labels.listing.toLowerCase()} listed?
               </h2>
-              <p className="text-sm text-[var(--public-ink)]/60">
+              <p className="text-sm text-foreground/60">
                 Choose any platform where {labels.customers.toLowerCase()} can
                 book this {labels.listing.toLowerCase()}.
               </p>
@@ -310,7 +310,7 @@ export default function AddListingPage() {
                 (platform) => (
                   <label
                     key={platform}
-                    className="flex items-center gap-3 text-sm text-[var(--public-ink)]/80"
+                    className="flex items-center gap-3 text-sm text-foreground/80"
                   >
                     <input
                       type="checkbox"
@@ -325,7 +325,7 @@ export default function AddListingPage() {
             </div>
             {platforms.map((platform) => (
               <div key={platform} className="space-y-2">
-                <div className="text-xs text-[var(--public-ink)]/50 uppercase tracking-wider">
+                <div className="text-xs text-foreground/50 uppercase tracking-wider">
                   Paste the calendar link from {platformLabels[platform]}
                 </div>
                 <input
@@ -337,9 +337,9 @@ export default function AddListingPage() {
                     }))
                   }
                   placeholder="https://example.com/calendar.ics"
-                  className="w-full bg-white/5 border border-[var(--public-line)] rounded-lg px-3 py-2 text-sm text-[var(--public-ink)]"
+                  className="w-full bg-white/5 border border-border rounded-lg px-3 py-2 text-sm text-foreground"
                 />
-                <div className="text-xs text-[var(--public-ink)]/40">
+                <div className="text-xs text-foreground/40">
                   We use this link to pull bookings into Nodebase.
                 </div>
               </div>
@@ -350,10 +350,10 @@ export default function AddListingPage() {
         {step === 3 && (
           <div className="space-y-4">
             <div>
-              <h2 className="text-lg font-semibold text-[var(--public-ink)]">
+              <h2 className="text-lg font-semibold text-foreground">
                 Nodebase calendar link
               </h2>
-              <p className="text-sm text-[var(--public-ink)]/60">
+              <p className="text-sm text-foreground/60">
                 Copy this link and paste it into Airbnb or Booking.com to sync
                 bookings from Nodebase.
               </p>
@@ -362,7 +362,7 @@ export default function AddListingPage() {
               <input
                 value={nodebaseIcalUrl}
                 readOnly
-                className="flex-1 bg-white/5 border border-[var(--public-line)] rounded-lg px-3 py-2 text-xs text-[var(--public-ink)]/80"
+                className="flex-1 bg-white/5 border border-border rounded-lg px-3 py-2 text-xs text-foreground/80"
               />
               <button
                 onClick={async () => {
@@ -371,12 +371,12 @@ export default function AddListingPage() {
                     setMessage("Calendar link copied.");
                   }
                 }}
-                className="px-3 py-2 rounded-lg border border-white/20 text-[var(--public-ink)] text-xs font-semibold"
+                className="px-3 py-2 rounded-lg border border-white/20 text-foreground text-xs font-semibold"
               >
                 Copy
               </button>
             </div>
-            <div className="text-xs text-[var(--public-ink)]/50">
+            <div className="text-xs text-foreground/50">
               This enables two-way sync: external bookings → Nodebase, Nodebase
               bookings → external platforms.
             </div>
@@ -385,15 +385,15 @@ export default function AddListingPage() {
 
         {step === 4 && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-[var(--public-ink)]">
+            <h2 className="text-lg font-semibold text-foreground">
               Review
             </h2>
-            <div className="grid gap-4 text-sm text-[var(--public-ink)]/70">
-              <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-[var(--public-ink)]/40">
+            <div className="grid gap-4 text-sm text-foreground/70">
+              <div className="bg-white/5 border border-border rounded-lg p-4 space-y-1">
+                <div className="text-xs uppercase tracking-widest text-foreground/40">
                   {labels.listing}
                 </div>
-                <div className="text-[var(--public-ink)] font-semibold">
+                <div className="text-foreground font-semibold">
                   {name || `Untitled ${labels.listing.toLowerCase()}`}
                 </div>
                 <div>
@@ -401,8 +401,8 @@ export default function AddListingPage() {
                 </div>
                 <div>{timezone}</div>
               </div>
-              <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-[var(--public-ink)]/40">
+              <div className="bg-white/5 border border-border rounded-lg p-4 space-y-1">
+                <div className="text-xs uppercase tracking-widest text-foreground/40">
                   Platforms
                 </div>
                 {platforms.length === 0 ? (
@@ -415,11 +415,11 @@ export default function AddListingPage() {
                   </div>
                 )}
               </div>
-              <div className="bg-white/5 border border-[var(--public-line)] rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-[var(--public-ink)]/40">
+              <div className="bg-white/5 border border-border rounded-lg p-4 space-y-1">
+                <div className="text-xs uppercase tracking-widest text-foreground/40">
                   Nodebase calendar link
                 </div>
-                <div className="text-xs text-[var(--public-ink)]/70 break-all">
+                <div className="text-xs text-foreground/70 break-all">
                   {nodebaseIcalUrl}
                 </div>
               </div>
@@ -428,13 +428,13 @@ export default function AddListingPage() {
         )}
 
         {message && (
-          <div className="text-xs text-[var(--public-ink)]/60">{message}</div>
+          <div className="text-xs text-foreground/60">{message}</div>
         )}
 
-        <div className="flex flex-wrap gap-3 justify-between sticky bottom-0 bg-[#0A0A0A]/90 backdrop-blur py-4 border-t border-[var(--public-line)] z-20 mt-4">
+        <div className="flex flex-wrap gap-3 justify-between sticky bottom-0 bg-[#0A0A0A]/90 backdrop-blur py-4 border-t border-border z-20 mt-4">
           <button
             onClick={prevStep}
-            className="px-4 py-2 rounded-lg border border-white/20 text-[var(--public-ink)] text-sm font-semibold"
+            className="px-4 py-2 rounded-lg border border-white/20 text-foreground text-sm font-semibold"
           >
             {step === 1 ? "Cancel" : "Back"}
           </button>

@@ -66,22 +66,22 @@ export function OnboardingChecklist({ stats, milestones = [] }: OnboardingCheckl
       animate={{ opacity: 1, y: 0 }}
       className="public-panel overflow-hidden"
     >
-      <div className="p-6 border-b border-[var(--public-line)]">
+      <div className="p-6 border-b border-border">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-bold text-[var(--public-ink)]">Getting Started</h2>
-            <p className="text-sm text-[var(--public-muted)]">Complete these steps to fully activate your AI Employee.</p>
+            <h2 className="text-xl font-bold text-foreground">Getting Started</h2>
+            <p className="text-sm text-muted-foreground">Complete these steps to fully activate your AI Employee.</p>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-brand-red">{Math.round(progress)}%</div>
-            <div className="text-[10px] text-[var(--public-muted)] uppercase font-bold tracking-widest">Progress</div>
+            <div className="text-2xl font-bold text-primary">{Math.round(progress)}%</div>
+            <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Progress</div>
           </div>
         </div>
-        <div className="h-3 skeuo-progress-bg mt-4">
+        <div className="h-3 rounded-full bg-muted overflow-hidden mt-4">
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            className="h-full skeuo-progress-fill"
+            className="h-full rounded-full bg-primary"
           />
         </div>
       </div>
@@ -92,7 +92,7 @@ export function OnboardingChecklist({ stats, milestones = [] }: OnboardingCheckl
             key={step.id}
             className={cn(
               "p-4 flex items-start gap-4 transition-all mx-2 my-1 rounded-xl",
-              step.completed ? "opacity-60" : "skeuo-inset bg-white/5"
+              step.completed ? "opacity-60" : "bg-white/5 border border-white/10 rounded-xl"
             )}
           >
             <div className="mt-1">
@@ -105,16 +105,16 @@ export function OnboardingChecklist({ stats, milestones = [] }: OnboardingCheckl
             <div className="flex-1">
               <h3 className={cn(
                 "text-sm font-bold",
-                step.completed ? "text-[var(--public-muted)]" : "text-[var(--public-ink)]"
+                step.completed ? "text-muted-foreground" : "text-foreground"
               )}>
                 {step.title}
               </h3>
-              <p className="text-xs text-[var(--public-muted)] mt-1">{step.description}</p>
+              <p className="text-xs text-muted-foreground mt-1">{step.description}</p>
             </div>
             {!step.completed && (
               <Link 
                 href={step.href}
-                className="p-2 hover:bg-white/10 rounded-full text-[var(--public-muted)] hover:text-[var(--public-ink)] transition-colors"
+                className="p-2 hover:bg-white/10 rounded-full text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowRight className="w-4 h-4" />
               </Link>

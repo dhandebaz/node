@@ -303,10 +303,10 @@ export function PricingSurface() {
               transition={{ duration: 0.4, delay: index * 0.06 }}
               className="public-panel-soft p-6"
             >
-              <h2 className="text-lg font-semibold text-[var(--public-ink)]">
+              <h2 className="text-lg font-semibold text-foreground">
                 {item.question}
               </h2>
-              <p className="mt-3 text-sm leading-6 text-[var(--public-muted)]">
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
                 {item.answer}
               </p>
             </motion.article>

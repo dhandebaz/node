@@ -63,7 +63,7 @@ export default async function CustomerSettingsPage() {
           <div className="p-6 space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[var(--public-muted)] mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   User ID
                 </label>
                 <input
@@ -74,11 +74,11 @@ export default async function CustomerSettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--public-muted)] mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Mobile Number (Primary)
                 </label>
                 <div className="relative">
-                  <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--public-muted)]" />
+                  <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       type="text"
                       value={profile.identity.phone}
@@ -86,12 +86,12 @@ export default async function CustomerSettingsPage() {
                       className="w-full bg-muted/50 text-foreground border border-border rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-primary cursor-not-allowed opacity-70"
                     />
                 </div>
-                <p className="text-xs text-[var(--public-muted)] mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Used for login and OTP.
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-[var(--public-muted)] mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Email (Optional)
                 </label>
                 <input
@@ -135,7 +135,7 @@ export default async function CustomerSettingsPage() {
                   </div>
                 </div>
               </div>
-              <div className="grid gap-4 text-sm text-[var(--public-muted)] md:grid-cols-2">
+              <div className="grid gap-4 text-sm text-muted-foreground md:grid-cols-2">
                 {verificationDetails.length > 0 ? (
                   verificationDetails.map((detail) => (
                     <div key={detail} className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export default async function CustomerSettingsPage() {
               </div>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-[var(--public-line)]">
+            <div className="mt-6 pt-6 border-t border-border">
               <button className="text-red-400 hover:text-red-300 font-medium text-sm flex items-center gap-2">
                 <Shield className="w-4 h-4" />
                 Log out of all devices

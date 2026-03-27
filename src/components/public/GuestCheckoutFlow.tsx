@@ -151,13 +151,13 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
     return (
       <section className="public-panel px-6 py-8 text-center sm:px-8">
         <div className="relative z-10 space-y-4">
-          <div className="public-inset mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[rgba(146,43,34,0.12)] text-[var(--public-accent-strong)]">
+          <div className="public-inset mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[rgba(146,43,34,0.12)] text-primary">
             <AlertTriangle className="h-6 w-6" />
           </div>
-          <h2 className="public-display text-3xl text-[var(--public-ink)]">
+          <h2 className="public-display text-3xl text-foreground">
             Link expired
           </h2>
-          <p className="mx-auto max-w-xl text-sm leading-6 text-[var(--public-muted)] sm:text-base">
+          <p className="mx-auto max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
             This booking link is no longer active. Please contact the host for a
             fresh payment and check-in link.
           </p>
@@ -172,10 +172,10 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
         <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
           <div>
             <div className="public-eyebrow">Guest checkout flow</div>
-            <h2 className="mt-2 text-2xl font-semibold text-[var(--public-ink)]">
+            <h2 className="mt-2 text-2xl font-semibold text-foreground">
               {listingTitle}
             </h2>
-            <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
               Complete your guest details, verify your ID, and confirm payment
               in one secure flow.
             </p>
@@ -183,13 +183,13 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
           <div className="grid gap-3 sm:min-w-52">
             <div className="public-inset rounded-[1.2rem] px-4 py-3">
               <div className="public-eyebrow">Stay</div>
-              <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+              <div className="mt-2 text-sm font-semibold text-foreground">
                 {stayLabel}
               </div>
             </div>
             <div className="public-inset rounded-[1.2rem] px-4 py-3">
               <div className="public-eyebrow">Amount</div>
-              <div className="mt-2 text-sm font-semibold text-[var(--public-accent-strong)]">
+              <div className="mt-2 text-sm font-semibold text-primary">
                 {amountLabel}
               </div>
             </div>
@@ -216,10 +216,10 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                   className={[
                     "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-sm font-semibold transition-all",
                     isActive
-                      ? "border-[rgba(146,43,34,0.34)] bg-[var(--public-accent)] text-white"
+                      ? "border-primary/40 bg-primary text-white"
                       : isDone
                         ? "border-[rgba(70,128,77,0.25)] bg-[rgba(130,185,112,0.14)] text-[var(--public-success)]"
-                        : "border-[var(--public-line)] bg-[rgba(255,249,240,0.76)] text-[var(--public-muted)]",
+                        : "border-border bg-background/85 text-muted-foreground",
                   ].join(" ")}
                 >
                   {isDone && !isActive ? (
@@ -244,7 +244,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                           isDone
                             ? "w-full bg-[var(--public-success)]"
                             : isActive
-                              ? "w-1/2 bg-[var(--public-accent)]"
+                              ? "w-1/2 bg-primary"
                               : "w-0",
                         ].join(" ")}
                       />
@@ -262,17 +262,17 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
           <div className="relative z-10 space-y-6">
             <div>
               <div className="public-eyebrow">Step 1</div>
-              <h3 className="public-display mt-3 text-3xl text-[var(--public-ink)]">
+              <h3 className="public-display mt-3 text-3xl text-foreground">
                 Confirm guest details
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[var(--public-muted)] sm:text-base">
+              <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
                 These details are used for check-in coordination and compliance.
               </p>
             </div>
 
             <form onSubmit={handleDetailsSubmit} className="grid gap-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                <label className="grid gap-2 text-sm font-semibold text-foreground">
                   Full name
                   <input
                     value={formData.name}
@@ -286,7 +286,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                     className={fieldClassName}
                   />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                <label className="grid gap-2 text-sm font-semibold text-foreground">
                   Email address
                   <input
                     type="email"
@@ -304,7 +304,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                <label className="grid gap-2 text-sm font-semibold text-foreground">
                   Phone number
                   <input
                     value={formData.phone}
@@ -318,7 +318,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                     className={fieldClassName}
                   />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                <label className="grid gap-2 text-sm font-semibold text-foreground">
                   Expected arrival time
                   <input
                     value={formData.arrivalTime}
@@ -351,10 +351,10 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
           <div className="relative z-10 space-y-6">
             <div>
               <div className="public-eyebrow">Step 2</div>
-              <h3 className="public-display mt-3 text-3xl text-[var(--public-ink)]">
+              <h3 className="public-display mt-3 text-3xl text-foreground">
                 Upload a valid government ID
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[var(--public-muted)] sm:text-base">
+              <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
                 The host requires an ID for this stay. Aadhaar numbers are
                 returned in masked form only.
               </p>
@@ -363,24 +363,24 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
             <div className="rounded-[1.6rem] border border-dashed border-[rgba(61,44,25,0.16)] bg-[rgba(255,251,244,0.76)] p-6 text-center">
               {extracting ? (
                 <div className="space-y-4 py-6">
-                  <Loader2 className="mx-auto h-10 w-10 animate-spin text-[var(--public-accent-strong)]" />
-                  <div className="text-sm font-semibold text-[var(--public-ink)]">
+                  <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
+                  <div className="text-sm font-semibold text-foreground">
                     Verifying your document
                   </div>
-                  <p className="text-sm text-[var(--public-muted)]">
+                  <p className="text-sm text-muted-foreground">
                     This usually takes a few seconds.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--public-accent-soft)]/75 text-[var(--public-accent-strong)]">
+                  <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10/75 text-primary">
                     <FileUp className="h-7 w-7" />
                   </div>
                   <div>
-                    <div className="text-lg font-semibold text-[var(--public-ink)]">
+                    <div className="text-lg font-semibold text-foreground">
                       Upload ID image
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
                       Upload a clear photo of your PAN or Aadhaar card.
                     </p>
                   </div>
@@ -402,7 +402,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
               )}
             </div>
 
-            <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+            <label className="grid gap-2 text-sm font-semibold text-foreground">
               ID number
               <input
                 value={formData.idNumber}
@@ -444,10 +444,10 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
           <div className="relative z-10 space-y-6">
             <div>
               <div className="public-eyebrow">Step 3</div>
-              <h3 className="public-display mt-3 text-3xl text-[var(--public-ink)]">
+              <h3 className="public-display mt-3 text-3xl text-foreground">
                 Complete payment
               </h3>
-              <p className="mt-3 text-sm leading-6 text-[var(--public-muted)] sm:text-base">
+              <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
                 Use the host instructions below, then confirm once payment is
                 done.
               </p>
@@ -455,7 +455,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
 
             {link.tenants?.business_qr_url ? (
               <div className="grid gap-5 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-center">
-                <div className="rounded-[1.8rem] border border-[var(--public-line)] bg-white p-5 shadow-[0_20px_30px_rgba(43,29,16,0.08)]">
+                <div className="rounded-[1.8rem] border border-border bg-white p-5 shadow-lg">
                   <img
                     src={link.tenants.business_qr_url}
                     alt="Payment QR code"
@@ -464,19 +464,19 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                 </div>
                 <div className="space-y-4">
                   <div className="public-inset flex items-center gap-3 rounded-[1.3rem] px-4 py-4">
-                    <QrCode className="h-5 w-5 text-[var(--public-accent-strong)]" />
+                    <QrCode className="h-5 w-5 text-primary" />
                     <div>
-                      <div className="text-sm font-semibold text-[var(--public-ink)]">
+                      <div className="text-sm font-semibold text-foreground">
                         Scan to pay with UPI
                       </div>
-                      <div className="text-xs text-[var(--public-muted)]">
+                      <div className="text-xs text-muted-foreground">
                         UPI ID: {link.tenants.upi_id || "business@upi"}
                       </div>
                     </div>
                   </div>
                   <div className="public-inset flex items-center gap-3 rounded-[1.3rem] px-4 py-4">
                     <ShieldCheck className="h-5 w-5 text-[var(--public-success)]" />
-                    <p className="text-sm leading-6 text-[var(--public-muted)]">
+                    <p className="text-sm leading-6 text-muted-foreground">
                       Once payment is complete, use the confirmation button
                       below so the host can finalize your check-in.
                     </p>
@@ -484,12 +484,12 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                 </div>
               </div>
             ) : (
-              <div className="rounded-[1.6rem] border border-[var(--public-line)] bg-[rgba(255,248,235,0.84)] p-6 text-center">
-                <CreditCard className="mx-auto h-10 w-10 text-[var(--public-accent-strong)]" />
-                <div className="mt-4 text-lg font-semibold text-[var(--public-ink)]">
+              <div className="rounded-[1.6rem] border border-border bg-background/90 p-6 text-center">
+                <CreditCard className="mx-auto h-10 w-10 text-primary" />
+                <div className="mt-4 text-lg font-semibold text-foreground">
                   External payment gateway
                 </div>
-                <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   The host will complete payment collection outside this window.
                   Confirm here after payment is made.
                 </p>
@@ -529,10 +529,10 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
               <Sparkles className="h-9 w-9" />
             </div>
             <div>
-              <h2 className="public-display text-4xl text-[var(--public-ink)]">
+              <h2 className="public-display text-4xl text-foreground">
                 Booking confirmed
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--public-muted)] sm:text-base">
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
                 Thank you{formData.name ? `, ${formData.name}` : ""}. Your stay
                 at {listingTitle} is all set.
               </p>
@@ -540,13 +540,13 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="public-inset rounded-[1.2rem] px-4 py-4 text-left">
                 <div className="public-eyebrow">Stay</div>
-                <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                <div className="mt-2 text-sm font-semibold text-foreground">
                   {stayLabel}
                 </div>
               </div>
               <div className="public-inset rounded-[1.2rem] px-4 py-4 text-left">
                 <div className="public-eyebrow">Verification</div>
-                <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground">
                   <ShieldCheck className="h-4 w-4 text-[var(--public-success)]" />
                   ID verified and payment noted
                 </div>

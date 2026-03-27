@@ -57,11 +57,11 @@ export function VoiceAgentSettings({ tenantId }: VoiceAgentSettingsProps) {
   };
 
   if (loading) {
-    return <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-[var(--public-ink)]/40" /></div>;
+    return <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-foreground/40" /></div>;
   }
 
   return (
-    <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
+    <Card className="bg-transparent border-border">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -69,14 +69,14 @@ export function VoiceAgentSettings({ tenantId }: VoiceAgentSettingsProps) {
               <Mic className="w-5 h-5" />
             </div>
             <div>
-              <CardTitle className="text-[var(--public-ink)]">Voice Employee (Beta)</CardTitle>
-              <CardDescription className="text-[var(--public-ink)]/50">
+              <CardTitle className="text-foreground">Voice Employee (Beta)</CardTitle>
+              <CardDescription className="text-foreground/50">
                 Configure Kaisa to handle phone calls using VAPI or Retell.
               </CardDescription>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Label htmlFor="voice-active" className="text-xs text-[var(--public-ink)]/50">Agent Status</Label>
+            <Label htmlFor="voice-active" className="text-xs text-foreground/50">Agent Status</Label>
             <Switch 
               id="voice-active"
               checked={agent?.status === 'active'} 
@@ -88,15 +88,15 @@ export function VoiceAgentSettings({ tenantId }: VoiceAgentSettingsProps) {
       <CardContent className="space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label className="text-[var(--public-ink)]">Provider</Label>
+            <Label className="text-foreground">Provider</Label>
             <Select 
               value={agent?.provider || "vapi"} 
               onValueChange={(v: string) => setAgent(prev => ({ ...prev, provider: v as any }))}
             >
-              <SelectTrigger className="bg-black/20 border-[var(--public-line)] text-[var(--public-ink)]">
+              <SelectTrigger className="bg-black/20 border-border text-foreground">
                 <SelectValue placeholder="Select Provider" />
               </SelectTrigger>
-              <SelectContent className="public-panel border-[var(--public-line)] text-[var(--public-ink)]">
+              <SelectContent className="public-panel border-border text-foreground">
                 <SelectItem value="vapi">VAPI (Recommended)</SelectItem>
                 <SelectItem value="retell">Retell AI</SelectItem>
               </SelectContent>
@@ -104,15 +104,15 @@ export function VoiceAgentSettings({ tenantId }: VoiceAgentSettingsProps) {
           </div>
 
           <div className="space-y-2">
-            <Label className="text-[var(--public-ink)]">Phone Number</Label>
+            <Label className="text-foreground">Phone Number</Label>
             <div className="flex gap-2">
               <Input 
                 placeholder="+1 (555) 000-0000"
                 value={agent?.phoneNumber || ""}
                 onChange={(e) => setAgent(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                className="bg-black/20 border-[var(--public-line)] text-[var(--public-ink)]"
+                className="bg-black/20 border-border text-foreground"
               />
-              <Button variant="outline" size="icon" className="border-[var(--public-line)] text-[var(--public-ink)] hover:bg-white/5">
+              <Button variant="outline" size="icon" className="border-border text-foreground hover:bg-white/5">
                 <Phone className="w-4 h-4" />
               </Button>
             </div>
@@ -120,15 +120,15 @@ export function VoiceAgentSettings({ tenantId }: VoiceAgentSettingsProps) {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-[var(--public-ink)]">Voice Identity</Label>
+          <Label className="text-foreground">Voice Identity</Label>
           <Select 
             value={agent?.voiceId || "jennifer"} 
             onValueChange={(v: string) => setAgent(prev => ({ ...prev, voiceId: v }))}
           >
-            <SelectTrigger className="bg-black/20 border-[var(--public-line)] text-[var(--public-ink)]">
+            <SelectTrigger className="bg-black/20 border-border text-foreground">
               <SelectValue placeholder="Select Voice" />
             </SelectTrigger>
-            <SelectContent className="public-panel border-[var(--public-line)] text-[var(--public-ink)]">
+            <SelectContent className="public-panel border-border text-foreground">
               <SelectItem value="jennifer">Jennifer (Professional)</SelectItem>
               <SelectItem value="mark">Mark (Helpful)</SelectItem>
               <SelectItem value="sarah">Sarah (Friendly)</SelectItem>
@@ -137,12 +137,12 @@ export function VoiceAgentSettings({ tenantId }: VoiceAgentSettingsProps) {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-[var(--public-ink)]">Voice Instructions</Label>
+          <Label className="text-foreground">Voice Instructions</Label>
           <textarea 
             placeholder="Tell Kaisa how to handle calls (e.g., 'Always be polite, check availability before confirming...')"
             value={agent?.instructions || ""}
             onChange={(e) => setAgent(prev => ({ ...prev, instructions: e.target.value }))}
-            className="w-full min-h-[100px] bg-black/20 border-[var(--public-line)] rounded-md p-3 text-sm text-[var(--public-ink)] placeholder:text-[var(--public-ink)]/20 focus:outline-none focus:border-white/30"
+            className="w-full min-h-[100px] bg-black/20 border-border rounded-md p-3 text-sm text-foreground placeholder:text-foreground/20 focus:outline-none focus:border-white/30"
           />
         </div>
 

@@ -77,8 +77,8 @@ export default function RevenuePage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--public-ink)]/40" />
-        <p className="text-[var(--public-ink)]/40 text-sm">Analyzing market trends...</p>
+        <Loader2 className="w-8 h-8 animate-spin text-foreground/40" />
+        <p className="text-foreground/40 text-sm">Analyzing market trends...</p>
       </div>
     );
   }
@@ -88,11 +88,11 @@ export default function RevenuePage() {
       {/* Header with Stats */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--public-ink)] uppercase tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground uppercase tracking-tight flex items-center gap-3">
             <TrendingUp className="text-emerald-500 w-8 h-8" />
             Revenue & Pricing
           </h1>
-          <p className="text-[var(--public-ink)]/50 text-sm">
+          <p className="text-foreground/50 text-sm">
             AI-driven nightly rate optimization based on occupancy and local demand.
           </p>
         </div>
@@ -100,7 +100,7 @@ export default function RevenuePage() {
           onClick={handleRefresh} 
           disabled={refreshing}
           variant="outline"
-          className="border-[var(--public-line)] text-[var(--public-ink)] hover:bg-white/5 font-bold px-6 rounded-full"
+          className="border-border text-foreground hover:bg-white/5 font-bold px-6 rounded-full"
         >
           {refreshing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
           Refresh Trends
@@ -111,8 +111,8 @@ export default function RevenuePage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Suggested Uplift</CardDescription>
-            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Suggested Uplift</CardDescription>
+            <CardTitle className="text-3xl font-bold text-foreground">
               +₹{(data.suggestions || []).reduce((sum: number, s: any) => sum + (s.suggestedPrice - s.currentPrice), 0).toLocaleString()}
             </CardTitle>
           </CardHeader>
@@ -125,10 +125,10 @@ export default function RevenuePage() {
         </Card>
         <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
               {tenant?.businessType === 'airbnb_host' ? 'Average Occupancy' : 'Total Orders'}
             </CardDescription>
-            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">
+            <CardTitle className="text-3xl font-bold text-foreground">
               {tenant?.businessType === 'airbnb_host' 
                 ? `${metrics?.occupancyRate || 0}%`
                 : (metrics?.ordersCount || 0)
@@ -144,13 +144,13 @@ export default function RevenuePage() {
         </Card>
         <Card className="public-panel border-white/5">
           <CardHeader className="pb-2">
-            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-[var(--public-muted)]">Total Revenue</CardDescription>
-            <CardTitle className="text-3xl font-bold text-[var(--public-ink)]">
+            <CardDescription className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Total Revenue</CardDescription>
+            <CardTitle className="text-3xl font-bold text-foreground">
               ₹{(metrics?.revenue || 0).toLocaleString()}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-2 text-xs text-[var(--public-muted)]">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <DollarSign className="w-3 h-3" />
               <span>Last 30 days</span>
             </div>
@@ -161,21 +161,21 @@ export default function RevenuePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Feed: Price Suggestions */}
         <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-lg font-bold text-[var(--public-ink)] uppercase tracking-wider flex items-center gap-2">
+          <h2 className="text-lg font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
             <Zap className="w-5 h-5 text-emerald-500" />
             Pricing Opportunities
           </h2>
 
           {data.suggestions.length === 0 ? (
             <div className="public-panel/50 border border-white/5 rounded-2xl p-12 text-center space-y-4">
-              <div className="p-4 bg-white/5 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-[var(--public-ink)]/20">
+              <div className="p-4 bg-white/5 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-foreground/20">
                 <Sparkles className="w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-[var(--public-ink)] font-bold">Your pricing is optimal</h3>
-                <p className="text-[var(--public-ink)]/40 text-sm">Kaisa hasn't found any immediate price adjustments for your listings.</p>
+                <h3 className="text-foreground font-bold">Your pricing is optimal</h3>
+                <p className="text-foreground/40 text-sm">Kaisa hasn't found any immediate price adjustments for your listings.</p>
               </div>
-              <Button variant="outline" onClick={handleRefresh} className="border-[var(--public-line)] text-[var(--public-ink)] hover:bg-white/5">
+              <Button variant="outline" onClick={handleRefresh} className="border-border text-foreground hover:bg-white/5">
                 Re-scan Market
               </Button>
             </div>
@@ -193,10 +193,10 @@ export default function RevenuePage() {
                               <Calendar className="w-5 h-5" />
                             </div>
                             <div>
-                              <div className="text-sm font-bold text-[var(--public-ink)]">
+                              <div className="text-sm font-bold text-foreground">
                                 {new Date(s.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', weekday: 'short' })}
                               </div>
-                              <div className="text-[10px] text-[var(--public-muted)] uppercase tracking-widest">{s.listingTitle}</div>
+                              <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{s.listingTitle}</div>
                             </div>
                           </div>
                           <div className={cn(
@@ -210,8 +210,8 @@ export default function RevenuePage() {
 
                         <div className="flex items-center gap-8">
                           <div>
-                            <div className="text-[10px] text-[var(--public-muted)] uppercase font-bold mb-1">Current</div>
-                            <div className="text-lg font-bold text-[var(--public-ink)]/40 line-through">₹{s.currentPrice}</div>
+                            <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Current</div>
+                            <div className="text-lg font-bold text-foreground/40 line-through">₹{s.currentPrice}</div>
                           </div>
                           <div className="text-zinc-700">→</div>
                           <div>
@@ -219,8 +219,8 @@ export default function RevenuePage() {
                             <div className="text-2xl font-bold text-emerald-400">₹{s.suggestedPrice}</div>
                           </div>
                           <div className="ml-auto text-right">
-                             <div className="text-[10px] text-[var(--public-muted)] uppercase font-bold mb-1">Reason</div>
-                             <div className="text-xs text-[var(--public-ink)]/80">{s.reason}</div>
+                             <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Reason</div>
+                             <div className="text-xs text-foreground/80">{s.reason}</div>
                           </div>
                         </div>
                       </div>
@@ -233,7 +233,7 @@ export default function RevenuePage() {
                         </Button>
                         <Button 
                           variant="ghost" 
-                          className="flex-1 text-[var(--public-muted)] hover:text-[var(--public-ink)] hover:bg-white/5 text-xs font-bold py-1"
+                          className="flex-1 text-muted-foreground hover:text-foreground hover:bg-white/5 text-xs font-bold py-1"
                         >
                           Ignore
                         </Button>
@@ -248,30 +248,30 @@ export default function RevenuePage() {
 
         {/* Sidebar: Pricing Rules & Intelligence */}
         <div className="space-y-6">
-          <h2 className="text-lg font-bold text-[var(--public-ink)] uppercase tracking-wider flex items-center gap-2">
-            <Home className="w-5 h-5 text-[var(--public-muted)]" />
+          <h2 className="text-lg font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
+            <Home className="w-5 h-5 text-muted-foreground" />
             Pricing Rules
           </h2>
           
           <Card className="public-panel border-white/5">
             <CardHeader className="pb-4 border-b border-white/5">
-              <CardTitle className="text-sm text-[var(--public-ink)]">Balanced Strategy</CardTitle>
+              <CardTitle className="text-sm text-foreground">Balanced Strategy</CardTitle>
               <CardDescription className="text-xs">Prioritizes both occupancy and revenue</CardDescription>
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-[var(--public-muted)] uppercase font-bold tracking-tighter">Weekend Markup</span>
-                <span className="text-[var(--public-ink)] font-bold">1.2x</span>
+                <span className="text-muted-foreground uppercase font-bold tracking-tighter">Weekend Markup</span>
+                <span className="text-foreground font-bold">1.2x</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-[var(--public-muted)] uppercase font-bold tracking-tighter">Last Minute</span>
-                <span className="text-[var(--public-ink)] font-bold">0.8x</span>
+                <span className="text-muted-foreground uppercase font-bold tracking-tighter">Last Minute</span>
+                <span className="text-foreground font-bold">0.8x</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-[var(--public-muted)] uppercase font-bold tracking-tighter">Min Price</span>
-                <span className="text-[var(--public-ink)] font-bold">₹0</span>
+                <span className="text-muted-foreground uppercase font-bold tracking-tighter">Min Price</span>
+                <span className="text-foreground font-bold">₹0</span>
               </div>
-              <Button variant="outline" className="w-full border-[var(--public-line)] text-[var(--public-ink)]/70 text-xs font-bold hover:bg-white/5">
+              <Button variant="outline" className="w-full border-border text-foreground/70 text-xs font-bold hover:bg-white/5">
                 Change Strategy
               </Button>
             </CardContent>

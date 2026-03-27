@@ -43,44 +43,44 @@ export function BusinessProfileSettings({ tenant }: BusinessProfileSettingsProps
   };
 
   return (
-    <div className="public-panel border border-[var(--public-line)] rounded-xl overflow-hidden">
-      <div className="p-6 border-b border-[var(--public-line)] flex items-center gap-4">
-        <div className="p-3 bg-[var(--public-panel-muted)] rounded-lg">
+    <div className="public-panel border border-border rounded-xl overflow-hidden">
+      <div className="p-6 border-b border-border flex items-center gap-4">
+        <div className="p-3 bg-muted rounded-lg">
           <Building2 className="w-6 h-6 text-orange-500" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-[var(--public-ink)]">Business Profile</h2>
-          <p className="text-sm text-[var(--public-muted)]">Manage your organization details</p>
+          <h2 className="text-lg font-semibold text-foreground">Business Profile</h2>
+          <p className="text-sm text-muted-foreground">Manage your organization details</p>
         </div>
       </div>
 
       <div className="p-6 space-y-6">
         <div className="flex items-start gap-6">
           <div className="relative group">
-            <div className="w-24 h-24 bg-[var(--public-panel-muted)] rounded-xl border-2 border-dashed border-[var(--public-line)] flex flex-col items-center justify-center gap-2 overflow-hidden group-hover:border-orange-500 transition-colors cursor-pointer">
-              <Upload className="w-6 h-6 text-[var(--public-muted)] group-hover:text-orange-500 transition-colors" />
-              <span className="text-[10px] text-[var(--public-muted)] font-bold uppercase tracking-wider group-hover:text-orange-500 transition-colors">Logo</span>
+            <div className="w-24 h-24 bg-muted rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 overflow-hidden group-hover:border-primary transition-colors cursor-pointer">
+              <Upload className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider group-hover:text-primary transition-colors">Logo</span>
             </div>
-            <button className="absolute -bottom-2 -right-2 p-1.5 bg-[var(--public-panel-muted)] border border-[var(--public-line)] rounded-lg text-[var(--public-muted)] hover:text-[var(--public-ink)] shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">
+            <button className="absolute -bottom-2 -right-2 p-1.5 bg-muted border border-border rounded-lg text-muted-foreground hover:text-foreground shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">
               <Plus className="w-3 h-3" />
             </button>
           </div>
 
           <div className="flex-1 grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-[var(--public-muted)] mb-2">Business Name</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Business Name</label>
               <input 
                 type="text" 
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-lg px-4 py-2 text-[var(--public-ink)] focus:outline-none focus:border-orange-500 transition-colors"
+                className="w-full bg-muted text-foreground border border-border rounded-lg px-4 py-2 text-foreground focus:outline-none focus:border-primary transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--public-muted)] mb-2">Business Type</label>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Business Type</label>
               <select 
                 value={formData.business_type}
-                className="w-full bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-lg px-4 py-2 text-[var(--public-ink)] focus:outline-none focus:border-orange-500 transition-colors appearance-none"
+                className="w-full bg-muted text-foreground border border-border rounded-lg px-4 py-2 text-foreground focus:outline-none focus:border-primary transition-colors appearance-none"
                 disabled
               >
                 <option value={formData.business_type}>{formData.business_type.replace(/_/g, " ")}</option>
@@ -91,52 +91,52 @@ export function BusinessProfileSettings({ tenant }: BusinessProfileSettingsProps
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="relative">
-            <Globe className="absolute left-3 top-2.5 w-4 h-4 text-[var(--public-muted)]" />
+            <Globe className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
             <input 
               type="text" 
               placeholder="Website URL"
               value={formData.website}
               onChange={(e) => setFormData({...formData, website: e.target.value})}
-              className="w-full bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-lg pl-10 pr-4 py-2 text-[var(--public-ink)] focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full bg-muted text-foreground border border-border rounded-lg pl-10 pr-4 py-2 text-foreground focus:outline-none focus:border-primary transition-colors"
             />
           </div>
           <div className="relative">
-            <MapPin className="absolute left-3 top-2.5 w-4 h-4 text-[var(--public-muted)]" />
+            <MapPin className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
             <input 
               type="text" 
               placeholder="Business Address"
               value={formData.address}
               onChange={(e) => setFormData({...formData, address: e.target.value})}
-              className="w-full bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-lg pl-10 pr-4 py-2 text-[var(--public-ink)] focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full bg-muted text-foreground border border-border rounded-lg pl-10 pr-4 py-2 text-foreground focus:outline-none focus:border-primary transition-colors"
             />
           </div>
           <div className="relative">
-            <Mail className="absolute left-3 top-2.5 w-4 h-4 text-[var(--public-muted)]" />
+            <Mail className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
             <input 
               type="email" 
               placeholder="Support Email"
               value={formData.contact_email}
               onChange={(e) => setFormData({...formData, contact_email: e.target.value})}
-              className="w-full bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-lg pl-10 pr-4 py-2 text-[var(--public-ink)] focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full bg-muted text-foreground border border-border rounded-lg pl-10 pr-4 py-2 text-foreground focus:outline-none focus:border-primary transition-colors"
             />
           </div>
           <div className="relative">
-            <Phone className="absolute left-3 top-2.5 w-4 h-4 text-[var(--public-muted)]" />
+            <Phone className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
             <input 
               type="tel" 
               placeholder="Support Phone"
               value={formData.contact_phone}
               onChange={(e) => setFormData({...formData, contact_phone: e.target.value})}
-              className="w-full bg-[var(--public-bg-soft)] text-[var(--public-ink)] border border-[var(--public-line)] rounded-lg pl-10 pr-4 py-2 text-[var(--public-ink)] focus:outline-none focus:border-orange-500 transition-colors"
+              className="w-full bg-muted text-foreground border border-border rounded-lg pl-10 pr-4 py-2 text-foreground focus:outline-none focus:border-primary transition-colors"
             />
           </div>
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-[var(--public-line)]">
+        <div className="flex justify-end pt-4 border-t border-border">
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-brand-red text-[var(--public-ink)] px-6 py-2 rounded-lg font-bold hover:bg-red-600 transition-all flex items-center gap-2 disabled:opacity-50"
+            className="bg-brand-red text-foreground px-6 py-2 rounded-lg font-bold hover:bg-red-600 transition-all flex items-center gap-2 disabled:opacity-50"
           >
             {isSaving ? "Saving..." : <><Save className="w-4 h-4" /> Save Changes</>}
           </button>

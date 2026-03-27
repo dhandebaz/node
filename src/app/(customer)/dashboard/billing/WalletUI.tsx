@@ -372,7 +372,7 @@ export function WalletUI({
             <div className="flex justify-between items-center">
               <h4 className="font-bold text-lg">Pro</h4>
               {plan === "pro" && (
-                <span className="text-xs bg-black text-[var(--public-ink)] px-2 py-1 rounded">
+                <span className="text-xs bg-black text-foreground px-2 py-1 rounded">
                   Active
                 </span>
               )}
@@ -411,7 +411,7 @@ export function WalletUI({
             <div className="flex justify-between items-center">
               <h4 className="font-bold text-lg">Business</h4>
               {plan === "business" && (
-                <span className="text-xs bg-black text-[var(--public-ink)] px-2 py-1 rounded">
+                <span className="text-xs bg-black text-foreground px-2 py-1 rounded">
                   Active
                 </span>
               )}

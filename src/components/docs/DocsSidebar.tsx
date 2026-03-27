@@ -16,12 +16,12 @@ export function DocsSidebar() {
         <div className="relative z-10">
           <div className="public-pill public-eyebrow">Docs navigation</div>
           <div className="mt-4 flex items-start gap-3">
-            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
               <BookOpenText className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="public-display text-2xl text-[var(--public-ink)]">Build with control</h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+              <h2 className="public-display text-2xl text-foreground">Build with control</h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 Start with the operating model, then move into APIs and integration rails.
               </p>
             </div>
@@ -51,8 +51,8 @@ export function DocsSidebar() {
                         className={cn(
                           "public-inset flex items-center justify-between gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all",
                           isActive
-                            ? "bg-[var(--public-accent)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.38)]"
-                            : "text-[var(--public-ink)] hover:-translate-y-0.5",
+                            ? "bg-primary text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.38)]"
+                            : "text-foreground hover:-translate-y-0.5",
                         )}
                       >
                         <span>{item.label}</span>
@@ -65,17 +65,17 @@ export function DocsSidebar() {
             </motion.div>
           ))}
 
-          <div className="rounded-[1.4rem] border border-[var(--public-line)] bg-[var(--public-accent-soft)]/65 p-4">
-            <div className="flex items-center gap-2 text-sm font-semibold text-[var(--public-ink)]">
-              <LifeBuoy className="h-4 w-4 text-[var(--public-accent-strong)]" />
+          <div className="rounded-[1.4rem] border border-border bg-primary/10/65 p-4">
+            <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <LifeBuoy className="h-4 w-4 text-primary" />
               Need rollout help?
             </div>
-            <p className="mt-2 text-sm leading-6 text-[var(--public-muted)]">
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
               If the docs do not answer a deployment question, route it to the team directly.
             </p>
             <Link
               href="/company/contact"
-              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--public-accent-strong)]"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary"
             >
               Contact Nodebase
               <ArrowRight className="h-4 w-4" />

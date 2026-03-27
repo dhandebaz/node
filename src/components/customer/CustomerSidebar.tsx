@@ -79,10 +79,10 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
       {/* Brand */}
       <div className="h-16 flex items-center px-5 border-b border-white/5">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-[var(--color-brand-red)] rounded-md flex items-center justify-center">
-            <span className="font-bold text-white text-xs">N</span>
+          <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center">
+            <span className="font-bold text-primary-foreground text-xs">N</span>
           </div>
-          <span className="text-lg font-bold tracking-tight text-white">Nodebase</span>
+          <span className="text-lg font-bold tracking-tight text-foreground">Nodebase</span>
         </Link>
         {tenant?.earlyAccess && (
           <div className="ml-auto flex items-center gap-1 bg-yellow-500/10 border border-yellow-500/20 rounded px-1.5 py-0.5">
@@ -96,11 +96,11 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
         <div className="p-4 border-b border-white/5">
            <div className="flex items-center justify-between mb-1">
              <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Balance</span>
-             <Link href="/dashboard/billing" className="text-[10px] text-[var(--color-brand-red)] hover:text-white transition-colors">
+              <Link href="/dashboard/billing" className="text-[10px] text-primary hover:text-foreground transition-colors">
                Add Funds
              </Link>
            </div>
-           <div className="text-xl font-mono font-medium text-white">₹{kaisaCredits.balance.toLocaleString()}</div>
+           <div className="text-xl font-mono font-medium text-foreground">₹{kaisaCredits.balance.toLocaleString()}</div>
         </div>
       )}
 
@@ -141,11 +141,11 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
       {/* User Footer */}
       <div className="p-4 border-t border-white/5 bg-white/5">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[var(--color-brand-red)] flex items-center justify-center text-white font-bold text-xs">
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
             {tenant?.businessType?.charAt(0).toUpperCase() || "U"}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-white truncate">
+            <p className="text-xs font-medium text-foreground truncate">
               {tenant?.name || "User Account"}
             </p>
             <p className="text-[10px] text-white/40 truncate">

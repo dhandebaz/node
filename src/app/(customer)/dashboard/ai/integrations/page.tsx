@@ -245,8 +245,8 @@ export default function ListingIntegrationsPage() {
   return (
     <div className="space-y-6 pb-24 md:pb-0 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-[var(--public-ink)] uppercase tracking-tight">Integrations</h1>
-        <p className="text-[var(--public-ink)]/60">Manage your connected apps and services.</p>
+        <h1 className="text-2xl font-bold text-foreground uppercase tracking-tight">Integrations</h1>
+        <p className="text-foreground/60">Manage your connected apps and services.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -262,8 +262,8 @@ export default function ListingIntegrationsPage() {
                             <img src="https://authjs.dev/img/providers/google.svg" alt="Google" className="w-6 h-6" />
                         </div>
                         <div>
-                            <CardTitle className="text-[var(--public-ink)]">Google Calendar</CardTitle>
-                            <CardDescription className="text-[var(--public-ink)]/50">Sync {labels.bookings.toLowerCase()} to your personal calendar</CardDescription>
+                            <CardTitle className="text-foreground">Google Calendar</CardTitle>
+                            <CardDescription className="text-foreground/50">Sync {labels.bookings.toLowerCase()} to your personal calendar</CardDescription>
                         </div>
                     </div>
                     {isGoogleConnected ? (
@@ -273,19 +273,19 @@ export default function ListingIntegrationsPage() {
                     ) : isGoogleError ? (
                       <Badge variant="outline" className="text-red-500 border-red-500/20 bg-red-500/10">Error</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-[var(--public-muted)] border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
+                      <Badge variant="outline" className="text-muted-foreground border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
                     )}
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className={`p-4 rounded-lg border space-y-3 ${isGoogleConnected ? 'bg-green-500/5 border-green-500/10' : isGoogleError ? 'bg-red-500/5 border-red-500/10' : 'bg-[var(--public-bg-soft)] border-[var(--public-line)]'}`}>
+                <div className={`p-4 rounded-lg border space-y-3 ${isGoogleConnected ? 'bg-green-500/5 border-green-500/10' : isGoogleError ? 'bg-red-500/5 border-red-500/10' : 'bg-muted border-border'}`}>
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-[var(--public-ink)]/70">Connected Account</span>
-                        <span className="text-[var(--public-ink)] font-mono">{googleStatus?.connectedEmail || "-"}</span>
+                        <span className="text-foreground/70">Connected Account</span>
+                        <span className="text-foreground font-mono">{googleStatus?.connectedEmail || "-"}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-[var(--public-ink)]/70">Last synced</span>
-                        <span className="text-[var(--public-ink)] font-mono">
+                        <span className="text-foreground/70">Last synced</span>
+                        <span className="text-foreground font-mono">
                           {googleStatus?.lastSyncedAt ? new Date(googleStatus.lastSyncedAt).toLocaleString() : "-"}
                         </span>
                     </div>
@@ -345,11 +345,11 @@ export default function ListingIntegrationsPage() {
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-[#FF5A5F] rounded-full flex items-center justify-center">
-                            <Puzzle className="w-6 h-6 text-[var(--public-ink)]" />
+                            <Puzzle className="w-6 h-6 text-foreground" />
                         </div>
                         <div>
-                            <CardTitle className="text-[var(--public-ink)]">Airbnb, Booking.com, MMT</CardTitle>
-                            <CardDescription className="text-[var(--public-ink)]/50">Channel manager & calendar sync</CardDescription>
+                            <CardTitle className="text-foreground">Airbnb, Booking.com, MMT</CardTitle>
+                            <CardDescription className="text-foreground/50">Channel manager & calendar sync</CardDescription>
                         </div>
                     </div>
                     <Badge variant="outline" className="text-blue-400 border-blue-400/20 bg-blue-400/10">
@@ -393,15 +393,15 @@ export default function ListingIntegrationsPage() {
                           <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" className="w-6 h-6" />
                       </div>
                       <div>
-                          <CardTitle className="text-[var(--public-ink)]">Telegram</CardTitle>
-                          <CardDescription className="text-[var(--public-ink)]/50">Reply to Telegram Bot messages</CardDescription>
+                          <CardTitle className="text-foreground">Telegram</CardTitle>
+                          <CardDescription className="text-foreground/50">Reply to Telegram Bot messages</CardDescription>
                       </div>
                   </div>
-                  <Badge variant="outline" className="text-[var(--public-muted)] border-zinc-500/20 bg-zinc-500/10">Coming Soon</Badge>
+                  <Badge variant="outline" className="text-muted-foreground border-zinc-500/20 bg-zinc-500/10">Coming Soon</Badge>
               </div>
           </CardHeader>
           <CardContent>
-             <Button disabled className="w-full bg-[var(--public-bg-soft)] text-[var(--public-muted)] border border-[var(--public-line)]">
+             <Button disabled className="w-full bg-muted text-muted-foreground border border-border">
                  In Development
              </Button>
           </CardContent>
@@ -409,7 +409,7 @@ export default function ListingIntegrationsPage() {
 
         {/* Nodebase Voice Integration */}
         <Card className="public-panel relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--public-accent)]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
           <CardHeader>
               <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
@@ -417,11 +417,11 @@ export default function ListingIntegrationsPage() {
                           <svg xmlns="http://www.w0.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-orange-500"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
                       </div>
                       <div>
-                          <CardTitle className="text-[var(--public-ink)]">Nodebase Voice</CardTitle>
-                          <CardDescription className="text-[var(--public-ink)]/50">AI Phone Agent for your business</CardDescription>
+                          <CardTitle className="text-foreground">Nodebase Voice</CardTitle>
+                          <CardDescription className="text-foreground/50">AI Phone Agent for your business</CardDescription>
                       </div>
                   </div>
-                  <Badge variant="outline" className="text-[var(--public-accent-strong)] border-[var(--public-accent)]/20 bg-[var(--public-accent)]/10">Waitlist</Badge>
+                  <Badge variant="outline" className="text-primary border-primary/20 bg-primary/10">Waitlist</Badge>
               </div>
           </CardHeader>
           <CardContent>
@@ -441,11 +441,11 @@ export default function ListingIntegrationsPage() {
                           <svg xmlns="http://www.w0.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                       </div>
                       <div>
-                          <CardTitle className="text-[var(--public-ink)]">Nodebase Eyes</CardTitle>
-                          <CardDescription className="text-[var(--public-ink)]/50">CCTV & Vision Intelligence</CardDescription>
+                          <CardTitle className="text-foreground">Nodebase Eyes</CardTitle>
+                          <CardDescription className="text-foreground/50">CCTV & Vision Intelligence</CardDescription>
                       </div>
                   </div>
-                  <Badge variant="outline" className="text-[var(--public-accent-strong)] border-[var(--public-accent)]/20 bg-[var(--public-accent)]/10">Waitlist</Badge>
+                  <Badge variant="outline" className="text-primary border-primary/20 bg-primary/10">Waitlist</Badge>
               </div>
           </CardHeader>
           <CardContent>
@@ -472,26 +472,26 @@ export default function ListingIntegrationsPage() {
                             />
                         </div>
                         <div>
-                            <CardTitle className="text-[var(--public-ink)]">Instagram</CardTitle>
-                            <CardDescription className="text-[var(--public-ink)]/50">Reply to DMs & Orders</CardDescription>
+                            <CardTitle className="text-foreground">Instagram</CardTitle>
+                            <CardDescription className="text-foreground/50">Reply to DMs & Orders</CardDescription>
                         </div>
                     </div>
                     {isInstagramConnected ? (
                       <Badge variant="outline" className="text-green-400 border-green-400/20 bg-green-400/10">Connected</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-[var(--public-muted)] border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
+                      <Badge variant="outline" className="text-muted-foreground border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
                     )}
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
-               <div className={`p-4 rounded-lg border space-y-3 ${isInstagramConnected ? 'bg-gradient-to-tr from-[#f09433]/5 via-[#dc2743]/5 to-[#bc1888]/5 border-pink-500/10' : 'bg-[var(--public-bg-soft)] border-[var(--public-line)]'}`}>
+               <div className={`p-4 rounded-lg border space-y-3 ${isInstagramConnected ? 'bg-gradient-to-tr from-[#f09433]/5 via-[#dc2743]/5 to-[#bc1888]/5 border-pink-500/10' : 'bg-muted border-border'}`}>
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-[var(--public-ink)]/70">Connected Account</span>
-                        <span className="text-[var(--public-ink)] font-mono">{instagramStatus?.connectedName || "-"}</span>
+                        <span className="text-foreground/70">Connected Account</span>
+                        <span className="text-foreground font-mono">{instagramStatus?.connectedName || "-"}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                        <span className="text-[var(--public-ink)]/70">Last synced</span>
-                        <span className="text-[var(--public-ink)] font-mono">
+                        <span className="text-foreground/70">Last synced</span>
+                        <span className="text-foreground font-mono">
                           {instagramStatus?.lastSyncedAt ? new Date(instagramStatus.lastSyncedAt).toLocaleString() : "-"}
                         </span>
                     </div>
@@ -510,7 +510,7 @@ export default function ListingIntegrationsPage() {
                ) : (
                  <Button 
                    variant="default" 
-                   className="w-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-[var(--public-ink)] hover:opacity-90"
+                   className="w-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-foreground hover:opacity-90"
                    onClick={handleConnectInstagram}
                    disabled={isConnectingInstagram || isLoading}
                  >

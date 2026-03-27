@@ -44,8 +44,8 @@ export default async function InvitePage() {
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-24 md:pb-0">
       <div>
-        <h1 className="text-2xl font-bold text-[var(--public-ink)] mb-2">Invite & Earn</h1>
-        <p className="text-[var(--public-ink)]/60">
+        <h1 className="text-2xl font-bold text-foreground mb-2">Invite & Earn</h1>
+        <p className="text-foreground/60">
           Help other businesses discover Nodebase and earn AI credits.
         </p>
       </div>
@@ -59,8 +59,8 @@ export default async function InvitePage() {
                 <Gift className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-[var(--public-ink)]">Give 500, Get 500</CardTitle>
-                <CardDescription className="text-[var(--public-ink)]/50">
+                <CardTitle className="text-foreground">Give 500, Get 500</CardTitle>
+                <CardDescription className="text-foreground/50">
                   Refer a business owner. When they become active, you both get
                   500 AI credits (₹100 value).
                 </CardDescription>
@@ -70,14 +70,14 @@ export default async function InvitePage() {
           <CardContent className="space-y-6">
             {/* Link Copy */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--public-ink)]/70">
+              <label className="text-sm font-medium text-foreground/70">
                 Your Referral Link
               </label>
               <div className="flex gap-2">
                 <Input
                   readOnly
                   value={referralLink}
-                  className="bg-black/50 border-[var(--public-line)] text-[var(--public-ink)] font-mono text-sm"
+                  className="bg-black/50 border-border text-foreground font-mono text-sm"
                 />
                 <InviteCopyButton text={referralLink} />
               </div>
@@ -97,42 +97,42 @@ export default async function InvitePage() {
 
               <a
                 href={mailUrl}
-                className="flex items-center justify-center gap-2 p-3 bg-white/5 hover:bg-white/10 border border-[var(--public-line)] rounded-lg transition-colors"
+                className="flex items-center justify-center gap-2 p-3 bg-white/5 hover:bg-white/10 border border-border rounded-lg transition-colors"
               >
-                <Mail className="w-5 h-5 text-[var(--public-ink)]" />
-                <span className="text-[var(--public-ink)] font-medium">Email</span>
+                <Mail className="w-5 h-5 text-foreground" />
+                <span className="text-foreground font-medium">Email</span>
               </a>
             </div>
           </CardContent>
         </Card>
 
         {/* Stats */}
-        <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
+        <Card className="bg-transparent border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-[var(--public-ink)]/70">
+            <CardTitle className="text-sm font-medium text-foreground/70">
               Total Earned
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-[var(--public-ink)]">
+            <div className="text-3xl font-bold text-foreground">
               {stats.totalEarned}{" "}
-              <span className="text-sm font-normal text-[var(--public-ink)]/40">credits</span>
+              <span className="text-sm font-normal text-foreground/40">credits</span>
             </div>
-            <p className="text-xs text-[var(--public-ink)]/40 mt-1">Lifetime rewards</p>
+            <p className="text-xs text-foreground/40 mt-1">Lifetime rewards</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
+        <Card className="bg-transparent border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-[var(--public-ink)]/70">
+            <CardTitle className="text-sm font-medium text-foreground/70">
               Invites Accepted
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-[var(--public-ink)]">
+            <div className="text-3xl font-bold text-foreground">
               {stats.totalInvited}
             </div>
-            <p className="text-xs text-[var(--public-ink)]/40 mt-1">
+            <p className="text-xs text-foreground/40 mt-1">
               {stats.pending} pending activation
             </p>
           </CardContent>
@@ -140,13 +140,13 @@ export default async function InvitePage() {
       </div>
 
       {/* History List */}
-      <Card className="bg-[var(--color-dashboard-surface)] border-[var(--public-line)]">
+      <Card className="bg-transparent border-border">
         <CardHeader>
-          <CardTitle className="text-[var(--public-ink)]">Referral History</CardTitle>
+          <CardTitle className="text-foreground">Referral History</CardTitle>
         </CardHeader>
         <CardContent>
           {stats.history.length === 0 ? (
-            <div className="text-center py-8 text-[var(--public-ink)]/40 text-sm">
+            <div className="text-center py-8 text-foreground/40 text-sm">
               No referrals yet. Invite your first friend!
             </div>
           ) : (
@@ -167,10 +167,10 @@ export default async function InvitePage() {
                       )}
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-[var(--public-ink)] capitalize">
+                      <div className="text-sm font-medium text-foreground capitalize">
                         {referral.status}
                       </div>
-                      <div className="text-xs text-[var(--public-ink)]/40">
+                      <div className="text-xs text-foreground/40">
                         {new Date(referral.created_at).toLocaleDateString()}
                       </div>
                     </div>

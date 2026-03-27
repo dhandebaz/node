@@ -51,31 +51,31 @@
 /* -------------------------------------------------------------------------- */
 :root {
   /* Brand / accents */
-  --brand-red: #b51920;            /* accessible strong red */
-  --brand-red-600: #b51920;
-  --brand-accent: #b51920;
+  --brand-primary: #4285F4;          /* GCP Blue */
+  --brand-red: #EA4335;              /* kept for explicit error/danger use */
+  --brand-accent: #4285F4;
 
   /* Neutral background & surfaces */
-  --bg-page: #f8f6f2;              /* very light warm background */
-  --bg-surface: #ffffff;           /* primary card background */
-  --bg-muted: #f1ece6;             /* subtle panel */
-  --bg-soft: #fbf8f5;              /* very soft background */
+  --bg-page: #f8f9fa;                /* cool neutral background */
+  --bg-surface: #ffffff;             /* primary card background */
+  --bg-muted: #f1f3f4;               /* subtle panel */
+  --bg-soft: #f8f9fa;                /* very soft background */
 
   /* Foreground / text */
-  --text-default: #1f1913;         /* dark brown/ink for high contrast */
-  --text-muted: #5f554d;           /* subdued text */
-  --text-inverse: #ffffff;         /* for text on brand-accent */
+  --text-default: #202124;           /* Google dark for high contrast */
+  --text-muted: #5f6368;             /* Google muted text */
+  --text-inverse: #ffffff;           /* for text on brand-accent */
 
   /* Borders & separators */
-  --line: rgba(33, 27, 21, 0.08);
-  --line-strong: rgba(33, 27, 21, 0.12);
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.12);
 
   /* Interactive / states */
   --interactive: var(--brand-accent);
   --interactive-foreground: var(--text-inverse);
-  --success: #2d7a57;
-  --warning: #b06b00;
-  --danger: #b51920;
+  --success: #34A853;
+  --warning: #FBBC04;
+  --danger: #EA4335;
 
   /* Shadows */
   --shadow-sm: var(--elev-1);
@@ -83,8 +83,19 @@
   --shadow-lg: var(--elev-3);
 
   /* Accessibility helpers */
-  --focus-ring: 3px; /* ring thickness for focus outlines */
-  --focus-color: rgba(181, 25, 32, 0.2); /* subtle red ring for coherence with brand */
+  --focus-ring: 3px;
+  --focus-color: rgba(66, 133, 244, 0.25);
+
+  /* Backwards-compatible aliases for legacy --public-* vars */
+  --public-ink: var(--text-default);
+  --public-muted: var(--text-muted);
+  --public-line: var(--line);
+  --public-accent: var(--brand-accent);
+  --public-accent-soft: rgba(66, 133, 244, 0.08);
+  --public-bg-soft: var(--bg-soft);
+  --public-panel: var(--bg-surface);
+  --public-panel-muted: var(--bg-muted);
+  --color-dashboard-surface: transparent;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -92,6 +103,7 @@
 /* -------------------------------------------------------------------------- */
 :root.dark,
 .dark {
+  --brand-primary: #8AB4F8;
   --brand-red: #EA4335;
   --brand-accent: #4285F4;
 
@@ -118,11 +130,23 @@
   --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.7);
 
   --focus-color: rgba(66, 133, 244, 0.3);
+
+  /* Backwards-compatible aliases for legacy --public-* vars (dark) */
+  --public-ink: var(--text-default);
+  --public-muted: var(--text-muted);
+  --public-line: var(--line);
+  --public-accent: var(--brand-accent);
+  --public-accent-soft: rgba(66, 133, 244, 0.12);
+  --public-bg-soft: var(--bg-soft);
+  --public-panel: var(--bg-surface);
+  --public-panel-muted: var(--bg-muted);
+  --color-dashboard-surface: transparent;
 }
 
 /* Also support system dark preference as fallback if .dark class not set */
 @media (prefers-color-scheme: dark) {
   :root:not(.light):not(.no-system-dark) {
+    --brand-primary: #8AB4F8;
     --brand-red: #EA4335;
     --brand-accent: #4285F4;
     --bg-page: #000000;
@@ -133,6 +157,10 @@
     --line: rgba(255,255,255,0.1);
     --interactive: var(--brand-accent);
     --focus-color: rgba(66, 133, 244, 0.3);
+    --public-ink: var(--text-default);
+    --public-muted: var(--text-muted);
+    --public-line: var(--line);
+    --public-accent: var(--brand-accent);
   }
 }
 

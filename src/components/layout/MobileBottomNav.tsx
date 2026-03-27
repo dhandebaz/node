@@ -23,11 +23,11 @@ export function MobileBottomNav() {
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
       {/* Mobile sticky CTA above the nav — visible on small screens to drive conversions */}
-      <div className="bg-[#0A0A0A] border-t border-[var(--public-line)] px-4 py-2">
+      <div className="bg-background border-t border-border px-4 py-2">
         <div className="max-w-3xl mx-auto">
           <Link
             href="/company/contact"
-            className="inline-flex w-full items-center justify-center rounded-full bg-[var(--public-accent)] px-4 py-3 text-sm font-semibold text-[var(--public-ink)] shadow-lg transition-transform hover:-translate-y-0.5 active:translate-y-0"
+            className="inline-flex w-full items-center justify-center rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg transition-transform hover:-translate-y-0.5 active:translate-y-0"
             aria-label="Talk to Sales"
           >
             Talk to Sales
@@ -36,7 +36,7 @@ export function MobileBottomNav() {
       </div>
 
       {/* Main bottom navigation */}
-      <div className="bg-[#0A0A0A] border-t border-[var(--public-line)] pb-safe">
+      <div className="bg-background border-t border-border pb-safe">
         <nav className="flex justify-around items-center h-16 px-4">
           {navItems.map((item) => {
             const isActive =
@@ -48,8 +48,8 @@ export function MobileBottomNav() {
                 className={cn(
                   "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors",
                   isActive
-                    ? "text-[var(--color-brand-red)]"
-                    : "text-[var(--public-muted)] hover:text-zinc-300",
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <item.icon

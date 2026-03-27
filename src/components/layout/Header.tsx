@@ -145,14 +145,14 @@ export function Header({ viewer }: HeaderProps) {
                       onClick={() => setAccountOpen((open) => !open)}
                       className="public-inset flex items-center gap-3 rounded-full px-3 py-2"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--public-accent)] text-sm font-bold text-[var(--public-ink)]">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                         {initials || "NB"}
                       </div>
                       <div className="text-left">
-                        <div className="text-sm font-semibold text-[var(--public-ink)]">
+                        <div className="text-sm font-semibold text-foreground">
                           {currentViewer.name || "Nodebase account"}
                         </div>
-                        <div className="text-xs text-[var(--public-muted)]">
+                        <div className="text-xs text-muted-foreground">
                           {currentViewer.email || "Authenticated"}
                         </div>
                       </div>
@@ -228,9 +228,9 @@ export function Header({ viewer }: HeaderProps) {
               aria-label="Toggle theme"
             >
               {theme === "dark" ? (
-                <Sun className="h-5 w-5 text-[var(--public-ink)]" />
+                <Sun className="h-5 w-5 text-foreground" />
               ) : (
-                <Moon className="h-5 w-5 text-[var(--public-ink)]" />
+                <Moon className="h-5 w-5 text-foreground" />
               )}
             </button>
 
@@ -241,9 +241,9 @@ export function Header({ viewer }: HeaderProps) {
               aria-label="Toggle navigation"
             >
               {menuOpen ? (
-                <X className="h-5 w-5 text-[var(--public-ink)]" />
+                <X className="h-5 w-5 text-foreground" />
               ) : (
-                <Menu className="h-5 w-5 text-[var(--public-ink)]" />
+                <Menu className="h-5 w-5 text-foreground" />
               )}
             </button>
           </div>
@@ -257,7 +257,7 @@ export function Header({ viewer }: HeaderProps) {
                 transition={menuTransition}
                 className="overflow-hidden md:hidden"
               >
-                <div className="mt-4 space-y-3 border-t border-[var(--public-line)] pt-4">
+                <div className="mt-4 space-y-3 border-t border-border pt-4">
                   {publicNavLinks.map((item) => {
                     const active =
                       pathname === item.href ||
@@ -270,8 +270,8 @@ export function Header({ viewer }: HeaderProps) {
                         className={cn(
                           "public-inset flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold",
                           active
-                            ? "bg-[var(--public-accent)] text-[var(--public-ink)]"
-                            : "text-[var(--public-ink)]",
+                            ? "bg-primary/20 text-primary"
+                            : "text-muted-foreground",
                         )}
                       >
                         {item.label}

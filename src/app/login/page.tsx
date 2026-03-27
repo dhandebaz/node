@@ -122,11 +122,11 @@ function LoginContent() {
       <div className="public-container py-8">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="public-inset flex h-12 w-12 items-center justify-center rounded-[1.4rem] bg-[var(--public-accent)] text-white">
+            <div className="public-inset flex h-12 w-12 items-center justify-center rounded-[1.4rem] bg-primary text-white">
               <Logo className="h-8 w-8" />
             </div>
             <div>
-              <div className="public-display text-xl text-[var(--public-ink)]">nodebase</div>
+              <div className="public-display text-xl text-foreground">nodebase</div>
               <div className="public-eyebrow">Operator access</div>
             </div>
           </Link>
@@ -139,29 +139,29 @@ function LoginContent() {
           <section className="public-panel px-6 py-8 sm:px-8 sm:py-10 lg:px-10">
             <div className="relative z-10 space-y-6">
               <div className="public-pill public-eyebrow">Sign in</div>
-              <h1 className="public-display max-w-4xl text-4xl leading-[0.94] text-[var(--public-ink)] sm:text-5xl lg:text-6xl">
+              <h1 className="public-display max-w-4xl text-4xl leading-[0.94] text-foreground sm:text-5xl lg:text-6xl">
                 Access the operator console for your AI employees.
               </h1>
-              <p className="max-w-2xl text-base leading-7 text-[var(--public-muted)]">
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground">
                 Log in to manage workflow rules, inbox activity, payment follow-up,
                 trust settings, and the public surfaces attached to your business.
               </p>
               <div className="grid gap-3 md:grid-cols-3">
                 <div className="public-inset rounded-[1.3rem] px-4 py-4">
                   <div className="public-eyebrow">Access model</div>
-                  <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                  <div className="mt-2 text-sm font-semibold text-foreground">
                     OTP or magic link
                   </div>
                 </div>
                 <div className="public-inset rounded-[1.3rem] px-4 py-4">
                   <div className="public-eyebrow">Primary use</div>
-                  <div className="mt-2 text-sm font-semibold text-[var(--public-ink)]">
+                  <div className="mt-2 text-sm font-semibold text-foreground">
                     Operator dashboard and deployment controls
                   </div>
                 </div>
                 <div className="public-inset rounded-[1.3rem] px-4 py-4">
                   <div className="public-eyebrow">Security</div>
-                  <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                  <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground">
                     <ShieldCheck className="h-4 w-4 text-[var(--public-success)]" />
                     Session-aware authentication
                   </div>
@@ -177,19 +177,19 @@ function LoginContent() {
                   <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(130,185,112,0.14)] text-[var(--public-success)]">
                     <CheckCircle2 className="h-8 w-8" />
                   </div>
-                  <h2 className="text-2xl font-semibold text-[var(--public-ink)]">Access granted</h2>
-                  <p className="text-sm leading-6 text-[var(--public-muted)]">
+                  <h2 className="text-2xl font-semibold text-foreground">Access granted</h2>
+                  <p className="text-sm leading-6 text-muted-foreground">
                     Redirecting you to the operator dashboard.
                   </p>
                 </div>
               ) : step === "magic-link-sent" ? (
                 <div className="space-y-4 py-4 text-center">
-                  <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--public-accent-soft)]/75 text-[var(--public-accent-strong)]">
+                  <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10/75 text-primary">
                     <Mail className="h-7 w-7" />
                   </div>
-                  <h2 className="text-2xl font-semibold text-[var(--public-ink)]">Check your inbox</h2>
-                  <p className="text-sm leading-6 text-[var(--public-muted)]">
-                    A magic link was sent to <span className="font-semibold text-[var(--public-ink)]">{contact}</span>.
+                  <h2 className="text-2xl font-semibold text-foreground">Check your inbox</h2>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    A magic link was sent to <span className="font-semibold text-foreground">{contact}</span>.
                   </p>
                   <button
                     type="button"
@@ -203,7 +203,7 @@ function LoginContent() {
                 <>
                   <div>
                     <div className="public-eyebrow">Authentication</div>
-                    <h2 className="mt-3 text-2xl font-semibold text-[var(--public-ink)]">
+                    <h2 className="mt-3 text-2xl font-semibold text-foreground">
                       Continue into Nodebase
                     </h2>
                   </div>
@@ -218,7 +218,7 @@ function LoginContent() {
                     Continue with Google
                   </button>
 
-                  <div className="flex items-center gap-3 text-xs uppercase tracking-[0.22em] text-[var(--public-muted)]">
+                  <div className="flex items-center gap-3 text-xs uppercase tracking-[0.22em] text-muted-foreground">
                     <div className="h-px flex-1 bg-[rgba(61,44,25,0.12)]" />
                     <span>or use email / phone</span>
                     <div className="h-px flex-1 bg-[rgba(61,44,25,0.12)]" />
@@ -226,13 +226,13 @@ function LoginContent() {
 
                   {step === "contact" ? (
                     <form onSubmit={handleSendAuthCode} className="grid gap-4">
-                      <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                      <label className="grid gap-2 text-sm font-semibold text-foreground">
                         Email or phone
                         <div className="relative">
                           {contact.includes("@") ? (
-                            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--public-muted)]" />
+                            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                           ) : (
-                            <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--public-muted)]" />
+                            <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                           )}
                           <input
                             required
@@ -245,7 +245,7 @@ function LoginContent() {
                       </label>
 
                       {error ? (
-                        <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-[var(--public-accent-strong)]">
+                        <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-primary">
                           {error}
                         </div>
                       ) : null}
@@ -261,7 +261,7 @@ function LoginContent() {
                     </form>
                   ) : (
                     <form onSubmit={handleVerifyOtp} className="grid gap-4">
-                      <label className="grid gap-2 text-sm font-semibold text-[var(--public-ink)]">
+                      <label className="grid gap-2 text-sm font-semibold text-foreground">
                         One-time password
                         <input
                           required
@@ -272,19 +272,19 @@ function LoginContent() {
                         />
                       </label>
 
-                      <div className="flex items-center justify-between text-xs text-[var(--public-muted)]">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
                         <span>Sent to {contact}</span>
                         <button
                           type="button"
                           onClick={() => setStep("contact")}
-                          className="font-semibold text-[var(--public-accent-strong)]"
+                          className="font-semibold text-primary"
                         >
                           Change
                         </button>
                       </div>
 
                       {error ? (
-                        <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-[var(--public-accent-strong)]">
+                        <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-primary">
                           {error}
                         </div>
                       ) : null}
@@ -315,7 +315,7 @@ export default function LoginPage() {
       fallback={
         <div className="public-site min-h-screen">
           <div className="public-container flex min-h-screen items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-[var(--public-accent-strong)]" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         </div>
       }

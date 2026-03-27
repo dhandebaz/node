@@ -79,10 +79,10 @@ export default async function BookingConfirmationPage({
               <div className="public-pill public-eyebrow">
                 {isConfirmed ? "Confirmed stay" : isPending ? "Awaiting final confirmation" : "Booking update"}
               </div>
-              <h1 className="public-display text-4xl text-[var(--public-ink)] sm:text-5xl">
+              <h1 className="public-display text-4xl text-foreground sm:text-5xl">
                 {headline}
               </h1>
-              <p className="mx-auto max-w-2xl text-base leading-7 text-[var(--public-muted)]">
+              <p className="mx-auto max-w-2xl text-base leading-7 text-muted-foreground">
                 {summary}
               </p>
             </div>
@@ -91,29 +91,29 @@ export default async function BookingConfirmationPage({
 
         <section className="grid gap-4 sm:grid-cols-3">
           <div className="public-panel-soft p-5">
-            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
               <CreditCard className="h-5 w-5" />
             </div>
             <div className="public-eyebrow mt-4">Amount</div>
-            <div className="mt-2 text-lg font-semibold text-[var(--public-ink)]">
+            <div className="mt-2 text-lg font-semibold text-foreground">
               {formatCurrency(booking.amount)}
             </div>
           </div>
           <div className="public-panel-soft p-5">
-            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
               <CalendarDays className="h-5 w-5" />
             </div>
             <div className="public-eyebrow mt-4">Check-in</div>
-            <div className="mt-2 text-lg font-semibold text-[var(--public-ink)]">
+            <div className="mt-2 text-lg font-semibold text-foreground">
               {formatDate(booking.start_date)}
             </div>
           </div>
           <div className="public-panel-soft p-5">
-            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--public-accent-soft)]/70 text-[var(--public-accent-strong)]">
+            <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
               <ShieldCheck className="h-5 w-5" />
             </div>
             <div className="public-eyebrow mt-4">Check-out</div>
-            <div className="mt-2 text-lg font-semibold text-[var(--public-ink)]">
+            <div className="mt-2 text-lg font-semibold text-foreground">
               {formatDate(booking.end_date)}
             </div>
           </div>
@@ -123,7 +123,7 @@ export default async function BookingConfirmationPage({
           <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
             <div>
               <div className="public-eyebrow">What happens next</div>
-              <ul className="mt-4 space-y-3 text-sm leading-6 text-[var(--public-muted)]">
+              <ul className="mt-4 space-y-3 text-sm leading-6 text-muted-foreground">
                 <li className="public-inset rounded-[1.2rem] px-4 py-3">
                   Keep this page for your records until you receive the host confirmation message.
                 </li>
@@ -147,7 +147,7 @@ export default async function BookingConfirmationPage({
         </section>
 
         {booking.tenants?.is_branding_enabled ? (
-          <div className="text-center text-xs uppercase tracking-[0.22em] text-[var(--public-muted)]">
+          <div className="text-center text-xs uppercase tracking-[0.22em] text-muted-foreground">
             {brandingText}
           </div>
         ) : null}

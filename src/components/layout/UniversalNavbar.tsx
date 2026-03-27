@@ -84,7 +84,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
         </div>
 
         {/* Center Zone: Tabs (Desktop) */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-1 skeuo-inset p-1 border border-white/5">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-1 glass-panel rounded-full p-1 border border-white/10">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
             return (
@@ -190,7 +190,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
             className="fixed top-16 left-0 right-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-3xl border-b border-border/50 z-40 md:hidden overflow-hidden shadow-md"
           >
             <div className="flex flex-col p-4 gap-3">
-              <div className="mb-1 px-2 text-[10px] font-bold text-[var(--public-muted)] uppercase tracking-[0.2em]">Navigation</div>
+              <div className="mb-1 px-2 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Navigation</div>
               {NAV_ITEMS.map((item) => {
                 const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
                 return (
@@ -201,11 +201,11 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                     className={cn(
                       "flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-bold transition-all",
                       isActive
-                        ? "skeuo-button text-[var(--public-ink)]"
-                        : "text-[var(--public-muted)] hover:text-[var(--public-ink)] skeuo-inset bg-white/5"
+                        ? "bg-primary text-primary-foreground rounded-xl shadow-md"
+                        : "text-muted-foreground hover:text-foreground hover:bg-white/5 rounded-xl"
                     )}
                   >
-                    <item.icon size={20} className={isActive ? "text-[var(--public-ink)]" : "text-[var(--public-muted)]"} />
+                    <item.icon size={20} className={isActive ? "text-primary-foreground" : "text-muted-foreground"} />
                     {item.label}
                   </Link>
                 );
