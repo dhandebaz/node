@@ -42,6 +42,26 @@ try {
   );
 }
 
+import type { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const appUrl = getAppUrl();
+  return {
+    openGraph: {
+      images: [
+        {
+          url: `${appUrl}/og/static/home-1200x630.png`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      images: [`${appUrl}/og/static/home-1200x630.png`],
+    },
+  };
+}
+
 export default async function PublicLayout({
   children,
 }: Readonly<{
@@ -86,28 +106,15 @@ export default async function PublicLayout({
 
   return (
     <div className="public-site public-shell flex min-h-screen flex-col">
-      <head>
-        {/* Fallback Open Graph / Twitter images for social previews */}
-        <meta
-          property="og:image"
-          content={`${appUrl}/og/static/home-1200x630.png`}
-        />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta
-          name="twitter:image"
-          content={`${appUrl}/og/static/home-1200x630.png`}
-        />
-        {/* Site-level JSON-LD structured data (Organization + WebSite). */}
-        <script
-          key="site-json-ld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
+      {/* Site-level JSON-LD structured data */}
+      <script
+        key="site-json-ld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       <Header viewer={viewer} />
-      <main className="relative z-10 flex-1">{children}</main>
+      <main className="relative z-10 flex-1 pt-[var(--header-height,5rem)]">{children}</main>
       <Footer />
     </div>
   );

@@ -63,6 +63,7 @@
 @layer base {
     :root {
         --radius: 0.625rem;
+        --header-height: 5rem;
         
         /* Light Mode (Unified) */
         --background: oklch(1 0 0);
@@ -141,10 +142,8 @@
         @apply bg-background text-foreground;
     }
 
-    /* Global Glassmorphism intercept for Shadcn components */
-    .bg-card, .bg-popover {
-        @apply backdrop-blur-md bg-background/40 border border-white/10 shadow-lg;
-    }
+    /* Shadcn card/popover - use theme variables without aggressive overrides */
+    /* Individual components should apply .glass-panel explicitly when needed */
 
     * {
         @apply border-border outline-ring/50;
@@ -193,7 +192,7 @@
     }
 
     .glass-panel {
-        @apply bg-background/40 backdrop-blur-md border border-white/10 shadow-lg;
+        @apply bg-background/50 backdrop-blur-xl border border-white/10 shadow-2xl rounded-lg;
     }
 
     .dashboard-surface {
@@ -346,7 +345,7 @@
     .public-panel {
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 2rem;
+        border-radius: 1.25rem;
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         position: relative;
         overflow: hidden;

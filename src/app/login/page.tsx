@@ -118,191 +118,178 @@ function LoginContent() {
   const isLoading = authLoading || localLoading;
 
   return (
-    <div className="public-site min-h-screen">
-      <div className="public-container py-8">
-        <div className="flex items-center justify-between">
+    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-background bg-dot-pattern">
+      {/* Subtle ambient glow */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-[-20%] right-[-10%] h-[40vw] w-[40vw] rounded-full bg-primary/8 blur-[100px]" />
+        <div className="absolute bottom-[-15%] left-[-10%] h-[35vw] w-[35vw] rounded-full bg-sky-500/6 blur-[120px]" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-3 mb-8">
           <Link href="/" className="flex items-center gap-3">
-            <div className="public-inset flex h-12 w-12 items-center justify-center rounded-[1.4rem] bg-primary text-white">
-              <Logo className="h-8 w-8" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/20">
+              <Logo className="h-6 w-6 text-white" />
             </div>
-            <div>
-              <div className="public-display text-xl text-foreground">nodebase</div>
-              <div className="public-eyebrow">Operator access</div>
+            <div className="font-display text-xl text-foreground uppercase tracking-tighter leading-none">
+              nodebase
             </div>
-          </Link>
-          <Link href="/" className="public-button-secondary px-5 py-3 text-sm font-semibold">
-            Return home
           </Link>
         </div>
 
-        <div className="grid min-h-[calc(100vh-8rem)] gap-6 pb-12 pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,30rem)] lg:items-center">
-          <section className="public-panel px-6 py-8 sm:px-8 sm:py-10 lg:px-10">
-            <div className="relative z-10 space-y-6">
-              <div className="public-pill public-eyebrow">Sign in</div>
-              <h1 className="public-display max-w-4xl text-4xl leading-[0.94] text-foreground sm:text-5xl lg:text-6xl">
-                Access the operator console for your AI employees.
-              </h1>
-              <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-                Log in to manage workflow rules, inbox activity, payment follow-up,
-                trust settings, and the public surfaces attached to your business.
+        {/* Login Card */}
+        <div className="glass-panel rounded-2xl p-8 space-y-6">
+          {showSuccess ? (
+            <div className="space-y-4 py-8 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10 border border-green-500/20">
+                <CheckCircle2 className="h-8 w-8 text-green-500" />
+              </div>
+              <h2 className="text-2xl font-semibold text-foreground">Access granted</h2>
+              <p className="text-sm leading-6 text-muted-foreground">
+                Redirecting you to the dashboard.
               </p>
-              <div className="grid gap-3 md:grid-cols-3">
-                <div className="public-inset rounded-[1.3rem] px-4 py-4">
-                  <div className="public-eyebrow">Access model</div>
-                  <div className="mt-2 text-sm font-semibold text-foreground">
-                    OTP or magic link
-                  </div>
+            </div>
+          ) : step === "magic-link-sent" ? (
+            <div className="space-y-4 py-4 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 border border-primary/20">
+                <Mail className="h-7 w-7 text-primary" />
+              </div>
+              <h2 className="text-2xl font-semibold text-foreground">Check your inbox</h2>
+              <p className="text-sm leading-6 text-muted-foreground">
+                A magic link was sent to <span className="font-semibold text-foreground">{contact}</span>.
+              </p>
+              <button
+                type="button"
+                onClick={() => setStep("contact")}
+                className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                Use another email
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="text-center">
+                <h1 className="text-2xl font-semibold text-foreground">
+                  Sign in to Nodebase
+                </h1>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Access the operator console for your AI employees.
+                </p>
+              </div>
+
+              {/* Feature pills */}
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-3 py-1 text-xs text-muted-foreground">
+                  <ShieldCheck className="h-3 w-3 text-primary" />
+                  Secure auth
                 </div>
-                <div className="public-inset rounded-[1.3rem] px-4 py-4">
-                  <div className="public-eyebrow">Primary use</div>
-                  <div className="mt-2 text-sm font-semibold text-foreground">
-                    Operator dashboard and deployment controls
-                  </div>
-                </div>
-                <div className="public-inset rounded-[1.3rem] px-4 py-4">
-                  <div className="public-eyebrow">Security</div>
-                  <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground">
-                    <ShieldCheck className="h-4 w-4 text-[var(--public-success)]" />
-                    Session-aware authentication
-                  </div>
+                <div className="flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-3 py-1 text-xs text-muted-foreground">
+                  <Mail className="h-3 w-3 text-primary" />
+                  OTP or Magic Link
                 </div>
               </div>
-            </div>
-          </section>
 
-          <section className="public-panel-soft p-6 sm:p-8">
-            <div className="space-y-6">
-              {showSuccess ? (
-                <div className="space-y-4 py-8 text-center">
-                  <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(130,185,112,0.14)] text-[var(--public-success)]">
-                    <CheckCircle2 className="h-8 w-8" />
-                  </div>
-                  <h2 className="text-2xl font-semibold text-foreground">Access granted</h2>
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    Redirecting you to the operator dashboard.
-                  </p>
-                </div>
-              ) : step === "magic-link-sent" ? (
-                <div className="space-y-4 py-4 text-center">
-                  <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10/75 text-primary">
-                    <Mail className="h-7 w-7" />
-                  </div>
-                  <h2 className="text-2xl font-semibold text-foreground">Check your inbox</h2>
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    A magic link was sent to <span className="font-semibold text-foreground">{contact}</span>.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setStep("contact")}
-                    className="public-button-secondary px-5 py-3 text-sm font-semibold"
-                  >
-                    Use another email
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div>
-                    <div className="public-eyebrow">Authentication</div>
-                    <h2 className="mt-3 text-2xl font-semibold text-foreground">
-                      Continue into Nodebase
-                    </h2>
-                  </div>
+              <button
+                type="button"
+                onClick={() => signInWithOAuth("google")}
+                disabled={isLoading}
+                className="flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-background/60 px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted/50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-primary" />}
+                Continue with Google
+              </button>
+
+              <div className="flex items-center gap-3 text-xs uppercase tracking-[0.22em] text-muted-foreground">
+                <div className="h-px flex-1 bg-border" />
+                <span>or use email / phone</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+
+              {step === "contact" ? (
+                <form onSubmit={handleSendAuthCode} className="grid gap-4">
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
+                    Email or phone
+                    <div className="relative">
+                      {contact.includes("@") ? (
+                        <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      ) : (
+                        <Phone className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      )}
+                      <input
+                        required
+                        value={contact}
+                        onChange={(event) => setContact(event.target.value)}
+                        placeholder="name@company.com or 9876543210"
+                        className="w-full rounded-lg border border-border bg-background/60 px-4 py-3 pl-10 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
+                      />
+                    </div>
+                  </label>
+
+                  {error ? (
+                    <div className="rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm leading-6 text-destructive">
+                      {error}
+                    </div>
+                  ) : null}
 
                   <button
-                    type="button"
-                    onClick={() => signInWithOAuth("google")}
+                    type="submit"
                     disabled={isLoading}
-                    className="public-button-secondary flex w-full items-center justify-center gap-3 px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+                    className="flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                    Continue with Google
+                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+                    Request access
                   </button>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyOtp} className="grid gap-4">
+                  <label className="grid gap-2 text-sm font-medium text-foreground">
+                    One-time password
+                    <input
+                      required
+                      value={otp}
+                      onChange={(event) => setOtp(event.target.value)}
+                      placeholder="123456"
+                      className="w-full rounded-lg border border-border bg-background/60 px-4 py-3 text-center font-mono text-lg tracking-[0.35em] text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15"
+                    />
+                  </label>
 
-                  <div className="flex items-center gap-3 text-xs uppercase tracking-[0.22em] text-muted-foreground">
-                    <div className="h-px flex-1 bg-[rgba(61,44,25,0.12)]" />
-                    <span>or use email / phone</span>
-                    <div className="h-px flex-1 bg-[rgba(61,44,25,0.12)]" />
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Sent to {contact}</span>
+                    <button
+                      type="button"
+                      onClick={() => setStep("contact")}
+                      className="font-semibold text-primary"
+                    >
+                      Change
+                    </button>
                   </div>
 
-                  {step === "contact" ? (
-                    <form onSubmit={handleSendAuthCode} className="grid gap-4">
-                      <label className="grid gap-2 text-sm font-semibold text-foreground">
-                        Email or phone
-                        <div className="relative">
-                          {contact.includes("@") ? (
-                            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                          ) : (
-                            <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                          )}
-                          <input
-                            required
-                            value={contact}
-                            onChange={(event) => setContact(event.target.value)}
-                            placeholder="name@company.com or 9876543210"
-                            className="public-input pl-11"
-                          />
-                        </div>
-                      </label>
+                  {error ? (
+                    <div className="rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm leading-6 text-destructive">
+                      {error}
+                    </div>
+                  ) : null}
 
-                      {error ? (
-                        <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-primary">
-                          {error}
-                        </div>
-                      ) : null}
-
-                      <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="public-button px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
-                        Request access
-                      </button>
-                    </form>
-                  ) : (
-                    <form onSubmit={handleVerifyOtp} className="grid gap-4">
-                      <label className="grid gap-2 text-sm font-semibold text-foreground">
-                        One-time password
-                        <input
-                          required
-                          value={otp}
-                          onChange={(event) => setOtp(event.target.value)}
-                          placeholder="123456"
-                          className="public-input text-center font-mono text-lg tracking-[0.35em]"
-                        />
-                      </label>
-
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>Sent to {contact}</span>
-                        <button
-                          type="button"
-                          onClick={() => setStep("contact")}
-                          className="font-semibold text-primary"
-                        >
-                          Change
-                        </button>
-                      </div>
-
-                      {error ? (
-                        <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-primary">
-                          {error}
-                        </div>
-                      ) : null}
-
-                      <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="public-button px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                        Verify and continue
-                      </button>
-                    </form>
-                  )}
-                </>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                    Verify and continue
+                  </button>
+                </form>
               )}
-            </div>
-          </section>
+            </>
+          )}
+        </div>
+
+        {/* Footer link */}
+        <div className="mt-6 text-center">
+          <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            ← Return home
+          </Link>
         </div>
       </div>
     </div>
@@ -313,10 +300,8 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="public-site min-h-screen">
-          <div className="public-container flex min-h-screen items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
+        <div className="flex min-h-screen w-full items-center justify-center bg-background">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       }
     >
