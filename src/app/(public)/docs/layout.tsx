@@ -11,21 +11,24 @@ export default function DocsLayout({
   const mobileLinks = docsNavigation.flatMap((section) => section.items);
 
   return (
-    <div className="public-container pb-20 pt-28 sm:pt-32 lg:pt-36">
-      <div className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
+    <div className="public-container pb-32 pt-36 sm:pt-48 lg:pt-56">
+      <div className="grid gap-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
         <aside className="hidden lg:sticky lg:top-28 lg:block">
           <DocsSidebar />
         </aside>
 
-        <main className="min-w-0 space-y-6">
-          <div className="public-panel-soft p-4 lg:hidden">
-            <div className="public-eyebrow">Jump to docs section</div>
+        <main className="min-w-0 space-y-8">
+          {/* Mobile doc nav */}
+          <div className="glass-panel p-4 rounded-2xl lg:hidden">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+              Jump to docs section
+            </div>
             <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
               {mobileLinks.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="public-pill whitespace-nowrap text-sm font-semibold text-foreground"
+                  className="whitespace-nowrap rounded-full bg-white/5 border border-white/10 px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:bg-white/10 hover:text-white transition-all"
                 >
                   {item.label}
                 </Link>
@@ -33,20 +36,27 @@ export default function DocsLayout({
             </div>
           </div>
 
-          <section className="public-panel-soft p-5 sm:p-6">
+          {/* Docs header */}
+          <section className="glass-panel p-6 sm:p-8 rounded-[2rem]">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white">
                   <BookMarked className="h-5 w-5" />
                 </div>
                 <div>
-                  <div className="public-eyebrow">Documentation</div>
-                  <h1 className="public-display mt-2 text-2xl text-foreground">
-                    Deployment notes, control surfaces, and implementation detail
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                    Documentation
+                  </div>
+                  <h1 className="font-display mt-2 text-2xl text-white tracking-tighter">
+                    Deployment notes, control surfaces, and implementation
+                    detail
                   </h1>
                 </div>
               </div>
-              <Link href="/company/contact" className="public-button-secondary px-5 py-3 text-sm font-semibold">
+              <Link
+                href="/company/contact"
+                className="public-button-secondary px-5 py-3 text-sm font-semibold"
+              >
                 Need deployment help
                 <ArrowRight className="h-4 w-4" />
               </Link>

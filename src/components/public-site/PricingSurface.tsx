@@ -9,6 +9,7 @@ import {
   CreditCard,
   Headphones,
   ShieldCheck,
+  Sparkles,
   WalletCards,
   type LucideIcon,
 } from "lucide-react";
@@ -93,8 +94,8 @@ const faq = [
   },
 ];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
+const reveal = {
+  hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0 },
 };
 
@@ -108,41 +109,55 @@ function PricingCard({ frame, index }: { frame: Frame; index: number }) {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.25 }}
-      variants={fadeUp}
-      transition={{ duration: 0.45, delay: index * 0.08 }}
+      variants={reveal}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
       className={cn(
-        "p-6 sm:p-8",
-        frame.featured ? "public-panel border-b-8 border-primary" : "public-panel-soft",
+        "p-8 sm:p-10 rounded-[2.5rem] relative flex flex-col h-full overflow-hidden transition-all duration-500",
+        frame.featured ? "glass-panel-glow border-blue-500/50 hover:shadow-[0_20px_60px_rgba(59,130,246,0.3)]" : "glass-panel hover:shadow-[0_20px_50px_rgba(255,255,255,0.05)]"
       )}
     >
-      <div className="relative z-10 space-y-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
-            <Icon className="h-6 w-6" />
+      {frame.featured && (
+         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+      )}
+      <div className="relative z-10 flex-grow flex flex-col">
+        <div className="flex items-start justify-between gap-4 mb-8">
+          <div className={cn(
+            "flex h-14 w-14 items-center justify-center rounded-2xl shadow-inner",
+            frame.featured ? "bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]" : "bg-white/5 border border-white/10 text-white"
+          )}>
+            <Icon className="h-7 w-7" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded-full border border-primary/10">
+          <span className={cn(
+            "text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border",
+            frame.featured ? "bg-blue-500/10 border-blue-500/30 text-blue-400" : "bg-white/5 border-white/10 text-zinc-400"
+          )}>
             {frame.eyebrow}
           </span>
         </div>
+        
         <div>
-          <h2 className="text-xl font-bold text-foreground uppercase tracking-tight">
+          <h2 className="text-2xl font-bold text-white tracking-tight">
             {frame.title}
           </h2>
-          <div className="mt-3 text-2xl font-black text-primary uppercase tracking-tighter">
+          <div className={cn(
+            "mt-4 text-3xl font-black uppercase tracking-tighter",
+            frame.featured ? "text-gradient-primary" : "text-white"
+          )}>
             {frame.price}
           </div>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground font-sans">
+          <p className="mt-5 text-sm leading-relaxed text-zinc-400 font-sans h-[60px]">
             {frame.description}
           </p>
         </div>
-        <ul className="space-y-4 pt-2">
+        
+        <ul className="space-y-4 pt-8 mt-auto flex-grow flex flex-col justify-end">
           {frame.highlights.map((highlight) => (
             <li
               key={highlight}
-              className="flex gap-3 text-sm font-bold text-foreground uppercase tracking-tight"
+              className="flex items-start gap-3 text-sm font-semibold text-zinc-300"
             >
-              <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
-              <span>{highlight}</span>
+              <CheckCircle2 className={cn("h-5 w-5 shrink-0", frame.featured ? "text-blue-500" : "text-white/30")} />
+              <span className="pt-0.5">{highlight}</span>
             </li>
           ))}
         </ul>
@@ -153,79 +168,79 @@ function PricingCard({ frame, index }: { frame: Frame; index: number }) {
 
 export function PricingSurface() {
   return (
-    <div className="pb-20 pt-28 sm:pt-32 lg:pt-36">
-      <div className="public-container space-y-6">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.02fr)_minmax(18rem,0.98fr)]">
+    <div className="relative pb-32 pt-36 sm:pt-48 lg:pt-56 overflow-hidden">
+      <div className="public-container relative z-10 space-y-32">
+        {/* HERO */}
+        <div className="grid gap-12 lg:grid-cols-[1fr_0.8fr] items-center">
           <motion.section
             initial="hidden"
             animate="visible"
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-            className="public-panel px-6 py-8 sm:px-12 sm:py-16 lg:px-16"
+            variants={reveal}
+            transition={{ duration: 0.6 }}
+            className="space-y-8"
           >
-            <div className="relative z-10 space-y-8">
-              <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
-                Pricing Architecture
-              </div>
-              <h1 className="font-display max-w-4xl text-5xl leading-[0.9] text-foreground sm:text-6xl lg:text-7xl uppercase tracking-tighter">
-                Predictable operational economics.
-              </h1>
-              <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground font-sans">
-                Nodebase pricing ensures transparent scale. You pay a core infrastructure licensing fee of ₹999/mo, plus highly optimized usage rates for omnichannel AI compute.
-              </p>
-              <div className="flex flex-col gap-4 sm:flex-row pt-4">
-                <Link
-                   href="/company/contact"
-                   className="public-button px-8 py-4 text-sm"
-                >
-                  Scope a deployment
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/docs/getting-started/quickstart"
-                  className="public-button-secondary px-8 py-4 text-sm"
-                >
-                  Review the quickstart
-                </Link>
-              </div>
+            <div className="inline-flex py-1.5 px-4 rounded-full glass-panel border border-blue-500/30 font-sans text-xs font-semibold tracking-wide text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+              <Sparkles className="w-4 h-4 mr-2 inline-block -translate-y-px" />
+              Pricing Architecture
+            </div>
+            <h1 className="font-display max-w-3xl text-5xl leading-[1.1] text-foreground sm:text-6xl lg:text-7xl tracking-tighter">
+              Predictable <span className="text-gradient">operational</span> scale.
+            </h1>
+            <p className="max-w-xl text-lg leading-relaxed text-zinc-400 font-sans">
+              Nodebase pricing ensures transparent scale. You pay a core infrastructure licensing fee of ₹999/mo, plus highly optimized usage rates for omnichannel AI compute.
+            </p>
+            <div className="flex flex-col gap-4 sm:flex-row pt-4">
+              <Link
+                 href="/company/contact"
+                 className="rounded-full bg-gradient-to-r from-blue-600 to-blue-500 border border-blue-400/50 shadow-[0_0_30px_rgba(37,99,235,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)] px-8 py-4 text-sm font-bold text-white hover:shadow-[0_0_40px_rgba(37,99,235,0.7)] hover:-translate-y-1 transition-all flex items-center gap-2 justify-center"
+              >
+                Scope a deployment
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/docs/getting-started/quickstart"
+                className="rounded-full glass-panel px-8 py-4 text-sm font-semibold text-white hover:bg-white/10 hover:border-white/20 transition-all flex items-center justify-center border border-white/10"
+              >
+                Review the quickstart
+              </Link>
             </div>
           </motion.section>
 
           <motion.section
             initial="hidden"
             animate="visible"
-            variants={fadeUp}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="public-panel-soft p-6 sm:p-8"
+            variants={reveal}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="glass-panel p-8 sm:p-10 rounded-[2.5rem]"
           >
             <div className="space-y-6">
               <div className="flex items-center gap-4">
-                <div className="public-inset flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
-                  <CreditCard className="h-7 w-7" />
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-white/10 shadow-[inner_0_1px_1px_rgba(255,255,255,0.1)]">
+                  <CreditCard className="h-7 w-7 text-white" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Commercial posture</div>
-                  <h2 className="text-xl font-bold text-foreground uppercase tracking-tight mt-1">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Commercial posture</div>
+                  <h2 className="text-xl font-bold text-white tracking-tight mt-1">
                     Built for operators
                   </h2>
                 </div>
               </div>
-              <div className="grid gap-4">
-                <div className="public-inset rounded-2xl px-5 py-4 border-l-4 border-l-primary/10">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Base</div>
-                  <div className="mt-2 text-base font-bold text-foreground uppercase tracking-tight">
+              <div className="space-y-4">
+                <div className="glass-panel rounded-2xl px-5 py-4 border-l-2 border-l-blue-500 hover:bg-white/5 transition-colors">
+                  <div className="text-xs font-bold text-zinc-400">Base</div>
+                  <div className="mt-1 text-sm font-semibold text-white">
                     Subscription plus usage
                   </div>
                 </div>
-                <div className="public-inset rounded-2xl px-5 py-4 border-l-4 border-l-primary/10">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Revenue model</div>
-                  <div className="mt-2 text-base font-bold text-foreground uppercase tracking-tight">
+                <div className="glass-panel rounded-2xl px-5 py-4 border-l-2 border-l-purple-500 hover:bg-white/5 transition-colors">
+                  <div className="text-xs font-bold text-zinc-400">Revenue model</div>
+                  <div className="mt-1 text-sm font-semibold text-white">
                     No commission on sales
                   </div>
                 </div>
-                <div className="public-inset rounded-2xl px-5 py-4 border-l-4 border-l-primary/10">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Operator control</div>
-                  <div className="mt-2 text-base font-bold text-foreground uppercase tracking-tight">
+                <div className="glass-panel rounded-2xl px-5 py-4 border-l-2 border-l-emerald-500 hover:bg-white/5 transition-colors">
+                  <div className="text-xs font-bold text-zinc-400">Operator control</div>
+                  <div className="mt-1 text-sm font-semibold text-white">
                     Budget thresholds stay configurable
                   </div>
                 </div>
@@ -234,29 +249,33 @@ export function PricingSurface() {
           </motion.section>
         </div>
 
-        <section className="grid gap-4 xl:grid-cols-3">
+        {/* PRICING GRID */}
+        <section className="grid gap-6 lg:grid-cols-3">
           {pricingFrames.map((frame, index) => (
             <PricingCard key={frame.title} frame={frame} index={index} />
           ))}
         </section>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.88fr)_minmax(18rem,1.12fr)]">
-          <section className="public-panel-soft p-8 sm:p-12 border-l-4 border-l-primary/20">
+        {/* LEDGER & RULES COMPONENT */}
+        <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr]">
+          <section className="glass-panel p-8 sm:p-12 rounded-[2.5rem]">
             <div className="space-y-8">
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+              <div className="inline-flex py-1 px-4 rounded-full glass-panel border border-white/10 font-sans text-xs font-semibold tracking-wide text-zinc-300">
                 How to think about spend
               </div>
-              <h2 className="font-display text-4xl text-foreground sm:text-5xl uppercase tracking-tighter leading-[0.9]">
+              <h2 className="font-display text-4xl text-white tracking-tighter leading-tight">
                 Compare against manual drift.
               </h2>
               <div className="space-y-4">
                 {operatingRules.map((rule) => (
                   <div
                     key={rule}
-                    className="public-inset flex gap-6 rounded-2xl px-6 py-5 border-l-4 border-l-primary/10"
+                    className="flex gap-4 items-start group"
                   >
-                    <Activity className="h-6 w-6 shrink-0 text-primary" />
-                    <p className="text-sm font-bold text-foreground uppercase tracking-tight leading-relaxed">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl glass-panel group-hover:bg-white/10 transition-colors text-white mt-1">
+                       <Activity className="h-5 w-5 opacity-70 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <p className="text-sm font-medium text-zinc-300 pt-1 group-hover:text-white transition-colors leading-relaxed">
                       {rule}
                     </p>
                   </div>
@@ -265,22 +284,33 @@ export function PricingSurface() {
             </div>
           </section>
 
-          <section className="public-panel p-8 sm:p-12 border-r-4 border-r-primary">
-            <div className="relative z-10 space-y-8">
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Example monthly frame</div>
-              <h2 className="font-display text-4xl text-foreground uppercase tracking-tighter leading-[0.9]">
-                A simple ledger.
-              </h2>
-              <div className="space-y-4">
+          <section className="glass-panel-glow p-8 sm:p-12 rounded-[2.5rem] border border-blue-500/30 overflow-hidden relative">
+            <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
+              <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(100 100) rotate(90) scale(100)">
+                  <stop stopColor="#3B82F6" stopOpacity="0.5"/>
+                  <stop offset="1" stopColor="#3B82F6" stopOpacity="0"/>
+                </radialGradient>
+                <circle cx="100" cy="100" r="100" fill="url(#paint0_radial)"/>
+              </svg>
+            </div>
+            <div className="relative z-10 space-y-8 flex flex-col h-full">
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]">Example monthly frame</div>
+                <h2 className="font-display text-3xl text-white tracking-tighter leading-tight mt-3">
+                  A simple ledger.
+                </h2>
+              </div>
+              <div className="space-y-3 mt-auto flex-grow flex flex-col justify-end">
                 {sampleLedger.map((entry) => (
                   <div
                     key={entry.label}
-                    className="public-inset flex items-center justify-between gap-6 rounded-2xl px-6 py-5 border-l-4 border-l-primary/10"
+                    className="flex items-center justify-between gap-6 rounded-2xl px-6 py-5 glass-panel border border-white/5 hover:bg-white/5 transition-colors"
                   >
-                    <div className="text-sm font-bold text-foreground uppercase tracking-tight">
+                    <div className="text-sm font-bold text-zinc-300">
                       {entry.label}
                     </div>
-                    <div className="text-sm font-black text-primary uppercase tracking-widest">
+                    <div className="text-sm font-black text-white tracking-wide">
                       {entry.value}
                     </div>
                   </div>
@@ -290,54 +320,61 @@ export function PricingSurface() {
           </section>
         </div>
 
-        <section className="grid gap-4 md:grid-cols-2">
-          {faq.map((item, index) => (
-            <motion.article
-              key={item.question}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.22 }}
-              variants={fadeUp}
-              transition={{ duration: 0.4, delay: index * 0.06 }}
-              className="public-panel-soft p-6"
-            >
-              <h2 className="text-lg font-semibold text-foreground">
-                {item.question}
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                {item.answer}
-              </p>
-            </motion.article>
-          ))}
-        </section>
-
-        <section className="public-panel p-8 sm:p-16 border-t-8 border-primary bg-primary/5">
-          <div className="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-4xl">
-              <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
-                Commercial review
-              </div>
-              <h2 className="font-display mt-8 text-5xl text-foreground sm:text-6xl uppercase tracking-tighter leading-[0.85]">
-                If the workflow is real, we can price it clearly.
-              </h2>
-            </div>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="/company/contact"
-                className="public-button px-10 py-5 text-sm"
+        {/* FAQ SECTION */}
+        <section className="space-y-12">
+          <div className="text-center">
+            <h2 className="font-display text-4xl text-white tracking-tighter">Frequently asked questions</h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {faq.map((item, index) => (
+              <motion.article
+                key={item.question}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.22 }}
+                variants={reveal}
+                transition={{ duration: 0.4, delay: index * 0.06 }}
+                className="glass-panel p-8 rounded-[2rem] hover:-translate-y-1 transition-transform"
               >
-                Talk to sales
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/employees"
-                className="public-button-secondary px-10 py-5 text-sm"
-              >
-                Compare employees
-              </Link>
-            </div>
+                <h3 className="text-lg font-bold text-white tracking-tight">
+                  {item.question}
+                </h3>
+                <p className="mt-4 text-sm leading-relaxed text-zinc-400">
+                  {item.answer}
+                </p>
+              </motion.article>
+            ))}
           </div>
         </section>
+
+        {/* BOTTOM CTA */}
+        <section className="glass-panel-glow p-12 sm:p-20 rounded-[3rem] text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none" />
+          <div className="relative z-10 flex flex-col items-center">
+             <div className="inline-flex py-1 px-4 rounded-full border border-blue-400/30 bg-blue-500/10 text-[10px] uppercase font-bold tracking-widest text-blue-400 mb-8 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+               Commercial review
+             </div>
+             <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl text-white tracking-tighter leading-tight max-w-4xl mb-12">
+               If the workflow is real, we can price it clearly.
+             </h2>
+             <div className="flex flex-col sm:flex-row gap-4">
+               <Link
+                 href="/company/contact"
+                 className="rounded-full bg-white text-black px-10 py-4 text-sm font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,255,255,0.3)]"
+               >
+                 Talk to sales
+                 <ArrowRight className="h-4 w-4" />
+               </Link>
+               <Link
+                 href="/employees"
+                 className="rounded-full glass-panel border border-white/20 px-10 py-4 text-sm font-bold text-white hover:bg-white/10 transition-colors flex items-center justify-center"
+               >
+                 Compare employees
+               </Link>
+             </div>
+          </div>
+        </section>
+
       </div>
     </div>
   );

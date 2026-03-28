@@ -10,31 +10,36 @@ export function Footer() {
   return (
     <footer className="relative z-10 pb-8 pt-4 sm:pb-10">
       <div className="public-container">
-        <div className="px-6 py-8 sm:px-8 sm:py-10 bg-background/50 border-t border-border/50">
+        <div className="glass-panel p-8 sm:p-10 rounded-[2.5rem]">
           <div className="relative z-10 space-y-10">
+            {/* Top section: brand + contact */}
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
               <div className="space-y-6">
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Public site upgraded</div>
-                <div className="flex items-center gap-6">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/20">
-                    <Logo className="h-10 w-10 text-white" />
+                <div className="flex items-center gap-5">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-[0_0_20px_rgba(59,130,246,0.3)] border border-white/20">
+                    <Logo className="h-7 w-7 text-white" />
                   </div>
                   <div>
-                    <div className="font-display text-3xl text-foreground uppercase tracking-tighter leading-none">nodebase</div>
-                    <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground font-sans">
-                      AI employees for businesses that run on messages, payments, schedules,
-                      and exceptions.
+                    <div className="font-display text-2xl text-white tracking-tighter leading-none">
+                      nodebase
+                    </div>
+                    <p className="mt-1 max-w-xl text-sm text-zinc-400">
+                      AI employees for businesses that run on messages,
+                      payments, schedules, and exceptions.
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col gap-4 sm:flex-row">
-                  <Link href="/company/contact" className="public-button px-8 py-4 text-sm">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    href="/company/contact"
+                    className="public-button px-6 py-3 text-sm"
+                  >
                     Book a workflow review
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                   <Link
                     href="/docs/getting-started/quickstart"
-                    className="public-button-secondary px-8 py-4 text-sm"
+                    className="public-button-secondary px-6 py-3 text-sm"
                   >
                     Read the quickstart
                   </Link>
@@ -42,21 +47,25 @@ export function Footer() {
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                <div className="public-inset p-5 border-l-4 border-l-primary/10">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Sales</div>
+                <div className="glass-panel p-5 rounded-xl border-l-2 border-l-blue-500">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">
+                    Sales
+                  </div>
                   <a
                     href="mailto:sales@nodebase.space"
-                    className="mt-3 flex items-center gap-2 text-sm font-bold text-foreground hover:text-primary transition-colors"
+                    className="mt-2 flex items-center gap-2 text-sm font-semibold text-zinc-300 hover:text-white transition-colors"
                   >
                     <Mail className="h-4 w-4" />
                     sales@nodebase.space
                   </a>
                 </div>
-                <div className="public-inset p-5 border-l-4 border-l-primary/10">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">Trust posture</div>
+                <div className="glass-panel p-5 rounded-xl border-l-2 border-l-purple-500">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-purple-400">
+                    Trust posture
+                  </div>
                   <Link
                     href="/trust"
-                    className="mt-3 flex items-center gap-2 text-sm font-bold text-foreground hover:text-primary transition-colors"
+                    className="mt-2 flex items-center gap-2 text-sm font-semibold text-zinc-300 hover:text-white transition-colors"
                   >
                     <ShieldCheck className="h-4 w-4" />
                     Review controls and legal docs
@@ -65,26 +74,32 @@ export function Footer() {
               </div>
             </div>
 
-            <div className="grid gap-8 border-t public-border-line pt-8 md:grid-cols-[minmax(0,1.1fr)_repeat(4,minmax(0,1fr))]">
+            {/* Link groups */}
+            <div className="grid gap-8 border-t border-white/5 pt-8 md:grid-cols-[minmax(0,1.1fr)_repeat(4,minmax(0,1fr))]">
               <div className="space-y-4">
-                <div className="text-[10px] font-black uppercase tracking-widest text-primary">Headquarters</div>
-                <address className="not-italic text-sm leading-relaxed text-muted-foreground font-sans">
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                  Headquarters
+                </div>
+                <address className="not-italic text-sm leading-relaxed text-zinc-400">
                   {COMPANY_CONFIG.headquarters.address}
                 </address>
-                <div className="inline-flex py-1 px-3 rounded-full bg-primary/5 text-primary border border-primary/10 text-[10px] font-bold uppercase tracking-tight">
-                  Operating across hospitality, healthcare, commerce, and delivery workflows
+                <div className="inline-flex py-1 px-3 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-zinc-400">
+                  Operating across hospitality, healthcare, commerce, and
+                  delivery workflows
                 </div>
               </div>
 
               {footerLinkGroups.map((group) => (
                 <nav key={group.title} aria-label={group.title}>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-primary">{group.title}</div>
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                    {group.title}
+                  </div>
                   <ul className="mt-5 space-y-3">
                     {group.links.map((link) => (
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="text-sm font-bold text-muted-foreground transition-colors hover:text-foreground"
+                          className="text-sm font-medium text-zinc-400 transition-colors hover:text-white"
                         >
                           {link.label}
                         </Link>
@@ -95,18 +110,25 @@ export function Footer() {
               ))}
             </div>
 
-            <div className="flex flex-col gap-6 border-t border-border/40 pt-8 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground/60">
+            {/* Bottom bar */}
+            <div className="flex flex-col gap-6 border-t border-white/5 pt-8 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-600">
                 Copyright {year} Nodebase. All rights reserved.
               </p>
-              <div className="flex flex-wrap gap-3">
-                <span className="inline-flex py-1 px-3 rounded-full bg-muted border border-border text-[10px] font-bold uppercase tracking-tight text-muted-foreground">
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex py-1 px-3 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-zinc-500">
                   System posture: operator controlled
                 </span>
-                <Link href="/legal/privacy" className="inline-flex py-1 px-3 rounded-full bg-muted border border-border text-[10px] font-bold uppercase tracking-tight text-foreground hover:bg-muted/80 transition-colors">
+                <Link
+                  href="/legal/privacy"
+                  className="inline-flex py-1 px-3 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-zinc-400 hover:text-white hover:bg-white/10 transition-all"
+                >
                   Privacy
                 </Link>
-                <Link href="/legal/terms" className="inline-flex py-1 px-3 rounded-full bg-muted border border-border text-[10px] font-bold uppercase tracking-tight text-foreground hover:bg-muted/80 transition-colors">
+                <Link
+                  href="/legal/terms"
+                  className="inline-flex py-1 px-3 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-zinc-400 hover:text-white hover:bg-white/10 transition-all"
+                >
                   Terms
                 </Link>
               </div>

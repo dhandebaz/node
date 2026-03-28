@@ -53,13 +53,13 @@ const prepNotes = [
   "Where does human approval still need to stay in the loop?",
 ];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 22 },
+const reveal = {
+  hidden: { opacity: 0, y: 26 },
   visible: { opacity: 1, y: 0 },
 };
 
 const fieldClassName =
-  "w-full rounded-[1.2rem] border border-border bg-background/95 px-4 py-3 text-sm text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.82)] outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/15";
+  "w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-zinc-500 outline-none transition focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 focus:bg-white/[0.07]";
 
 export function ContactSurface() {
   const [formState, setFormState] = useState({
@@ -90,30 +90,35 @@ export function ContactSurface() {
   };
 
   return (
-    <div className="pb-20 pt-28 sm:pt-32 lg:pt-36">
-      <div className="public-container space-y-6">
+    <div className="relative pb-32 pt-36 sm:pt-48 lg:pt-56 overflow-hidden">
+      <div className="public-container relative z-10 space-y-12">
+        {/* Hero */}
         <motion.section
           initial="hidden"
           animate="visible"
-          variants={fadeUp}
-          transition={{ duration: 0.5 }}
-          className="public-panel px-6 py-8 sm:px-8 sm:py-10 lg:px-10"
+          variants={reveal}
+          transition={{ duration: 0.6 }}
+          className="glass-panel p-8 sm:p-12 lg:p-16 rounded-[2.5rem] relative overflow-hidden"
         >
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
           <div className="relative z-10 space-y-6">
-            <div className="public-pill public-eyebrow">Contact Nodebase</div>
-            <h1 className="public-display max-w-4xl text-4xl leading-[0.92] text-foreground sm:text-5xl lg:text-6xl">
+            <div className="inline-flex py-1.5 px-4 rounded-full glass-panel border-blue-500/30 text-xs font-semibold tracking-wide text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+              Contact Nodebase
+            </div>
+            <h1 className="font-display max-w-4xl text-4xl leading-[1.1] text-white sm:text-5xl lg:text-6xl tracking-tighter">
               Bring the workflow, the bottleneck, and the constraints.
             </h1>
-            <p className="max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">
-              The fastest way to get a useful answer is to describe the operating lane
-              you want the employee to own, the systems already in play, and where human
-              approval still needs to remain.
+            <p className="max-w-3xl text-lg leading-relaxed text-zinc-400 font-sans">
+              The fastest way to get a useful answer is to describe the operating
+              lane you want the employee to own, the systems already in play, and
+              where human approval still needs to remain.
             </p>
           </div>
         </motion.section>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(18rem,1.1fr)]">
-          <section className="space-y-4">
+        {/* Two-column: channels + form */}
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(18rem,1.1fr)]">
+          <section className="space-y-6">
             {channels.map((channel, index) => {
               const Icon = channel.icon;
               const isExternal = channel.href.startsWith("mailto:");
@@ -124,23 +129,25 @@ export function ContactSurface() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, amount: 0.25 }}
-                  variants={fadeUp}
-                  transition={{ duration: 0.42, delay: index * 0.08 }}
-                  className="public-panel-soft p-6"
+                  variants={reveal}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="glass-panel p-6 rounded-[2rem] hover:-translate-y-1 transition-transform duration-500"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white">
                       <Icon className="h-5 w-5" />
                     </div>
                     <div>
-                      <div className="public-eyebrow">{channel.title}</div>
-                      <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                      <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                        {channel.title}
+                      </div>
+                      <p className="mt-3 text-sm leading-relaxed text-zinc-400">
                         {channel.description}
                       </p>
                       {isExternal ? (
                         <a
                           href={channel.href}
-                          className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                          className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors"
                         >
                           {channel.cta}
                           <ArrowRight className="h-4 w-4" />
@@ -148,7 +155,7 @@ export function ContactSurface() {
                       ) : (
                         <Link
                           href={channel.href}
-                          className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                          className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors"
                         >
                           {channel.cta}
                           <ArrowRight className="h-4 w-4" />
@@ -160,14 +167,16 @@ export function ContactSurface() {
               );
             })}
 
-            <div className="public-panel-soft p-6">
-              <div className="flex items-start gap-3">
-                <div className="public-inset flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10/70 text-primary">
+            <div className="glass-panel p-6 rounded-[2rem]">
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white">
                   <MapPin className="h-5 w-5" />
                 </div>
                 <div>
-                  <div className="public-eyebrow">Headquarters</div>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                    Headquarters
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-400">
                     {COMPANY_CONFIG.headquarters.address}
                   </p>
                 </div>
@@ -175,53 +184,66 @@ export function ContactSurface() {
             </div>
           </section>
 
+          {/* Contact form */}
           <motion.section
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
-            variants={fadeUp}
-            transition={{ duration: 0.46 }}
-            className="public-panel p-6 sm:p-8"
+            variants={reveal}
+            transition={{ duration: 0.6 }}
+            className="glass-panel-glow p-8 sm:p-10 rounded-[2.5rem] border border-blue-500/30 relative overflow-hidden"
           >
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
             <div className="relative z-10 space-y-6">
               <div>
-                <div className="public-eyebrow">Workflow intake</div>
-                <h2 className="public-display mt-3 text-3xl text-foreground sm:text-4xl">
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]">
+                  Workflow intake
+                </div>
+                <h2 className="font-display mt-3 text-3xl text-white tracking-tighter leading-tight">
                   Send enough signal that we can respond usefully.
                 </h2>
               </div>
 
               <div className="grid gap-3">
                 {prepNotes.map((note) => (
-                  <div key={note} className="public-inset flex gap-3 rounded-[1.4rem] px-4 py-4">
-                    <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" />
-                    <p className="text-sm leading-6 text-muted-foreground">{note}</p>
+                  <div
+                    key={note}
+                    className="flex gap-3 rounded-xl glass-panel px-4 py-3 hover:bg-white/5 transition-colors"
+                  >
+                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-blue-400" />
+                    <p className="text-sm text-zinc-400">{note}</p>
                   </div>
                 ))}
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="space-y-2 text-sm font-semibold text-foreground">
+                  <label className="space-y-2 text-sm font-semibold text-zinc-300">
                     Name
                     <input
                       required
                       value={formState.name}
                       onChange={(event) =>
-                        setFormState((current) => ({ ...current, name: event.target.value }))
+                        setFormState((current) => ({
+                          ...current,
+                          name: event.target.value,
+                        }))
                       }
                       className={fieldClassName}
                       placeholder="Your name"
                     />
                   </label>
-                  <label className="space-y-2 text-sm font-semibold text-foreground">
+                  <label className="space-y-2 text-sm font-semibold text-zinc-300">
                     Email
                     <input
                       required
                       type="email"
                       value={formState.email}
                       onChange={(event) =>
-                        setFormState((current) => ({ ...current, email: event.target.value }))
+                        setFormState((current) => ({
+                          ...current,
+                          email: event.target.value,
+                        }))
                       }
                       className={fieldClassName}
                       placeholder="you@company.com"
@@ -229,25 +251,31 @@ export function ContactSurface() {
                   </label>
                 </div>
 
-                <label className="block space-y-2 text-sm font-semibold text-foreground">
+                <label className="block space-y-2 text-sm font-semibold text-zinc-300">
                   Company
                   <input
                     value={formState.company}
                     onChange={(event) =>
-                      setFormState((current) => ({ ...current, company: event.target.value }))
+                      setFormState((current) => ({
+                        ...current,
+                        company: event.target.value,
+                      }))
                     }
                     className={fieldClassName}
                     placeholder="Company or team"
                   />
                 </label>
 
-                <label className="block space-y-2 text-sm font-semibold text-foreground">
+                <label className="block space-y-2 text-sm font-semibold text-zinc-300">
                   Workflow summary
                   <textarea
                     required
                     value={formState.workflow}
                     onChange={(event) =>
-                      setFormState((current) => ({ ...current, workflow: event.target.value }))
+                      setFormState((current) => ({
+                        ...current,
+                        workflow: event.target.value,
+                      }))
                     }
                     className={`${fieldClassName} min-h-[170px] resize-none`}
                     placeholder="Describe the workflow, channels, current bottleneck, and where human approval still matters."
@@ -255,13 +283,16 @@ export function ContactSurface() {
                 </label>
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <button type="submit" className="public-button px-6 py-3 text-sm font-semibold">
+                  <button
+                    type="submit"
+                    className="public-button px-6 py-3 text-sm font-semibold"
+                  >
                     Draft the email
                     <ArrowRight className="h-4 w-4" />
                   </button>
                   <a
                     href="mailto:sales@nodebase.space"
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
                   >
                     <Mail className="h-4 w-4" />
                     sales@nodebase.space
@@ -269,9 +300,10 @@ export function ContactSurface() {
                 </div>
 
                 {submitted ? (
-                  <div className="rounded-[1.4rem] border border-border bg-primary/10/65 px-4 py-3 text-sm leading-6 text-foreground">
-                    Your email client should open with the workflow draft. If it does not,
-                    send the same details directly to sales@nodebase.space.
+                  <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-sm leading-relaxed text-zinc-300">
+                    Your email client should open with the workflow draft. If it
+                    does not, send the same details directly to
+                    sales@nodebase.space.
                   </div>
                 ) : null}
               </form>

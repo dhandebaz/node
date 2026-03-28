@@ -28,20 +28,17 @@ const workflowPillars: {
 }[] = [
   {
     title: "Autonomous AI Staff",
-    description:
-      "Deploy specialized agents (Thrift AI, Nurse AI, Dukan AI, Host AI) tailored to your exact business vertical.",
+    description: "Deploy specialized agents (Thrift AI, Nurse AI, Dukan AI, Host AI) tailored to your exact business vertical.",
     icon: Sparkles,
   },
   {
     title: "Nodebase Voice & Eyes",
-    description:
-      "Handle live customer phone calls natively via Twilio and ingest vision data like menus or IDs with OCR.",
+    description: "Handle live customer phone calls natively via Twilio and ingest vision data like menus or IDs with OCR.",
     icon: Waypoints,
   },
   {
     title: "Enterprise Trust",
-    description:
-      "Bank-grade compliance with built-in KYC verification, automated consent forms, and dynamic pricing rules.",
+    description: "Bank-grade compliance with built-in KYC verification, automated consent forms, and dynamic pricing rules.",
     icon: ShieldCheck,
   },
 ];
@@ -52,226 +49,222 @@ const operatingSequence = [
   "Let the AI answer questions and take bookings 24/7.",
 ];
 
-const controlCards = [
-  {
-    eyebrow: "Unified Operations",
-    title: "Centralized Customer Portal",
-    body: "Oversee omnichannel routing, secure payment links, and AI-driven inbox management from a singular, high-performance dashboard.",
-    icon: Activity,
-  },
-  {
-    eyebrow: "Intelligent Logic",
-    title: "Dynamic compute & forms",
-    body: "Implement dynamic pricing engines and automated KYC consent forms that scale frictionlessly with your operating volume.",
-    icon: CreditCard,
-  },
-  {
-    eyebrow: "Multimodal AI",
-    title: "Nodebase Voice & Eyes",
-    body: "Live Twilio telephony, instant omnichannel messaging, and zero-latency image ingestion for menus and IDs—natively processed.",
-    icon: BookOpenText,
-  },
-];
-
 const reveal = {
-  hidden: { opacity: 0, y: 22 },
+  hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0 },
 };
 
 export function HomePage() {
   return (
-    <div className="pb-20 pt-28 sm:pt-32 lg:pt-36">
-      <div className="public-container space-y-6">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(18rem,0.92fr)]">
-          <motion.section
+    <div className="relative pb-32 pt-36 sm:pt-48 lg:pt-56 overflow-hidden">
+      <div className="public-container relative z-10 space-y-32">
+        {/* HERO SECTION */}
+        <section className="relative flex flex-col items-center justify-center text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/20 rounded-full blur-[120px] -z-10 pointer-events-none"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[100px] -z-10 pointer-events-none"
+          />
+
+          <motion.div
             initial="hidden"
             animate="visible"
             variants={reveal}
-            transition={{ duration: 0.5 }}
-            className="glass-panel relative overflow-hidden px-6 py-8 sm:px-8 sm:py-10 lg:px-10"
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border-blue-500/30 text-xs font-semibold tracking-wide text-blue-400 mb-8 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
           >
-            <div className="absolute right-[-5rem] top-[-3rem] h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(26,115,232,0.15),transparent_68%)] animate-pulse" />
-            <div className="absolute bottom-[-6rem] left-[-5rem] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(26,115,232,0.05),transparent_72%)]" />
-            <div className="relative z-10 space-y-10">
-              <div className="space-y-8">
-                <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
-                  The Enterprise AI Workforce
+            <Sparkles className="w-4 h-4" />
+            <span>The Enterprise AI Workforce</span>
+          </motion.div>
+
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="font-display max-w-5xl text-6xl leading-[1.1] text-foreground sm:text-7xl lg:text-8xl tracking-tighter"
+          >
+            The autonomous workforce for{" "}
+            <span className="text-gradient-primary">modern enterprises.</span>
+          </motion.h1>
+
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-8 max-w-2xl text-lg sm:text-xl leading-relaxed text-zinc-400 font-sans"
+          >
+            Deploy domain-specific AI employees—capable of autonomous voice, vision, and transactional workflows—to scale your operations instantly.
+          </motion.p>
+
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-12 flex flex-col sm:flex-row items-center gap-4"
+          >
+            <Link
+              href="/signup"
+              className="rounded-full bg-gradient-to-r from-blue-600 to-blue-500 border border-blue-400/50 shadow-[0_0_30px_rgba(37,99,235,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)] px-8 py-4 text-sm font-bold text-white hover:shadow-[0_0_40px_rgba(37,99,235,0.7)] hover:-translate-y-1 transition-all flex items-center gap-2"
+            >
+              Deploy AI Free
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/company/contact"
+              className="rounded-full glass-panel px-8 py-4 text-sm font-semibold text-white hover:bg-white/10 hover:border-white/20 transition-all flex items-center gap-2"
+            >
+              Talk to Sales
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl"
+          >
+            {heroMetrics.map((metric, i) => (
+              <div key={metric.label} className="glass-panel p-6 rounded-2xl flex flex-col items-center justify-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]">
+                  {metric.label}
                 </div>
-                <h1 className="font-display max-w-4xl text-5xl leading-tight text-foreground sm:text-6xl lg:text-[5.5rem] lg:leading-[1.05] tracking-tight">
-                  The autonomous workforce for modern enterprises.
-                </h1>
-                <p className="max-w-xl text-lg sm:text-xl leading-relaxed text-muted-foreground font-sans">
-                  Deploy domain-specific AI employees—capable of autonomous voice, vision, and transactional workflows—to scale your operations instantly. Fast, secure, and built for scale.
-                </p>
+                <div className="mt-2 text-lg font-bold text-white tracking-tight">
+                  {metric.value}
+                </div>
               </div>
- 
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <Link
-                  href="/signup"
-                  className="public-button px-8 py-4 text-sm"
-                >
-                  Get Started Free
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/company/contact"
-                  className="public-button-secondary px-8 py-4 text-sm"
-                >
-                  Talk to Sales
-                </Link>
+            ))}
+          </motion.div>
+        </section>
+
+        {/* UNIFIED INBOX SPLIT SECTION */}
+        <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8">
+          <motion.section
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={reveal}
+            className="glass-panel-glow p-8 sm:p-12 rounded-[2.5rem] relative overflow-hidden flex flex-col justify-between"
+          >
+            <div className="absolute top-0 right-0 p-8">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-500/10 border border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.3)] animate-pulse">
+                <Sparkles className="h-8 w-8 text-blue-400" />
               </div>
+            </div>
+            
+            <div className="space-y-6 max-w-lg mb-12">
+              <div className="text-xs font-bold tracking-[0.2em] text-blue-400 uppercase drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]">Unified Inbox</div>
+              <h2 className="font-display text-4xl text-white tracking-tighter leading-[1.1]">
+                Every customer interaction, instantly resolved.
+              </h2>
+            </div>
 
-
-              <div className="grid gap-4 md:grid-cols-3">
-                {heroMetrics.map((metric) => (
-                  <div key={metric.label} className="public-inset p-5 border-l-4 border-l-primary/30">
-                    <div className="text-[10px] font-black uppercase tracking-widest text-primary">{metric.label}</div>
-                    <div className="mt-2 text-base font-bold text-foreground">
-                      {metric.value}
-                    </div>
-                  </div>
-                ))}
+            <div className="space-y-4">
+              <div className="glass-panel p-5 rounded-2xl border-l-4 border-l-blue-500 flex items-center justify-between hover:bg-white/5 transition-colors">
+                <div>
+                  <div className="text-sm font-bold text-white">Homestay Booking</div>
+                  <div className="text-xs text-zinc-400 mt-1">Kaisa answered a question about parking and sent a booking link.</div>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] text-blue-400 tracking-widest uppercase font-bold">Pending</span>
+              </div>
+              
+              <div className="glass-panel p-5 rounded-2xl border-l-4 border-l-purple-500 flex items-center justify-between hover:bg-white/5 transition-colors">
+                <div>
+                  <div className="text-sm font-bold text-white">Clinic Appointment</div>
+                  <div className="text-xs text-zinc-400 mt-1">Patient asked a complex question. AI paused for your review.</div>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/50 text-[10px] text-purple-300 tracking-widest uppercase font-bold animate-pulse">Manual Review</span>
+              </div>
+              
+              <div className="glass-panel p-5 rounded-2xl border-l-4 border-l-emerald-500 flex items-center justify-between hover:bg-white/5 transition-colors">
+                <div>
+                  <div className="text-sm font-bold text-white">Store Order</div>
+                  <div className="text-xs text-zinc-400 mt-1">Payment received. Customer confirmed delivery address.</div>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-[10px] text-emerald-400 tracking-widest uppercase font-bold">Paid</span>
               </div>
             </div>
           </motion.section>
 
-          <div className="grid gap-4">
+          <div className="flex flex-col gap-6">
             <motion.section
               initial="hidden"
-              animate="visible"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
               variants={reveal}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="glass-panel p-5 sm:p-6"
+              className="glass-panel p-8 rounded-[2.5rem] flex-1 flex flex-col justify-center"
             >
-              <div className="relative z-10 space-y-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-semibold tracking-wide text-primary">Unified Inbox</div>
-                    <h2 className="font-display mt-3 text-3xl text-foreground tracking-tight leading-tight">
-                      Everything in one place
-                    </h2>
+              <div className="inline-flex py-1.5 px-4 rounded-full bg-white/5 border border-white/10 font-sans text-xs font-semibold tracking-wide w-fit text-zinc-300 mb-6">
+                Practical Launch Sequence
+              </div>
+              <h2 className="font-display text-3xl text-white tracking-tighter leading-tight mb-8">
+                Ship with the operating model attached.
+              </h2>
+              <div className="space-y-6">
+                {operatingSequence.map((step, index) => (
+                  <div key={step} className="flex gap-4 items-start group">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl glass-panel group-hover:border-blue-500/50 transition-colors text-sm font-bold text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                      0{index + 1}
+                    </div>
+                    <p className="text-sm font-medium text-zinc-300 pt-1 group-hover:text-white transition-colors">
+                      {step}
+                    </p>
                   </div>
-                  <motion.div
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{
-                      duration: 4.8,
-                      repeat: Number.POSITIVE_INFINITY,
-                      ease: "easeInOut",
-                    }}
-                    className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary border border-primary/20 shadow-lg shadow-primary/10"
-                  >
-                    <Sparkles className="h-7 w-7" />
-                  </motion.div>
+                ))}
+              </div>
+            </motion.section>
+            
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={reveal}
+              className="glass-panel p-6 rounded-[2.5rem] border border-blue-500/30 bg-blue-500/5"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-500">
+                  <Clock3 className="h-6 w-6 text-white" />
                 </div>
-
-                <div className="space-y-4">
-                  <div className="public-inset flex items-center justify-between gap-4 px-5 py-4 border-l-4 border-l-primary/10">
-                    <div>
-                      <div className="text-sm font-bold text-foreground uppercase tracking-tight">
-                        Homestay Booking
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        Kaisa answered a question about parking and sent a
-                        booking link.
-                      </div>
-                    </div>
-                    <span className="public-pill text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted border border-border">
-                      Pending
-                    </span>
-                  </div>
-                  <div className="public-inset flex items-center justify-between gap-4 px-5 py-4 border-l-4 border-l-primary/40">
-                    <div>
-                      <div className="text-sm font-bold text-foreground uppercase tracking-tight">
-                        Clinic Appointment
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        Patient asked a complex question. AI paused for your
-                        review.
-                      </div>
-                    </div>
-                    <span className="public-pill text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 border border-primary/20 animate-pulse">
-                      Manual review
-                    </span>
-                  </div>
-                  <div className="public-inset flex items-center justify-between gap-4 px-5 py-4 border-l-4 border-l-emerald-500/30">
-                    <div>
-                      <div className="text-sm font-bold text-foreground uppercase tracking-tight">
-                        Store Order
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1">
-                        Payment received. Customer confirmed delivery address.
-                      </div>
-                    </div>
-                    <span className="public-pill text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-500/10 border border-emerald-500/20">
-                      Paid
-                    </span>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
-                  <div className="flex items-center gap-3 text-sm font-bold text-foreground uppercase tracking-tight">
-                    <Clock3 className="h-5 w-5 text-primary" />
-                    Never lose a sale because you replied too late.
-                  </div>
+                <div className="text-sm font-bold text-white">
+                  Never lose a sale because you replied too late.
                 </div>
               </div>
             </motion.section>
-
-            <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-              {controlCards.map((card, index) => {
-                const Icon = card.icon;
-
-                return (
-                  <motion.section
-                    key={card.title}
-                    initial="hidden"
-                    animate="visible"
-                    variants={reveal}
-                    transition={{ duration: 0.45, delay: 0.14 + index * 0.08 }}
-                    className="glass-card p-5"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
-                        <Icon className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-semibold tracking-wide text-primary">{card.eyebrow}</div>
-                        <h3 className="mt-2 text-lg font-semibold text-foreground tracking-tight">
-                          {card.title}
-                        </h3>
-                        <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                          {card.body}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.section>
-                );
-              })}
-            </div>
           </div>
         </div>
 
-        <section className="grid gap-4 lg:grid-cols-3">
+        {/* PILLARS SECTION */}
+        <section className="grid sm:grid-cols-3 gap-6">
           {workflowPillars.map((pillar, index) => {
             const Icon = pillar.icon;
-
             return (
               <motion.div
                 key={pillar.title}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
+                viewport={{ once: true, amount: 0.2 }}
                 variants={reveal}
-                transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="glass-card p-6"
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="glass-panel p-8 rounded-[2rem] hover:-translate-y-2 transition-transform duration-500 group"
               >
-                <div className="public-inset flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-blue-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group-hover:bg-blue-500/10 group-hover:border-blue-500/30 transition-colors">
                   <Icon className="h-7 w-7" />
                 </div>
-                <h2 className="mt-6 text-xl font-semibold text-foreground tracking-tight">
+                <h3 className="mt-6 text-xl font-bold text-white tracking-tight">
                   {pillar.title}
-                </h2>
-                <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                </h3>
+                <p className="mt-4 text-sm leading-relaxed text-zinc-400">
                   {pillar.description}
                 </p>
               </motion.div>
@@ -279,167 +272,94 @@ export function HomePage() {
           })}
         </section>
 
-        <section className="glass-panel p-6 sm:p-12 lg:p-16">
-          <div className="relative z-10 space-y-12">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-4xl">
-                <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
-                  Choose the employee
-                </div>
-                <h2 className="font-display mt-6 text-4xl text-foreground sm:text-5xl tracking-tight leading-tight">
-                  Hire by business lane, not general-purpose model
-                </h2>
+        {/* EMPLOYEES GRID */}
+        <section className="relative">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between mb-12">
+            <div className="max-w-2xl">
+              <div className="inline-flex py-1.5 px-4 rounded-full glass-panel border border-white/10 font-sans text-xs font-semibold tracking-wide text-zinc-300">
+                Choose the employee
               </div>
-              <Link
-                href="/pricing"
-                className="public-button-secondary px-8 py-4 text-sm"
-              >
-                See pricing
-              </Link>
+              <h2 className="font-display mt-6 text-4xl text-white sm:text-5xl tracking-tighter leading-tight">
+                Hire by business lane, not general-purpose model.
+              </h2>
             </div>
+            <Link
+              href="/pricing"
+              className="rounded-full glass-panel px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all flex items-center gap-2 border border-white/10"
+            >
+              See pricing
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              {employeeDirectoryPage.cards.map((item, index) => {
-                const Icon = item.icon;
-
-                return (
-                  <motion.div
-                    key={item.title}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.2 }}
-                    variants={reveal}
-                    transition={{ duration: 0.45, delay: index * 0.07 }}
-                  >
-                    <Link
-                      href={item.href || "/employees"}
-                      className="block h-full"
-                    >
-                      <div className="glass-card group h-full p-6 transition-transform duration-200 hover:-translate-y-1 hover:bg-white/60 dark:hover:bg-white/5">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 text-primary ring-1 ring-primary/20">
-                            {Icon ? <Icon className="h-6 w-6" /> : null}
-                          </div>
-                          {item.stat ? (
-                            <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded-full border border-primary/10">
-                              {item.stat}
-                            </span>
-                          ) : null}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {employeeDirectoryPage.cards.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.title}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.2 }}
+                  variants={reveal}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Link href={item.href || "/employees"} className="block h-full">
+                    <div className="glass-panel group h-full p-8 rounded-[2rem] hover:-translate-y-2 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(59,130,246,0.15)] hover:border-blue-500/30">
+                      <div className="flex items-start justify-between mb-8">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group-hover:bg-blue-500/20 group-hover:text-blue-400 group-hover:border-blue-500/50 transition-colors">
+                          {Icon ? <Icon className="h-6 w-6" /> : null}
                         </div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mt-6">
-                          {item.eyebrow}
-                        </div>
-                        <h3 className="mt-2 text-xl font-bold text-foreground uppercase tracking-tight">
-                          {item.title}
-                        </h3>
-                        <p className="mt-3 text-sm leading-6 text-muted-foreground font-sans">
-                          {item.description}
-                        </p>
-                        <div className="mt-6 inline-flex items-center gap-2 text-sm font-black uppercase tracking-wider text-primary">
-                          {item.ctaLabel || "Open"}
-                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </div>
+                        {item.stat && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
+                            {item.stat}
+                          </span>
+                        )}
                       </div>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
+                      <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-2">
+                        {item.eyebrow}
+                      </div>
+                      <h3 className="text-xl font-bold text-white tracking-tight">
+                        {item.title}
+                      </h3>
+                      <p className="mt-3 text-sm leading-relaxed text-zinc-400 h-[72px]">
+                        {item.description}
+                      </p>
+                      <div className="mt-6 flex items-center gap-2 text-sm font-bold text-blue-400 group-hover:text-blue-300 transition-colors">
+                        {item.ctaLabel || "View Setup"}
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         </section>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,0.86fr)_minmax(18rem,1.14fr)]">
-          <section className="glass-card p-8 sm:p-12 border-l-4 border-l-primary/20">
-            <div className="space-y-6">
-              <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide w-fit">
-                Rollout Posture
-              </div>
-              <h2 className="font-display mt-6 text-4xl text-foreground sm:text-5xl tracking-tight leading-tight">
-                Upgrade the workflow, then the page surface.
-              </h2>
-              <p className="text-lg leading-relaxed text-muted-foreground font-sans max-w-2xl">
-                The public site now reflects a higher signal product: role-based
-                employees, documented controls, stronger legal surfaces, and
-                clearer deployment logic.
-              </p>
-              <div className="grid gap-4 max-w-md">
-                <Link
-                  href="/trust"
-                  className="public-inset flex items-center justify-between rounded-2xl px-6 py-4 text-sm font-bold uppercase tracking-tight text-foreground hover:border-primary/30 transition-all"
-                >
-                  Trust center
-                  <ArrowRight className="h-4 w-4 text-primary" />
-                </Link>
-                <Link
-                  href="/docs"
-                  className="public-inset flex items-center justify-between rounded-2xl px-6 py-4 text-sm font-bold uppercase tracking-tight text-foreground hover:border-primary/30 transition-all"
-                >
-                  Documentation
-                  <ArrowRight className="h-4 w-4 text-primary" />
-                </Link>
-                <Link
-                  href="/company"
-                  className="public-inset flex items-center justify-between rounded-2xl px-6 py-4 text-sm font-bold uppercase tracking-tight text-foreground hover:border-primary/30 transition-all"
-                >
-                  Company and partner model
-                  <ArrowRight className="h-4 w-4 text-primary" />
-                </Link>
-              </div>
+        {/* BOTTOM CTA */}
+        <section className="glass-panel-glow p-12 sm:p-20 rounded-[3rem] text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none" />
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="inline-flex py-1 px-4 rounded-full border border-blue-400/30 bg-blue-500/10 text-[10px] uppercase font-bold tracking-widest text-blue-400 mb-8 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+              Ready to deploy
             </div>
-          </section>
-
-          <section className="glass-panel p-8 sm:p-12">
-            <div className="relative z-10 space-y-8">
-              <div>
-                <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
-                  Practical Launch Sequence
-                </div>
-                <h2 className="font-display mt-6 text-4xl text-foreground tracking-tight leading-tight">
-                  Ship with the operating model attached.
-                </h2>
-              </div>
-              <div className="space-y-4">
-                {operatingSequence.map((step, index) => (
-                  <div
-                    key={step}
-                    className="public-inset flex gap-6 rounded-2xl px-6 py-5 border-l-4 border-l-primary/10"
-                  >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-black text-primary-foreground shadow-lg shadow-primary/20">
-                      0{index + 1}
-                    </div>
-                    <p className="text-base font-bold text-foreground uppercase tracking-tight leading-snug">
-                      {step}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <section className="glass-panel p-8 sm:p-16 lg:p-24 bg-primary/5">
-          <div className="relative z-10 flex flex-col gap-12 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-4xl">
-              <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
-                Ready to deploy
-              </div>
-              <h2 className="font-display mt-8 text-5xl text-foreground sm:text-6xl lg:text-[4.5rem] tracking-tight leading-tight">
-                Launch with the right employee and the right controls.
-              </h2>
-            </div>
-            <div className="flex flex-col gap-4 sm:flex-row">
+            <h2 className="font-display text-5xl sm:text-6xl text-white tracking-tighter leading-tight max-w-3xl mb-12">
+              Launch with the right employee and the right controls.
+            </h2>
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="/company/contact"
-                className="public-button px-10 py-5 text-sm"
+                href="/signup"
+                className="rounded-full bg-white text-black px-10 py-4 text-sm font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,255,255,0.3)]"
               >
-                Talk to Nodebase
+                Start Building Free
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                href="/employees"
-                className="public-button-secondary px-10 py-5 text-sm"
+                href="/company/contact"
+                className="rounded-full glass-panel border border-white/20 px-10 py-4 text-sm font-bold text-white hover:bg-white/10 transition-colors flex items-center justify-center"
               >
-                Browse employees
+                Talk to Sales
               </Link>
             </div>
           </div>

@@ -59,6 +59,9 @@ export default async function RootLayout({
       <body
         className={`${inter.variable} ${outfit.variable} ${ibmPlexMono.variable} min-h-screen bg-background text-foreground font-sans antialiased`}
       >
+        <div className="fixed inset-0 z-[-1] bg-grid-white" />
+        <div className="fixed top-[-20%] left-[-10%] z-[-1] h-[70vh] w-[70vw] rounded-full mesh-bg-orb-1 blur-[100px]" />
+        <div className="fixed bottom-[-20%] right-[-10%] z-[-1] h-[70vh] w-[70vw] rounded-full mesh-bg-orb-2 blur-[100px]" />
         <Providers>
           {children}
           <Toaster />
