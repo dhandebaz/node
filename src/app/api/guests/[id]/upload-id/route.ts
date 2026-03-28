@@ -3,6 +3,7 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
+import { withErrorHandler } from "@/lib/api/withErrorHandler";
 
 const ALLOWED_MIME_TYPES = [
   "image/jpeg",
@@ -24,7 +25,24 @@ function getExtension(mimeType: string): string {
   return map[mimeType] || "bin";
 }
 
-export async function POST(
+function isValidMagicBytes(buffer: Buffer): boolean {
+  if (buffer.length < 4) return false;
+  // JPEG: FF D8 FF
+  if (buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF) return true;
+  // PNG: 89 50 4E 47
+  if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) return true;
+  // WEBP: RIFF ... WEBP
+  if (buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
+      buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50) return true;
+  // PDF: %PDF-
+  if (buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46 && buffer[4] === 0x2D) return true;
+  // HEIC/HEIF (ftypheic or ftypheix)
+  if (buffer.length >= 12 && buffer[4] === 0x66 && buffer[5] === 0x74 && buffer[6] === 0x79 && buffer[7] === 0x70) return true;
+  
+  return false;
+}
+
+export const POST = withErrorHandler(async function(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
@@ -46,16 +64,17 @@ export async function POST(
     }
 
     const formData = await request.formData();
-    const frontImage = formData.get("frontImage") as File | null;
-    const backImage = formData.get("backImage") as File | null;
+    const frontImageEntry = formData.get("frontImage");
+    const backImageEntry = formData.get("backImage");
     const documentType = formData.get("documentType") as string | null;
 
-    if (!frontImage || !documentType) {
+    if (!frontImageEntry || !(frontImageEntry instanceof File) || frontImageEntry.size === 0 || !documentType) {
       return NextResponse.json(
         { error: "Missing required fields: frontImage and documentType" },
         { status: 400 },
       );
     }
+    const frontImage = frontImageEntry;
 
     if (!ALLOWED_MIME_TYPES.includes(frontImage.type)) {
       return NextResponse.json(
@@ -78,6 +97,10 @@ export async function POST(
 
     // Upload front image
     const frontBuffer = Buffer.from(await frontImage.arrayBuffer());
+    if (!isValidMagicBytes(frontBuffer)) {
+      return NextResponse.json({ error: "Invalid file magic bytes" }, { status: 415 });
+    }
+
     const frontExt = getExtension(frontImage.type);
     const frontPath = `secure/ids/${tenantId}/${guestId}/${timestamp}_front.${frontExt}`;
 
@@ -100,7 +123,8 @@ export async function POST(
 
     // Upload back image if provided
     let backPath: string | null = null;
-    if (backImage && backImage.size > 0) {
+    if (backImageEntry instanceof File && backImageEntry.size > 0) {
+      const backImage = backImageEntry;
       if (!ALLOWED_MIME_TYPES.includes(backImage.type)) {
         return NextResponse.json(
           { error: `Unsupported file type for back image: ${backImage.type}` },
@@ -115,6 +139,10 @@ export async function POST(
       }
 
       const backBuffer = Buffer.from(await backImage.arrayBuffer());
+      if (!isValidMagicBytes(backBuffer)) {
+        return NextResponse.json({ error: "Invalid back file magic bytes" }, { status: 415 });
+      }
+
       const backExt = getExtension(backImage.type);
       backPath = `secure/ids/${tenantId}/${guestId}/${timestamp}_back.${backExt}`;
 
@@ -211,4 +239,4 @@ export async function POST(
       { status: 500 },
     );
   }
-}
+});

@@ -129,7 +129,25 @@ export async function updateSession(request: NextRequest) {
 
   // 6.3 Final Routing Decision
   
+  // Security Harden: Remove any spoofed tenant headers from incoming request
+  request.headers.delete('x-tenant-id')
+
   if (tenantId) {
+    // Bind the verified tenantId to request headers down the stack
+    request.headers.set('x-tenant-id', tenantId)
+    
+    // We must rebuild the response to forward the new headers
+    // while preserving the cookies we've already set in the original response
+    const originalCookies = response.cookies.getAll()
+    response = NextResponse.next({
+      request: {
+        headers: request.headers,
+      },
+    })
+    originalCookies.forEach(({ name, value, ...options }) => {
+       response.cookies.set(name, value, options)
+    })
+
     // User HAS a tenant -> Enforce Dashboard
     if (isOnboardingRoute || path === '/login' || path === '/') {
       const url = new URL('/dashboard/ai', request.url)
@@ -137,7 +155,6 @@ export async function updateSession(request: NextRequest) {
       
       // CRITICAL: When redirecting, we MUST copy over any cookies set on our 'response' object
       // or they will be lost during the redirect.
-      // We set the cookie if it was just found in the DB
       redirectResponse.cookies.set('nodebase-tenant-id', tenantId, {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
@@ -148,6 +165,12 @@ export async function updateSession(request: NextRequest) {
       
       return redirectResponse
     }
+
+    // Customer route protection: Explicitly prevent non-admin accessing /admin route group
+    if (isAdminRoute && !isAdmin) {
+       return NextResponse.redirect(new URL('/dashboard/ai', request.url))
+    }
+
     // Allow dashboard access
     return response
   } else {
@@ -155,6 +178,12 @@ export async function updateSession(request: NextRequest) {
     if (isDashboardRoute || path === '/login' || path === '/') {
       return NextResponse.redirect(new URL('/onboarding', request.url))
     }
+
+    // Explicitly prevent access to /admin
+    if (isAdminRoute && !isAdmin) {
+      return NextResponse.redirect(new URL('/onboarding', request.url))
+    }
+
     // Allow onboarding access
     return response
   }

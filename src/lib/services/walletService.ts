@@ -53,12 +53,14 @@ export class WalletService {
       p_action_type: actionType,
       p_model: metadata.model || 'unknown',
       p_tokens_used: metadata.tokens || 0,
-      p_metadata: metadata
+      p_metadata: metadata as any
     });
 
-    if (error || !data?.success) {
-      const errorMsg = error?.message || data?.error || 'Unknown error';
-      const errorCode = error?.code || data?.code;
+    const result = data as { success?: boolean; error?: string; code?: string } | null;
+
+    if (error || !result?.success) {
+      const errorMsg = error?.message || result?.error || 'Unknown error';
+      const errorCode = error?.code || result?.code;
 
       if (errorCode === '23514' || errorCode === 'P0001') {
          log.warn(`Wallet deduction blocked for tenant ${tenantId} due to insufficient funds.`);
@@ -72,42 +74,27 @@ export class WalletService {
     return true;
   }
 
-  /**
-   * Top up wallet (Admin or Payment Webhook).
-   */
   static async topUp(tenantId: string, amount: number, description: string = "Top Up", metadata: Record<string, unknown> = {}): Promise<boolean> {
     const supabase = await getSupabaseServer();
 
-    // Idempotency check: Prevent double crediting for same payment
-    if (metadata.paymentId) {
-        const { data: existing } = await supabase
-            .from("wallet_transactions")
-            .select("id")
-            // Use query filter for JSONB if possible, or we can assume unique constraint if we added one.
-            // For now, let's just check metadata->>paymentId using arrow operator if supported by client type
-            // or simply use contains
-            .contains("metadata", { paymentId: metadata.paymentId }) 
-            .maybeSingle();
-        
-        if (existing) {
-            log.info(`Duplicate top-up skipped`, { paymentId: metadata.paymentId, tenantId });
-            return true;
-        }
-    }
+    const { data, error } = await supabase.rpc('atomic_wallet_transaction_v1', {
+      p_tenant_id: tenantId,
+      p_amount: Math.abs(amount),
+      p_type: 'top_up',
+      p_metadata: { ...metadata, description } as any
+    });
 
-    const { error } = await supabase
-      .from("wallet_transactions")
-      .insert({
-        tenant_id: tenantId,
-        amount: Math.abs(amount),
-        type: "top_up",
-        metadata: { ...metadata, description }
-      });
+    const result = data as { success?: boolean; error?: string; idempotent?: boolean } | null;
 
-    if (error) {
-      log.error("Failed to top up wallet", error, { tenantId, amount });
+    if (error || !result?.success) {
+      log.error("Failed to top up wallet atomically", { error: error || result?.error, tenantId, amount });
       return false;
     }
+    
+    if (result.idempotent) {
+      log.info(`Duplicate top-up skipped (idempotent)`, { paymentId: metadata.paymentId, tenantId });
+    }
+
     return true;
   }
 
@@ -133,19 +120,19 @@ export class WalletService {
     return true;
   }
 
-  /**
-   * Generic credit addition (Internal)
-   */
   static async addCredits(tenantId: string, amount: number, type: string, metadata: Record<string, unknown> = {}): Promise<boolean> {
     const supabase = await getSupabaseServer();
-    const { error } = await supabase.from("wallet_transactions").insert({
-        tenant_id: tenantId,
-        amount: Math.abs(amount),
-        type,
-        metadata: { ...metadata, description: `Credit: ${type}` }
+    const { data, error } = await supabase.rpc('atomic_wallet_transaction_v1', {
+      p_tenant_id: tenantId,
+      p_amount: Math.abs(amount),
+      p_type: type,
+      p_metadata: { ...metadata, description: `Credit: ${type}` } as any
     });
-    if (error) {
-        log.error("Failed to add credits", error, { tenantId, amount, type });
+
+    const result = data as { success?: boolean; error?: string } | null;
+
+    if (error || !result?.success) {
+        log.error("Failed to add credits atomically", { error: error || result?.error, tenantId, amount, type });
         return false;
     }
     return true;
@@ -200,6 +187,6 @@ export class WalletService {
     if (error || !data) return 0;
     
     // Sum absolute values of deductions
-    return data.reduce((sum, tx) => sum + Math.abs(tx.amount), 0);
+    return data.reduce((sum, tx) => sum + Math.abs(tx.amount || 0), 0);
   }
 }

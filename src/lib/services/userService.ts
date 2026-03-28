@@ -8,6 +8,7 @@ import {
   UserMetadata
 } from "@/types/user";
 import { DBUser, UserMetadataJSON } from "@/types/database";
+import { type Json } from "@/types/supabase";
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
 
@@ -80,14 +81,14 @@ export const userService = {
     return {
       identity: {
         id: user.id,
-        phone: user.phone || null,
-        email: user.email || null,
-        createdAt: user.created_at,
+        phone: user.phone || "",
+        email: user.email || undefined,
+        createdAt: user.created_at || "",
       },
       profile: null,
       status: {
-        account: account?.status || "active",
-        kyc: tenant?.kyc_status || "pending",
+        account: (account?.status as AccountStatus) || "active",
+        kyc: (tenant?.kyc_status as KYCStatus) || "not_started",
         onboarding: account?.onboarding_status === 'complete' ? 'completed' : 'pending',
       },
       roles: {
@@ -96,26 +97,26 @@ export const userService = {
       },
       products: {
         kaisa: kaisaAccount ? {
-          businessType: kaisaAccount.business_type || tenant?.business_type,
-          status: kaisaAccount.status,
+          businessType: tenant?.business_type || "",
+          status: (kaisaAccount.status as "active" | "paused") || "active",
           activeModules: [], // Load if needed
           role: "owner",
-          tenantId: kaisaAccount.tenant_id
+          tenantId: kaisaAccount.tenant_id || undefined
         } : undefined,
       },
       metadata: {
         tags: [],
         notes: [],
-        lastActivity: user.updated_at
+        lastActivity: user.updated_at || user.created_at || ""
       },
       tenant: tenant ? {
         id: tenant.id,
         name: tenant.name,
-        ownerUserId: tenant.owner_user_id,
-        businessType: tenant.business_type,
-        earlyAccess: tenant.early_access,
-        kyc_status: tenant.kyc_status,
-        createdAt: tenant.created_at
+        ownerUserId: tenant.owner_user_id || "",
+        businessType: (tenant.business_type as import("@/types/index").BusinessType) || null,
+        earlyAccess: tenant.early_access || false,
+        kyc_status: (tenant.kyc_status as import("@/types/index").Tenant["kyc_status"]) || "not_started",
+        createdAt: tenant.created_at || user.created_at || ""
       } : undefined
     };
   },
@@ -191,7 +192,7 @@ export const userService = {
     // 3. Update user
     const { error: updateError } = await supabase
       .from("users")
-      .update({ metadata: updatedMetadata })
+      .update({ metadata: updatedMetadata as unknown as Json })
       .eq("id", userId);
 
     if (updateError) {
@@ -226,7 +227,7 @@ export const userService = {
     // 3. Update
     const { error: updateError } = await supabase
       .from("users")
-      .update({ metadata: updatedMetadata })
+      .update({ metadata: updatedMetadata as unknown as Json })
       .eq("id", userId);
 
     if (updateError) return false;
@@ -258,7 +259,7 @@ export const userService = {
     // 3. Update
     const { error: updateError } = await supabase
       .from("users")
-      .update({ metadata: updatedMetadata })
+      .update({ metadata: updatedMetadata as unknown as Json })
       .eq("id", userId);
 
     if (updateError) return false;

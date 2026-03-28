@@ -14,7 +14,7 @@ export class SubscriptionService {
   static async getTenantPlan(tenantId: string): Promise<SubscriptionPlan> {
     const supabase = await getSupabaseServer();
     const { data } = await supabase
-      .from("users")
+      .from("tenants")
       .select("subscription_plan")
       .eq("id", tenantId)
       .single();
@@ -25,7 +25,7 @@ export class SubscriptionService {
   static async getTenantContext(tenantId: string): Promise<{ plan: SubscriptionPlan; businessType: BusinessType }> {
     const supabase = await getSupabaseServer();
     const { data } = await supabase
-      .from("users")
+      .from("tenants")
       .select("subscription_plan, business_type")
       .eq("id", tenantId)
       .single();

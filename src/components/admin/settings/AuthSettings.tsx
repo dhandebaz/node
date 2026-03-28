@@ -64,7 +64,6 @@ export function AuthSettingsPanel({ settings }: { settings: AuthSettings }) {
               className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold"
             >
               <option value="Twilio">Twilio Global</option>
-              <option value="Firebase">Firebase Auth</option>
               <option value="Custom">Independent Gateway</option>
             </select>
           </div>

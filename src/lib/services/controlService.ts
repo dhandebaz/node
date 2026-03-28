@@ -35,7 +35,6 @@ const createActionBlockedError = (
 };
 
 type PostgrestResponse<T> = { data: T | null; error: unknown | null };
-type SystemFlagRow = { key: string; value: boolean };
 type TenantControlsRow = {
   is_ai_enabled: boolean | null;
   is_messaging_enabled: boolean | null;
@@ -56,8 +55,12 @@ export class ControlService {
       const supabase = await getSupabaseServer();
       const { data, error } = await supabase.from("system_flags").select("*");
 
-      if (!error) {
-        data?.forEach((f) => (flags[f.key] = f.value));
+      if (!error && data) {
+        data.forEach((f) => {
+          if (f.key) {
+            flags[f.key] = !!f.value;
+          }
+        });
         return flags;
       }
     } catch {}
@@ -67,8 +70,12 @@ export class ControlService {
       const { data, error } = await supabaseAdmin
         .from("system_flags")
         .select("*");
-      if (!error) {
-        data?.forEach((f) => (flags[f.key] = f.value));
+      if (!error && data) {
+        data.forEach((f) => {
+          if (f.key) {
+            flags[f.key] = !!f.value;
+          }
+        });
       }
     } catch {}
 
@@ -219,9 +226,7 @@ export class ControlService {
 
     const flagsPromise = supabase
       .from("system_flags")
-      .select("key, value") as unknown as Promise<
-      PostgrestResponse<SystemFlagRow[]>
-    >;
+      .select("key, value");
 
     let flagsRes: PostgrestResponse<SystemFlagRow[]>;
     let tenantRes: PostgrestResponse<TenantControlsRow> | null = null;
@@ -233,7 +238,7 @@ export class ControlService {
           "is_ai_enabled, is_messaging_enabled, is_bookings_enabled, is_wallet_enabled, business_type, kyc_status",
         )
         .eq("id", tenantId)
-        .single() as unknown as Promise<PostgrestResponse<TenantControlsRow>>;
+        .single();
 
       [flagsRes, tenantRes] = await Promise.all([flagsPromise, tenantPromise]);
     } else {
@@ -246,9 +251,7 @@ export class ControlService {
       const supabaseAdmin = await getSupabaseAdmin();
       const adminFlagsPromise = supabaseAdmin
         .from("system_flags")
-        .select("key, value") as unknown as Promise<
-        PostgrestResponse<SystemFlagRow[]>
-      >;
+        .select("key, value");
 
       if (tenantId) {
         const adminTenantPromise = supabaseAdmin
@@ -257,7 +260,7 @@ export class ControlService {
             "is_ai_enabled, is_messaging_enabled, is_bookings_enabled, is_wallet_enabled, business_type, kyc_status",
           )
           .eq("id", tenantId)
-          .single() as unknown as Promise<PostgrestResponse<TenantControlsRow>>;
+          .single();
 
         [flagsRes, tenantRes] = await Promise.all([
           adminFlagsPromise,
@@ -279,7 +282,11 @@ export class ControlService {
     };
 
     if (flagsRes.data) {
-      flagsRes.data.forEach((f) => (flags[f.key] = f.value));
+      flagsRes.data.forEach((f) => {
+        if (f.key) {
+          flags[f.key] = !!f.value;
+        }
+      });
     } else if (flagsRes.error) {
       console.warn(
         "[ControlService] Failed to fetch system flags, using safe defaults. Error:",

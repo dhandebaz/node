@@ -115,52 +115,50 @@ const CACHE_TTL = 300; // 5 minutes
 
 export const settingsService = {
   async getSettings(): Promise<AppSettings> {
-    // 1. Try Cache
-    const cached = await cacheService.get<AppSettings>(SETTINGS_CACHE_KEY);
-    if (cached) return cached;
+    return cacheService.fetchCached<AppSettings>(
+      SETTINGS_CACHE_KEY,
+      async () => {
+        // Must use admin client because unstable_cache cannot depend on cookies()
+        const supabase = await getSupabaseAdmin();
+        const { data, error } = await supabase
+          .from("system_settings")
+          .select("value")
+          .eq("key", SETTINGS_KEY)
+          .single();
 
-    const supabase = await getSupabaseServer();
-    const { data, error } = await supabase
-      .from("system_settings")
-      .select("value")
-      .eq("key", SETTINGS_KEY)
-      .single();
+        let settings: AppSettings;
+        if (error || !data) {
+          settings = DEFAULT_SETTINGS;
+        } else {
+          const value = data.value as Partial<AppSettings>;
 
-    let settings: AppSettings;
-    if (error || !data) {
-      // Return defaults if not found
-      settings = DEFAULT_SETTINGS;
-    } else {
-      const value = data.value as Partial<AppSettings>;
-
-      settings = {
-        ...DEFAULT_SETTINGS,
-        ...value,
-        auth: { ...DEFAULT_SETTINGS.auth, ...value.auth },
-        api: { ...DEFAULT_SETTINGS.api, ...value.api },
-        platform: {
-          ...DEFAULT_SETTINGS.platform,
-          ...value.platform,
-          signupEnabled: {
-            ...DEFAULT_SETTINGS.platform.signupEnabled,
-            ...value.platform?.signupEnabled,
-          },
-        },
-        notifications: {
-          ...DEFAULT_SETTINGS.notifications,
-          ...value.notifications,
-        },
-        security: { ...DEFAULT_SETTINGS.security, ...value.security },
-        analytics: { ...DEFAULT_SETTINGS.analytics, ...value.analytics },
-        integrations: value.integrations || DEFAULT_SETTINGS.integrations,
-        features: value.features || DEFAULT_SETTINGS.features,
-      };
-    }
-
-    // 2. Set Cache
-    await cacheService.set(SETTINGS_CACHE_KEY, settings, CACHE_TTL);
-
-    return settings;
+          settings = {
+            ...DEFAULT_SETTINGS,
+            ...value,
+            auth: { ...DEFAULT_SETTINGS.auth, ...value.auth },
+            api: { ...DEFAULT_SETTINGS.api, ...value.api },
+            platform: {
+              ...DEFAULT_SETTINGS.platform,
+              ...value.platform,
+              signupEnabled: {
+                ...DEFAULT_SETTINGS.platform.signupEnabled,
+                ...value.platform?.signupEnabled,
+              },
+            },
+            notifications: {
+              ...DEFAULT_SETTINGS.notifications,
+              ...value.notifications,
+            },
+            security: { ...DEFAULT_SETTINGS.security, ...value.security },
+            analytics: { ...DEFAULT_SETTINGS.analytics, ...value.analytics },
+            integrations: value.integrations || DEFAULT_SETTINGS.integrations,
+            features: value.features || DEFAULT_SETTINGS.features,
+          };
+        }
+        return settings;
+      },
+      CACHE_TTL
+    );
   },
 
   async updateSettings(

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import crypto from "crypto";
+import { rateLimit } from "@/lib/ratelimit";
+import { withErrorHandler } from "@/lib/api/withErrorHandler";
 
 /**
  * Camera ingest endpoint
@@ -23,8 +25,14 @@ import crypto from "crypto";
  * The endpoint requires an authenticated tenant (requireActiveTenant).
  */
 
-export async function POST(req: Request) {
+export const POST = withErrorHandler(async function(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || 'unknown';
+    const { success } = await rateLimit.limit(`eyes_ingest_${ip}`);
+    if (!success) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+
     const tenantId = await requireActiveTenant();
 
     // parse JSON body
@@ -144,7 +152,7 @@ export async function POST(req: Request) {
     const message = err?.message ?? String(err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});
 
 /* Helpers */
 

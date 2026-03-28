@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
 
 export function getSupabaseAdmin() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "https://placeholder.supabase.co";
@@ -11,7 +12,7 @@ export function getSupabaseAdmin() {
     console.error("[Supabase Admin Utility] CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not configured.");
   }
 
-  return createClient(supabaseUrl, supabaseServiceKey, {
+  return createClient<Database>(supabaseUrl, supabaseServiceKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false

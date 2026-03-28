@@ -1,0 +1,59 @@
+{
+  "typescript": {
+    "enabled": true,
+    "lastGenerated": "2026-03-28T22:34:38.185Z",
+    "observationCount": 31,
+    "skillCount": 0,
+    "domain": "typescript",
+    "triggerGlobs": [
+      "**/*.ts",
+      "**/*.tsx"
+    ],
+    "description": "Typescript for node. 6 conventions, 13 fixes."
+  },
+  "project": {
+    "enabled": true,
+    "lastGenerated": "2026-03-28T22:34:38.184Z",
+    "observationCount": 122,
+    "skillCount": 0,
+    "domain": "project",
+    "triggerGlobs": [
+      "**/*"
+    ],
+    "description": "Project for node. 35 gotchas, 54 conventions, 7 fixes."
+  },
+  "decision": {
+    "enabled": true,
+    "lastGenerated": "2026-03-28T22:34:38.186Z",
+    "observationCount": 0,
+    "skillCount": 2,
+    "domain": "decision",
+    "triggerGlobs": [
+      "**/*"
+    ],
+    "description": "Decision for node. ."
+  },
+  "javascript": {
+    "enabled": true,
+    "lastGenerated": "2026-03-28T22:34:38.185Z",
+    "observationCount": 8,
+    "skillCount": 0,
+    "domain": "javascript",
+    "triggerGlobs": [
+      "**/*.js",
+      "**/*.jsx"
+    ],
+    "description": "Javascript for node. 1 conventions, 2 fixes."
+  },
+  "convention": {
+    "enabled": true,
+    "lastGenerated": "2026-03-28T22:34:38.186Z",
+    "observationCount": 0,
+    "skillCount": 2,
+    "domain": "convention",
+    "triggerGlobs": [
+      "**/*"
+    ],
+    "description": "Convention for node. ."
+  }
+}

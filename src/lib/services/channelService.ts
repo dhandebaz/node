@@ -42,7 +42,7 @@ export const ChannelService = {
           .eq('enabled', true)
           .maybeSingle();
 
-        const pageAccessToken = integration?.credentials?.page_access_token;
+        const pageAccessToken = (integration?.credentials as any)?.page_access_token;
         if (!pageAccessToken) {
           await this.recordFailure(tenantId, 'integration', channel, 'Meta Page Access Token not configured. Connect Instagram/Messenger in Integrations.');
           return { success: false, error: `${channel} not connected. Configure Meta integration first.` };
@@ -120,7 +120,7 @@ export const ChannelService = {
     
     const { data: guest, error } = await supabase
       .from('guests')
-      .select('phone, channel')
+      .select('phone')
       .eq('id', guestId)
       .eq('tenant_id', tenantId)
       .single();
@@ -135,7 +135,7 @@ export const ChannelService = {
       tenantId,
       recipientId,
       content,
-      channel: (guest.channel as MessageChannel) || 'whatsapp'
+      channel: 'whatsapp'
     });
   }
 };

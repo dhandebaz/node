@@ -7,9 +7,18 @@ const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_REQUESTS = 60; // 1 request per second average
 
 export async function proxy(request: NextRequest) {
+  // Preserve headers explicitly to prevent Next.js from stripping multipart boundaries
+  const requestHeaders = new Headers(request.headers);
+  
+  // Force content-type retention for multipart uploads
+  const contentType = request.headers.get("content-type");
+  if (contentType?.startsWith("multipart/form-data")) {
+    requestHeaders.set("content-type", contentType);
+  }
+
   let response = NextResponse.next({
     request: {
-      headers: request.headers,
+      headers: requestHeaders,
     },
   });
 
@@ -58,7 +67,7 @@ export async function proxy(request: NextRequest) {
           });
           response = NextResponse.next({
             request: {
-              headers: request.headers,
+              headers: requestHeaders,
             },
           });
           cookiesToSet.forEach(({ name, value, options }) =>

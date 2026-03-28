@@ -1,9 +1,15 @@
 
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/ratelimit";
+import { withErrorHandler } from "@/lib/api/withErrorHandler";
 
-export async function GET(request: Request) {
+export const GET = withErrorHandler(async function(request: Request) {
   try {
+    const ip = request.headers.get("x-forwarded-for") || 'unknown';
+    const { success } = await rateLimit.limit(`voice_agent_get_${ip}`);
+    if (!success) return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+
     const { searchParams } = new URL(request.url);
     const tenantId = searchParams.get("tenantId");
 
@@ -25,10 +31,14 @@ export async function GET(request: Request) {
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withErrorHandler(async function(request: Request) {
   try {
+    const ip = request.headers.get("x-forwarded-for") || 'unknown';
+    const { success } = await rateLimit.limit(`voice_agent_post_${ip}`);
+    if (!success) return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+
     const body = await request.json();
     const { tenantId, ...updates } = body;
 
@@ -73,4 +83,4 @@ export async function POST(request: Request) {
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-}
+});

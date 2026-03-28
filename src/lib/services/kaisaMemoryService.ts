@@ -18,7 +18,26 @@ export const kaisaMemoryService = {
       return [];
     }
 
-    return data.map((m: any) => ({
+    const MAX_TOKENS = 2000;
+    const CHARS_PER_TOKEN = 4;
+    let currentTokens = 0;
+    const validMemories = [];
+
+    for (const m of data) {
+      const estimatedTokens = Math.ceil((m.description?.length || 0) / CHARS_PER_TOKEN);
+      if (currentTokens + estimatedTokens > MAX_TOKENS) {
+        const remainingTokens = MAX_TOKENS - currentTokens;
+        if (remainingTokens > 20) {
+          m.description = m.description.substring(0, remainingTokens * CHARS_PER_TOKEN) + "... [TRUNCATED]";
+          validMemories.push(m);
+        }
+        break; // Stop including older memories
+      }
+      currentTokens += estimatedTokens;
+      validMemories.push(m);
+    }
+
+    return validMemories.map((m: any) => ({
       id: m.id,
       userId: m.user_id,
       type: m.type as MemoryType,

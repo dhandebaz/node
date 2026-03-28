@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
+import type { Database } from '@/types/supabase';
 
 // Standard client for authenticated user actions (Respects RLS)
 export async function getSupabaseServer() {
@@ -9,7 +10,7 @@ export async function getSupabaseServer() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "https://placeholder.supabase.co";
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || "placeholder";
 
-  return createServerClient(url, key, {
+  return createServerClient<Database>(url, key, {
     global: {
       fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }),
     },
@@ -49,7 +50,7 @@ export async function getSupabaseAdmin() {
   }
 
   // Use standard createClient for admin/system actions to ensure RLS bypass
-  return createClient(url, key, {
+  return createClient<Database>(url, key, {
     global: {
       fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }),
     },
