@@ -7,13 +7,13 @@ export type SubscriptionStatus = 'active' | 'past_due' | 'canceled' | 'trialing'
 export interface BillingPlan {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   price: number;
-  currency: string;
-  interval: BillingInterval;
-  product: 'kaisa' | 'space';
-  features: string[];
-  type: 'subscription' | 'addon' | 'credits';
+  currency: string | null;
+  interval: BillingInterval | null;
+  product: 'kaisa' | 'space' | null;
+  features: string[] | null;
+  type: 'subscription' | 'addon' | 'credits' | null;
 }
 
 export interface Subscription {
@@ -38,7 +38,7 @@ export interface Invoice {
   date: string;
   pdfUrl?: string;
   items: {
-    description: string;
+    description: string | null;
     amount: number;
   }[];
   billingDetails: {
@@ -63,6 +63,6 @@ export interface Transaction {
     currency: string;
     status: PaymentStatus;
     type: 'payment' | 'refund' | 'credit';
-    description: string;
+    description: string | null;
     createdAt: string;
 }

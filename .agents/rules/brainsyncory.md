@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 161 notes | Score threshold: >40
+> 163 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,7 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
 
+- Replaced auth Json — formalizes the data contract with explicit types — confirmed 3x
 - Strengthened types Prepare — evolves the database schema to support new requi...
 - problem-fix in ts_errors.txt — confirmed 3x
 - Optimized Conversion — hardens HTTP security headers — confirmed 4x
@@ -27,7 +28,6 @@
 - Optimized Conversion — hardens HTTP security headers — confirmed 3x
 - what-changed in filter.js — confirmed 4x
 - problem-fix in ts_errors.log — confirmed 3x
-- Fixed null crash in Tenant — reduces initial bundle size with code splitting — confirmed 4x
 
 ## Known Fixes
 

@@ -182,19 +182,19 @@ export function PlansEditor({ plans: initialPlans }: { plans: BillingPlan[] }) {
             <div className="text-3xl font-black text-foreground mb-2 flex items-baseline gap-1 relative z-10">
               <span className="text-sm font-mono text-muted-foreground mr-0.5">₹</span>
               {plan.price.toLocaleString()} 
-              <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest ml-2">/ {plan.interval}</span>
+              <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest ml-2">/ {plan.interval || 'month'}</span>
             </div>
-            <p className="text-xs text-muted-foreground mb-6 h-10 line-clamp-2 font-medium leading-relaxed">{plan.description}</p>
+            <p className="text-xs text-muted-foreground mb-6 h-10 line-clamp-2 font-medium leading-relaxed">{plan.description || "No description provided."}</p>
             
             <div className="flex items-center gap-2 relative z-10">
               <span className={cn(
                 "text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-md border",
                 plan.product === 'kaisa' ? "bg-primary/10 text-primary border-primary/20" : "bg-foreground/5 text-foreground/60 border-foreground/10"
               )}>
-                {plan.product}
+                {plan.product || 'unknown'}
               </span>
               <span className="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-md bg-muted text-muted-foreground border border-border">
-                {plan.type}
+                {plan.type || 'subscription'}
               </span>
             </div>
           </div>
