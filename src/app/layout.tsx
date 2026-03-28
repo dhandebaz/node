@@ -55,7 +55,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="dark scroll-smooth">
       <body
         className={`${inter.variable} ${outfit.variable} ${ibmPlexMono.variable} min-h-screen bg-background text-foreground font-sans antialiased`}
       >

@@ -18,16 +18,13 @@ const STORAGE_KEY = "nb:theme";
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
     try {
-      if (typeof window === "undefined") return "light";
+      if (typeof window === "undefined") return "dark";
       const stored = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
       if (stored === "light" || stored === "dark") return stored;
-      // fallback to system preference
-      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        return "dark";
-      }
-      return "light";
+      // Force dark mode as the primary GCP SaaS 2027 aesthetic
+      return "dark";
     } catch {
-      return "light";
+      return "dark";
     }
   });
 
