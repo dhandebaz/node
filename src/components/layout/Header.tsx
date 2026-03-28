@@ -89,7 +89,7 @@ export function Header({ viewer }: HeaderProps) {
   };
 
   return (
-    <header className="public-shell fixed inset-x-0 top-0 z-50">
+    <header className="fixed inset-x-0 top-0 z-50">
       <div className="public-container pt-4 sm:pt-5">
         <div className="glass-panel border-border/50 rounded-full px-4 py-3 sm:px-5">
           <div className="flex items-center gap-4">

@@ -105,17 +105,16 @@ export default async function PublicLayout({
   };
 
   return (
-    <div className="public-site public-shell flex min-h-screen flex-col">
-      {/* Site-level JSON-LD structured data */}
+    <>
       <script
-        key="site-json-ld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-
-      <Header viewer={viewer} />
-      <main className="relative z-10 flex-1 pt-[var(--header-height,5rem)]">{children}</main>
-      <Footer />
-    </div>
+      <div className="public-site public-shell flex min-h-screen flex-col">
+        <Header viewer={viewer} />
+        <main className="relative z-10 flex-1 pt-[var(--header-height,5rem)]">{children}</main>
+        <Footer />
+      </div>
+    </>
   );
 }
