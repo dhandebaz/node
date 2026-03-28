@@ -57,11 +57,23 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <body
-        className={`${inter.variable} ${outfit.variable} ${ibmPlexMono.variable} min-h-screen bg-background text-foreground font-sans antialiased`}
+        className={`${inter.variable} ${outfit.variable} ${ibmPlexMono.variable} min-h-screen bg-black text-foreground font-sans antialiased selection:bg-blue-500/30 selection:text-white`}
       >
-        <div className="fixed inset-0 z-[-1] bg-grid-white" />
-        <div className="fixed top-[-20%] left-[-10%] z-[-1] h-[70vh] w-[70vw] rounded-full mesh-bg-orb-1 blur-[100px]" />
-        <div className="fixed bottom-[-20%] right-[-10%] z-[-1] h-[70vh] w-[70vw] rounded-full mesh-bg-orb-2 blur-[100px]" />
+        {/* Immersive Background Engine */}
+        <div className="noise-overlay" />
+        <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+          {/* Main Orbs with subtle relative movement */}
+          <div className="absolute top-[-20%] left-[-10%] h-[100vh] w-[100vw] rounded-full mesh-bg-orb-1 blur-[120px] opacity-60 animate-pulse-slow" />
+          <div className="absolute bottom-[-20%] right-[-10%] h-[100vh] w-[100vw] rounded-full mesh-bg-orb-2 blur-[120px] opacity-40 animate-pulse-slow" style={{ animationDelay: '2s' }} />
+          
+          {/* Subtle accent orbs */}
+          <div className="absolute top-[40%] right-[10%] h-[40vh] w-[40vw] rounded-full bg-blue-500/10 blur-[100px]" />
+          <div className="absolute bottom-[20%] left-[20%] h-[30vh] w-[30vh] rounded-full bg-purple-500/10 blur-[80px]" />
+          
+          {/* Grid structure */}
+          <div className="absolute inset-0 bg-grid-white opacity-[0.03]" />
+        </div>
+
         <Providers>
           {children}
           <Toaster />

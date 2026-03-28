@@ -127,9 +127,74 @@
                           linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
     }
     
-    .bg-dot-white {
-        background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-        background-size: 24px 24px;
+    /* ─── Immersive Utilities ─── */
+    .noise-overlay {
+        position: fixed;
+        inset: -200%;
+        z-index: 50;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0.015;
+        pointer-events: none;
+        animation: noise 0.2s infinite;
+    }
+
+    @keyframes noise {
+        0% { transform: translate(0, 0); }
+        10% { transform: translate(-5px, -10px); }
+        20% { transform: translate(-15px, 5px); }
+        30% { transform: translate(7px, -25px); }
+        40% { transform: translate(-5px, 25px); }
+        50% { transform: translate(-15px, 10px); }
+        60% { transform: translate(15px, 0); }
+        70% { transform: translate(0, 15px); }
+        80% { transform: translate(3px, 35px); }
+        90% { transform: translate(-10px, 10px); }
+        100% { transform: translate(0, 0); }
+    }
+
+    .glass-panel {
+        background: rgba(10, 10, 10, 0.45);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-top-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 
+            0 25px 50px -12px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .glass-panel-glow {
+        background: rgba(13, 17, 23, 0.6);
+        backdrop-filter: blur(40px) saturate(200%);
+        -webkit-backdrop-filter: blur(40px) saturate(200%);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        box-shadow: 
+            0 0 30px -5px rgba(59, 130, 246, 0.15),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    }
+
+    /* ─── UI Primitives Unification ─── */
+    .button-glass {
+        @apply flex items-center justify-center gap-2 rounded-full px-6 py-2.5 
+        text-sm font-semibold text-white transition-all duration-300
+        bg-white/[0.03] border border-white/10 backdrop-blur-md
+        hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-0.5
+        active:scale-[0.98] shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)];
+    }
+
+    .button-primary {
+        @apply flex items-center justify-center gap-2 rounded-full px-8 py-3 
+        text-base font-bold text-white transition-all duration-300
+        bg-gradient-to-r from-blue-600 to-blue-500
+        hover:shadow-[0_0_25px_rgba(37,99,235,0.4)] hover:brightness-110 hover:-translate-y-0.5
+        active:scale-[0.98] border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)];
+    }
+
+    .input-glass {
+        @apply w-full rounded-2xl bg-white/[0.03] border border-white/10 
+        px-5 py-3 text-sm text-white placeholder:text-zinc-500
+        backdrop-blur-xl transition-all duration-300
+        focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40 focus:bg-white/[0.06];
     }
 
     /* ─── Public-site Primitives ─── */

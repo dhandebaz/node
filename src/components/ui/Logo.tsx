@@ -9,19 +9,16 @@ interface LogoProps {
 }
 
 export function Logo({ className, collapsed = false }: LogoProps) {
-  // Acts as the permanent SINGLE SOURCE OF TRUTH for Nodebase branding.
-  // Adapts naturally to both Light and Dark modes via `bg-primary` & `text-foreground`.
   return (
     <div className={cn("relative select-none flex items-center gap-2", className)}>
-      <div className="flex h-8 w-8 items-center justify-center bg-primary text-primary-foreground rounded-lg shadow-md shadow-primary/20 shrink-0">
-        <Hexagon className="h-5 w-5 fill-current" />
+      <div className="flex h-9 w-9 items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white rounded-xl shadow-[0_4px_12px_rgba(37,99,235,0.25)] border border-blue-400/30 shrink-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)]">
+        <Hexagon className="h-5 w-5 fill-white/20" />
       </div>
       {!collapsed && (
         <span 
-          className="font-display font-semibold text-lg tracking-tight text-foreground" 
-          style={{ fontFamily: 'var(--font-display), system-ui, sans-serif' }}
+          className="font-display font-bold text-xl tracking-tighter text-white uppercase sm:text-2xl" 
         >
-          Nodebase
+          nodebase
         </span>
       )}
     </div>
