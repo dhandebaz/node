@@ -1,26 +1,13 @@
 import type { Metadata } from "next";
-import { Outfit, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/components/providers";
 import { getAppUrl } from "@/lib/runtime-config";
 export const dynamic = "force-dynamic";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  weight: ["400", "500", "600"],
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
   display: "swap",
 });
@@ -57,7 +44,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <body
-        className={`${inter.variable} ${outfit.variable} ${ibmPlexMono.variable} min-h-screen bg-black text-foreground font-sans antialiased selection:bg-blue-500/30 selection:text-white`}
+        className={`${montserrat.variable} min-h-screen bg-black text-foreground font-sans antialiased selection:bg-blue-500/30 selection:text-white`}
       >
         {/* Immersive Background Engine */}
         <div className="noise-overlay" />
