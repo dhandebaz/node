@@ -169,7 +169,7 @@ export const kaisaUserService = {
         }
       }
     } catch {
-      // Non-critical — fall back to default
+      // Non-critical  -  fall back to default
     }
 
     // 5. Calculate credits used this calendar month from wallet_transactions
@@ -198,7 +198,7 @@ export const kaisaUserService = {
         );
       }
     } catch {
-      // Non-critical — fall back to 0
+      // Non-critical  -  fall back to 0
     }
 
     return {

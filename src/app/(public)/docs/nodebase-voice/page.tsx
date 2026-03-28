@@ -14,17 +14,17 @@ const baseUrl = getAppUrl();
  */
 
 export const metadata: Metadata = {
-  title: "Nodebase Voice — Conversational Telephony | Nodebase",
+  title: "Nodebase Voice  -  Conversational Telephony | Nodebase",
   description:
     "Nodebase Voice is an enterprise telephony agent that handles live inbound calls, reservations, and compliance-first IVR flows via WebRTC and Twilio.",
   openGraph: {
-    title: "Nodebase Voice — Conversational Telephony",
+    title: "Nodebase Voice  -  Conversational Telephony",
     description:
       "Enterprise telephony agent integrating directly into your omnichannel inbox: WebRTC, TTS, and native escalation.",
     url: `${baseUrl}/docs/nodebase-voice`,
   },
   twitter: {
-    title: "Nodebase Voice — Conversational Telephony",
+    title: "Nodebase Voice  -  Conversational Telephony",
     card: "summary_large_image",
   },
 };

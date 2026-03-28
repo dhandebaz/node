@@ -64,7 +64,7 @@ export function SkeletonProfile() {
 }
 
 /**
- * Full dashboard skeleton — 4 stat cards + table + chart.
+ * Full dashboard skeleton  -  4 stat cards + table + chart.
  */
 export function DashboardSkeleton() {
   return (

@@ -81,7 +81,7 @@ export async function POST(
       );
     }
 
-    // Charge for the sync — priced per platform synced
+    // Charge for the sync  -  priced per platform synced
     const SYNC_TOKEN_EQUIVALENT = 50;
     const cost = await PricingService.calculateCost(
       "integration_sync",

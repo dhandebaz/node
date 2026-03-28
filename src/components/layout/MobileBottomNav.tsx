@@ -22,7 +22,7 @@ export function MobileBottomNav() {
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
-      {/* Mobile sticky CTA above the nav — visible on small screens to drive conversions */}
+      {/* Mobile sticky CTA above the nav  -  visible on small screens to drive conversions */}
       <div className="bg-background border-t border-border px-4 py-2">
         <div className="max-w-3xl mx-auto">
           <Link

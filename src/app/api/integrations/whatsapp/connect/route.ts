@@ -47,7 +47,7 @@ export async function POST() {
   // 2. Resolve the webhook target against the configured deployment URL.
   const appUrl = getAppUrl();
 
-  // 3. Start WAHA session — registers webhook and returns QR code URL if not already authenticated
+  // 3. Start WAHA session  -  registers webhook and returns QR code URL if not already authenticated
   const webhookUrl = `${appUrl}/api/integrations/webhook/whatsapp?tenantId=${tenantId}`;
   const { status, qrUrl } = await wahaService.startSession({
     sessionName: tenantId,

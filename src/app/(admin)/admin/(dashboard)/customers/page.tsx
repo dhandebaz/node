@@ -75,7 +75,7 @@ export default async function AdminCustomersPage() {
     return {
       id: t.id,
       businessName: t.name,
-      phone: owner?.phone || "—",
+      phone: owner?.phone || " - ",
       aiManager,
       planPrice,
       walletBalance: wallet?.balance || 0,
@@ -131,7 +131,7 @@ export default async function AdminCustomersPage() {
                       </div>
                     </td>
                     <td className="px-8 py-6 text-[10px] font-mono font-bold text-muted-foreground/60">
-                      {customer.phone || "—"}
+                      {customer.phone || " - "}
                     </td>
                     <td className="px-8 py-6">
                       <span className="inline-flex items-center px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-tighter bg-accent/10 text-accent border border-accent/20">

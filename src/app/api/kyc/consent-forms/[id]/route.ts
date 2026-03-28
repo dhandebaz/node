@@ -83,7 +83,7 @@ export async function DELETE(
 
     // Check if any KYC requests still reference this consent form.
     // Deleting a form that is attached to existing requests would break
-    // the audit trail — block it and tell the host why.
+    // the audit trail  -  block it and tell the host why.
     const admin = await getSupabaseAdmin();
     const { count, error: countError } = await admin
       .from("guest_kyc_requests")
@@ -113,7 +113,7 @@ export async function DELETE(
       );
     }
 
-    // Safe to delete — no KYC requests reference this form
+    // Safe to delete  -  no KYC requests reference this form
     const { error: deleteError } = await admin
       .from("consent_forms")
       .delete()

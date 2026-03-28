@@ -137,7 +137,7 @@ export function parseOrThrow<T>(schema: z.ZodType<T>, data: unknown): T {
   const result = schema.safeParse(data);
   if (!result.success) {
     const firstError = result.error.issues[0];
-    throw new Error(`Validation Error: ${firstError?.path.join(".")} — ${firstError?.message}`);
+    throw new Error(`Validation Error: ${firstError?.path.join(".")}  -  ${firstError?.message}`);
   }
   return result.data;
 }
@@ -154,7 +154,7 @@ export function parseInput<T>(
     const firstError = result.error.issues[0];
     return {
       data: null,
-      error: `${firstError?.path.join(".")} — ${firstError?.message}`,
+      error: `${firstError?.path.join(".")}  -  ${firstError?.message}`,
     };
   }
   return { data: result.data, error: null };

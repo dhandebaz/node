@@ -523,13 +523,13 @@ export default function VerificationPage() {
                   <div>
                     <Label className="text-xs text-muted-foreground">Name</Label>
                     <div className="font-medium">
-                      {extractedData.name || "—"}
+                      {extractedData.name || " - "}
                     </div>
                   </div>
                   <div>
                     <Label className="text-xs text-muted-foreground">DOB</Label>
                     <div className="font-medium">
-                      {extractedData.dob || "—"}
+                      {extractedData.dob || " - "}
                     </div>
                   </div>
                   <div>
@@ -543,7 +543,7 @@ export default function VerificationPage() {
                   <div>
                     <Label className="text-xs text-muted-foreground">Document No</Label>
                     <div className="font-medium">
-                      {extractedData.document_number || "—"}
+                      {extractedData.document_number || " - "}
                     </div>
                   </div>
                 </div>
@@ -576,10 +576,10 @@ export default function VerificationPage() {
               This document will be generated specifically for:
             </p>
             <p className="mb-3">
-              <strong>Business:</strong> {details.name || "—"}
+              <strong>Business:</strong> {details.name || " - "}
             </p>
             <p className="mb-3">
-              <strong>Address:</strong> {details.address || "—"}
+              <strong>Address:</strong> {details.address || " - "}
             </p>
             <p className="mb-3">
               <strong>PAN/GSTIN:</strong>{" "}

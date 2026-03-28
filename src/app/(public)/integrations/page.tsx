@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Connect omnichannel rails like WhatsApp, Twilio (Voice), Razorpay/Stripe, and Calendar syncs natively into your autonomous AI workforce.",
   openGraph: {
-    title: "Enterprise Integrations — Nodebase",
+    title: "Enterprise Integrations  -  Nodebase",
     description:
       "Connect omnichannel rails like WhatsApp, Twilio (Voice), Razorpay/Stripe, and Calendar syncs natively into your autonomous AI workforce.",
   },

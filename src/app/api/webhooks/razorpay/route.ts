@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     // Verify signature (skip in dev if no secret configured)
     if (hasSecret) {
       if (!verifyRazorpayWebhook(body, signature)) {
-        log.error("[Razorpay Webhook] Invalid signature — request rejected");
+        log.error("[Razorpay Webhook] Invalid signature  -  request rejected");
         return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
       }
     } else if (process.env.NODE_ENV === 'production') {
@@ -223,7 +223,7 @@ export async function POST(request: Request) {
                 }).eq('user_id', user.user_id).eq('status', 'active');
               }
 
-              log.error(`[Dunning] Tenant ${tenantId}: ${recentFailures.length} failures in 7 days — marked past_due`);
+              log.error(`[Dunning] Tenant ${tenantId}: ${recentFailures.length} failures in 7 days  -  marked past_due`);
             }
 
             await logEvent({

@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 5. Transform/Redact
-    // "PART 7 — PRIVACY & REDACTION RULES"
+    // "PART 7  -  PRIVACY & REDACTION RULES"
     // We should ensure sensitive data isn't leaked.
     // However, this is the ADMIN view. Admins usually need to see details.
     // But "Do NOT store raw messages... Do NOT store payment details".

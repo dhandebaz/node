@@ -27,7 +27,7 @@ async function createSupabaseClient() {
               cookieStore.set(name, value, options),
             );
           } catch {
-            // setAll called from a Server Component — cookies can only be set in a Server Action or Route Handler
+            // setAll called from a Server Component  -  cookies can only be set in a Server Action or Route Handler
           }
         },
       },
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     try {
       body = await request.json();
     } catch {
-      // No body — proceed with defaults
+      // No body  -  proceed with defaults
     }
 
     const next = body.next || "/dashboard/ai";

@@ -40,7 +40,7 @@ export async function POST() {
     );
   }
 
-  // 2. Upsert integration record — Instagram uses OAuth redirect in production.
+  // 2. Upsert integration record  -  Instagram uses OAuth redirect in production.
   // This endpoint records the intent/connection status after the OAuth callback
   // has already been completed externally, or marks it as pending OAuth.
   const { error } = await supabase.from("integrations").upsert(

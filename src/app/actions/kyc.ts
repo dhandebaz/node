@@ -52,7 +52,7 @@ export async function extractKycDataAction(
   if (result.documentType === "AADHAAR" && safeIdNumber) {
     const masked = maskAadhaar(safeIdNumber);
     if (masked === null) {
-      // Not a valid 12-digit number — strip rather than return a partial
+      // Not a valid 12-digit number  -  strip rather than return a partial
       safeIdNumber = null;
       log.warn("extractKycDataAction: invalid Aadhaar number stripped", {
         tenantId,
@@ -212,7 +212,7 @@ Output ONLY the JSON object. No markdown fences, no extra text.
   try {
     parsed = JSON.parse(text);
   } catch {
-    // Gemini occasionally wraps the JSON in markdown fences — strip them
+    // Gemini occasionally wraps the JSON in markdown fences  -  strip them
     const cleaned = text
       .replace(/^```json\s*/i, "")
       .replace(/^```\s*/i, "")

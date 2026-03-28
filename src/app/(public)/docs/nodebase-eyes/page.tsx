@@ -14,17 +14,17 @@ const baseUrl = getAppUrl();
  */
 
 export const metadata: Metadata = {
-  title: "Nodebase Eyes — Enterprise Vision Intelligence | Nodebase",
+  title: "Nodebase Eyes  -  Enterprise Vision Intelligence | Nodebase",
   description:
     "Nodebase Eyes securely ingests operational imagery to perform zero-shot OCR, automated KYC, and compliance verification.",
   openGraph: {
-    title: "Nodebase Eyes — Enterprise Vision Intelligence",
+    title: "Nodebase Eyes  -  Enterprise Vision Intelligence",
     description:
       "Secure OCR, ID verification, and visual Q&A designed for enterprise compliance and omnichannel workflows.",
     url: `${baseUrl}/docs/nodebase-eyes`,
   },
   twitter: {
-    title: "Nodebase Eyes — Enterprise Vision Intelligence",
+    title: "Nodebase Eyes  -  Enterprise Vision Intelligence",
     card: "summary_large_image",
   },
 };

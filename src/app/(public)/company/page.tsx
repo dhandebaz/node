@@ -12,11 +12,11 @@ const baseUrl = getAppUrl();
 export const metadata: Metadata = {
   title: "Company | Nodebase",
   description:
-    "We help small businesses automate customer conversations, bookings, and payments — built for real owners, not engineers.",
+    "We help small businesses automate customer conversations, bookings, and payments  -  built for real owners, not engineers.",
   openGraph: {
     title: "Company | Nodebase",
     description:
-      "We help small businesses automate customer conversations, bookings, and payments — built for real owners, not engineers.",
+      "We help small businesses automate customer conversations, bookings, and payments  -  built for real owners, not engineers.",
     url: `${baseUrl}/company`,
     siteName: "Nodebase",
     type: "website",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
         url: `${baseUrl}/og/static/company-1200x630.png`,
         width: 1200,
         height: 630,
-        alt: "Nodebase — AI assistants for local businesses",
+        alt: "Nodebase  -  AI assistants for local businesses",
       },
     ],
   },
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Company | Nodebase",
     description:
-      "We help small businesses automate customer conversations, bookings, and payments — built for real owners, not engineers.",
+      "We help small businesses automate customer conversations, bookings, and payments  -  built for real owners, not engineers.",
     images: [`${baseUrl}/og/static/company-1200x630.png`],
   },
 };

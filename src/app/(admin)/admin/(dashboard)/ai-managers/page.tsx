@@ -140,7 +140,7 @@ export default function AdminAiManagersPage() {
                     </div>
                   </td>
                   <td className="px-4 py-8 text-muted-foreground/30 text-[10px] font-mono uppercase">
-                    {manager.updatedAt ? new Date(manager.updatedAt).toLocaleString() : "—"}
+                    {manager.updatedAt ? new Date(manager.updatedAt).toLocaleString() : " - "}
                   </td>
                   <td className="px-8 py-8 text-right">
                     <button

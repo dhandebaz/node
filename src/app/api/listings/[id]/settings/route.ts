@@ -43,7 +43,7 @@ export async function PATCH(
 
     const body = await request.json();
 
-    // Only allow updating safe settings fields — never allow overwriting id/tenant_id/host_id
+    // Only allow updating safe settings fields  -  never allow overwriting id/tenant_id/host_id
     const allowedFields: Record<string, unknown> = {};
 
     if (body.dynamic_pricing_settings !== undefined) {

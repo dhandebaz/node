@@ -243,7 +243,7 @@ export function TeamManagement() {
                       </div>
                       <div>
                         <div className="text-sm font-medium text-foreground">
-                          {member.name || "—"}
+                          {member.name || " - "}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {member.email}
@@ -285,7 +285,7 @@ export function TeamManagement() {
                     )}
                   </td>
                   <td className="px-6 py-4 text-xs text-muted-foreground">
-                    {member.lastActive || "—"}
+                    {member.lastActive || " - "}
                   </td>
                   <td className="px-6 py-4 text-right">
                     {member.role !== "owner" ? (

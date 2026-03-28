@@ -15,7 +15,7 @@ export interface OutboundMessage {
 export const ChannelService = {
   /**
    * Dispatches an outbound message to the appropriate provider based on the channel.
-   * All channels either dispatch via real API or log a tracked failure — no simulated responses.
+   * All channels either dispatch via real API or log a tracked failure  -  no simulated responses.
    */
   async sendMessage(params: OutboundMessage) {
     const { tenantId, recipientId, content, channel } = params;
@@ -79,7 +79,7 @@ export const ChannelService = {
       }
 
       case 'sms':
-        // SMS requires Twilio/MSG91 integration — not yet connected for this tenant
+        // SMS requires Twilio/MSG91 integration  -  not yet connected for this tenant
         await this.recordFailure(tenantId, 'integration', 'sms', 'SMS provider not configured. Connect Twilio or MSG91 in Integrations.');
         return { success: false, error: 'SMS provider not configured' };
 

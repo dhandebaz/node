@@ -44,13 +44,13 @@ export default function ProfileSettingsPage() {
             <div className="text-xs text-foreground/50 uppercase tracking-wider">
               Name
             </div>
-            <div className="text-foreground mt-2">{host.name || "—"}</div>
+            <div className="text-foreground mt-2">{host.name || " - "}</div>
           </div>
           <div className="bg-white/5 border border-border rounded-xl p-4">
             <div className="text-xs text-foreground/50 uppercase tracking-wider">
               Email
             </div>
-            <div className="text-foreground mt-2">{host.email || "—"}</div>
+            <div className="text-foreground mt-2">{host.email || " - "}</div>
           </div>
         </div>
       </div>

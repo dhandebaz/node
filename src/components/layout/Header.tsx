@@ -94,15 +94,8 @@ export function Header({ viewer }: HeaderProps) {
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex shrink-0 items-center gap-3 group">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-[0_0_15px_rgba(59,130,246,0.3)] border border-white/20 group-hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-all">
-                <Logo className="h-4 w-4 text-white" />
-              </div>
-              <div className="hidden sm:block">
-                <div className="font-display font-medium text-lg text-white tracking-tight leading-none">
-                  Nodebase
-                </div>
-              </div>
+            <Link href="/" className="flex shrink-0 items-center group">
+              <Logo className="text-white group-hover:opacity-80 transition-opacity" />
             </Link>
 
             <div className="hidden md:flex items-center gap-1 rounded-full p-1 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">

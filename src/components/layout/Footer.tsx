@@ -15,19 +15,12 @@ export function Footer() {
             {/* Top section: brand + contact */}
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
               <div className="space-y-6">
-                <div className="flex items-center gap-5">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-[0_0_20px_rgba(59,130,246,0.3)] border border-white/20">
-                    <Logo className="h-7 w-7 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-display text-2xl text-white tracking-tighter leading-none">
-                      nodebase
-                    </div>
-                    <p className="mt-1 max-w-xl text-sm text-zinc-400">
-                      AI employees for businesses that run on messages,
-                      payments, schedules, and exceptions.
-                    </p>
-                  </div>
+                <div className="flex flex-col gap-4">
+                  <Logo className="text-white" />
+                  <p className="max-w-xl text-sm text-zinc-400">
+                    AI employees for businesses that run on messages,
+                    payments, schedules, and exceptions.
+                  </p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Link

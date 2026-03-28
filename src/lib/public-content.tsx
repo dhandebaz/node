@@ -635,7 +635,7 @@ export const companyDirectoryPage: PublicDirectoryPageData = {
         {
           title: "Built for real people",
           description:
-            "We design our software for store owners, clinic managers, and hosts—not for IT departments.",
+            "We design our software for store owners, clinic managers, and hosts - not for IT departments.",
           icon: Bot,
         },
         {
@@ -960,7 +960,7 @@ export const docsDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Nodebase Voice",
       description:
-        "AI Telephony Agent for your business — integrated natively into the omnichannel inbox.",
+        "AI Telephony Agent for your business  -  integrated natively into the omnichannel inbox.",
       href: "/docs/nodebase-voice",
       icon: TerminalSquare,
       eyebrow: "Infrastructure",

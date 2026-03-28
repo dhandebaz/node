@@ -97,7 +97,7 @@ export async function POST(request: Request) {
 
     if (insertError) {
       console.error("Failed to persist payment link record:", insertError);
-      // Non-fatal — the link was created, just log the error
+      // Non-fatal  -  the link was created, just log the error
     }
 
     // Log event

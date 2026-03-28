@@ -302,7 +302,7 @@ export default function AdminCustomerDetailPage() {
               <p className="text-sm text-zinc-400">Generated per tenant with signer audit trail.</p>
             </div>
             <div className="text-xs text-zinc-500">
-              Tenant: {data.tenantId || "—"}
+              Tenant: {data.tenantId || " - "}
             </div>
           </div>
 
@@ -332,12 +332,12 @@ export default function AdminCustomerDetailPage() {
                   {agreements.map((a) => (
                     <tr key={a.id} className="border-b border-zinc-800/60 text-zinc-300">
                       <td className="py-3 pr-4 whitespace-nowrap">
-                        {a.signed_at ? new Date(a.signed_at).toLocaleString() : "—"}
+                        {a.signed_at ? new Date(a.signed_at).toLocaleString() : " - "}
                       </td>
                       <td className="py-3 pr-4 whitespace-nowrap">{a.version}</td>
-                      <td className="py-3 pr-4 whitespace-nowrap">{a.signer_email || "—"}</td>
+                      <td className="py-3 pr-4 whitespace-nowrap">{a.signer_email || " - "}</td>
                       <td className="py-3 pr-4 font-mono text-xs">
-                        {a.sha256 ? `${a.sha256.slice(0, 10)}…${a.sha256.slice(-8)}` : "—"}
+                        {a.sha256 ? `${a.sha256.slice(0, 10)}…${a.sha256.slice(-8)}` : " - "}
                       </td>
                       <td className="py-3 pr-4 whitespace-nowrap">{a.filename}</td>
                       <td className="py-3 pr-0 whitespace-nowrap">
@@ -579,12 +579,12 @@ export default function AdminCustomerDetailPage() {
           </div>
           <div>
             <div className="text-xs uppercase tracking-widest text-zinc-500">Phone</div>
-            <div className="mt-2 text-white">{data.profile.phone || "—"}</div>
+            <div className="mt-2 text-white">{data.profile.phone || " - "}</div>
           </div>
           <div>
             <div className="text-xs uppercase tracking-widest text-zinc-500">Created</div>
             <div className="mt-2 text-white">
-              {data.profile.createdAt ? new Date(data.profile.createdAt).toLocaleString() : "—"}
+              {data.profile.createdAt ? new Date(data.profile.createdAt).toLocaleString() : " - "}
             </div>
           </div>
           <div>
@@ -599,7 +599,7 @@ export default function AdminCustomerDetailPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <div className="text-xs uppercase tracking-widest text-zinc-500">AI Manager</div>
-              <div className="mt-2 text-white">{data.aiManager.slug || "—"}</div>
+              <div className="mt-2 text-white">{data.aiManager.slug || " - "}</div>
             </div>
             <div>
               <div className="text-xs uppercase tracking-widest text-zinc-500">Plan Price</div>
@@ -685,7 +685,7 @@ export default function AdminCustomerDetailPage() {
                   <tr key={tx.id}>
                     <td className="px-4 py-3">{tx.type}</td>
                     <td className="px-4 py-3">₹{new Intl.NumberFormat("en-IN").format(tx.amount || 0)}</td>
-                    <td className="px-4 py-3 text-zinc-400">{tx.reason || "—"}</td>
+                    <td className="px-4 py-3 text-zinc-400">{tx.reason || " - "}</td>
                     <td className="px-4 py-3">{tx.status}</td>
                     <td className="px-4 py-3 text-zinc-500">{new Date(tx.timestamp).toLocaleString()}</td>
                   </tr>
@@ -721,12 +721,12 @@ export default function AdminCustomerDetailPage() {
                   <td className="px-4 py-3 text-white">{integration.provider}</td>
                   <td className="px-4 py-3">{integration.status}</td>
                   <td className="px-4 py-3 text-zinc-500">
-                    {integration.last_sync ? new Date(integration.last_sync).toLocaleString() : "—"}
+                    {integration.last_sync ? new Date(integration.last_sync).toLocaleString() : " - "}
                   </td>
                   <td className="px-4 py-3 text-zinc-500">
-                    {integration.expires_at ? new Date(integration.expires_at).toLocaleString() : "—"}
+                    {integration.expires_at ? new Date(integration.expires_at).toLocaleString() : " - "}
                   </td>
-                  <td className="px-4 py-3 text-red-400">{integration.error_code || "—"}</td>
+                  <td className="px-4 py-3 text-red-400">{integration.error_code || " - "}</td>
                 </tr>
               ))}
               {data.integrations.length === 0 && (

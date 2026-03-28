@@ -392,7 +392,7 @@ export class ControlService {
   }
 
   /**
-   * Get System Health Status — performs real checks against DB, AI, payments, and integrations.
+   * Get System Health Status  -  performs real checks against DB, AI, payments, and integrations.
    */
   static async getSystemHealth() {
     const now = new Date().toISOString();

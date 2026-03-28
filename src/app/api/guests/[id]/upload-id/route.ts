@@ -151,7 +151,7 @@ export async function POST(
         created_at: new Date().toISOString(),
       });
 
-    // If the table doesn't exist yet, fall back gracefully — status update still proceeds
+    // If the table doesn't exist yet, fall back gracefully  -  status update still proceeds
     if (docInsertError) {
       console.warn(
         "guest_id_documents insert warning (table may not exist yet):",

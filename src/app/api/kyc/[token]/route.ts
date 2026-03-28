@@ -29,7 +29,7 @@ export async function GET(
       );
     }
 
-    // RPC returns a JSONB object — handle every known error code
+    // RPC returns a JSONB object  -  handle every known error code
     if (data?.success === false) {
       switch (data.code) {
         case "NOT_FOUND":

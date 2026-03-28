@@ -106,7 +106,7 @@ export async function POST(req: Request) {
       frameRefToStore = suppliedFrameRef;
     }
 
-    // If neither frameRef nor base64 provided, that's acceptable — we still create a session row
+    // If neither frameRef nor base64 provided, that's acceptable  -  we still create a session row
     // with minimal metadata (useful for event-only ingests).
     const payload: Record<string, any> = {
       camera_id: cameraId,

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
         url: "/og/static/pricing-1200x630.png",
         width: 1200,
         height: 630,
-        alt: "Nodebase pricing — enterprise scale economics",
+        alt: "Nodebase pricing  -  enterprise scale economics",
       },
     ],
   },

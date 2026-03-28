@@ -165,7 +165,7 @@ export class RevenueService {
       .update({ status: "applied", updated_at: new Date().toISOString() })
       .eq("id", suggestionId);
 
-    // Note: iCal is a pull protocol — OTAs fetch our calendar URL on their schedule.
+    // Note: iCal is a pull protocol  -  OTAs fetch our calendar URL on their schedule.
     // Direct price pushes to Airbnb/Booking.com require their proprietary APIs
     // (Airbnb Open API, Booking.com Content API) which are gated behind partner agreements.
     // The price suggestion is recorded in listing_price_history and is reflected in the

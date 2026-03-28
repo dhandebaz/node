@@ -5,7 +5,7 @@ import { getAppUrl } from "@/lib/runtime-config";
 
 /**
  * GET /api/user/handle?handle=<value>
- * Check whether a handle is available (no auth required — public availability check).
+ * Check whether a handle is available (no auth required  -  public availability check).
  */
 export async function GET(req: Request) {
   try {

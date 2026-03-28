@@ -16,14 +16,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(getAppUrl()),
   title: "Nodebase | The AI Assistant for Local Businesses",
   description:
-    "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically—24/7.",
+    "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically - 24/7.",
   appleWebApp: {
     title: "Nodebase",
   },
   openGraph: {
     title: "Nodebase | The AI Assistant for Local Businesses",
     description:
-      "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically—24/7.",
+      "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically - 24/7.",
     url: getAppUrl(),
     siteName: "Nodebase",
     type: "website",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Nodebase | The AI Assistant for Local Businesses",
     description:
-      "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically—24/7.",
+      "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically - 24/7.",
   },
 };
 

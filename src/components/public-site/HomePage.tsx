@@ -102,7 +102,7 @@ export function HomePage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-8 max-w-2xl text-lg sm:text-xl leading-relaxed text-zinc-400 font-sans"
           >
-            Deploy domain-specific AI employees—capable of autonomous voice, vision, and transactional workflows—to scale your operations instantly.
+            Deploy domain-specific AI employees - capable of autonomous voice, vision, and transactional workflows - to scale your operations instantly.
           </motion.p>
 
           <motion.div

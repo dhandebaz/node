@@ -83,7 +83,7 @@ export async function GET() {
         id: tu.id,
         userId: tu.user_id,
         name,
-        email: profile?.email || profile?.phone || "—",
+        email: profile?.email || profile?.phone || " - ",
         role: tu.role as "owner" | "admin" | "member",
         status: "active" as const,
         lastActive,

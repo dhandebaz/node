@@ -135,7 +135,7 @@ export async function POST(
 
     if (rpcError || !portalData || portalData.success === false) {
       const code = portalData?.code ?? "UNKNOWN";
-      log.warn("Document upload rejected — invalid token", { token, code });
+      log.warn("Document upload rejected  -  invalid token", { token, code });
 
       if (code === "TOKEN_EXPIRED") {
         return NextResponse.json(
@@ -160,7 +160,7 @@ export async function POST(
       portalData.request_id !== requestId ||
       portalData.tenant_id !== tenantId
     ) {
-      log.warn("Document upload rejected — token/request mismatch", {
+      log.warn("Document upload rejected  -  token/request mismatch", {
         token,
         requestId,
         tenantId,
@@ -241,8 +241,8 @@ export async function POST(
       if (detectedType === "aadhaar" || ocrResult.documentType === "AADHAAR") {
         const masked = maskAadhaar(ocrResult.details.idNumber);
         if (masked === null) {
-          // Invalid Aadhaar format — omit rather than store a bad value
-          log.warn("Gemini returned an invalid Aadhaar number — stripped", {
+          // Invalid Aadhaar format  -  omit rather than store a bad value
+          log.warn("Gemini returned an invalid Aadhaar number  -  stripped", {
             requestId,
             tenantId,
           });

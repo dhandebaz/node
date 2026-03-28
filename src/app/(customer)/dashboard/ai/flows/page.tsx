@@ -321,7 +321,7 @@ export default function FlowsPage() {
                     Updated:{" "}
                     {flow.updated_at
                       ? new Date(flow.updated_at).toLocaleString()
-                      : "—"}
+                      : " - "}
                   </div>
                 </div>
 
