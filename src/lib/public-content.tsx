@@ -285,21 +285,21 @@ export const employeePages: Record<string, PublicArticlePageData> = {
         title: "What Host AI can do for you",
         cards: [
           {
-            title: "Answers questions instantly",
+            title: "Answers questions & calls",
             description:
-              "Guests hate waiting. Host AI replies instantly with accurate check-in times, parking rules, and property details.",
+              "Guests hate waiting. Host AI replies instantly on WhatsApp and fields live phone calls via Twilio Voice with accurate check-in details.",
             icon: CalendarClock,
           },
           {
             title: "Collects payments",
             description:
-              "Generates secure payment links and politely follows up if a guest forgets to pay their deposit.",
+              "Generates secure Stripe/Razorpay payment links and politely follows up if a guest forgets to pay their deposit.",
             icon: CreditCard,
           },
           {
-            title: "Collects IDs safely",
+            title: "Automated KYC Verification",
             description:
-              "Automatically asks guests to upload their ID cards before check-in to keep your property secure.",
+              "Uses Nodebase Eyes OCR to instantly verify government IDs before check-in, keeping your property secure without manual review.",
             icon: FileCheck2,
           },
         ],
@@ -350,13 +350,13 @@ export const employeePages: Record<string, PublicArticlePageData> = {
   "nurse-ai": {
     eyebrow: "Healthcare Assistant",
     title:
-      "Nurse AI manages your clinic's appointments so you can focus on patients.",
+      "Nurse AI manages your clinic's appointments and calls so you can focus on care.",
     summary:
-      "Built for clinics and diagnostic centers. It answers common questions, books appointments, and sends helpful reminders.",
+      "Built for clinics and diagnostic centers. It fields Twilio Voice calls, answers common questions, and sends helpful reminders via WhatsApp.",
     metrics: [
       { label: "Best for", value: "Clinics & Doctors" },
       { label: "Goal", value: "Fewer no-shows" },
-      { label: "Safety", value: "Never gives medical advice" },
+      { label: "Safety", value: "Secure KYC consent" },
     ],
     sections: [
       {
@@ -365,19 +365,19 @@ export const employeePages: Record<string, PublicArticlePageData> = {
           {
             title: "Patient intake triage",
             description:
-              "Collects structured basics, reason for visit, and preferred slot without asking clinical questions it should not handle.",
+              "Collects structured basics via WhatsApp or Voice, captures KYC consent forms, and books preferred slots autonomously.",
             icon: ClipboardList,
           },
           {
             title: "Schedule hygiene",
             description:
-              "Reduces no-shows with reminder loops, reschedule capture, and appointment confirmations tied to calendar logic.",
+              "Reduces no-shows with reminder loops via Twilio and WhatsApp, syncing instantly to your calendar.",
             icon: CalendarClock,
           },
           {
-            title: "Follow-up messaging",
+            title: "Prescription ingestion",
             description:
-              "Runs care-adjacent follow-up, document reminders, and front-desk communication after visits.",
+              "Uses Nodebase Eyes to securely ingest images of previous prescriptions or reports before the appointment.",
             icon: HeartHandshake,
           },
         ],
@@ -427,13 +427,13 @@ export const employeePages: Record<string, PublicArticlePageData> = {
   "dukan-ai": {
     eyebrow: "Retail Assistant",
     title:
-      "Dukan AI handles questions and takes orders on WhatsApp automatically.",
+      "Dukan AI handles questions and takes orders on WhatsApp and Voice seamlessly.",
     summary:
-      "For local stores and merchants. It answers questions about stock, takes orders over chat, and confirms delivery times.",
+      "For local stores and merchants. It answers questions about stock via Twilio voice and takes orders over WhatsApp.",
     metrics: [
       { label: "Best for", value: "Local stores" },
-      { label: "Goal", value: "More sales on chat" },
-      { label: "Channel", value: "WhatsApp & Instagram" },
+      { label: "Goal", value: "More sales 24/7" },
+      { label: "Channel", value: "Omnichannel Voice & Text" },
     ],
     sections: [
       {
@@ -442,19 +442,19 @@ export const employeePages: Record<string, PublicArticlePageData> = {
           {
             title: "Catalogue answers",
             description:
-              "Responds to pricing, sizes, availability, and delivery logic using the merchant’s own catalogue and policy rules.",
+              "Responds to pricing, sizes, availability, and delivery logic using the merchant’s catalogue via live Voice or Text.",
             icon: Store,
           },
           {
             title: "Order follow-through",
             description:
-              "Captures intent, confirms pickup or delivery expectations, and closes the loop on status updates.",
+              "Generates instant Razorpay/Stripe checkout links and confirms delivery expectations without human touch.",
             icon: TimerReset,
           },
           {
-            title: "Repeat purchase prompts",
+            title: "Automated billing",
             description:
-              "Runs lightweight reminders and reorder suggestions based on prior purchases and timing windows.",
+              "Scale operations starting exactly at the base ₹999/mo tier securely.",
             icon: ChartColumnIncreasing,
           },
         ],
@@ -503,34 +503,34 @@ export const employeePages: Record<string, PublicArticlePageData> = {
   },
   "thrift-ai": {
     eyebrow: "Social Commerce Assistant",
-    title: "Thrift AI sells for you in the Instagram DMs.",
+    title: "Thrift AI sells for you in the Instagram DMs round the clock.",
     summary:
-      "For businesses selling on Instagram. It answers size questions, holds inventory, and collects payments safely.",
+      "For businesses selling on Instagram. It processes images via Nodebase Eyes to answer specific product requests, holds inventory, and collects payments safely.",
     metrics: [
       { label: "Best for", value: "Instagram Sellers" },
       { label: "Goal", value: "Convert followers to buyers" },
-      { label: "Strength", value: "Instant warm replies" },
+      { label: "Strength", value: "Instant visual discovery" },
     ],
     sections: [
       {
         title: "Primary responsibilities",
         cards: [
           {
-            title: "Inquiry triage",
+            title: "Visual Inquiry triage",
             description:
-              "Sorts serious buyers, handles size and condition questions, and keeps first response times low.",
+              "Uses Nodebase Eyes to analyze customer-uploaded screenshots from your feed and instantly identify stock.",
             icon: ShoppingBag,
           },
           {
             title: "Reservation workflow",
             description:
-              "Creates urgency and holds inventory windows without losing clarity on payment expectations.",
+              "Creates urgency by holding inventory windows and demanding secure Razorpay checkout to confirm orders.",
             icon: Rocket,
           },
           {
             title: "Fulfillment follow-up",
             description:
-              "Confirms payment, shipping, and customer reassurance after the sale closes.",
+              "Confirms payment, ships logistics updates, and requests automated feedback after the sale closes.",
             icon: ReceiptText,
           },
         ],
@@ -1005,21 +1005,21 @@ export const docsPages: Record<string, PublicArticlePageData> = {
         title: "The product model",
         cards: [
           {
-            title: "Employees, not chat widgets",
+            title: "Autonomous Employees",
             description:
-              "The system is packaged around business roles so operators can reason about it using existing mental models.",
+              "Deploy specialized agents natively equipped with omnichannel messaging, Voice telephony, and Eyes OCR capabilities.",
             icon: Bot,
           },
           {
-            title: "Workflow state matters",
+            title: "Workflow logic rules",
             description:
-              "Every message and action sits inside a larger operational loop that the employee should understand.",
+              "Every message, call, and scanned document sits inside a larger operational loop with strict enterprise compliance boundaries.",
             icon: Activity,
           },
           {
-            title: "Humans stay in control",
+            title: "Total Human Oversight",
             description:
-              "Approvals, escalation paths, and event logs make override practical instead of ceremonial.",
+              "KYC approvals, dynamic pricing scaling, and clear event logs make human override seamless and auditable.",
             icon: ShieldCheck,
           },
         ],
@@ -1087,15 +1087,16 @@ export const docsPages: Record<string, PublicArticlePageData> = {
         code: {
           label: "First-run checklist",
           value: `role: host-ai
-channel: whatsapp
+channels: [whatsapp, twilio_voice]
+capabilities: [vision_ocr, link_generation]
 autonomy: mixed
 approvals:
   refund: human
   pricing_exception: human
-  reminder_follow_up: automatic
-log_mode: event_stream`,
+  kyc_verification: automatic
+log_mode: enterprise_audit`,
         },
-        note: "Launch only after one real conversation path, one edge case, and one human override have been reviewed end to end.",
+        note: "Launch only after one real conversation path, one telephony test, and one human override have been reviewed end to end.",
       },
     ],
     cta: {
@@ -1203,13 +1204,14 @@ log_mode: event_stream`,
       {
         title: "Example request shape",
         code: {
-          label: "Run request",
+          label: "Multimodal run request",
           value: `POST /v1/agents/{agent_id}/run
 {
-  "input": "Guest asked for an early check-in option.",
+  "input": "Guest uploaded an ID document.",
+  "attachments": [{ "type": "image", "url": "https://..." }],
   "context": {
-    "listing_id": "lst_1024",
-    "booking_reference": "NB-4107"
+    "booking_reference": "NB-4107",
+    "require_kyc": true
   },
   "mode": "policy_enforced"
 }`,
@@ -1233,31 +1235,99 @@ log_mode: event_stream`,
       secondary: { label: "Return to docs", href: "/docs" },
     },
   },
-  integrations: {
-    eyebrow: "Integrations",
-    title:
-      "Integrations are structured around workflow reliability, not logo count.",
+  "nodebase-voice": {
+    eyebrow: "Upcoming Feature",
+    title: "Nodebase Voice: Full-duplex conversational telephony.",
     summary:
-      "Nodebase integrates with the rails that matter for real operations: messaging, payments, schedules, and the records systems that keep them coherent.",
+      "Voice is no longer a separate silo. Our AI employees can handle inbound and outbound calls natively integrated with Twilio.",
     metrics: [
-      { label: "Primary channel", value: "Messaging-first" },
-      { label: "Key rails", value: "Payments and calendars" },
-      { label: "Deployment style", value: "Audit-friendly" },
+      { label: "Status", value: "Private Beta" },
+      { label: "Latency", value: "< 500ms bounds" },
+      { label: "Capabilities", value: "Interruptible IVR" },
     ],
     sections: [
       {
-        title: "Messaging",
+        title: "Technical Architecture",
+        paragraphs: [
+          "Nodebase Voice utilizes a low-latency WebRTC pipeline connecting directly to Twilio's Media Streams. The agent maintains conversational state precisely parallel to text.",
+          "It features native barge-in (interruption handling), dynamic TTS voice cloning (optional), and compliance-grade recording logs."
+        ],
+      },
+      {
+        title: "Integration path",
+        bullets: [
+          "Provision a Twilio phone number.",
+          "Point the Twilio Voice webhook to your environment's Nodebase SIP ingress.",
+          "Agents adopt the same operating policies established for text channels."
+        ],
+      }
+    ],
+    cta: {
+      title: "Join the waitlist for Nodebase Voice.",
+      description: "We are onboarding Enterprise customers exclusively for the first rollout phase.",
+      primary: { label: "Join Waitlist", href: "/company/contact" },
+      secondary: { label: "Back to Docs", href: "/docs" },
+    }
+  },
+  "nodebase-eyes": {
+    eyebrow: "Upcoming Feature",
+    title: "Nodebase Eyes: Vision intelligence for raw reality.",
+    summary:
+      "Ingest images securely to perform zero-shot OCR, document verification, and visual Q&A without human labeling.",
+    metrics: [
+      { label: "Status", value: "Private Beta" },
+      { label: "Compliance", value: "PII masking built-in" },
+      { label: "Use case", value: "KYC & Menus" },
+    ],
+    sections: [
+      {
+        title: "How Nodebase Eyes works",
+        paragraphs: [
+          "When a customer uploads an image (like an ID card or a broken product), Nodebase Eyes converts visual pixels into structured semantic context the agent can query.",
+          "We offer specialized sub-models for KYC extraction (parsing licenses securely) and Retail Triage (reading serial numbers and damage signs)."
+        ],
+      },
+      {
+        title: "Safety & Privacy limits",
+        bullets: [
+          "Images parsed for KYC are systematically wiped from edge caches after extraction triggers.",
+          "Explicit PII masking prevents sensitive ID text from spilling into general event logs.",
+          "Nodebase Eyes explicitly rejects explicit or prohibited image vectors at the ingress layer."
+        ],
+      }
+    ],
+    cta: {
+      title: "Automate your visual verification.",
+      description: "Get early access to Nodebase Eyes OCR capabilities.",
+      primary: { label: "Join Waitlist", href: "/company/contact" },
+      secondary: { label: "Back to Docs", href: "/docs" },
+    }
+  },
+  integrations: {
+    eyebrow: "Integrations",
+    title:
+      "Integrations designed for operational reliability and compliance.",
+    summary:
+      "Nodebase integrates natively with the rails that matter for real operations: WhatsApp, Twilio (Voice), Razorpay/Stripe, and Calendar syncs.",
+    metrics: [
+      { label: "Primary channel", value: "Omnichannel setup" },
+      { label: "Key rails", value: "Twilio & Stripe" },
+      { label: "Deployment style", value: "Audit-friendly OCR" },
+    ],
+    sections: [
+      {
+        title: "Messaging & Voice",
         cards: [
           {
-            title: "WhatsApp and inbox channels",
+            title: "WhatsApp & Instagram",
             description:
-              "Employees are strongest when they work where the customer already is, with safe handoff back to the team.",
+              "Employees are strongest when they work casually over social DMs, instantly handling rich multimedia context via Nodebase Eyes.",
             icon: MessagesSquare,
           },
           {
-            title: "Email follow-up",
+            title: "Twilio Telephony",
             description:
-              "Useful for structured support and post-conversation summaries where asynchronous communication matters.",
+              "Let Nodebase Voice securely field live inbound calls using our programmable IVR and conversational agents.",
             icon: Mail,
           },
         ],
@@ -1267,21 +1337,21 @@ log_mode: event_stream`,
         title: "Commerce and operations",
         cards: [
           {
-            title: "Payments",
+            title: "Razorpay & Stripe",
             description:
-              "Send links, confirm collection, and keep that event inside the same workflow state.",
+              "Send links natively in chat, confirm collection, and keep that billing event inside the same unified workflow.",
             icon: CreditCard,
           },
           {
-            title: "Scheduling",
+            title: "Calendar Syncs",
             description:
-              "Employees can reason against calendars and availability rather than guessing around them.",
+              "Employees reason against live Google Calendar and Outlook availability rather than guessing around them.",
             icon: CalendarClock,
           },
           {
-            title: "Business records",
+            title: "KYC & Compliance",
             description:
-              "Use business context from listings, clinic rules, or merchant policy to keep replies grounded.",
+              "Use Nodebase Eyes OCR to process IDs and automatically generate legally binding consent forms.",
             icon: ServerCog,
           },
         ],
@@ -1290,7 +1360,7 @@ log_mode: event_stream`,
       {
         title: "Integration design rules",
         bullets: [
-          "Prefer integrations that preserve traceability for every action the employee takes.",
+          "Prefer integrations that preserve traceability for every call recording and chat log.",
           "Define retries and human fallback before launch, not after the first operational miss.",
           "Keep the number of first-phase integrations low enough that the team can actually observe system behavior.",
         ],
@@ -1300,7 +1370,7 @@ log_mode: event_stream`,
       title:
         "If the integration increases operational reliability, it belongs in the stack.",
       description:
-        "If it only adds complexity and logos, it does not. Note: Nodebase Voice (telephony) and Nodebase Eyes (vision/CCTV) are upcoming platform features that will be integrated into the omnichannel stack once enabled by system administrators. See the voice and eyes docs pages for details and waitlist options.",
+        "Start connecting Twilio, Stripe, and your Calendars today on the base ₹999 plan.",
       primary: { label: "Return to docs", href: "/docs" },
       secondary: { label: "Talk to Nodebase", href: "/company/contact" },
     },
@@ -1421,11 +1491,11 @@ export const legalPages: Record<string, PublicArticlePageData> = {
         ],
       },
       {
-        title: "Use restrictions",
+        title: "SLA & Use restrictions",
         bullets: [
-          "You may not use Nodebase to violate applicable law, impersonate regulated professionals, or deploy deceptive or harmful messaging.",
-          "You may not attempt to reverse engineer, extract model artifacts, bypass controls, or abuse rate limits or workflow protections.",
-          "You may not misrepresent Nodebase as assuming legal or professional liability for your operational decisions.",
+          "Nodebase Enterprise tiers (starting at ₹999/mo) are backed by a 99.9% uptime SLA. Misses result in prorated service credits.",
+          "You may not use Nodebase to violate applicable law, impersonate regulated professionals, or deploy deceptive messaging.",
+          "You may not attempt to reverse engineer, extract model artifacts, bypass controls, or abuse rate limits.",
         ],
       },
       {
@@ -1473,11 +1543,11 @@ export const legalPages: Record<string, PublicArticlePageData> = {
         ],
       },
       {
-        title: "Retention and disclosure",
+        title: "Retention and OCR handling",
         bullets: [
-          "We retain data for as long as reasonably necessary to provide the service, meet contractual obligations, resolve disputes, and comply with law.",
-          "We may disclose information to service providers, partners, or authorities where necessary to operate the service, prevent abuse, or comply with legal process.",
-          "Where a workflow involves regulated or sensitive information, additional customer-side configuration and operational controls may be required.",
+          "All imagery processed by Nodebase Eyes for KYC purposes is maintained securely in ephemeral storage and automatically wiped after identity extraction.",
+          "We retain non-sensitive operational data for as long as reasonably necessary to provide the service and meet contractual obligations.",
+          "We may disclose information to service providers where necessary to operate the service or comply with legal process.",
         ],
       },
     ],

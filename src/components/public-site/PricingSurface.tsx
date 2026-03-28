@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 const pricingFrames = [
   {
     title: "Base Subscription",
-    price: "From INR 1,999/mo",
+    price: "From INR 999/mo",
     eyebrow: "Foundation",
     description:
       "Everything you need to run your business inbox, including the AI assistant and unified dashboard.",
@@ -64,7 +64,7 @@ const operatingRules = [
 ];
 
 const sampleLedger = [
-  { label: "Base Subscription", value: "INR 1,999" },
+  { label: "Base Subscription", value: "INR 999" },
   { label: "1,200 AI replies sent to customers", value: "Usage-based" },
   { label: "Automated payment follow-ups", value: "Included" },
   { label: "Human inbox & manual replies", value: "Included" },

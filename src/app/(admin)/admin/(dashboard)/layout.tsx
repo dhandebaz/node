@@ -15,11 +15,14 @@ export default async function AdminDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background selection:bg-primary selection:text-primary-foreground font-sans flex flex-col md:flex-row">
+    <div className="flex h-screen overflow-hidden bg-background selection:bg-primary selection:text-primary-foreground font-sans">
       <AdminSidebar />
-      <main className="flex-1 p-4 md:p-8 pt-20 md:pt-8 overflow-x-hidden">
-        {children}
-      </main>
+      <div className="flex-1 flex flex-col relative min-w-0 overflow-hidden">
+        {/* Main Content Canvas (Scrollable independently) */}
+        <main className="flex-1 overflow-y-auto bg-muted/20 p-4 md:p-8 relative custom-scrollbar">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

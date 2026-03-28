@@ -89,9 +89,9 @@ export function Header({ viewer }: HeaderProps) {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="public-container pt-4 sm:pt-5">
-        <div className="glass-panel border-border/50 rounded-full px-4 py-3 sm:px-5">
+    <header className="glass-nav w-full transition-all">
+      <div className="public-container">
+        <div className="flex items-center justify-between py-3 sm:py-4">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex shrink-0 items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/20">

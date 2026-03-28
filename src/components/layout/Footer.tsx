@@ -10,7 +10,7 @@ export function Footer() {
   return (
     <footer className="relative z-10 pb-8 pt-4 sm:pb-10">
       <div className="public-container">
-        <div className="public-panel px-6 py-8 sm:px-8 sm:py-10 lg:px-10">
+        <div className="px-6 py-8 sm:px-8 sm:py-10 bg-background/50 border-t border-border/50">
           <div className="relative z-10 space-y-10">
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
               <div className="space-y-6">

@@ -59,27 +59,27 @@ export default async function CustomerLayout({
     }
 
     return (
-      <div className="min-h-screen bg-background selection:bg-primary selection:text-primary-foreground font-sans">
+      <div className="flex h-screen overflow-hidden bg-background selection:bg-primary selection:text-primary-foreground font-sans">
         <StoreInitializer tenant={profile.tenant} />
 
-        {/* Universal Top Navigation */}
-        <UniversalNavbar
-          tenantName={
-            profile.tenant?.name || profile.profile?.fullName || "My Business"
-          }
-          userEmail={profile.identity.email}
-          userAvatar={undefined} // Add avatar URL if available in profile
-          credits={kaisaCredits}
-          isKaisaUser={profile.roles.isKaisaUser}
-        />
+        {/* Sidebar Navigation (Desktop) */}
+        <DashboardSidebar />
 
-        <div className="flex">
-          {/* Sidebar Navigation (Desktop) */}
-          <DashboardSidebar />
+        <div className="flex-1 flex flex-col relative min-w-0 overflow-hidden">
+          {/* Universal Top Navigation */}
+          <UniversalNavbar
+            tenantName={
+              profile.tenant?.name || profile.profile?.fullName || "My Business"
+            }
+            userEmail={profile.identity.email}
+            userAvatar={undefined} // Add avatar URL if available in profile
+            credits={kaisaCredits}
+            isKaisaUser={profile.roles.isKaisaUser}
+          />
 
-          {/* Main Content - Adjusted for fixed header and sidebar */}
-          <main className="flex-1 pt-20 min-h-screen pb-24 md:pb-0 transition-all duration-300 md:pl-[var(--sidebar-width,0px)]">
-            <div className="max-w-7xl mx-auto p-6 md:p-10">
+          {/* Main Content Canvas (Scrollable independently, distinct subtle background) */}
+          <main className="flex-1 overflow-y-auto bg-muted/20 relative custom-scrollbar">
+            <div className="max-w-7xl mx-auto p-4 md:p-8">
               <FailureBanner />
               <VerificationGate
                 kycStatus={profile.tenant?.kyc_status || "not_started"}

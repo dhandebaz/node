@@ -16,9 +16,9 @@ import {
 import { employeeDirectoryPage } from "@/lib/public-content";
 
 const heroMetrics = [
-  { label: "Setup time", value: "Ready in 5 minutes" },
-  { label: "Full control", value: "Jump in to chat anytime" },
-  { label: "Zero commissions", value: "You keep 100% of your sales" },
+  { label: "Base Plan", value: "Starts at ₹999/mo" },
+  { label: "Omnichannel", value: "Voice, Vision & Chat" },
+  { label: "Compliance", value: "Automated KYC OCR" },
 ];
 
 const workflowPillars: {
@@ -27,21 +27,21 @@ const workflowPillars: {
   icon: LucideIcon;
 }[] = [
   {
-    title: "The perfect AI for your business",
+    title: "Autonomous AI Staff",
     description:
-      "Whether you run a homestay, clinic, or store, Kaisa AI knows exactly how to talk to your customers.",
+      "Deploy specialized agents (Thrift AI, Nurse AI, Dukan AI, Host AI) tailored to your exact business vertical.",
     icon: Sparkles,
   },
   {
-    title: "Everything in one simple inbox",
+    title: "Nodebase Voice & Eyes",
     description:
-      "Messages, bookings, and payments from WhatsApp and Instagram all flow into one easy-to-use dashboard.",
+      "Handle live customer phone calls natively via Twilio and ingest vision data like menus or IDs with OCR.",
     icon: Waypoints,
   },
   {
-    title: "You are always in charge",
+    title: "Enterprise Trust",
     description:
-      "Kaisa handles the busywork, but you can pause the AI and reply manually whenever a human touch is needed.",
+      "Bank-grade compliance with built-in KYC verification, automated consent forms, and dynamic pricing rules.",
     icon: ShieldCheck,
   },
 ];
@@ -54,21 +54,21 @@ const operatingSequence = [
 
 const controlCards = [
   {
-    eyebrow: "Simple Dashboard",
-    title: "Manage everything from your phone or laptop",
-    body: "See all your unread messages, confirm bookings, and track your revenue without needing separate tools.",
+    eyebrow: "Unified Portal",
+    title: "Manage guests seamlessly",
+    body: "Oversee omnichannel booking, secure payment links, and AI-driven inbox management from a singular dashboard.",
     icon: Activity,
   },
   {
-    eyebrow: "Automated Payments",
-    title: "Collect payments directly in chat",
-    body: "Kaisa automatically generates secure payment links and follows up with guests so you never chase a deposit again.",
+    eyebrow: "Intelligent Logic",
+    title: "Dynamic pricing & forms",
+    body: "Implement dynamic pricing engines and automated guest consent forms that scale seamlessly with your operating volume.",
     icon: CreditCard,
   },
   {
-    eyebrow: "Works out of the box",
-    title: "No coding or prompt engineering required",
-    body: "Just fill in your property or store details, and Kaisa instantly knows how to handle common customer requests.",
+    eyebrow: "Total Omnichannel",
+    title: "Voice, Vision, and Text",
+    body: "Live call routing, instant social messaging, and image-based ingestion (Nodebase Eyes), natively processed.",
     icon: BookOpenText,
   },
 ];
@@ -95,15 +95,13 @@ export function HomePage() {
             <div className="relative z-10 space-y-10">
               <div className="space-y-8">
                 <div className="inline-flex py-1.5 px-4 rounded-full bg-primary/5 text-primary border border-primary/20 font-sans text-xs font-semibold tracking-wide">
-                  The AI assistant for local businesses
+                  The Enterprise AI Workforce
                 </div>
                 <h1 className="font-display max-w-4xl text-5xl leading-tight text-foreground sm:text-6xl lg:text-[5.5rem] lg:leading-[1.05] tracking-tight">
-                  The smart assistant that runs your business while you sleep.
+                  The autonomous workforce for modern businesses.
                 </h1>
                 <p className="max-w-xl text-lg sm:text-xl leading-relaxed text-muted-foreground font-sans">
-                  Nodebase connects to your WhatsApp and website to instantly
-                  answer customer questions, schedule bookings, and collect
-                  payments automatically—24 hours a day, 7 days a week.
+                  Deploy specialized AI employees to manage inbound voice calls, Instagram DMs, custom payment links, and secure KYC verifications instantly.
                 </p>
               </div>
  
