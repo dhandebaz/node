@@ -14,17 +14,17 @@ const baseUrl = getAppUrl();
  */
 
 export const metadata: Metadata = {
-  title: "Nodebase Voice — AI Phone Agent (coming soon) | Nodebase",
+  title: "Nodebase Voice — Conversational Telephony | Nodebase",
   description:
-    "Nodebase Voice is an AI-powered phone agent that can answer calls, take bookings, and perform payment-supported flows by voice. Join the waitlist for early access.",
+    "Nodebase Voice is an enterprise telephony agent that handles live inbound calls, reservations, and compliance-first IVR flows via WebRTC and Twilio.",
   openGraph: {
-    title: "Nodebase Voice — AI Phone Agent (coming soon)",
+    title: "Nodebase Voice — Conversational Telephony",
     description:
-      "An AI phone agent that integrates with your omnichannel inbox: STT, TTS, call handling, and operator handoff.",
+      "Enterprise telephony agent integrating directly into your omnichannel inbox: WebRTC, TTS, and native escalation.",
     url: `${baseUrl}/docs/nodebase-voice`,
   },
   twitter: {
-    title: "Nodebase Voice — AI Phone Agent (coming soon)",
+    title: "Nodebase Voice — Conversational Telephony",
     card: "summary_large_image",
   },
 };

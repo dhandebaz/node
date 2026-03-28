@@ -2,9 +2,9 @@ import { RenderArticleRoute } from "@/components/public-site/ContentRoute";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Host AI | Nodebase",
+  title: "Host AI — Hospitality Operations Agent | Nodebase",
   description:
-    "Host AI answers your guests instantly so you can get back your time. Designed for homestays and vacation rentals.",
+    "Deploy Host AI to orchestrate omnichannel bookings, manage live guest phone calls via Twilio, and enforce secure KYC verifications.",
 };
 
 export default function HostAiPage() {

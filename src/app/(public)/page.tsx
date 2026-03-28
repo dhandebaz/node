@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { HomePage } from "@/components/public-site/HomePage";
 
 export const metadata: Metadata = {
-  title: "Nodebase — AI assistants for local businesses",
+  title: "Nodebase — The Enterprise AI Workforce",
   description:
-    "Get a professional, mobile-friendly assistant that answers customers, schedules bookings, and collects payments — ready in 5 minutes.",
+    "Deploy domain-specific AI employees—capable of autonomous voice, vision, and transactional workflows—to scale your operations instantly.",
   openGraph: {
-    title: "Nodebase — AI assistants for local businesses",
+    title: "Nodebase — The Enterprise AI Workforce",
     description:
-      "Get a professional, mobile-friendly assistant that answers customers, schedules bookings, and collects payments — ready in 5 minutes.",
+      "Deploy domain-specific AI employees—capable of autonomous voice, vision, and transactional workflows—to scale your operations instantly.",
     url: "/",
     siteName: "Nodebase",
     type: "website",
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nodebase — AI assistants for local businesses",
+    title: "Nodebase — The Enterprise AI Workforce",
     description:
-      "Get a professional, mobile-friendly assistant that answers customers, schedules bookings, and collects payments — ready in 5 minutes.",
+      "Deploy domain-specific AI employees—capable of autonomous voice, vision, and transactional workflows—to scale your operations instantly.",
     images: ["/og/home-1200x630.png"],
   },
   // Basic robots suggestion for indexing (can be extended in robots.txt)

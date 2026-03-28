@@ -14,17 +14,17 @@ const baseUrl = getAppUrl();
  */
 
 export const metadata: Metadata = {
-  title: "Nodebase Eyes — CCTV & Vision Intelligence (coming soon) | Nodebase",
+  title: "Nodebase Eyes — Enterprise Vision Intelligence | Nodebase",
   description:
-    "Nodebase Eyes is a secure CCTV and vision intelligence integration to surface events, alerts, and context for AI operations. Join the waitlist for pilot access.",
+    "Nodebase Eyes securely ingests operational imagery to perform zero-shot OCR, automated KYC, and compliance verification.",
   openGraph: {
-    title: "Nodebase Eyes — CCTV & Vision Intelligence (coming soon)",
+    title: "Nodebase Eyes — Enterprise Vision Intelligence",
     description:
-      "Securely ingest camera streams, run vision detections, and deliver contextual alerts into your omnichannel workflow.",
+      "Secure OCR, ID verification, and visual Q&A designed for enterprise compliance and omnichannel workflows.",
     url: `${baseUrl}/docs/nodebase-eyes`,
   },
   twitter: {
-    title: "Nodebase Eyes — CCTV & Vision Intelligence (coming soon)",
+    title: "Nodebase Eyes — Enterprise Vision Intelligence",
     card: "summary_large_image",
   },
 };

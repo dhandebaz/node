@@ -182,20 +182,20 @@ export const docsNavigation = [
 ];
 
 export const employeeDirectoryPage: PublicDirectoryPageData = {
-  eyebrow: "AI Assistants",
-  title: "Meet the AI assistants built for your business.",
+  eyebrow: "The AI Workforce",
+  title: "Meet the autonomous agents built for your domain.",
   summary:
-    "We trained specialized AI assistants for different industries. Choose the one that fits your business, and it will know exactly how to handle your customers from day one.",
+    "Deploy specialized AI employees for your specific business vertical. Our agents process live Voice calls, ingest Vision data, and orchestrate secure transactional workflows from day one.",
   metrics: [
-    { label: "Setup time", value: "5 minutes" },
-    { label: "Channels", value: "WhatsApp, Instagram, Web" },
-    { label: "Availability", value: "24/7/365" },
+    { label: "Deployment", value: "Instant" },
+    { label: "Multimodal", value: "Voice, Vision & Text" },
+    { label: "Availability", value: "24/7/365 SLA" },
   ],
   cards: [
     {
       title: "Host AI",
       description:
-        "Perfect for homestays and vacation rentals. Answers guest questions, shares check-in details, and collects payments.",
+        "Premium hospitality agent. Answers guest questions, orchestrates check-ins, and collects secure deposits autonomously.",
       href: "/employees/host-ai",
       icon: Building2,
       eyebrow: "Hospitality",
@@ -205,7 +205,7 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Nurse AI",
       description:
-        "Perfect for clinics. Answers patient questions, schedules appointments, and sends friendly reminders.",
+        "Medical intake specialist. Fields live Twilio calls, ingests prescriptions via Nodebase Eyes, and books appointments.",
       href: "/employees/nurse-ai",
       icon: Stethoscope,
       eyebrow: "Healthcare",
@@ -215,17 +215,17 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
     {
       title: "Dukan AI",
       description:
-        "Perfect for local stores. Answers product questions, takes orders over WhatsApp, and confirms deliveries.",
+        "Omnichannel retail manager. Takes WhatsApp orders, handles live inventory calls, and confirms secure deliveries.",
       href: "/employees/dukan-ai",
       icon: Store,
       eyebrow: "Retail",
-      stat: "Orders & DMs",
+      stat: "Orders & support",
       ctaLabel: "View Dukan AI",
     },
     {
       title: "Thrift AI",
       description:
-        "Perfect for Instagram sellers. Replies instantly to DMs, holds inventory, and collects payments safely.",
+        "Social commerce closer. Uses Nodebase Eyes to identify visual stock requests and drives Razorpay checkouts via DM.",
       href: "/employees/thrift-ai",
       icon: ShoppingBag,
       eyebrow: "Social commerce",
@@ -235,24 +235,24 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
   ],
   sections: [
     {
-      title: "Why use a specialized AI?",
+      title: "Why deploy a domain-specific agent?",
       cards: [
         {
-          title: "Ready to work immediately",
+          title: "Multimodal Processing",
           description:
-            "No coding required. Just tell the AI your business rules and it's ready to chat with customers.",
+            "From Twilio Voice calls to Nodebase Eyes image ingestion, our agents natively handle complex unstructured inputs.",
           icon: BriefcaseBusiness,
         },
         {
-          title: "Never forgets a detail",
+          title: "Intelligent State Machine",
           description:
-            "Your AI remembers your pricing, parking rules, and operating hours, so it always gives customers the right answer.",
+            "Your agent dynamically executes pricing rules, operational SLAs, and live calendar logic with zero latency.",
           icon: BrainCircuit,
         },
         {
-          title: "Safe and polite",
+          title: "Enterprise Trust",
           description:
-            "Our AI is trained to be helpful and professional. If a customer asks a complicated question, it pauses and notifies you.",
+            "Compliant by default. Seamlessly run ID validations via KYC OCR and process secure payments automatically.",
           icon: ShieldCheck,
         },
       ],
@@ -260,25 +260,25 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
     },
   ],
   cta: {
-    title: "Ready to put your customer service on autopilot?",
+    title: "Ready to upgrade your operating system?",
     description:
-      "Create an account for free and see how your new AI assistant handles your inbox.",
-    primary: { label: "Get Started Free", href: "/signup" },
-    secondary: { label: "See pricing", href: "/pricing" },
+      "Join the enterprises scaling their operations with the Nodebase autonomous workforce.",
+    primary: { label: "Scope a deployment", href: "/signup" },
+    secondary: { label: "Review pricing", href: "/pricing" },
   },
 };
 
 export const employeePages: Record<string, PublicArticlePageData> = {
   "host-ai": {
-    eyebrow: "Hospitality Assistant",
+    eyebrow: "Hospitality Operations Agent",
     title:
-      "Host AI answers your guests instantly so you can get back your time.",
+      "Host AI runs your property operations autonomously. Zero latency, full compliance.",
     summary:
-      "Designed for homestays and vacation rentals. It handles bookings, shares WiFi passwords, and collects deposit payments automatically.",
+      "Engineered for premium homestays and vacation networks. Host AI orchestrates omnichannel bookings, manages live guest phone calls via Twilio, and enforces secure KYC verifications.",
     metrics: [
-      { label: "Best for", value: "Homestays & Villas" },
-      { label: "Goal", value: "More bookings, zero stress" },
-      { label: "Control", value: "Jump in anytime" },
+      { label: "Target", value: "Premium Hospitality" },
+      { label: "Capability", value: "Voice & Vision AI" },
+      { label: "Compliance", value: "Automated KYC OCR" },
     ],
     sections: [
       {
@@ -306,12 +306,12 @@ export const employeePages: Record<string, PublicArticlePageData> = {
         columns: 3,
       },
       {
-        title: "How it works in practice",
+        title: "How it executes in production",
         bullets: [
-          "Reads your property rules, pricing, and availability before it ever replies to a guest.",
-          "Answers common questions politely and accurately, giving your guests a 5-star experience.",
-          "If a guest asks for a special discount or a complex request, the AI pauses and asks you to take over.",
-          "Everything happens in one simple dashboard on your phone.",
+          "Ingests your complex operating policies, dynamic pricing matrices, and real-time availability via APIs.",
+          "Resolves common and complex guest queries with enterprise-grade accuracy, elevating brand perception.",
+          "Instantly escalates bespoke requests or multi-property booking exceptions for human override.",
+          "Aggregates all omnichannel interactions logically within the centralized operator portal.",
         ],
       },
       {
@@ -340,23 +340,23 @@ export const employeePages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title: "Ready to get your time back?",
+      title: "Ready to scale your hospitality operations?",
       description:
-        "Set up Host AI in 5 minutes and let it handle your next booking.",
-      primary: { label: "Get Started Free", href: "/signup" },
-      secondary: { label: "View pricing", href: "/pricing" },
+        "Deploy Host AI in minutes and secure your transactional workflow with enterprise capabilities.",
+      primary: { label: "Scope a deployment", href: "/signup" },
+      secondary: { label: "Review pricing architecture", href: "/pricing" },
     },
   },
   "nurse-ai": {
-    eyebrow: "Healthcare Assistant",
+    eyebrow: "Healthcare Operations Agent",
     title:
-      "Nurse AI manages your clinic's appointments and calls so you can focus on care.",
+      "Nurse AI drives clinical intake and schedule hygiene securely.",
     summary:
-      "Built for clinics and diagnostic centers. It fields Twilio Voice calls, answers common questions, and sends helpful reminders via WhatsApp.",
+      "Engineered for modern clinics and diagnostic hubs. Nurse AI intercepts inbound Twilio calls, accurately resolves patient triage queries, and secures appointments via WhatsApp.",
     metrics: [
-      { label: "Best for", value: "Clinics & Doctors" },
-      { label: "Goal", value: "Fewer no-shows" },
-      { label: "Safety", value: "Secure KYC consent" },
+      { label: "Target", value: "Enterprise Clinics" },
+      { label: "Capability", value: "Twilio Voice & Triage" },
+      { label: "Compliance", value: "Secure KYC Consent" },
     ],
     sections: [
       {
@@ -417,19 +417,19 @@ export const employeePages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title: "Give your front desk a superpower.",
+      title: "Deploy reliable clinical infrastructure.",
       description:
-        "Set up Nurse AI and let it handle the scheduling while you focus on care.",
-      primary: { label: "Get Started Free", href: "/signup" },
-      secondary: { label: "Talk to the team", href: "/company/contact" },
+        "Execute the Nurse AI configuration workflow to secure your intake process.",
+      primary: { label: "Scope a deployment", href: "/signup" },
+      secondary: { label: "Talk to partners", href: "/company/contact" },
     },
   },
   "dukan-ai": {
-    eyebrow: "Retail Assistant",
+    eyebrow: "Omnichannel Retail Agent",
     title:
-      "Dukan AI handles questions and takes orders on WhatsApp and Voice seamlessly.",
+      "Dukan AI orchestrates your retail volume across Voice and Text grids.",
     summary:
-      "For local stores and merchants. It answers questions about stock via Twilio voice and takes orders over WhatsApp.",
+      "Engineered for high-volume local merchants. Dukan AI effortlessly resolves live Twilio stock queries, drives WhatsApp checkout, and confirms secure deliveries.",
     metrics: [
       { label: "Best for", value: "Local stores" },
       { label: "Goal", value: "More sales 24/7" },
@@ -494,18 +494,18 @@ export const employeePages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title: "Stop losing sales because you were too busy to reply.",
+      title: "Scale your retail throughput infinitely.",
       description:
-        "Let Dukan AI handle your WhatsApp orders so you can focus on running your store.",
-      primary: { label: "Get Started Free", href: "/signup" },
+        "Deploy Dukan AI to handle your omnichannel ordering so you can focus on supply chain.",
+      primary: { label: "Scope a deployment", href: "/signup" },
       secondary: { label: "See partner options", href: "/company/partners" },
     },
   },
   "thrift-ai": {
-    eyebrow: "Social Commerce Assistant",
-    title: "Thrift AI sells for you in the Instagram DMs round the clock.",
+    eyebrow: "Social Commerce Operations Agent",
+    title: "Thrift AI drives zero-latency visual sales in the DMs.",
     summary:
-      "For businesses selling on Instagram. It processes images via Nodebase Eyes to answer specific product requests, holds inventory, and collects payments safely.",
+      "Engineered for scale on Instagram. Thrift AI processes inbound images via Nodebase Eyes to identify precise SKU requests, marshals inventory logic, and executes secure Razorpay checkouts.",
     metrics: [
       { label: "Best for", value: "Instagram Sellers" },
       { label: "Goal", value: "Convert followers to buyers" },
@@ -570,10 +570,10 @@ export const employeePages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title: "Turn your DMs into a fully automated storefront.",
+      title: "Convert inbound DMs into an autonomous revenue stream.",
       description:
-        "Use Thrift AI to reply to customers instantly and never miss a sale.",
-      primary: { label: "Get Started Free", href: "/signup" },
+        "Deploy Thrift AI to execute zero-latency visual discovery and secure checkouts automatically.",
+      primary: { label: "Scope a deployment", href: "/signup" },
       secondary: { label: "Talk to sales", href: "/company/contact" },
     },
   },
@@ -903,13 +903,13 @@ export const partnerTrackPages: Record<string, PublicArticlePageData> = {
 
 export const docsDirectoryPage: PublicDirectoryPageData = {
   eyebrow: "Documentation",
-  title: "Everything you need to set up your AI assistant.",
+  title: "Architect your Enterprise AI Workforce.",
   summary:
-    "Read our guides to learn how to connect your WhatsApp, set up your business rules, and let your AI take over the busywork.",
+    "Read our guides to learn how to deploy omnichannel operators, configure your operational rules, and let Nodebase execute your high-volume workflows.",
   metrics: [
-    { label: "Audience", value: "Business Owners" },
-    { label: "Coverage", value: "Setup & Guides" },
-    { label: "Style", value: "Simple & Clear" },
+    { label: "Audience", value: "Enterprise Operators" },
+    { label: "Coverage", value: "Deployment Guides" },
+    { label: "Standard", value: "Compliance-First" },
   ],
   cards: [
     {
@@ -958,28 +958,28 @@ export const docsDirectoryPage: PublicDirectoryPageData = {
       ctaLabel: "Review integrations",
     },
     {
-      title: "Nodebase Voice (upcoming)",
+      title: "Nodebase Voice",
       description:
-        "AI Phone Agent for your business — integrated into omnichannel when launched. Admin-controlled rollout and waitlist.",
+        "AI Telephony Agent for your business — integrated natively into the omnichannel inbox.",
       href: "/docs/nodebase-voice",
       icon: TerminalSquare,
-      eyebrow: "Upcoming",
-      ctaLabel: "Join waitlist",
+      eyebrow: "Infrastructure",
+      ctaLabel: "Deploy Voice",
     },
     {
-      title: "Nodebase Eyes (upcoming)",
+      title: "Nodebase Eyes",
       description:
-        "CCTV & Vision Intelligence for properties — tightly integrated with workflow and dashboards when released. Admin-controlled rollout.",
+        "Enterprise Vision Intelligence to parse OCR, IDs, and visual context securely.",
       href: "/docs/nodebase-eyes",
       icon: ServerCog,
-      eyebrow: "Upcoming",
-      ctaLabel: "Join waitlist",
+      eyebrow: "Infrastructure",
+      ctaLabel: "Deploy Eyes",
     },
   ],
   cta: {
-    title: "Ready to save time and automate your inbox?",
+    title: "Ready to deploy your AI workforce?",
     description:
-      "Start with our 5-minute quickstart guide to launch your first AI assistant.",
+      "Start with our 5-minute quickstart guide to launch your first AI operator.",
     primary: {
       label: "Open Quickstart",
       href: "/docs/getting-started/quickstart",
@@ -992,9 +992,9 @@ export const docsPages: Record<string, PublicArticlePageData> = {
   "getting-started": {
     eyebrow: "Documentation",
     title:
-      "Nodebase is built around specialized AI assistants that understand your business.",
+      "Nodebase is built around specialized AI operators that execute your enterprise workflow.",
     summary:
-      "This guide explains how Nodebase learns your rules, answers your customers, and knows exactly when to ask you for help.",
+      "This guide explains how Nodebase ingests your policies, resolves complex customer intent, and knows exactly when to escalate to human oversight.",
     metrics: [
       { label: "Focus", value: "Easy Setup" },
       { label: "Control", value: "You are the boss" },
@@ -1051,13 +1051,13 @@ export const docsPages: Record<string, PublicArticlePageData> = {
   },
   quickstart: {
     eyebrow: "Quickstart",
-    title: "Get your AI assistant running in 5 minutes.",
+    title: "Deploy your AI workforce in minutes.",
     summary:
-      "Follow these four simple steps to connect your WhatsApp, teach your AI your rules, and start saving time.",
+      "Follow these four operational steps to connect your enterprise channels, deploy your compliance logic, and start executing scale.",
     metrics: [
       { label: "Time", value: "5 minutes" },
-      { label: "Required", value: "Your business rules" },
-      { label: "Result", value: "Automated inbox" },
+      { label: "Required", value: "Operating Policies" },
+      { label: "Result", value: "Autonomous Operations" },
     ],
     sections: [
       {
@@ -1236,12 +1236,12 @@ log_mode: enterprise_audit`,
     },
   },
   "nodebase-voice": {
-    eyebrow: "Upcoming Feature",
+    eyebrow: "Enterprise Infrastructure",
     title: "Nodebase Voice: Full-duplex conversational telephony.",
     summary:
       "Voice is no longer a separate silo. Our AI employees can handle inbound and outbound calls natively integrated with Twilio.",
     metrics: [
-      { label: "Status", value: "Private Beta" },
+      { label: "Status", value: "Enterprise Launch" },
       { label: "Latency", value: "< 500ms bounds" },
       { label: "Capabilities", value: "Interruptible IVR" },
     ],
@@ -1263,21 +1263,21 @@ log_mode: enterprise_audit`,
       }
     ],
     cta: {
-      title: "Join the waitlist for Nodebase Voice.",
-      description: "We are onboarding Enterprise customers exclusively for the first rollout phase.",
-      primary: { label: "Join Waitlist", href: "/company/contact" },
+      title: "Deploy Nodebase Voice.",
+      description: "Scale your telephone intake natively within the base ¥999 architecture.",
+      primary: { label: "Scope a deployment", href: "/signup" },
       secondary: { label: "Back to Docs", href: "/docs" },
     }
   },
   "nodebase-eyes": {
-    eyebrow: "Upcoming Feature",
-    title: "Nodebase Eyes: Vision intelligence for raw reality.",
+    eyebrow: "Enterprise Infrastructure",
+    title: "Nodebase Eyes: Vision intelligence for enterprise reality.",
     summary:
       "Ingest images securely to perform zero-shot OCR, document verification, and visual Q&A without human labeling.",
     metrics: [
-      { label: "Status", value: "Private Beta" },
+      { label: "Status", value: "Enterprise Launch" },
       { label: "Compliance", value: "PII masking built-in" },
-      { label: "Use case", value: "KYC & Menus" },
+      { label: "Use case", value: "KYC & Operations" },
     ],
     sections: [
       {
@@ -1297,18 +1297,18 @@ log_mode: enterprise_audit`,
       }
     ],
     cta: {
-      title: "Automate your visual verification.",
-      description: "Get early access to Nodebase Eyes OCR capabilities.",
-      primary: { label: "Join Waitlist", href: "/company/contact" },
+      title: "Automate your visual compliance workflows.",
+      description: "Activate Nodebase Eyes OCR capabilities across your omnichannel inbox.",
+      primary: { label: "Scope a deployment", href: "/signup" },
       secondary: { label: "Back to Docs", href: "/docs" },
     }
   },
   integrations: {
-    eyebrow: "Integrations",
+    eyebrow: "Enterprise Integrations",
     title:
-      "Integrations designed for operational reliability and compliance.",
+      "Mission-critical integrations engineered for compliance and reliability.",
     summary:
-      "Nodebase integrates natively with the rails that matter for real operations: WhatsApp, Twilio (Voice), Razorpay/Stripe, and Calendar syncs.",
+      "Nodebase natively orchestrates the rails that power enterprise operations: WhatsApp, Twilio (Voice), Razorpay/Stripe, and real-time Calendar syncs.",
     metrics: [
       { label: "Primary channel", value: "Omnichannel setup" },
       { label: "Key rails", value: "Twilio & Stripe" },
@@ -1379,9 +1379,9 @@ log_mode: enterprise_audit`,
 
 export const trustPage: PublicArticlePageData = {
   eyebrow: "Trust center",
-  title: "Your data is secure, and you are always in complete control.",
+  title: "Enterprise trust, strict data boundaries, and complete orchestration control.",
   summary:
-    "We know your customer chats and payments are highly sensitive. Our platform is built from the ground up to keep your data private and give you the final say.",
+    "We know your customer operations and payments are highly sensitive. Nodebase is designed from the ground up to prevent data bleed, enforce strict AI guardrails, and keep you in total command of your workforce.",
   metrics: [
     { label: "Design", value: "Privacy First" },
     { label: "Records", value: "Secure Logs" },
@@ -1415,9 +1415,10 @@ export const trustPage: PublicArticlePageData = {
     {
       title: "Operational commitments",
       bullets: [
-        "We offer a 99.9% uptime SLA for all Enterprise base Nodebase Voice and Text integrations.",
+        "We offer a 99.9% uptime SLA for all Enterprise base Nodebase Voice and Text integrations on our ₹999/mo platform architecture.",
+        "Nodebase mitigates AI hallucinations via strict deterministic bounds: our employees cannot invent operational policies outside of provided SOPs.",
         "Nodebase Eyes OCR parses sensitive KYC data directly into memory and systematically purges imagery after verification.",
-        "Human override remains part of the normal operating model, preventing uncontrolled agent loops.",
+        "Human override remains a core part of the operating model, ensuring seamless escalation rather than uncontrolled loops.",
       ],
     },
     {
@@ -1493,7 +1494,7 @@ export const legalPages: Record<string, PublicArticlePageData> = {
       {
         title: "SLA & Use restrictions",
         bullets: [
-          "Nodebase Enterprise tiers (starting at ₹999/mo) are backed by a 99.9% uptime SLA. Misses result in prorated service credits.",
+          "Nodebase Enterprise deployments (including the ₹999/mo base license) are backed by a 99.9% uptime SLA. Misses result in prorated service credits.",
           "You may not use Nodebase to violate applicable law, impersonate regulated professionals, or deploy deceptive messaging.",
           "You may not attempt to reverse engineer, extract model artifacts, bypass controls, or abuse rate limits.",
         ],
@@ -1543,9 +1544,9 @@ export const legalPages: Record<string, PublicArticlePageData> = {
         ],
       },
       {
-        title: "Retention and OCR handling",
+        title: "Retention and KYC handling",
         bullets: [
-          "All imagery processed by Nodebase Eyes for KYC purposes is maintained securely in ephemeral storage and automatically wiped after identity extraction.",
+          "All imagery processed by Nodebase Eyes for KYC purposes is maintained securely in ephemeral storage and automatically wiped after identity extraction. We never train public models on your sensitive documents.",
           "We retain non-sensitive operational data for as long as reasonably necessary to provide the service and meet contractual obligations.",
           "We may disclose information to service providers where necessary to operate the service or comply with legal process.",
         ],
@@ -1607,8 +1608,8 @@ export const legalPages: Record<string, PublicArticlePageData> = {
       {
         title: "General policy",
         paragraphs: [
-          "Unless a commercial agreement states otherwise, subscriptions are billed in advance and usage balances are intended for service consumption rather than withdrawal.",
-          "Refunds are assessed case by case where there is duplicate billing, unauthorized charge, material service failure, or another legally required basis.",
+          "Unless a commercial agreement states otherwise, the ₹999/mo base license is billed in advance and usage balances (compute) are intended for service consumption rather than withdrawal.",
+          "Refunds are assessed case by case where there is an unauthorized charge, material service SLA failure, or another legally required basis.",
         ],
       },
       {
@@ -1644,11 +1645,11 @@ export const legalPages: Record<string, PublicArticlePageData> = {
       "Last updated March 15, 2026. AI employees improve operational speed, but they do not remove business, legal, or workflow risk. This page outlines the major risk categories customers should understand.",
     sections: [
       {
-        title: "Model and workflow risk",
+        title: "Model and hallucination risk",
         bullets: [
-          "AI systems can generate incomplete, inaccurate, or contextually poor outputs.",
-          "A correct-looking response may still be operationally wrong if the source context is outdated or incomplete.",
-          "Customers should test the workflow with real edge cases before treating it as trusted automation.",
+          "Nodebase explicitly bounds LLM capability through Retrieval-Augmented Generation (RAG) and strict semantic grounding.",
+          "However, AI systems can still generate inaccurate or contextually poor outputs if the provided operating policies or reference materials are outdated.",
+          "Customers must rigorously test the workflow with real operational edge cases before granting autonomous execution.",
         ],
       },
       {

@@ -16,15 +16,15 @@ import { cn } from "@/lib/utils";
 
 const pricingFrames = [
   {
-    title: "Base Subscription",
-    price: "From INR 999/mo",
+    title: "Enterprise Core",
+    price: "From ₹999/mo",
     eyebrow: "Foundation",
     description:
-      "Everything you need to run your business inbox, including the AI assistant and unified dashboard.",
+      "Secure foundational infrastructure for deploying autonomous AI employees, featuring our unified omnichannel portal.",
     highlights: [
-      "One customized AI assistant",
-      "Unified WhatsApp & Instagram inbox",
-      "Automated payment collection",
+      "1 Domain-specific AI Employee",
+      "Unified Voice, Vision & Chat inbox",
+      "Automated KYC & payment processing",
     ],
     icon: ShieldCheck,
     featured: true,
@@ -64,10 +64,10 @@ const operatingRules = [
 ];
 
 const sampleLedger = [
-  { label: "Base Subscription", value: "INR 999" },
-  { label: "1,200 AI replies sent to customers", value: "Usage-based" },
-  { label: "Automated payment follow-ups", value: "Included" },
-  { label: "Human inbox & manual replies", value: "Included" },
+  { label: "Enterprise Core License", value: "₹999" },
+  { label: "1,200 Autonomous AI Interactions", value: "Usage-based" },
+  { label: "KYC OCR & Secure Payments", value: "Included" },
+  { label: "Multi-seat human overrides", value: "Included" },
 ];
 
 const faq = [
@@ -165,15 +165,13 @@ export function PricingSurface() {
           >
             <div className="relative z-10 space-y-8">
               <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
-                Pricing
+                Pricing Architecture
               </div>
               <h1 className="font-display max-w-4xl text-5xl leading-[0.9] text-foreground sm:text-6xl lg:text-7xl uppercase tracking-tighter">
-                Price the operating system, not the hype.
+                Predictable operational economics.
               </h1>
               <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground font-sans">
-                Nodebase pricing is structured around the platform retainer,
-                real usage, and rollout help where the workflow deserves it. The
-                goal is practical economics with visible controls.
+                Nodebase pricing ensures transparent scale. You pay a core infrastructure licensing fee of ₹999/mo, plus highly optimized usage rates for omnichannel AI compute.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row pt-4">
                 <Link

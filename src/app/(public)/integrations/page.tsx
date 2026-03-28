@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { RenderArticleRoute } from "@/components/public-site/ContentRoute";
 
 export const metadata: Metadata = {
-  title: "Integrations | Nodebase",
+  title: "Enterprise Integrations | Nodebase",
   description:
-    "Connect messaging, payments, calendars, and more — integrations are designed for operational reliability and auditability.",
+    "Connect omnichannel rails like WhatsApp, Twilio (Voice), Razorpay/Stripe, and Calendar syncs natively into your autonomous AI workforce.",
   openGraph: {
-    title: "Integrations — Nodebase",
+    title: "Enterprise Integrations — Nodebase",
     description:
-      "Learn how Nodebase connects to WhatsApp, Instagram, Google Calendar, payment rails, and other operational systems.",
+      "Connect omnichannel rails like WhatsApp, Twilio (Voice), Razorpay/Stripe, and Calendar syncs natively into your autonomous AI workforce.",
   },
 };
 

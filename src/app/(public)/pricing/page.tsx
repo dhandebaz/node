@@ -4,11 +4,11 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Pricing | Nodebase",
   description:
-    "Simple, honest pricing. No hidden fees or commissions on your sales. Pay only for the AI messages you actually use.",
+    "Predictable operational economics. Pay a core licensing fee of ₹999/mo plus highly optimized usage rates for omnichannel AI compute.",
   openGraph: {
     title: "Pricing | Nodebase",
     description:
-      "Simple, honest pricing. No hidden fees or commissions — pay only for the AI messages you use. Clear plans for small businesses.",
+      "Predictable operational economics. Pay a core licensing fee of ₹999/mo plus highly optimized usage rates for omnichannel AI compute.",
     url: "/pricing",
     siteName: "Nodebase",
     type: "website",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
         url: "/og/static/pricing-1200x630.png",
         width: 1200,
         height: 630,
-        alt: "Nodebase pricing — simple, transparent plans",
+        alt: "Nodebase pricing — enterprise scale economics",
       },
     ],
   },
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pricing | Nodebase",
     description:
-      "Simple, honest pricing. No hidden fees or commissions — pay only for the AI messages you use.",
+      "Predictable operational economics. Pay a core licensing fee of ₹999/mo plus highly optimized usage rates for omnichannel AI compute.",
     images: ["/og/static/pricing-1200x630.png"],
   },
 };

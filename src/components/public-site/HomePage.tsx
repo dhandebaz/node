@@ -16,9 +16,9 @@ import {
 import { employeeDirectoryPage } from "@/lib/public-content";
 
 const heroMetrics = [
-  { label: "Base Plan", value: "Starts at ₹999/mo" },
-  { label: "Omnichannel", value: "Voice, Vision & Chat" },
-  { label: "Compliance", value: "Automated KYC OCR" },
+  { label: "Enterprise Core", value: "Starts at ₹999/mo" },
+  { label: "Multimodal AI", value: "Voice, Vision & Text" },
+  { label: "Trust Center", value: "Automated KYC OCR" },
 ];
 
 const workflowPillars: {
@@ -54,21 +54,21 @@ const operatingSequence = [
 
 const controlCards = [
   {
-    eyebrow: "Unified Portal",
-    title: "Manage guests seamlessly",
-    body: "Oversee omnichannel booking, secure payment links, and AI-driven inbox management from a singular dashboard.",
+    eyebrow: "Unified Operations",
+    title: "Centralized Customer Portal",
+    body: "Oversee omnichannel routing, secure payment links, and AI-driven inbox management from a singular, high-performance dashboard.",
     icon: Activity,
   },
   {
     eyebrow: "Intelligent Logic",
-    title: "Dynamic pricing & forms",
-    body: "Implement dynamic pricing engines and automated guest consent forms that scale seamlessly with your operating volume.",
+    title: "Dynamic compute & forms",
+    body: "Implement dynamic pricing engines and automated KYC consent forms that scale frictionlessly with your operating volume.",
     icon: CreditCard,
   },
   {
-    eyebrow: "Total Omnichannel",
-    title: "Voice, Vision, and Text",
-    body: "Live call routing, instant social messaging, and image-based ingestion (Nodebase Eyes), natively processed.",
+    eyebrow: "Multimodal AI",
+    title: "Nodebase Voice & Eyes",
+    body: "Live Twilio telephony, instant omnichannel messaging, and zero-latency image ingestion for menus and IDs—natively processed.",
     icon: BookOpenText,
   },
 ];
@@ -98,10 +98,10 @@ export function HomePage() {
                   The Enterprise AI Workforce
                 </div>
                 <h1 className="font-display max-w-4xl text-5xl leading-tight text-foreground sm:text-6xl lg:text-[5.5rem] lg:leading-[1.05] tracking-tight">
-                  The autonomous workforce for modern businesses.
+                  The autonomous workforce for modern enterprises.
                 </h1>
                 <p className="max-w-xl text-lg sm:text-xl leading-relaxed text-muted-foreground font-sans">
-                  Deploy specialized AI employees to manage inbound voice calls, Instagram DMs, custom payment links, and secure KYC verifications instantly.
+                  Deploy domain-specific AI employees—capable of autonomous voice, vision, and transactional workflows—to scale your operations instantly. Fast, secure, and built for scale.
                 </p>
               </div>
  

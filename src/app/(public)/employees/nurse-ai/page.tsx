@@ -2,9 +2,9 @@ import { RenderArticleRoute } from "@/components/public-site/ContentRoute";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Nurse AI | Nodebase",
+  title: "Nurse AI — Healthcare Operations Agent | Nodebase",
   description:
-    "Nurse AI manages your clinic's appointments so you can focus on patients. Built for clinics and diagnostic centers.",
+    "Nurse AI intercepts inbound Twilio calls, accurately resolves patient triage queries, and secures appointments via WhatsApp.",
 };
 
 export default function NurseAiPage() {

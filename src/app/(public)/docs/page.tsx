@@ -7,11 +7,11 @@ const baseUrl = getAppUrl();
 export const metadata: Metadata = {
   title: "Documentation | Nodebase",
   description:
-    "Learn how to set up your AI assistant, connect your WhatsApp, and automate your customer service in minutes.",
+    "Learn how to deploy your enterprise AI workforce, connect omnichannel infrastructure, and automate your operations securely.",
   openGraph: {
     title: "Documentation | Nodebase",
     description:
-      "Step-by-step guides to get your AI assistant answering customers, taking bookings, and collecting payments—fast.",
+      "Enterprise guides to deploying AI operators, managing compliance bounds, and connecting Nodebase Voice & Eyes.",
     url: `${baseUrl}/docs`,
     siteName: "Nodebase",
     type: "website",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Documentation | Nodebase",
     description:
-      "Step-by-step guides to get your AI assistant answering customers, taking bookings, and collecting payments—fast.",
+      "Enterprise guides to deploying AI operators, managing compliance bounds, and connecting Nodebase Voice & Eyes.",
     images: [`${baseUrl}/og/static/docs-1200x630.png`],
   },
 };

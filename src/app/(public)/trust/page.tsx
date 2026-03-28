@@ -7,11 +7,11 @@ const baseUrl = getAppUrl();
 export const metadata: Metadata = {
   title: "Trust Center | Nodebase",
   description:
-    "Your data is secure, and you are always in complete control. Learn how we protect your business and your customers.",
+    "Enterprise-grade trust, strict data boundaries, and complete orchestration control. Learn how Nodebase protects your operations and your customers.",
   openGraph: {
     title: "Trust Center | Nodebase",
     description:
-      "Your data is secure, and you are always in complete control. Learn how we protect your business and your customers.",
+      "Enterprise-grade trust, strict data boundaries, and complete orchestration control. Learn how Nodebase protects your operations.",
     url: `${baseUrl}/trust`,
     siteName: "Nodebase",
     type: "website",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Trust Center | Nodebase",
     description:
-      "Your data is secure, and you are always in complete control. Learn how we protect your business and your customers.",
+      "Enterprise-grade trust, strict data boundaries, and complete orchestration control.",
     images: [`${baseUrl}/og/static/trust-1200x630.png`],
   },
 };
