@@ -5,13 +5,13 @@ import Link from "next/link";
 
 type AuditEvent = {
   id: string;
-  created_at: string;
-  actor_type: string;
-  actor_id: string;
-  event_type: string;
-  entity_type: string;
-  entity_id: string;
-  metadata: Record<string, any>;
+  created_at: string | null;
+  actor_type: string | null;
+  actor_id: string | null;
+  event_type: string | null;
+  entity_type: string | null;
+  entity_id: string | null;
+  metadata: any;
   tenants: { name: string } | null;
   users: { email: string; full_name: string | null } | null;
 };
@@ -142,12 +142,12 @@ export default async function AuditEventsPage({ searchParams }: { searchParams: 
                 {events.map((event) => (
                   <tr key={event.id} className="hover:bg-muted/30 transition-all group/row border-b border-border/50 last:border-0 border-dashed">
                     <td className="px-8 py-6 text-muted-foreground/60 font-mono text-[10px] whitespace-nowrap">
-                      {new Date(event.created_at).toLocaleString()}
+                      {event.created_at ? new Date(event.created_at).toLocaleString() : 'N/A'}
                     </td>
                     <td className="px-8 py-6">
-                      <div className="font-black uppercase tracking-widest text-foreground group-hover/row:text-primary transition-colors text-[10px]">{event.actor_type}</div>
-                      <div className="text-[9px] font-bold text-muted-foreground/30 truncate max-w-[150px] font-mono mt-1" title={event.actor_id}>
-                        {event.users?.email || event.actor_id}
+                      <div className="font-black uppercase tracking-widest text-foreground group-hover/row:text-primary transition-colors text-[10px]">{event.actor_type || 'SYSTEM'}</div>
+                      <div className="text-[9px] font-bold text-muted-foreground/30 truncate max-w-[150px] font-mono mt-1" title={event.actor_id || ''}>
+                        {event.users?.email || event.actor_id || 'system'}
                       </div>
                     </td>
                     <td className="px-6 py-5">

@@ -21,10 +21,10 @@ import { getBusinessLabels } from "@/lib/business-context";
 
 type AuditEvent = {
   id: string;
-  actor_type: "user" | "system" | "ai" | "admin";
-  event_type: string;
-  created_at: string;
-  metadata: Record<string, any>;
+  actor_type: "user" | "system" | "ai" | "admin" | null;
+  event_type: string | null;
+  created_at: string | null;
+  metadata: any;
   users?: {
     full_name: string;
     email: string;
@@ -73,8 +73,9 @@ export function BookingActivityTimeline({ bookingId }: Props) {
     };
   }, [bookingId]);
 
-  const getEventIcon = (type: string, actor: string) => {
+  const getEventIcon = (type: string | null, actor: string | null) => {
     if (actor === "ai") return Bot;
+    if (!type) return Info;
     if (type.includes("PAYMENT") || type.includes("WALLET")) return CreditCard;
     if (type.includes("BOOKING")) return Calendar;
     if (type.includes("ID_")) return Shield;
@@ -86,9 +87,11 @@ export function BookingActivityTimeline({ bookingId }: Props) {
 
   const formatEventMessage = (event: AuditEvent) => {
     const { event_type, metadata, actor_type, users } = event;
-    const actorName = actor_type === "ai" ? "AI Assistant" : 
+    const _actorName = actor_type === "ai" ? "AI Assistant" : 
                      actor_type === "system" ? "System" : 
                      users?.full_name || "User";
+
+    if (!event_type) return "System Event";
 
     switch (event_type) {
       case "BOOKING_CREATED":
@@ -179,7 +182,7 @@ export function BookingActivityTimeline({ bookingId }: Props) {
                   {formatEventMessage(event)}
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-white/40">
-                  <span>{format(parseISO(event.created_at), "d MMM, h:mm a")}</span>
+                  <span>{event.created_at ? format(parseISO(event.created_at), "d MMM, h:mm a") : 'unknown'}</span>
                   <span>•</span>
                   <span className="capitalize">{event.actor_type === "user" ? event.users?.full_name || "User" : event.actor_type}</span>
                 </div>

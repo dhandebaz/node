@@ -267,9 +267,9 @@ export default async function AIDashboardPage() {
                   {recentActivity.map(
                     (activity: {
                       id: string;
-                      event_type?: string;
-                      actor_type?: string;
-                      created_at?: string;
+                      event_type: string | null;
+                      actor_type: string | null;
+                      created_at: string | null;
                     }) => {
                       const eventType = String(activity?.event_type ?? "");
                       const actorType = String(activity?.actor_type ?? "");
