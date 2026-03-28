@@ -1415,9 +1415,9 @@ export const trustPage: PublicArticlePageData = {
     {
       title: "Operational commitments",
       bullets: [
-        "Human override remains part of the normal operating model.",
-        "Sensitive workflows should be configured with explicit approval or escalation points.",
-        "Trust posture is reflected in legal terms, product defaults, and implementation guidance together.",
+        "We offer a 99.9% uptime SLA for all Enterprise base Nodebase Voice and Text integrations.",
+        "Nodebase Eyes OCR parses sensitive KYC data directly into memory and systematically purges imagery after verification.",
+        "Human override remains part of the normal operating model, preventing uncontrolled agent loops.",
       ],
     },
     {
