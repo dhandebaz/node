@@ -29,7 +29,7 @@ interface UniversalNavbarProps {
 }
 
 const NAV_ITEMS = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Dashboard", href: "/dashboard/ai", icon: LayoutDashboard },
   { label: "Projects", href: "/projects", icon: FolderKanban },
   { label: "Billing", href: "/dashboard/billing", icon: CreditCard },
   { label: "Integrations", href: "/dashboard/ai/integrations", icon: Puzzle },
@@ -75,7 +75,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
           
-          <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href="/dashboard/ai" className="flex items-center gap-2 hover:opacity-80 transition-opacity" onClick={() => setIsMobileMenuOpen(false)}>
             <div className="w-8 h-8">
               <Logo />
             </div>

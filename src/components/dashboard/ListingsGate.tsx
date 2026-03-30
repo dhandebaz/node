@@ -34,15 +34,23 @@ export function ListingsGate({ listingsCount }: ListingsGateProps) {
       
       const allowedPaths = [
         "/dashboard/ai/listings",
+        "/dashboard/ai/bookings",
+        "/dashboard/ai/calendar",
         "/dashboard/ai/settings",
+        "/dashboard/ai/inbox",
+        "/dashboard/ai/integrations",
+        "/dashboard/ai/activity",
+        "/dashboard/ai/insights",
+        "/dashboard/ai/revenue",
+        "/dashboard/ai/team",
+        "/dashboard/ai/growth",
+        "/dashboard/ai/flows",
         "/dashboard/billing",
         "/dashboard/settings",
         "/dashboard/support",
-        "/dashboard/ai/inbox",
-        "/dashboard/ai/integrations"
       ];
 
-      const isAllowed = allowedPaths.some(path => pathname.startsWith(path));
+      const isAllowed = pathname === "/dashboard/ai" || allowedPaths.some(path => pathname.startsWith(path));
 
       if (!isAllowed) {
         // Redirect to listings
