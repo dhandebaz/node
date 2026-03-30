@@ -24,17 +24,25 @@ export async function extractAirbnbInfo(url: string) {
 
     const html = await response.text();
 
-    // 1. Extract Images from multiple patterns
-    const imageMatches = html.match(/"image":\s*\[([^\]]+)\]/);
-    let images: string[] = [];
-    if (imageMatches && imageMatches[1]) {
-      images = imageMatches[1]
-        .split(",")
-        .map((img) => img.trim().replace(/"/g, ""))
-        .filter((img) => img.startsWith("http"));
+    // --- 1. NEW: Extract and Parse JSON-LD for Reliable Data ---
+    const ldJsonMatch = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+    let ldData: any = null;
+    if (ldJsonMatch) {
+      try {
+        const parsed = JSON.parse(ldJsonMatch[1]);
+        // Airbnb often has an array of JSON-LD, find the one with 'name' or 'description'
+        ldData = Array.isArray(parsed) ? parsed.find(item => item.name || item.description) : parsed;
+      } catch (e) {
+        console.warn("[extractAirbnbInfo] Failed to parse JSON-LD:", e);
+      }
     }
 
-    // 1b. Look for more image patterns in __INITIAL_STATE__
+    // --- 2. Extract Images (Priority: JSON-LD > __INITIAL_STATE__ > meta) ---
+    let images: string[] = [];
+    if (ldData && Array.isArray(ldData.image)) {
+      images = ldData.image.filter((img: any) => typeof img === "string" && img.startsWith("http"));
+    }
+
     if (images.length < 5) {
       const moreImages = html.match(/"original_picture_url":"([^"]+)"/g);
       if (moreImages) {
@@ -47,41 +55,55 @@ export async function extractAirbnbInfo(url: string) {
       }
     }
 
-    // 2. Fallback for Images (og:image)
     if (images.length === 0) {
       const ogImage = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
       if (ogImage) images.push(ogImage);
     }
 
-    // 3. Extract Full Description and Title
+    // --- 3. Extract Name, City, Type (Priority: JSON-LD > meta) ---
     const ogTitle = html.match(/<meta property="og:title" content="([^"]+)"/)?.[1] || "";
-    // Og:description usually has "Enjoy X in Y...". Better to try and find the main description block if possible.
     const ogDescription = html.match(/<meta property="og:description" content="([^"]+)"/)?.[1] || "";
-    
-    // Page Title
-    const pageTitle = ogTitle || html.match(/<title>([^<]+)<\/title>/)?.[1] || "";
+    const pageTitle = html.match(/<title>([^<]+)<\/title>/)?.[1] || ogTitle;
 
-    // Extract Info from Title
-    let name = pageTitle.split(" - ")[0].split(" · ")[0];
-    let city = "";
+    let name = ldData?.name || "";
+    let description = ldData?.description || ogDescription;
+    let city = ldData?.address?.addressLocality || "";
     let type: ListingType = "Homestay";
 
-    const parts = pageTitle.split(" in ");
-    if (parts.length >= 2) {
-      const typePart = parts[0].toLowerCase();
-      if (typePart.includes("apartment") || typePart.includes("flat") || typePart.includes("condo")) {
-        type = "Apartment";
-      } else if (typePart.includes("villa") || typePart.includes("house") || typePart.includes("home")) {
-        type = "Villa";
-      } else if (typePart.includes("guest house") || typePart.includes("guesthouse") || typePart.includes("cottage")) {
-        type = "Guest House";
+    // 3b. FALLBACK: If JSON-LD name is missing or looks generic relative to ogDescription
+    // (User Case: The ogDescription often has the REAL name like "The Chamber by nothingness")
+    if (!name || name.toLowerCase().includes("rental unit") || name.toLowerCase().includes("house in")) {
+      // If ogDescription is short (under 60 chars) and unique, it's likely the REAL name/headline
+      if (ogDescription && ogDescription.length < 60 && !ogDescription.includes("...")) {
+        name = ogDescription;
+        description = ""; // We'll try to find a better long-form description
+      } else {
+        name = pageTitle.split(" - ")[0].split(" · ")[0];
       }
-      city = parts[1].split(" · ")[0].split(" - ")[0].trim();
     }
 
-    if (name.length < 5) name = pageTitle.split(" - ")[0].trim();
+    // Clean name of platform suffixes
+    name = name.split(" - Airbnb")[0].trim();
 
-    // 4. Extract Amenities (Expanded List)
+    // 3c. Extract City and Type from page title if still missing
+    if (!city || !type || type === "Homestay") {
+      const parts = pageTitle.split(" in ");
+      if (parts.length >= 2) {
+        const typePart = parts[0].toLowerCase();
+        if (typePart.includes("apartment") || typePart.includes("flat") || typePart.includes("condo")) {
+          type = "Apartment";
+        } else if (typePart.includes("villa") || typePart.includes("house") || typePart.includes("home")) {
+          type = "Villa";
+        } else if (typePart.includes("guest house") || typePart.includes("guesthouse") || typePart.includes("cottage")) {
+          type = "Guest House";
+        } else if (typePart.includes("condo")) {
+          type = "Apartment";
+        }
+        if (!city) city = parts[1].split(" · ")[0].split(" - ")[0].trim();
+      }
+    }
+
+    // 4. Extract Amenities
     const amenities: string[] = [];
     const commonAmenities = [
       "Wifi", "Kitchen", "Parking", "Air conditioning", "Pool", "TV", "Washer", "Dryer", 
@@ -89,7 +111,8 @@ export async function extractAirbnbInfo(url: string) {
       "Self check-in", "Beach access", "Mountain view", "City skyline view", "Hot tub"
     ];
     commonAmenities.forEach(a => {
-      if (html.toLowerCase().includes(a.toLowerCase()) || ogDescription.toLowerCase().includes(a.toLowerCase())) {
+      const searchTarget = (description + " " + html).toLowerCase();
+      if (searchTarget.includes(a.toLowerCase())) {
         amenities.push(a);
       }
     });
@@ -100,8 +123,8 @@ export async function extractAirbnbInfo(url: string) {
         name: name || "New Property",
         city: city || "",
         type: type,
-        description: ogDescription, // Return the full string found in meta tag
-        images: images.slice(0, 15), // Extract up to 15 gallery images
+        description: description,
+        images: images.slice(0, 15),
         amenities: amenities.slice(0, 10),
       },
     };

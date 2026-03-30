@@ -1,20 +1,20 @@
 {
   "typescript": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T03:55:11.320Z",
-    "observationCount": 121,
+    "lastGenerated": "2026-03-30T04:15:11.583Z",
+    "observationCount": 124,
     "skillCount": 0,
     "domain": "typescript",
     "triggerGlobs": [
       "**/*.ts",
       "**/*.tsx"
     ],
-    "description": "Typescript for node. 1 gotchas, 25 conventions, 46 fixes."
+    "description": "Typescript for node. 1 gotchas, 25 conventions, 48 fixes."
   },
   "project": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T03:55:11.321Z",
-    "observationCount": 195,
+    "lastGenerated": "2026-03-30T04:15:11.584Z",
+    "observationCount": 201,
     "skillCount": 0,
     "domain": "project",
     "triggerGlobs": [
@@ -24,7 +24,7 @@
   },
   "decision": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T03:55:11.324Z",
+    "lastGenerated": "2026-03-30T04:15:11.587Z",
     "observationCount": 0,
     "skillCount": 4,
     "domain": "decision",
@@ -35,7 +35,7 @@
   },
   "javascript": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T03:55:11.323Z",
+    "lastGenerated": "2026-03-30T04:15:11.586Z",
     "observationCount": 8,
     "skillCount": 0,
     "domain": "javascript",
@@ -47,7 +47,7 @@
   },
   "convention": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T03:55:11.323Z",
+    "lastGenerated": "2026-03-30T04:15:11.587Z",
     "observationCount": 0,
     "skillCount": 4,
     "domain": "convention",
@@ -58,18 +58,18 @@
   },
   "typescript-react": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T03:55:11.322Z",
-    "observationCount": 23,
+    "lastGenerated": "2026-03-30T04:15:11.584Z",
+    "observationCount": 25,
     "skillCount": 0,
     "domain": "typescript-react",
     "triggerGlobs": [
       "**/*.tsx"
     ],
-    "description": "Typescript React for node. 7 conventions, 3 fixes."
+    "description": "Typescript React for node. 8 conventions, 3 fixes."
   },
   "problem-fix": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T03:55:11.324Z",
+    "lastGenerated": "2026-03-30T04:15:11.588Z",
     "observationCount": 0,
     "skillCount": 2,
     "domain": "problem-fix",

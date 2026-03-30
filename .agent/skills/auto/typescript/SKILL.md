@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 1 gotchas, 25 conventions, 46 fixes."
+description: "Typescript for node. 1 gotchas, 25 conventions, 48 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **121 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **124 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -29,6 +29,40 @@ Auto-compiled from **121 real patterns** in **node**. This skill is auto-routed 
 
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Extract — prevents null/undefined runtime crashes
+-     // 1. Extract Images from multiple patterns
++     // --- 1. NEW: Extract and Parse JSON-LD for Reliable Data ---
+-     const imageMatches = html.match(/"image":\s*\[([^\]]+)\]/);
++     const ldJsonMatch = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+-     let images: string[] = [];
++     let ldData: any = null;
+-     if (imageMatches && imageMatches[1]) {
++     if
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: NEW
+3. identifier: Extract
+4. identifier: Parse
+5. identifier: JSON
+
+### Fixed null crash in Extract
+-     // 1. Extract Images from JSON-LD
++     // 1. Extract Images from multiple patterns
+-     // 2. Fallback for Images (og:image)
++     // 1b. Look for more image patterns in __INITIAL_STATE__
+-     if (images.length === 0) {
++     if (images.length < 5) {
+-       const ogImage = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
++       const moreImages = html.match(/"original_pic
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Extract
+3. identifier: Images
+4. identifier: Look
+5. identifier: Set
 
 ### problem-fix in paymentLinkService.ts
 File updated (external): src/lib/services/paymentLinkService.ts
@@ -332,38 +366,6 @@ export interface PricingRules {
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in controlService.ts
--   description: string | null;
-+   description?: string | null;
--   updated_at: string | null;
-+   updated_at?: string | null;
--   updated_by: string | null;
-+   updated_by?: string | null;
--     const { error } = await supabase.from("system_flags").upsert([{
-+     const { error } = await supabase.from("system_settings").upsert({
--       key,
-+       key: key,
--       value,
-+       value: value 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in supportService.ts
-File updated (external): src/lib/services/supportService.ts
-
-Content summary (119 lines):
-
-import { SupportTicket, TicketStatus, TicketPriority, TicketMessage, TicketProduct } from "@/types/support";
-import { getSupabaseServer } from "@/lib/supabase/server";
-
-export const supportService = {
-  async getUserTickets(userId: string): Promise<SupportTicket[]> {
-    const supabase = await getSupabaseSer
-
-**Actionable Steps:**
-1. Modified 1 files
-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
@@ -382,8 +384,6 @@ import
 - 📐 **Added session cookies authentication — prevents null/undefined runtime crashes — confirmed 3x** — -           .eq("listing_id", listingId)
 +           .eq("listing_id", listingId as string)
 -     
-- 📐 **problem-fix in route.ts — confirmed 5x** — -     const portalData = (await admin.rpc(
-+     const { data: portalData, error: rpcError } = awai
-- 📐 **what-changed in route.ts — confirmed 4x** — File updated (external)
+- 📐 **problem-fix in rout
 
 ... [Truncated — see individual observations for full content]

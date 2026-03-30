@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 355 notes | Score threshold: >40
+> 358 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -23,24 +23,16 @@
 - **⚠️ GOTCHA: Updated schema Date** — -         const start = new Date(b.start_date);
 +         if (!b.star
 
-## Active: `src/app/api/listings`
-
-- **what-changed in route.ts — confirmed 3x**
-- **Added session cookies authentication — prevents null/undefined runtime crashes — confirmed 3x**
-- **Fixed null crash in Fetch**
-- **Fixed null crash in Process — prevents null/undefined runtime crashes**
-- **problem-fix in route.ts**
-
 ## Project Standards
 
+- what-changed in page.tsx — confirmed 3x
+- Updated src database schema — evolves the database schema to support new requ... — confirmed 4x
+- Fixed null crash in ListingType — avoids unnecessary re-renders in React — confirmed 3x
+- Updated Sidebar database schema — confirmed 3x
+- Fixed null crash in Search — avoids unnecessary re-renders in React — confirmed 3x
+- what-changed in page.tsx — confirmed 3x
 - problem-fix in route.ts — confirmed 3x
 - Fixed null crash in System — confirmed 6x
-- what-changed in route.ts — confirmed 3x
-- Added session cookies authentication — prevents null/undefined runtime crashes — confirmed 3x
-- problem-fix in route.ts — confirmed 5x
-- what-changed in route.ts — confirmed 4x
-- Fixed null crash in Failed — parallelizes async operations for speed — confirmed 3x
-- what-changed in settingsService.ts — confirmed 3x
 
 ## Known Fixes
 
@@ -52,10 +44,10 @@
 
 ## Recent Decisions
 
-- decision in supabase.ts
-- decision in revenueService.ts
 - Optimized Only — reduces excessive function call frequency
+- decision in supabase.ts
 - decision in page.tsx
+- Optimized Argument — hardens HTTP security headers
 
 ## Learned Patterns
 
