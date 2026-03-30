@@ -348,10 +348,16 @@ export default function AddListingPage() {
                     setType(event.target.value as ListingType)
                   }
                   aria-label={`${labels.listing} type`}
-                  className="input-glass bg-zinc-900 text-white cursor-pointer"
+                  className="input-glass bg-[#0a0a0a] border-white/10 text-white cursor-pointer appearance-none"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 1rem center',
+                    backgroundSize: '1em',
+                  }}
                 >
                   {listingTypes.map((option) => (
-                    <option key={option} value={option} className="bg-zinc-900 text-white">
+                    <option key={option} value={option} className="bg-zinc-950 text-white">
                       {option}
                     </option>
                   ))}

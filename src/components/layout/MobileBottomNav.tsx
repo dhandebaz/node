@@ -7,13 +7,15 @@ import {
   MessageSquare,
   Calendar,
   Settings,
+  Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard/ai", icon: LayoutDashboard, label: "Overview" },
-  { href: "/dashboard/ai/inbox", icon: MessageSquare, label: "Inbox" },
+  { href: "/dashboard/ai/listings", icon: Briefcase, label: "Listings" },
   { href: "/dashboard/ai/bookings", icon: Calendar, label: "Bookings" },
+  { href: "/dashboard/ai/inbox", icon: MessageSquare, label: "Inbox" },
   { href: "/dashboard/ai/settings", icon: Settings, label: "Settings" },
 ];
 

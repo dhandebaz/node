@@ -50,13 +50,13 @@ export class SubscriptionService {
       const { count } = await supabase
         .from("listings")
         .select("*", { count: 'exact', head: true })
-        .eq("user_id", tenantId);
+        .eq("tenant_id", tenantId);
       current = count || 0;
     } else if (resource === 'integrations') {
       const { count } = await supabase
         .from("listing_integrations")
         .select("*", { count: 'exact', head: true })
-        .eq("user_id", tenantId)
+        .eq("tenant_id", tenantId)
         .eq("status", "connected"); 
       current = count || 0;
     }

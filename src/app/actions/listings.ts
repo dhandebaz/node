@@ -60,55 +60,53 @@ export async function extractAirbnbInfo(url: string) {
       if (ogImage) images.push(ogImage);
     }
 
-    // --- 3. Extract Name, City, Type (Priority: JSON-LD > meta) ---
+    // --- 3. Extract Name, City, Type (Priority: JSON-LD > meta > Title) ---
     const ogTitle = html.match(/<meta property="og:title" content="([^"]+)"/)?.[1] || "";
     const ogDescription = html.match(/<meta property="og:description" content="([^"]+)"/)?.[1] || "";
-    const pageTitle = html.match(/<title>([^<]+)<\/title>/)?.[1] || ogTitle;
+    const pageTitle = (html.match(/<title>([^<]+)<\/title>/)?.[1] || ogTitle).split(" - Airbnb")[0].trim();
 
     let name = ldData?.name || "";
     let description = ldData?.description || "";
     let city = ldData?.address?.addressLocality || "";
     let type: ListingType = "Homestay";
 
-    // 3b. Smart Name Extraction
-    // Often og:title contains the catchy name like "The Chamber"
-    // and og:description contains the summary like "Tiny house in City"
-    if (ogTitle && !ogTitle.toLowerCase().includes("airbnb")) {
-      name = ogTitle;
-    } else if (!name || name.toLowerCase().includes("rental unit") || name.toLowerCase().includes("house in")) {
-      // Fallback: If JSON-LD name is generic, try to parse from page title or ogDescription
-      if (ogDescription && ogDescription.length < 60 && !ogDescription.includes("...")) {
-        name = ogDescription;
-      } else {
-        name = pageTitle.split(" - ")[0].split(" · ")[0];
-      }
+    // 3b. High-Fidelity Name Extraction
+    if (ogTitle && !ogTitle.toLowerCase().includes("airbnb") && ogTitle.length < 100) {
+      name = ogTitle.split(" · ")[0]; 
+    } else if (!name || name.includes("Rental unit") || name.includes("house in")) {
+      name = pageTitle.split(" · ")[0];
     }
 
-    // Clean name of platform suffixes
-    name = name.split(" - Airbnb")[0].split(" | Airbnb")[0].trim();
-
-    // 3c. Description Extraction
+    // 3c. Description Extraction & Cleaning
     if (!description || description === name) {
-      // If LD description is missing or exactly matches name, use ogDescription if it's longer
-      if (ogDescription && ogDescription.length > name.length) {
-        description = ogDescription;
+      if (ogDescription) {
+        description = ogDescription.replace(/^[A-Z][a-z]{2}\s\d{1,2},.*?\.\s/, "").trim();
+      }
+    }
+    
+    if (description.startsWith(name)) {
+      description = description.replace(name, "").replace(/^[ \-\:\.]+/ , "").trim();
+    }
+
+    // 3d. Extract City and Type
+    if (!city) {
+      if (ldData?.address?.addressLocality) {
+        city = ldData.address.addressLocality;
+      } else {
+        const parts = pageTitle.split(" in ");
+        if (parts.length >= 2) {
+          city = parts[1].split(" · ")[0].trim();
+        }
       }
     }
 
-    // 3d. Extract City and Type from page title or tags if still missing
-    if (!city || !type || type === "Homestay") {
-      const parts = pageTitle.split(" in ");
-      if (parts.length >= 2) {
-        const typePart = parts[0].toLowerCase();
-        if (typePart.includes("apartment") || typePart.includes("flat") || typePart.includes("condo")) {
-          type = "Apartment";
-        } else if (typePart.includes("villa") || typePart.includes("house") || typePart.includes("home")) {
-          type = "Villa";
-        } else if (typePart.includes("guest house") || typePart.includes("guesthouse") || typePart.includes("cottage")) {
-          type = "Guest House";
-        }
-        if (!city) city = parts[1].split(" · ")[0].split(" - ")[0].trim();
-      }
+    const typeCandidate = (ldData?.["@type"] || pageTitle.split(" in ")[0]).toLowerCase();
+    if (typeCandidate.includes("apartment") || typeCandidate.includes("flat") || typeCandidate.includes("condo")) {
+      type = "Apartment";
+    } else if (typeCandidate.includes("villa") || typeCandidate.includes("house") || typeCandidate.includes("home")) {
+      type = "Villa";
+    } else if (typeCandidate.includes("guest house") || typeCandidate.includes("guesthouse") || typeCandidate.includes("cottage")) {
+      type = "Guest House";
     }
 
     // 4. Extract Amenities
@@ -116,7 +114,8 @@ export async function extractAirbnbInfo(url: string) {
     const commonAmenities = [
       "Wifi", "Kitchen", "Parking", "Air conditioning", "Pool", "TV", "Washer", "Dryer", 
       "Heating", "Dedicated workspace", "Iron", "Hair dryer", "Crib", "High chair",
-      "Self check-in", "Beach access", "Mountain view", "City skyline view", "Hot tub"
+      "Self check-in", "Beach access", "Mountain view", "City skyline view", "Hot tub",
+      "GYM", "Breakfast", "Elevator", "Fireplace", "Smoke alarm"
     ];
     commonAmenities.forEach(a => {
       const searchTarget = (description + " " + html).toLowerCase();
@@ -128,12 +127,12 @@ export async function extractAirbnbInfo(url: string) {
     return {
       success: true,
       data: {
-        name: name || "New Property",
+        name: name.trim() || "New Property",
         city: city || "",
         type: type,
-        description: description === name ? "" : description,
-        images: images.slice(0, 20), // Grab more images if available
-        amenities: amenities.slice(0, 15),
+        description: (description === name || description.length < 10) ? "" : description,
+        images: images.slice(0, 30),
+        amenities: amenities.slice(0, 20),
       },
     };
   } catch (error) {

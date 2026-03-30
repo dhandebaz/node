@@ -42,14 +42,14 @@ function SidebarItem({
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group relative",
         active
-          ? "bg-primary/10 text-primary border border-primary/20 shadow-[0_4px_12px_rgba(66,133,244,0.1)]"
-          : "text-zinc-400 hover:text-white hover:bg-white/5",
+          ? "bg-primary text-primary-foreground border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+          : "text-zinc-400 hover:text-white hover:bg-white/10",
       )}
     >
       <Icon
         className={cn(
-          "w-5 h-5 shrink-0",
-          active ? "text-primary flex-shrink-0" : "text-zinc-500 group-hover:text-white",
+          "w-5 h-5 shrink-0 transition-colors duration-200",
+          active ? "text-primary-foreground" : "text-zinc-500 group-hover:text-white",
         )}
       />
       {!collapsed && (
@@ -76,20 +76,27 @@ export function DashboardSidebar() {
       const width = window.innerWidth;
       setIsMobile(width < 768);
       
-      // Only auto-collapse/expand when crossing the 1024px threshold
-      // to avoid triggering it on minor height-only resizes or small width changes.
-      if (width < 1024) {
+      // Auto-collapse logic based on width
+      if (width >= 768 && width < 1024) {
         setIsCollapsed(true);
-      } else {
+      } else if (width >= 1024) {
         setIsCollapsed(false);
       }
     };
 
+    // Use a small delay/timeout if resize feels too aggressive
+    let timeoutId: NodeJS.Timeout;
+    const debouncedCheck = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkViewport, 100);
+    };
+
     checkViewport();
-    
-    // Use an optimized resize listener (could use debounce but standard resize is fine for this)
-    window.addEventListener("resize", checkViewport);
-    return () => window.removeEventListener("resize", checkViewport);
+    window.addEventListener("resize", debouncedCheck);
+    return () => {
+      window.removeEventListener("resize", debouncedCheck);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const menuItems = [
@@ -114,8 +121,8 @@ export function DashboardSidebar() {
       initial={false}
       animate={{ width: isCollapsed ? 80 : 260 }}
       className={cn(
-        "hidden md:flex flex-col sticky top-0 h-screen z-40 bg-background/60 backdrop-blur-lg border-r border-white/10 transition-all duration-300 ease-in-out pb-6",
-        // The sidebar is now part of the flex container in Layout, no more overlap
+        "hidden md:flex flex-col sticky top-0 h-screen z-40 bg-zinc-950/80 backdrop-blur-3xl border-r border-white/10 transition-all duration-300 ease-in-out pb-6",
+        // Enhanced layering for stability on resize
       )}
     >
       {/* Toggle Button */}

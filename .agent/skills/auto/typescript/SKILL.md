@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 1 gotchas, 25 conventions, 50 fixes."
+description: "Typescript for node. 1 gotchas, 25 conventions, 51 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **128 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **130 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -29,6 +29,27 @@ Auto-compiled from **128 real patterns** in **node**. This skill is auto-routed 
 
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Listings — parallelizes async operations for speed
+- 
++   const supabase = await getSupabaseServer();
+-   const supabase = await getSupabaseServer();
++   
+-   
++   const { data: { user } } = await supabase.auth.getUser();
+-   const { data: listings, error } = await supabase
++   console.log(`[Listings API] Fetching for User: ${user?.id}, Tenant: ${tenantId}`);
+-     .from("listings")
++ 
+-     .select("*")
++   const { data: listings, error } = await
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Listings
+3. identifier: API
+4. identifier: Fetching
+5. identifier: User
 
 ### Fixed null crash in NextResponse — prevents null/undefined runtime crashes
 -   const supabase = await getSupabaseServer();
@@ -359,24 +380,6 @@ import { EVENT_TYPES } from "@/ty
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in inboxService.ts
-File updated (external): src/lib/services/inboxService.ts
-
-Content summary (120 lines):
-
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { Conversation, MessageChannel, MessageDirection } from "@/types/omnichannel";
-import { log } from "@/lib/logger";
-
-export class InboxService {
-  /**
-   * Get all conversations for a tenant, ordered by last message
-   */
-  static async getConver
-
-**Actionable Steps:**
-1. Modified 1 files
-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
@@ -385,9 +388,6 @@ export class InboxService {
 Content summary (79 lines):
 
 import 
-- 📐 **Fixed null crash in System — confirmed 6x** — -             channel,
-+             role: "assistant", // System automated assistant
--             
-- 📐 **what-changed in route.ts — conf
+- 📐 **Fixed null crash in System — confirmed 6x** — -           
 
 ... [Truncated — see individual observations for full content]

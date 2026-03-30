@@ -147,20 +147,36 @@ export async function POST(request: Request) {
   const baseUrl = getBaseUrl(request);
   const nodebaseIcalUrl = listing.nodebaseIcalUrl || `${baseUrl}/api/public/ical/${listingId}.ics`;
   
-  await supabase.from("listing_calendars").upsert({
+  // 1. Create Calendar Entry with tenant_id
+  const { error: calendarError } = await supabase.from("listing_calendars").upsert({
     listing_id: listingId,
+    tenant_id: tenantId,
     nodebase_ical_url: nodebaseIcalUrl
   });
 
+  if (calendarError) {
+    console.error("[Listings API] Error creating calendar entry:", calendarError);
+    // We continue as the listing itself was created, but log the error
+  }
+
+  // 2. Create Integrations with tenant_id
   if (integrations.length > 0) {
     const payload = integrations.map((integration: any) => ({
       listing_id: listingId,
+      tenant_id: tenantId,
       platform: integration.platform,
       external_ical_url: integration.externalIcalUrl || null,
       last_synced_at: integration.lastSyncedAt || null,
       status: integration.status || (integration.externalIcalUrl ? "connected" : "not_connected")
     }));
-    await supabase.from("listing_integrations").upsert(payload, { onConflict: "listing_id, platform" });
+    
+    const { error: integrationsError } = await supabase
+      .from("listing_integrations")
+      .upsert(payload, { onConflict: "listing_id, platform" });
+
+    if (integrationsError) {
+      console.error("[Listings API] Error creating integrations:", integrationsError);
+    }
   }
 
   // Mark Onboarding Milestones

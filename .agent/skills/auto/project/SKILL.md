@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 36 gotchas, 66 conventions, 12 fixes."
+description: "Project for node. 36 gotchas, 67 conventions, 12 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **209 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **215 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -217,6 +217,8 @@ yarn-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Extracted SubscriptionService class — confirmed 3x** — - - [ ] Fix `SubscriptionService` column mismatch (`user_id` -> `tenant_id`)
++ - [x] Fix `Subscripti
 - 📐 **Updated the database schema — confirmed 3x** — - # iCal Sync Fix & Listing Flow Simplification
 + # iCal Sync Fix & Listing Flow Simplification (v2)
 - 📐 **Updated src database schema — evolves the database schema to support new requ... — confirmed 4x** — - - [/] Database & Model Expansion
@@ -271,8 +273,6 @@ Content summary (736 lines):
 - 📐 **Use responsive prefixes consistently (sm:, md:, lg:, xl:)** — Use responsive prefixes consistently (sm:, md:, lg:, xl:)
 - 📐 **Don't use arbitrary values when a utility class exists** — Don't use arbitrary values when a utility class exists
 - 📐 **Use .dockerignore to exclude unnecessary files** — Use .dockerignore to exclude unnecessary files
-- 📐 **Use multi-stage builds to reduce image size** — Use multi-stage builds to reduce image size
-- 📐 **Rate limit API endpoints to prevent abuse** — Rate limit API endpoints to prevent abuse
-- 📐 **Validate request body with a schema validator (Joi, Zod)*
+- 📐 **Use multi-stage builds to reduce image size** — Use multi-stage builds to reduce image s
 
 ... [Truncated — see individual observations for full content]

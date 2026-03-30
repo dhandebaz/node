@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 371 notes | Score threshold: >40
+> 381 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -25,14 +25,14 @@
 
 ## Project Standards
 
+- Fixed null crash in Timezone — confirmed 3x
+- Extracted SubscriptionService class — confirmed 3x
 - Fixed null crash in Math — confirmed 4x
 - Updated the database schema — confirmed 3x
 - what-changed in page.tsx — confirmed 3x
 - Updated src database schema — evolves the database schema to support new requ... — confirmed 4x
 - Fixed null crash in ListingType — avoids unnecessary re-renders in React — confirmed 3x
 - Updated Sidebar database schema — confirmed 3x
-- Fixed null crash in Search — avoids unnecessary re-renders in React — confirmed 3x
-- what-changed in page.tsx — confirmed 3x
 
 ## Known Fixes
 
@@ -44,10 +44,10 @@
 
 ## Recent Decisions
 
+- decision in DashboardSidebar.tsx
 - Optimized Only — reduces excessive function call frequency
 - decision in supabase.ts
 - decision in page.tsx
-- Optimized Argument — hardens HTTP security headers
 
 ## Learned Patterns
 
