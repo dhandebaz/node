@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 1 gotchas, 25 conventions, 49 fixes."
+description: "Typescript for node. 1 gotchas, 25 conventions, 50 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **125 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **128 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -29,6 +29,27 @@ Auto-compiled from **125 real patterns** in **node**. This skill is auto-routed 
 
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in NextResponse — prevents null/undefined runtime crashes
+-   const supabase = await getSupabaseServer();
++   const session = await getSession();
+-   const { data: { user }, error: authError } = await supabase.auth.getUser();
++   if (!session?.userId) {
+- 
++     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+-   if (authError || !user) {
++   }
+-     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
++ 
+-   }
++   
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: NextResponse
+3. identifier: Unauthorized
+4. identifier: Handle
+5. identifier: Array
 
 ### Fixed null crash in Strip — prevents null/undefined runtime crashes
 -   const { id: listingId } = await params;
@@ -356,23 +377,6 @@ export class InboxService {
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in pricingService.ts
-File updated (external): src/lib/services/pricingService.ts
-
-Content summary (106 lines):
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { AppError, ErrorCode } from "@/lib/errors";
-import { log } from "@/lib/logger";
-
-export interface PricingRules {
-  per_1k_tokens: number;
-  action_multipliers: Record<string, number>;
-  persona_multipliers?: Record<string, number>;
-  ai_monthl
-
-**Actionable Steps:**
-1. Modified 1 files
-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
@@ -384,10 +388,6 @@ import
 - 📐 **Fixed null crash in System — confirmed 6x** — -             channel,
 +             role: "assistant", // System automated assistant
 -             
-- 📐 **what-changed in route.ts — confirmed 3x** — - }
-+ }
-
-📌 IDE AST Context: Modified symbols likely include [POST]
-- 📐 **Added session cookies authentication — prevents null
+- 📐 **what-changed in route.ts — conf
 
 ... [Truncated — see individual observations for full content]

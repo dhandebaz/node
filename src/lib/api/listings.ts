@@ -11,7 +11,7 @@ export const listingsApi = {
     listing: Listing;
     integrations: ListingIntegration[];
   }): Promise<Listing> => {
-    const response = await apiClient.post('/listings/create', payload);
+    const response = await apiClient.post('/listings', payload);
     return response.data;
   },
 

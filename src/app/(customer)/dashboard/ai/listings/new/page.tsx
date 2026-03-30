@@ -138,7 +138,7 @@ export default function AddListingPage() {
         integrations,
       };
 
-      await fetchWithAuth("/api/listings/create", {
+      await fetchWithAuth("/api/listings", {
         method: "POST",
         body: JSON.stringify(payload),
       });

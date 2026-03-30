@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 363 notes | Score threshold: >40
+> 370 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -25,14 +25,14 @@
 
 ## Project Standards
 
+- Fixed null crash in Math — confirmed 4x
+- Updated the database schema — confirmed 3x
 - what-changed in page.tsx — confirmed 3x
 - Updated src database schema — evolves the database schema to support new requ... — confirmed 4x
 - Fixed null crash in ListingType — avoids unnecessary re-renders in React — confirmed 3x
 - Updated Sidebar database schema — confirmed 3x
 - Fixed null crash in Search — avoids unnecessary re-renders in React — confirmed 3x
 - what-changed in page.tsx — confirmed 3x
-- problem-fix in route.ts — confirmed 3x
-- Fixed null crash in System — confirmed 6x
 
 ## Known Fixes
 

@@ -47,7 +47,7 @@ export async function extractAirbnbInfo(url: string) {
       const moreImages = html.match(/"original_picture_url":"([^"]+)"/g);
       if (moreImages) {
         const uniqueImages = new Set(images);
-        moreImages.forEach(match => {
+        moreImages.forEach((match: string) => {
           const url = match.match(/"original_picture_url":"([^"]+)"/)?.[1];
           if (url) uniqueImages.add(url);
         });
@@ -66,26 +66,36 @@ export async function extractAirbnbInfo(url: string) {
     const pageTitle = html.match(/<title>([^<]+)<\/title>/)?.[1] || ogTitle;
 
     let name = ldData?.name || "";
-    let description = ldData?.description || ogDescription;
+    let description = ldData?.description || "";
     let city = ldData?.address?.addressLocality || "";
     let type: ListingType = "Homestay";
 
-    // 3b. FALLBACK: If JSON-LD name is missing or looks generic relative to ogDescription
-    // (User Case: The ogDescription often has the REAL name like "The Chamber by nothingness")
-    if (!name || name.toLowerCase().includes("rental unit") || name.toLowerCase().includes("house in")) {
-      // If ogDescription is short (under 60 chars) and unique, it's likely the REAL name/headline
+    // 3b. Smart Name Extraction
+    // Often og:title contains the catchy name like "The Chamber"
+    // and og:description contains the summary like "Tiny house in City"
+    if (ogTitle && !ogTitle.toLowerCase().includes("airbnb")) {
+      name = ogTitle;
+    } else if (!name || name.toLowerCase().includes("rental unit") || name.toLowerCase().includes("house in")) {
+      // Fallback: If JSON-LD name is generic, try to parse from page title or ogDescription
       if (ogDescription && ogDescription.length < 60 && !ogDescription.includes("...")) {
         name = ogDescription;
-        description = ""; // We'll try to find a better long-form description
       } else {
         name = pageTitle.split(" - ")[0].split(" · ")[0];
       }
     }
 
     // Clean name of platform suffixes
-    name = name.split(" - Airbnb")[0].trim();
+    name = name.split(" - Airbnb")[0].split(" | Airbnb")[0].trim();
 
-    // 3c. Extract City and Type from page title if still missing
+    // 3c. Description Extraction
+    if (!description || description === name) {
+      // If LD description is missing or exactly matches name, use ogDescription if it's longer
+      if (ogDescription && ogDescription.length > name.length) {
+        description = ogDescription;
+      }
+    }
+
+    // 3d. Extract City and Type from page title or tags if still missing
     if (!city || !type || type === "Homestay") {
       const parts = pageTitle.split(" in ");
       if (parts.length >= 2) {
@@ -96,8 +106,6 @@ export async function extractAirbnbInfo(url: string) {
           type = "Villa";
         } else if (typePart.includes("guest house") || typePart.includes("guesthouse") || typePart.includes("cottage")) {
           type = "Guest House";
-        } else if (typePart.includes("condo")) {
-          type = "Apartment";
         }
         if (!city) city = parts[1].split(" · ")[0].split(" - ")[0].trim();
       }
@@ -123,9 +131,9 @@ export async function extractAirbnbInfo(url: string) {
         name: name || "New Property",
         city: city || "",
         type: type,
-        description: description,
-        images: images.slice(0, 15),
-        amenities: amenities.slice(0, 10),
+        description: description === name ? "" : description,
+        images: images.slice(0, 20), // Grab more images if available
+        amenities: amenities.slice(0, 15),
       },
     };
   } catch (error) {

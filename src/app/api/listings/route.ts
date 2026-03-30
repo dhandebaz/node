@@ -84,65 +84,99 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const supabase = await getSupabaseServer();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await getSession();
+  if (!session?.userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const tenantId = await requireActiveTenant();
+  const body = await request.json();
+  
+  // Handle both { listing, integrations } format and flat format for backward compatibility
+  const listing = body?.listing || body;
+  const integrations = Array.isArray(body?.integrations) ? body.integrations : [];
 
-  const { allowed, limit, current } = await SubscriptionService.checkLimit(tenantId, 'listings');
+  if (!listing?.name && !listing?.title) {
+    return NextResponse.json({ error: "Property name is required" }, { status: 400 });
+  }
+
+  const supabase = await getSupabaseServer();
+  const listingId = listing.id || crypto.randomUUID();
+
+  // Subscription Limit Check
+  const { allowed, limit } = await SubscriptionService.checkLimit(tenantId, 'listings');
   if (!allowed) {
     return NextResponse.json({ 
-      error: `Plan limit reached. Your current plan allows ${limit} listings. You have ${current}.` 
+      error: `Listing limit reached (${limit}). Please upgrade your plan.` 
     }, { status: 403 });
   }
 
-  const body = await request.json();
-  const title = body?.title?.trim();
-  const location = body?.location?.trim() || '';
-  const basePrice = Number(body?.basePrice || 0);
-  const maxGuests = Number(body?.maxGuests || 1);
+  const { error: listingError } = await supabase.from("listings").insert({
+    id: listingId,
+    tenant_id: tenantId,
+    host_id: session.userId,
+    title: listing.name || listing.title,
+    name: listing.name || listing.title,
+    city: listing.city || listing.location || "Unknown",
+    location: listing.city || listing.location || "Unknown",
+    address: listing.address || null,
+    listing_type: listing.type || listing.listing_type || "Property",
+    timezone: listing.timezone || "Asia/Kolkata",
+    status: listing.status || (integrations.length > 0 ? "active" : "incomplete"),
+    description: listing.description || null,
+    images: listing.images || [],
+    amenities: listing.amenities || [],
+    internal_notes: listing.internalNotes || listing.internal_notes || null,
+    base_price: listing.basePrice || listing.base_price || null,
+    max_guests: listing.maxGuests || listing.max_guests || null,
+    check_in_time: listing.checkInTime || listing.check_in_time || null,
+    check_out_time: listing.checkOutTime || listing.check_out_time || null,
+    rules: listing.rules || null
+  });
 
-  if (!title) {
-    return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+  if (listingError) {
+    console.error("[Listings API] Error inserting listing:", listingError);
+    return NextResponse.json({ error: listingError.message }, { status: 500 });
   }
 
-  const { data, error } = await supabase
-    .from('listings')
-    .insert({
-      tenant_id: tenantId,
-      host_id: user.id,
-      title,
-      location,
-      base_price: basePrice,
-      max_guests: maxGuests
-    })
-    .select('*')
-    .single();
+  const baseUrl = getBaseUrl(request);
+  const nodebaseIcalUrl = listing.nodebaseIcalUrl || `${baseUrl}/api/public/ical/${listingId}.ics`;
+  
+  await supabase.from("listing_calendars").upsert({
+    listing_id: listingId,
+    nodebase_ical_url: nodebaseIcalUrl
+  });
 
-  if (error || !data) {
-    return NextResponse.json({ error: error?.message || 'Failed to create listing' }, { status: 500 });
+  if (integrations.length > 0) {
+    const payload = integrations.map((integration: any) => ({
+      listing_id: listingId,
+      platform: integration.platform,
+      external_ical_url: integration.externalIcalUrl || null,
+      last_synced_at: integration.lastSyncedAt || null,
+      status: integration.status || (integration.externalIcalUrl ? "connected" : "not_connected")
+    }));
+    await supabase.from("listing_integrations").upsert(payload, { onConflict: "listing_id, platform" });
+  }
+
+  // Mark Onboarding Milestones
+  try {
+    const { data: account } = await supabase.from("accounts").select("onboarding_milestones").eq("tenant_id", tenantId).single();
+    const currentMilestones = (account?.onboarding_milestones as string[]) || [];
+    const newMilestones = new Set(currentMilestones);
+    newMilestones.add("first_listing");
+    if (integrations.length > 0) newMilestones.add("connect_integration");
+    
+    if (newMilestones.size > currentMilestones.length) {
+      await supabase.from("accounts").update({ onboarding_milestones: Array.from(newMilestones) }).eq("tenant_id", tenantId);
+    }
+  } catch (e) {
+    console.error("[Listings API] Failed to update milestones:", e);
   }
 
   return NextResponse.json({
-    id: data.id,
-    userId: data.host_id,
-    name: data.name || data.title,
-    city: data.city || data.location,
-    type: data.listing_type,
-    status: data.status,
-    description: data.description,
-    images: data.images,
-    amenities: data.amenities,
-    createdAt: data.created_at,
-    maxGuests: data.max_guests,
-    checkInTime: data.check_in_time,
-    checkOutTime: data.check_out_time,
-    rules: data.rules,
-    basePrice: data.base_price,
-    calendarIcalUrl: data.calendar_ical_url
+    id: listingId,
+    name: listing.name || listing.title,
+    status: listing.status || (integrations.length > 0 ? "active" : "incomplete"),
+    nodebaseIcalUrl
   });
 }

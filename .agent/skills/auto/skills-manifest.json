@@ -1,20 +1,20 @@
 {
   "typescript": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T04:25:11.384Z",
-    "observationCount": 125,
+    "lastGenerated": "2026-03-30T04:35:11.422Z",
+    "observationCount": 128,
     "skillCount": 0,
     "domain": "typescript",
     "triggerGlobs": [
       "**/*.ts",
       "**/*.tsx"
     ],
-    "description": "Typescript for node. 1 gotchas, 25 conventions, 49 fixes."
+    "description": "Typescript for node. 1 gotchas, 25 conventions, 50 fixes."
   },
   "project": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T04:25:11.384Z",
-    "observationCount": 204,
+    "lastGenerated": "2026-03-30T04:35:11.422Z",
+    "observationCount": 208,
     "skillCount": 0,
     "domain": "project",
     "triggerGlobs": [
@@ -24,7 +24,7 @@
   },
   "decision": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T04:25:11.386Z",
+    "lastGenerated": "2026-03-30T04:35:11.425Z",
     "observationCount": 0,
     "skillCount": 4,
     "domain": "decision",
@@ -35,7 +35,7 @@
   },
   "javascript": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T04:25:11.385Z",
+    "lastGenerated": "2026-03-30T04:35:11.423Z",
     "observationCount": 8,
     "skillCount": 0,
     "domain": "javascript",
@@ -47,7 +47,7 @@
   },
   "convention": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T04:25:11.385Z",
+    "lastGenerated": "2026-03-30T04:35:11.424Z",
     "observationCount": 0,
     "skillCount": 4,
     "domain": "convention",
@@ -58,7 +58,7 @@
   },
   "typescript-react": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T04:25:11.383Z",
+    "lastGenerated": "2026-03-30T04:35:11.423Z",
     "observationCount": 26,
     "skillCount": 0,
     "domain": "typescript-react",
@@ -69,7 +69,7 @@
   },
   "problem-fix": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T04:25:11.386Z",
+    "lastGenerated": "2026-03-30T04:35:11.425Z",
     "observationCount": 0,
     "skillCount": 2,
     "domain": "problem-fix",
