@@ -205,10 +205,11 @@ function mapDbPlanToAppPlan(db: DBBillingPlan): BillingPlan {
     description: db.description,
     price: Number(db.price),
     currency: db.currency,
-    interval: db.interval as BillingPlan["interval"],
-    product: db.product as BillingPlan["product"],
-    features: db.features || [],
-    type: db.type as BillingPlan["type"],
+    interval: db.interval,
+    product: db.product,
+    features: db.features,
+    type: db.type,
+    created_at: db.created_at,
   };
 }
 
@@ -217,11 +218,11 @@ function mapDbSubToAppSub(db: DBSubscription): Subscription {
     id: db.id,
     userId: db.user_id,
     planId: db.plan_id,
-    status: db.status as Subscription["status"],
+    status: db.status,
     currentPeriodStart: db.current_period_start,
     currentPeriodEnd: db.current_period_end,
     cancelAtPeriodEnd: db.cancel_at_period_end,
-    metadata: db.metadata as Record<string, unknown> | undefined,
+    metadata: db.metadata,
   };
 }
 
@@ -232,9 +233,9 @@ function mapDbInvoiceToAppInvoice(db: DBInvoice): Invoice {
     subscriptionId: db.subscription_id,
     amount: Number(db.amount),
     currency: db.currency,
-    status: db.status as Invoice["status"],
+    status: db.status,
     date: db.date,
-    items: db.items || [],
+    items: db.items,
     billingDetails: (db.billing_details as Invoice["billingDetails"]) || {
       name: "",
     },
@@ -244,7 +245,7 @@ function mapDbInvoiceToAppInvoice(db: DBInvoice): Invoice {
 function mapDbPmToAppPm(db: DBPaymentMethod): PaymentMethod {
   return {
     id: db.id,
-    type: db.type as PaymentMethod["type"],
+    type: db.type,
     last4: db.last4,
     brand: db.brand,
     isDefault: db.is_default,

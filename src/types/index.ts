@@ -6,23 +6,23 @@ export interface Tenant {
   ownerUserId: string;
   createdAt: string;
   businessType?: BusinessType | null;
-  earlyAccess?: boolean;
-  is_memory_enabled?: boolean;
-  is_branding_enabled?: boolean;
-  is_ai_enabled?: boolean;
-  kyc_status?: "not_started" | "pending" | "verified" | "rejected";
-  pan_number?: string;
-  aadhaar_number?: string;
-  kyc_verified_at?: string;
-  address?: string;
-  tax_id?: string;
-  phone?: string;
-  timezone?: string;
-  username?: string;
+  earlyAccess?: boolean | null;
+  is_memory_enabled?: boolean | null;
+  is_branding_enabled?: boolean | null;
+  is_ai_enabled?: boolean | null;
+  kyc_status?: "not_started" | "pending" | "verified" | "rejected" | null;
+  pan_number?: string | null;
+  aadhaar_number?: string | null;
+  kyc_verified_at?: string | null;
+  address?: string | null;
+  tax_id?: string | null;
+  phone?: string | null;
+  timezone?: string | null;
+  username?: string | null;
   ai_settings?: {
     customInstructions?: string | null;
-    tone?: AITone;
-  };
+    tone?: AITone | null;
+  } | null;
   business_qr_url?: string;
   upi_id?: string;
 }
@@ -210,13 +210,25 @@ export interface Message {
 
 export interface WalletTransaction {
   id: string;
-  tenantId: string; // Multi-tenancy
-  hostId: string;
-  type: "debit" | "credit";
-  amount: number;
-  reason: string;
-  timestamp: string;
-  status: "completed" | "pending" | "failed";
+  tenant_id: string | null;
+  amount: number | null;
+  type: string | null;
+  description: string | null;
+  metadata?: any | null;
+  created_at: string | null;
+}
+
+export interface BillingPlan {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  currency: string | null;
+  interval: string | null;
+  product: string | null;
+  features: any | null;
+  type: string | null;
+  created_at: string | null;
 }
 
 export interface Integration {

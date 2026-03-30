@@ -1,7 +1,7 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { PricingEditor } from "@/components/admin/pricing/PricingEditor";
 import { PlansEditor } from "@/components/admin/pricing/PlansEditor";
-import { BillingPlan } from "@/types/billing";
+import { BillingPlan } from "@/types";
 import { DollarSign, Tag } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -25,7 +25,7 @@ export default async function AdminPricingPage() {
   const { data: plans } = await supabase
     .from('billing_plans')
     .select('*')
-    .order('price', { ascending: true }) as { data: BillingPlan[] | null };
+    .order('price', { ascending: true });
 
   return (
     <div className="space-y-12 pb-20">

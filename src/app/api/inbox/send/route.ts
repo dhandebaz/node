@@ -74,21 +74,21 @@ export async function POST(request: Request) {
         metadata: { read: true }
     }).select().single();
 
-    if (error) {
+    if (error || !message) {
        console.error("Message insert error:", error);
-       // Fallback for mock if DB fails or table doesn't match expected schema exactly
-       // But we should try to error out to catch issues.
-       throw error;
+       throw error || new Error("Failed to insert message");
     }
+
+    const m = message as any;
 
     return NextResponse.json({ 
         message: {
-            id: message.id,
-            conversationId,
+            id: m.id,
+            conversationId: m.conversation_id || conversationId,
             senderType,
-            channel: message.channel,
-            content: message.content,
-            timestamp: message.created_at
+            channel: m.channel,
+            content: m.content,
+            timestamp: m.created_at
         } 
     });
   } catch (error: any) {

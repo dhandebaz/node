@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     const currentValue = existing?.value || {};
     
     const newValue = {
-      ...currentValue,
+      ...(currentValue as any),
       ai_monthly_price,
       ai_message_cost,
       updated_at: new Date().toISOString(),

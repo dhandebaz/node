@@ -4,13 +4,13 @@ export type FailureSeverity = 'info' | 'warning' | 'critical';
 export interface FailureRecord {
   id: string;
   tenant_id: string;
-  category: FailureCategory;
+  category: string;
   source: string;
-  severity: FailureSeverity;
+  severity: string;
   message: string;
-  is_active: boolean;
-  metadata: Record<string, any>;
-  created_at: string;
+  is_active: boolean | null;
+  metadata: any | null;
+  created_at: string | null;
   resolved_at?: string | null;
 }
 

@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 6 conventions, 13 fixes."
+description: "Typescript for node. 16 conventions, 23 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,9 +11,172 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **31 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **69 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in route.ts
+File updated (external): src/app/api/host/me/route.ts
+
+Content summary (74 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+
+export async function GET() {
+  const supabase = await getSupabaseServer();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.g
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/guest-id/upload/route.ts
+
+Content summary (131 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { randomUUID } from "crypto";
+import { saveEncryptedImage } from "@/lib/guestIdStorage";
+
+export async function GET(request: NextRequest) {
+  try {
+    const token = request.nextUrl.sear
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/guests/[id]/upload-id/route.ts
+
+Content summary (243 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
+import { withErrorHandler } from "@/l
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/chat/init/route.ts
+
+Content summary (68 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+
+export async function POST(request: NextRequest) {
+  try {
+    const { businessId, name, phone } = await request.json();
+    if (!businessId || !name) {
+        return NextResponse.json({ error: "Mi
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in billing.ts
+File updated (external): src/types/billing.ts
+
+Content summary (69 lines):
+
+export type PaymentProvider = 'razorpay' | 'stripe';
+export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
+export type BillingInterval = 'month' | 'year' | 'one_time';
+export type SubscriptionStatus = 'active' | 'past_due' | 'canceled' | 'trialing' | 'paused';
+
+import { Json } from './supabase';
+
+exp
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/wallet/transactions/route.ts
+
+Content summary (39 lines):
+import { NextResponse } from 'next/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
+import { requireActiveTenant } from '@/lib/auth/tenant';
+
+export async function GET() {
+  const supabase = await getSupabaseServer();
+
+  // Get current user
+  const { data: { user }, error: authError } 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/bookings/route.ts
+
+Content summary (48 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+
+export async function GET(_request: NextRequest) {
+  try {
+    const supabase = await getSupabaseServer();
+    const { data: { user }, error: 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/inbox/send/route.ts
+
+Content summary (99 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { ControlService } from "@/lib/services/controlService";
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.jso
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/inbox/messages/route.ts
+
+Content summary (47 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+
+export async function GET(request: NextRequest) {
+  const supabase = await getSupabaseServer();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError ||
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/admin/pricing/update/route.ts
+
+Content summary (55 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSession } from "@/lib/auth/session";
+
+export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session || session.role !== 'superadmin') {
+    return Next
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in walletService.ts
 File updated (external): src/lib/services/walletService.ts
@@ -194,90 +357,36 @@ export class WalletService {
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in route.ts
-File updated (external): src/app/api/chat/send/route.ts
-
-Content summary (45 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { rateLimit } from "@/lib/ratelimit";
-import { withErrorHandler } from "@/lib/api/withErrorHandler";
-
-export const POST = withErrorHandler(async function(request: NextRequest) {
-  try {
-    co
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/guests/[id]/upload-id/route.ts
-
-Content summary (243 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
-import { withErrorHandler } from "@/l
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in errors.ts
-File updated (external): src/lib/api/errors.ts
-
-Content summary (15 lines):
-export class SessionExpiredError extends Error {
-  code = "SESSION_EXPIRED";
-  constructor(message = "SESSION_EXPIRED") {
-    super(message);
-  }
-}
-
-export const isSessionExpiredError = (error: any) => {
-  if (!error) return false;
-  if (error.code === "SESSION_EXPIRED") return true;
-  if (error.message === "SESSION_EXPIRE
-
-**Actionable Steps:**
-1. Modified 1 files
-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
-- 📐 **Replaced auth Json — formalizes the data contract with explicit types — confirmed 3x** — - export type Json =
-+ ﻿export type Json =
--           source: string | null
-+           payment_id:
-- 📐 **Fixed null crash in Tenant — reduces initial bundle size with code splitting — confirmed 4x** — -         kyc_status: tenant.kyc_status || "not_started",
-+         kyc_status: (tenant.kyc_status a
-- 📐 **Strengthened types BusinessType — reduces initial bundle size with code split...** — -         businessType: tenant.business_type || "",
-+         businessType: (tenant.business_type as
-- 📐 **Fixed null crash in Supabase — externalizes configuration for environment fle... — confirmed 5x** — - import type { Database } from '@/types/supabase';
-+ 
-- 
-+ export function getSupabaseAdmin() {
-- e
-- 📐 **Strengthened types DBMessage — ensures atomic multi-step database operations** — -       [key: string]: { Row: any; Insert: any; Update: any };
-+       messages: { Row: DBMessage; I
-- 📐 **problem-fix in route.ts — confirmed 3x** — File updated (external): src/app/api/eyes/ingest/route.ts
+- 📐 **problem-fix in route.ts — confirmed 3x** — File updated (external): src/app/api/guest-id/reject/[id]/route.ts
 
-Content summary (177 lines):
-import { Nex
+Content summary (70 lines):
+impo
+- 📐 **what-changed in route.ts — confirmed 4x** — File updated (external): src/app/api/payments/create-link/route.ts
 
-## 🤔 Decisions & Trade-offs
+Content summary (329 lines):
+imp
+- 📐 **problem-fix in route.ts — confirmed 3x** — File updated (external): src/app/api/guest-id/approve/[id]/route.ts
 
-- **decision in supabase.ts** — File updated (external): src/types/supabase.ts
+Content summary (73 lines):
+imp
+- 📐 **problem-fix in route.ts — confirmed 4x** — File updated (external): src/app/api/failures/route.ts
 
-Content summary (3395 lines):
-﻿export type Json =
-  
-- **decision in userService.ts** — File updated (external): src/lib/services/userService.ts
+Content summary (82 lines):
+import { NextRes
+- 📐 **what-changed in database.ts — confirmed 4x** — -   metadata?: Record<string, unknown>;
++   metadata: Json | null;
+-   is_active: boolean;
++   is_ac
+- 📐 **Strengthened types Alias** — -     businessType: dbTenant.business_type // Alias for easier access
++     businessType: dbTenant.b
+- 📐 **Strengthened types Json — formalizes the data contract with explicit types** — -   tenant_id?: string;
++   tenant_id: string | null;
+-   actor_type: string;
++   actor_id: string |
+- 📐 **Strengthened types Subscription** — -     status: db.status as Subscription["status"],
++     s
 
-Content summary (411 lines):
-import {
-  Us
-
----
-*Auto-generated by BrainSync 🧠 | 31 patterns | 2026-03-28*
+... [Truncated — see individual observations for full content]

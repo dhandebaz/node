@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 163 notes | Score threshold: >40
+> 243 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,27 +20,29 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
 
-- Replaced auth Json — formalizes the data contract with explicit types — confirmed 3x
-- Strengthened types Prepare — evolves the database schema to support new requi...
-- problem-fix in ts_errors.txt — confirmed 3x
-- Optimized Conversion — hardens HTTP security headers — confirmed 4x
-- what-changed in ts_errors.log — confirmed 3x
-- Optimized Conversion — hardens HTTP security headers — confirmed 3x
-- what-changed in filter.js — confirmed 4x
-- problem-fix in ts_errors.log — confirmed 3x
+- problem-fix in route.ts — confirmed 3x
+- what-changed in route.ts — confirmed 4x
+- Strengthened types page
+- problem-fix in route.ts — confirmed 3x
+- Fixed null crash in System — prevents null/undefined runtime crashes — confirmed 3x
+- problem-fix in route.ts — confirmed 4x
+- what-changed in database.ts — confirmed 4x
+- Strengthened types Alignment — prevents null/undefined runtime crashes
 
 ## Known Fixes
 
+- ❌ const { data: { user }, error: authError } = await supabase.auth.getUser(); → ✅ problem-fix in route.ts
 - ❌ import { withErrorHandler } from "@/lib/api/withErrorHandler"; → ✅ problem-fix in route.ts
 - ❌ File updated (external): ts_errors.log → ✅ problem-fix in ts_errors.log
 - ❌ File updated (external): ts_errors.txt → ✅ problem-fix in ts_errors.txt
+- ❌ return NextResponse.json({ error: "Missing required fields" }, { status: 400 }); → ✅ problem-fix in route.ts
 
 ## Recent Decisions
 
+- decision in billing.ts
+- decision in task.md
+- Optimized Fixing — prevents null/undefined runtime crashes
 - Optimized Conversion — hardens HTTP security headers
-- Optimized Conversion — hardens HTTP security headers
-- Optimized Conversion — hardens HTTP security headers
-- decision in supabase.ts
 
 ## Learned Patterns
 

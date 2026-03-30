@@ -1,4 +1,5 @@
 import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
+import { DBAuditEvent } from "@/types/database";
 import { WalletService } from "@/lib/services/walletService";
 import { ControlService } from "@/lib/services/controlService";
 import { getSupabaseServer } from "@/lib/supabase/server";
@@ -264,13 +265,7 @@ export default async function AIDashboardPage() {
                 </div>
               ) : (
                 <div className="divide-y divide-zinc-800/50">
-                  {recentActivity.map(
-                    (activity: {
-                      id: string;
-                      event_type: string | null;
-                      actor_type: string | null;
-                      created_at: string | null;
-                    }) => {
+                  {(recentActivity as any[] || []).map((activity: any) => {
                       const eventType = String(activity?.event_type ?? "");
                       const actorType = String(activity?.actor_type ?? "");
                       const createdAt = activity?.created_at

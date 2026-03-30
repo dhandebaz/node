@@ -30,12 +30,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   
-  const formatted = messages.map((m: any) => ({
+  const formatted = (messages || []).map((m: any) => ({
       id: m.id,
-      conversationId,
-      senderType: m.direction === 'inbound' ? 'customer' : (m.sender_id === 'ai_assistant' ? 'ai' : 'human'),
+      conversationId: m.conversation_id || conversationId,
+      senderType: m.role === 'assistant' ? 'ai' : (m.role === 'guest' || m.direction === 'inbound' ? 'customer' : 'human'),
       content: m.content,
-      timestamp: m.created_at || m.timestamp,
+      timestamp: m.created_at,
       channel: m.channel,
       mediaUrl: m.metadata?.media_url,
       mediaType: m.metadata?.media_type,

@@ -38,18 +38,20 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
       })
       .eq("id", id);
 
-    await supabase
-      .from("bookings")
-      .update({ id_status: "approved" })
-      .eq("id", guestId.booking_id);
+    if (guestId.booking_id) {
+      await supabase
+        .from("bookings")
+        .update({ id_status: "approved" })
+        .eq("id", guestId.booking_id);
+    }
 
     const booking = Array.isArray(guestId.bookings) ? guestId.bookings[0] : guestId.bookings;
     const guestIdValue = booking?.guest_id;
     if (guestIdValue) {
-      await supabase
+      await (supabase
         .from("guests")
-        .update({ id_verification_status: "verified" })
-        .eq("id", guestIdValue);
+        .update({ id_verification_status: "verified" } as any)
+        .eq("id", guestIdValue));
     }
 
     // Log ID Approved

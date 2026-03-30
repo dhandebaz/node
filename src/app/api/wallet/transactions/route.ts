@@ -18,7 +18,7 @@ export async function GET() {
     .from('wallet_transactions')
     .select('*')
     .eq('tenant_id', tenantId)
-    .order('timestamp', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -29,8 +29,8 @@ export async function GET() {
     hostId: t.host_id,
     type: t.type,
     amount: t.amount,
-    reason: t.reason,
-    timestamp: t.timestamp,
+    reason: t.description || t.reason,
+    timestamp: t.created_at,
     status: t.status || 'completed',
   }));
 

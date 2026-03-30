@@ -14,13 +14,7 @@ import {
 import Script from "next/script";
 import { fetchWithAuth } from "@/lib/api/fetcher";
 
-interface WalletTransaction {
-  id: string;
-  amount: number;
-  type: string;
-  description: string | null;
-  created_at: string;
-}
+import { WalletTransaction } from "@/types";
 
 interface WalletUIProps {
   initialBalance: number;
@@ -467,7 +461,7 @@ export function WalletUI({
               {history.map((tx) => (
                 <tr key={tx.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                    {new Date(tx.created_at).toLocaleString()}
+                    {tx.created_at ? new Date(tx.created_at).toLocaleString() : "N/A"}
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900">
                     {tx.description || "Transaction"}
@@ -487,11 +481,11 @@ export function WalletUI({
                   </td>
                   <td
                     className={`px-6 py-4 text-right font-mono font-bold ${
-                      tx.amount < 0 ? "text-gray-600" : "text-green-600"
+                      (tx.amount || 0) < 0 ? "text-gray-600" : "text-green-600"
                     }`}
                   >
-                    {tx.amount > 0 ? "+" : ""}
-                    {tx.amount.toFixed(4)}
+                    {(tx.amount || 0) > 0 ? "+" : ""}
+                    {(tx.amount || 0).toFixed(4)}
                   </td>
                 </tr>
               ))}

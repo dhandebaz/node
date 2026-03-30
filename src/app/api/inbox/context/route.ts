@@ -105,9 +105,12 @@ export async function GET(request: NextRequest) {
 
       const listing = Array.isArray(booking.listings) ? booking.listings[0] : booking.listings;
       const idStatus = booking.id_status || "not_requested";
+      const startDate = booking.start_date ? new Date(booking.start_date).toLocaleDateString("en-IN") : "TBD";
+      const endDate = booking.end_date ? new Date(booking.end_date).toLocaleDateString("en-IN") : "TBD";
+
       const fields = [
         { label: "Listing", value: listing?.name || "Property" },
-        { label: "Dates", value: `${new Date(booking.start_date).toLocaleDateString("en-IN")} → ${new Date(booking.end_date).toLocaleDateString("en-IN")}` },
+        { label: "Dates", value: `${startDate} → ${endDate}` },
         { label: "ID Status", value: idStatus.replace("_", " "), tone: idStatus === "approved" ? "good" : idStatus === "rejected" ? "bad" : "warn" }
       ];
 

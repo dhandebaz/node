@@ -195,7 +195,7 @@ export const POST = withErrorHandler(async function(
         id_document_path: frontPath,
         id_document_type: documentType,
         id_submitted_at: new Date().toISOString(),
-      })
+      } as any)
       .eq("id", guestId)
       .eq("tenant_id", tenantId);
 

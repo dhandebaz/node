@@ -116,21 +116,21 @@ export const POST = withErrorHandler(async function(req: Request) {
 
     // If neither frameRef nor base64 provided, that's acceptable  -  we still create a session row
     // with minimal metadata (useful for event-only ingests).
-    const payload: Record<string, any> = {
+    const payload = {
       camera_id: cameraId,
       tenant_id: tenantId,
       ingestion_id: ingestionId,
       frame_ref: frameRefToStore,
       size_bytes: finalSizeBytes ?? sizeBytes ?? null,
       status: "ingested",
-      metadata: metadata,
+      metadata: metadata as any,
       processed_at: null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
 
     // Insert into camera_sessions table
-    const insertRes = await supabase.from("camera_sessions").insert([payload]);
+    const insertRes = await supabase.from("camera_sessions").insert(payload);
 
     if (insertRes.error) {
       return NextResponse.json(

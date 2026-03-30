@@ -41,10 +41,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       })
       .eq("id", id);
 
-    await supabase
-      .from("bookings")
-      .update({ id_status: "rejected" })
-      .eq("id", guestId.booking_id);
+    if (guestId.booking_id) {
+      await supabase
+        .from("bookings")
+        .update({ id_status: "rejected" })
+        .eq("id", guestId.booking_id);
+    }
 
     // Log ID Rejected
     const booking = Array.isArray(guestId.bookings) ? guestId.bookings[0] : guestId.bookings;

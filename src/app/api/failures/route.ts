@@ -48,7 +48,7 @@ export async function GET() {
       throw error;
     }
 
-    const resultFailures: FailureRecord[] = failures || [];
+    const resultFailures: FailureRecord[] = (failures as any) || [];
 
     // Check for global incident mode
     const flags = await ControlService.getSystemFlags();

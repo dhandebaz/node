@@ -1,5 +1,13 @@
 import type { AITone } from "@/lib/ai/config";
 
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
 // ==========================================
 // Core User Types
 // ==========================================
@@ -81,39 +89,47 @@ export interface DBAccount {
 export interface DBTenant {
   id: string;
   name: string;
+  business_name?: string | null;
   owner_user_id: string;
-  business_type?: string;
-  status?: string;
-  early_access?: boolean;
-  kyc_status?: "not_started" | "pending" | "verified" | "rejected";
-  pan_number?: string;
-  aadhaar_number?: string;
-  kyc_verified_at?: string;
+  business_type?: string | null;
+  status?: string | null;
+  early_access?: boolean | null;
+  kyc_status?: "not_started" | "pending" | "verified" | "rejected" | null;
+  pan_number?: string | null;
+  aadhaar_number?: string | null;
+  gstin?: string | null;
+  business_registration_number?: string | null;
+  kyc_verified_at?: string | null;
   // Control flags
-  is_ai_enabled?: boolean;
-  is_messaging_enabled?: boolean;
-  is_bookings_enabled?: boolean;
-  is_wallet_enabled?: boolean;
-  is_memory_enabled?: boolean;
-  is_branding_enabled?: boolean;
-  subscription_plan?: string;
+  is_ai_enabled?: boolean | null;
+  is_messaging_enabled?: boolean | null;
+  is_bookings_enabled?: boolean | null;
+  is_wallet_enabled?: boolean | null;
+  is_memory_enabled?: boolean | null;
+  is_branding_enabled?: boolean | null;
+  subscription_plan?: string | null;
   // Optional extended fields
-  address?: string;
-  tax_id?: string;
-  phone?: string;
-  timezone?: string;
-  username?: string;
-  property_count?: number;
-  platforms?: string[];
-  kyc_document_path?: string;
-  kyc_extracted_data?: Record<string, unknown>;
-  legal_agreement_path?: string;
+  address?: string | null;
+  address_city?: string | null;
+  address_state?: string | null;
+  address_zip?: string | null;
+  tax_id?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  timezone?: string | null;
+  username?: string | null;
+  property_count?: number | null;
+  platforms?: string[] | null;
+  kyc_document_path?: string | null;
+  kyc_extracted_data?: Json | null;
+  legal_agreement_path?: string | null;
   ai_settings?: {
     customInstructions?: string | null;
     tone?: AITone | null;
   } | null;
   created_at: string;
-  updated_at?: string;
+  updated_at?: string | null;
 }
 
 export interface DBTenantUser {
@@ -131,52 +147,52 @@ export interface DBTenantUser {
 export interface DBBillingPlan {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   price: number;
-  currency: string;
-  interval: string;
-  product: string;
-  features: string[];
-  type: string;
-  created_at: string;
+  currency: string | null;
+  interval: string | null;
+  product: string | null;
+  features: Json | null;
+  type: string | null;
+  created_at: string | null;
 }
 
 export interface DBSubscription {
   id: string;
-  user_id: string;
-  plan_id: string;
-  status: string;
-  current_period_start: string;
-  current_period_end: string;
-  cancel_at_period_end: boolean;
-  created_at: string;
-  updated_at: string;
-  metadata?: Record<string, unknown>;
+  user_id: string | null;
+  plan_id: string | null;
+  status: string | null;
+  current_period_start: string | null;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean | null;
+  created_at: string | null;
+  updated_at: string | null;
+  metadata?: any;
 }
 
 export interface DBInvoice {
   id: string;
-  user_id: string;
-  subscription_id?: string;
+  user_id: string | null;
+  subscription_id?: string | null;
   amount: number;
-  currency: string;
-  status: string;
-  date: string;
-  due_date?: string;
-  items: { description: string; amount: number }[];
-  billing_details: Record<string, unknown>;
-  created_at: string;
+  currency: string | null;
+  status: string | null;
+  date: string | null;
+  due_date?: string | null;
+  items: any | null;
+  billing_details: any | null;
+  created_at: string | null;
 }
 
 export interface DBPaymentMethod {
   id: string;
-  user_id: string;
-  type: string;
-  brand?: string;
-  last4?: string;
-  is_default: boolean;
-  provider_id?: string;
-  created_at: string;
+  user_id: string | null;
+  type: string | null;
+  brand?: string | null;
+  last4?: string | null;
+  is_default: boolean | null;
+  provider_id?: string | null;
+  created_at: string | null;
 }
 
 export interface DBWallet {
@@ -190,12 +206,12 @@ export interface DBWallet {
 
 export interface DBWalletTransaction {
   id: string;
-  tenant_id: string;
-  type: string;
-  amount: number;
-  description?: string;
-  metadata?: Record<string, unknown>;
-  created_at: string;
+  tenant_id: string | null;
+  type: string | null;
+  amount: number | null;
+  description: string | null;
+  metadata: Json | null;
+  created_at: string | null;
 }
 
 export interface DBAiUsageEvent {
@@ -236,22 +252,23 @@ export interface DBFailure {
   source: string;
   severity: string;
   message: string;
-  metadata?: Record<string, unknown>;
-  is_active: boolean;
-  resolved_at?: string;
-  created_at: string;
+  metadata: Json | null;
+  is_active: boolean | null;
+  resolved_at: string | null;
+  created_at: string | null;
 }
 
 export interface DBAuditEvent {
   id: string;
-  tenant_id?: string;
-  actor_type: string;
-  actor_id?: string;
-  event_type: string;
-  entity_type: string;
-  entity_id?: string;
-  metadata?: Record<string, unknown>;
-  created_at: string;
+  tenant_id: string | null;
+  actor_id: string | null;
+  actor_type: string | null;
+  event_type: string | null;
+  entity_id: string | null;
+  entity_type: string | null;
+  is_impersonated: boolean | null;
+  metadata: Json;
+  created_at: string | null;
 }
 
 // ==========================================
@@ -290,15 +307,21 @@ export interface DBListing {
 
 export interface DBBooking {
   id: string;
-  tenant_id: string;
-  guest_id?: string;
-  amount: number;
-  source?: string;
-  status: string;
-  check_in?: string;
-  check_out?: string;
-  created_at: string;
-  metadata?: Record<string, unknown>;
+  tenant_id: string | null;
+  listing_id: string | null;
+  guest_id: string | null;
+  amount: number | null;
+  status: string | null;
+  check_in: string | null;
+  check_out: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  source: string | null;
+  id_status: string | null;
+  guest_contact: string | null;
+  payment_id: string | null;
+  metadata: Json | null;
+  created_at: string | null;
 }
 
 export interface DBReferral {
@@ -322,11 +345,30 @@ export interface DBSupportTicket {
 
 export interface DBMessage {
   id: string;
-  conversation_id?: string;
-  tenant_id: string;
-  guest_id?: string;
+  tenant_id: string | null;
+  conversation_id: string | null;
+  guest_id: string | null;
+  listing_id: string | null;
   role: string;
-  content?: string;
+  direction: string | null;
+  content: string | null;
+  channel: string | null;
+  external_id: string | null;
+  metadata: Json | null;
+  created_at: string | null;
+}
+
+export interface DBCameraSession {
+  id: string;
+  camera_id: string;
+  tenant_id: string | null;
+  ingestion_id: string | null;
+  frame_ref: string | null;
+  size_bytes: number | null;
+  status: string;
+  metadata: Json | null;
+  processed_at: string | null;
   created_at: string;
+  updated_at: string | null;
 }
 

@@ -60,10 +60,10 @@ export default async function BillingHistoryPage() {
                     {inv.id}
                   </td>
                   <td className="px-6 py-4 text-zinc-300">
-                    {new Date(inv.date).toLocaleDateString()}
+                    {inv.date ? new Date(inv.date).toLocaleDateString() : 'N/A'}
                   </td>
                    <td className="px-6 py-4 text-zinc-300">
-                    {inv.items[0]?.description || "Subscription Charge"}
+                    {(Array.isArray(inv.items) && inv.items[0]?.description) || "Subscription Charge"}
                   </td>
                   <td className="px-6 py-4 text-foreground font-medium">
                     {inv.currency} {inv.amount}

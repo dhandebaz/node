@@ -71,18 +71,22 @@ export default async function SubscriptionDetailsPage({
                 ? 'bg-green-500/10 text-green-400 border-green-500/20' 
                 : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
             }`}>
-              {subscription.status.toUpperCase()}
+              {(subscription.status || 'UNKNOWN').toUpperCase()}
             </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <div>
               <span className="block text-muted-foreground mb-1">Current Period Start</span>
-              <span className="text-zinc-300">{new Date(subscription.currentPeriodStart).toLocaleDateString()}</span>
+              <span className="text-zinc-300">
+                {subscription.currentPeriodStart ? new Date(subscription.currentPeriodStart).toLocaleDateString() : 'N/A'}
+              </span>
             </div>
             <div>
               <span className="block text-muted-foreground mb-1">Renews On</span>
-              <span className="text-zinc-300">{new Date(subscription.currentPeriodEnd).toLocaleDateString()}</span>
+              <span className="text-zinc-300">
+                {subscription.currentPeriodEnd ? new Date(subscription.currentPeriodEnd).toLocaleDateString() : 'N/A'}
+              </span>
             </div>
           </div>
         </div>
@@ -94,7 +98,7 @@ export default async function SubscriptionDetailsPage({
              <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 mb-4">
               <h3 className="text-yellow-400 font-medium mb-1">Cancellation Scheduled</h3>
               <p className="text-sm text-yellow-300/80 mb-3">
-                Your subscription will end on {new Date(subscription.currentPeriodEnd).toLocaleDateString()}. Access will continue until then.
+                Your subscription will end on {subscription.currentPeriodEnd ? new Date(subscription.currentPeriodEnd).toLocaleDateString() : 'the end of the period'}. Access will continue until then.
               </p>
               <form action={async () => {
                 "use server";
@@ -135,17 +139,19 @@ export default async function SubscriptionDetailsPage({
       </div>
 
       {/* Features Included */}
-      <div>
-        <h3 className="text-lg font-semibold text-foreground mb-4">Included Features</h3>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {subscription.plan?.features.map((feature, i) => (
-            <div key={i} className="flex items-center gap-2 text-zinc-300 text-sm">
-              <CheckCircle className="w-4 h-4 text-blue-500" />
-              {feature}
-            </div>
-          ))}
+      {Array.isArray(subscription.plan?.features) && (subscription.plan?.features.length ?? 0) > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold text-foreground mb-4">Included Features</h3>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {(subscription.plan?.features as any[]).map((feature, i) => (
+              <div key={i} className="flex items-center gap-2 text-zinc-300 text-sm">
+                <CheckCircle className="w-4 h-4 text-blue-500" />
+                {String(feature)}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

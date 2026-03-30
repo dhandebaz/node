@@ -39,7 +39,7 @@ export async function GET() {
       name: profile?.full_name || user.user_metadata?.full_name || "User",
       email: user.email || "",
       phone: user.phone || "",
-      address: profile?.address || "",
+      address: tenant?.address || "",
     },
     tenant: tenant
       ? {
@@ -60,7 +60,7 @@ export async function GET() {
       id: user.id,
       name: profile?.full_name || user.user_metadata?.full_name || "User",
       email: user.email || "",
-      address: tenant?.address || profile?.address || "",
+      address: tenant?.address || "",
       kycStatus: tenant?.kyc_status || "not_started",
       walletBalance: account?.wallet_balance || 0,
       businessName: tenant?.name || profile?.business_name || "",

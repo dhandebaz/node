@@ -22,8 +22,9 @@ export async function GET() {
         .select("status");
         
     const referralsByStatus = referralStats?.reduce((acc: any, curr) => {
-        acc[curr.status] = (acc[curr.status] || 0) + 1;
-        return acc;
+      const status = curr.status || 'unknown';
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
     }, {}) || {};
 
     return NextResponse.json({

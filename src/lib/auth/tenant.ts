@@ -62,11 +62,14 @@ export async function requireActiveTenant(): Promise<string> {
   return tenantId;
 }
 
+import { Tenant } from '@/types';
+import { DBTenant } from '@/types/database';
+
 /**
  * Gets the full tenant context including business type.
  * Useful for checking business rules without needing full user profile.
  */
-export async function getTenantContext(tenantId: string) {
+export async function getTenantContext(tenantId: string): Promise<(Tenant & DBTenant) | null> {
   const supabase = await getSupabaseServer();
   const { data: tenant, error } = await supabase
     .from("tenants")
@@ -76,9 +79,13 @@ export async function getTenantContext(tenantId: string) {
     
   if (error || !tenant) return null;
   
+  const dbTenant = tenant as unknown as DBTenant;
+  
   return {
-    ...tenant,
-    businessType: tenant.business_type // Alias for easier access
+    ...dbTenant,
+    ownerUserId: dbTenant.owner_user_id, // Map for Tenant interface compatibility
+    createdAt: dbTenant.created_at,       // Map for Tenant interface compatibility
+    businessType: dbTenant.business_type as any // Alias for easier access
   };
 }
 

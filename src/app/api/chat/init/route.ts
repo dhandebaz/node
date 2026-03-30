@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         } else {
              const { data: newGuest, error: createError } = await supabase
                 .from("guests")
-                .insert({ name, phone, channel: 'web', id_verification_status: 'none' })
+                .insert({ name, phone, channel: 'web', id_verification_status: 'none' } as any)
                 .select("id")
                 .single();
             
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     } else {
         const { data: newGuest, error: createError } = await supabase
             .from("guests")
-            .insert({ name, channel: 'web', id_verification_status: 'none' })
+            .insert({ name, channel: 'web', id_verification_status: 'none' } as any)
             .select("id")
             .single();
         

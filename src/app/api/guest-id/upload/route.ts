@@ -25,6 +25,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Link expired" }, { status: 404 });
     }
 
+    if (!record.booking_id) {
+      return NextResponse.json({ error: "Booking not found for this ID" }, { status: 404 });
+    }
+
     const { data: booking } = await supabase
       .from("bookings")
       .select("start_date, end_date, listing_id, listings(name, title)")
@@ -98,10 +102,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
 
-    await supabase
-      .from("bookings")
-      .update({ id_status: "submitted" })
-      .eq("id", record.booking_id);
+    if (record.booking_id) {
+      await supabase
+        .from("bookings")
+        .update({ id_status: "submitted" })
+        .eq("id", record.booking_id);
+    }
 
     // Log ID Submitted
     const bookings = record.bookings as any;

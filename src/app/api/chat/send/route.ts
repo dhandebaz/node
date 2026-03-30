@@ -28,6 +28,7 @@ export const POST = withErrorHandler(async function(request: NextRequest) {
         .insert({
             guest_id: guestId,
             listing_id: listingId,
+            role: sender === 'guest' ? 'guest' : 'host',
             channel: 'web',
             direction: sender === 'guest' ? 'inbound' : 'outbound',
             content,

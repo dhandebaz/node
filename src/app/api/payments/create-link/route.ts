@@ -175,7 +175,7 @@ export async function POST(request: Request) {
           channel: "direct",
           id_verification_status: "none",
           created_at: new Date().toISOString(),
-        })
+        } as any)
         .select("id")
         .single();
 

@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 35 gotchas, 54 conventions, 7 fixes."
+description: "Project for node. 36 gotchas, 59 conventions, 9 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **124 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **152 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **124 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in build_output.txt | -  +  - > node@0.1.0 prebuild - > npm run verify -  -  - > node@0.1.0 verify - > node scripts/ |
 | Don't mix Tailwind with inline styles | Don't mix Tailwind with inline styles |
 | Don't store secrets in Docker images — use runtime | Don't store secrets in Docker images — use runtime injection |
 | Pin base image versions — not :latest | Pin base image versions — not :latest |
@@ -55,6 +56,36 @@ Auto-compiled from **124 real patterns** in **node**. This skill is auto-routed 
 | Never force push to main, master, or production br | Never force push to main, master, or production branches |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in build_output_utf8.txt
+- 
++ ﻿
+- Γ£ô Compiled successfully in 60s
++ Γ£ô Compiled successfully in 75s
+- ./src/app/api/admin/pricing
++ ./src/app/api/chat/send/rou
+- /update/route.ts:32:7
++ te.ts:28:10
+- Type error: Spread types 
++ Type error: No overload 
+- may only be created from 
++ matches this call.
+- object types.
++   Overload 1 of 2, 
+- 
++ '(values: { channel?: 
+-   [90m30 |[0m     
++ string | null
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in build_output.txt
+- 
++ ��
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in ts_errors.txt
 File updated (external): ts_errors.txt
@@ -151,6 +182,21 @@ yarn-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **what-changed in build_log.txt — confirmed 3x**
+- 📐 **Strengthened types Alignment — prevents null/undefined runtime crashes** — - # Fixing TypeScript Build Errors (Billing & Wallet Transactions)
++ # Alignment of TypeScript with 
+- 📐 **what-changed in build_output.txt — confirmed 6x**
+- 📐 **Strengthened types Program** — - 
++ 
+- > node@0.1.0 prebuild
+- > npm run verify
+- 
+- 
+- > node@0.1.0 verify
+- > node scripts/
+- 📐 **Git Commit: u** — Captured via Git commit.
+Message: u
+Branch: master
 - 📐 **Strengthened types Prepare — evolves the database schema to support new requi...** — - # Tasks: Resolve TS Errors and Finalize Supabase Auth
 + - [ ] Prepare SQL Migration Script
 - 
@@ -198,15 +244,6 @@ Content summary (736 lines):
 - 📐 **Handle timezone correctly — store UTC, display in user's timezone** — Handle timezone correctly — store UTC, display in user's timezone
 - 📐 **Make layouts responsive from the start — mobile-first approach** — Make layouts responsive from the start — mobile-first approach
 - 📐 **Disable submit button during form submission — prevent double-submit** — Disable submit button during form submission — prevent double-submit
-- 📐 **Always add empty states ("No items yet" with call-to-action)** — Always add empty states ("No items yet" with call-to-action)
-- 📐 **Always add error states with retry button — not just blank screen** — Always add error states with retry button — not just blank screen
-- 📐 **Always add loading states for async operations (skeleton, spinner)** — Always add loading states for async operations (skeleton, spinner)
-- 📐 **Test edge cases: empty input, null, boundary values, error scenarios** — Test edge cases: empty input, null, boundary values, error scenarios
-- 📐 **Each test should be independent — no shared mutable state between tests** — Each test should be independent — no shared mutable state between tests
-- 📐 **Write tests for business logic — test behavior/output, not implementation details** — Write tests for business logic — test behavior/output, not implementation details
-- 📐 **Close resources (streams, connections, handles) when done** — Close resources (streams, connections, handles) when done
-- 📐 **Debounce user input handlers (search, resize, scroll)** — Debounce user input handlers (search, resize, scroll)
-- 📐 **Use pagination for lists over 100 items** — Use pagination for lists over 100 items
-- 📐 **Implement retry logic for transient failures with expon
+- 📐 **Always add empty states ("No items yet" with call-to-acti
 
 ... [Truncated — see individual observations for full content]

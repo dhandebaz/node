@@ -22,7 +22,7 @@ export async function getBillingOverview() {
 
     // Enrich subscriptions with plan details
     const enrichedSubscriptions = await Promise.all(subscriptions.map(async (sub) => {
-        const plan = await billingService.getPlanById(sub.planId);
+        const plan = sub.planId ? await billingService.getPlanById(sub.planId) : undefined;
         return { ...sub, plan };
     }));
 

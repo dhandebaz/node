@@ -6,10 +6,10 @@ import { FailureRecord } from "@/types/failure";
 import { AlertTriangle, XCircle, ShieldAlert, RefreshCw, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface AdminFailureRecord extends FailureRecord {
+interface AdminFailureRecord extends Omit<FailureRecord, 'tenants'> {
   tenants: {
     name: string;
-  };
+  } | null;
 }
 
 export default function AdminFailuresPage() {
@@ -86,7 +86,7 @@ export default function AdminFailuresPage() {
                   <div>
                     <h3 className="font-semibold text-lg">{f.message}</h3>
                     <p className="text-sm text-white/60 mt-1">
-                      {f.tenants?.name} • {f.category} • {f.source}
+                      {f.tenants?.name || "System"} • {f.category} • {f.source}
                     </p>
                   </div>
                   <div className="text-right shrink-0 ml-4">
@@ -99,7 +99,7 @@ export default function AdminFailuresPage() {
                       {f.severity}
                     </span>
                     <div className="text-xs text-white/40 mt-2">
-                      {new Date(f.created_at).toLocaleString()}
+                      {f.created_at ? new Date(f.created_at).toLocaleString() : "Recently"}
                     </div>
                   </div>
                 </div>
