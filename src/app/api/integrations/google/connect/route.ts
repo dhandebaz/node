@@ -7,6 +7,7 @@ import { requireActiveTenant } from "@/lib/auth/tenant";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
 import { getPersonaCapabilities } from "@/lib/business-context";
+import { BusinessType } from "@/types";
 
 const GOOGLE_SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly",
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
     .eq("id", tenantId)
     .single();
 
-  const capabilities = getPersonaCapabilities(tenant?.business_type);
+  const capabilities = getPersonaCapabilities(tenant?.business_type as BusinessType);
 
   if (!capabilities.integrations.google) {
     await logEvent({

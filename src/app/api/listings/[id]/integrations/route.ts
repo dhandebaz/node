@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth/session";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
+import { BusinessType } from "@/types";
 import { FailureService } from "@/lib/services/failureService";
 import { getPersonaCapabilities } from "@/lib/business-context";
 
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     .eq("id", tenantId)
     .single();
 
-  const capabilities = getPersonaCapabilities(tenant?.business_type);
+  const capabilities = getPersonaCapabilities(tenant?.business_type as BusinessType);
 
   // Validate capabilities before processing
   for (const integration of integrations) {

@@ -5,6 +5,7 @@ import { requireActiveTenant } from "@/lib/auth/tenant";
 import { getPersonaCapabilities } from "@/lib/business-context";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
+import { BusinessType } from "@/types";
 import { wahaService } from "@/lib/services/wahaService";
 import { getAppUrl } from "@/lib/runtime-config";
 
@@ -25,7 +26,7 @@ export async function POST() {
     .eq("id", tenantId)
     .single();
 
-  const capabilities = getPersonaCapabilities(tenant?.business_type);
+  const capabilities = getPersonaCapabilities(tenant?.business_type as BusinessType);
   if (!capabilities.integrations.whatsapp) {
     await logEvent({
       tenant_id: tenantId,

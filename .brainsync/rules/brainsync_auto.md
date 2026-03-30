@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 243 notes | Score threshold: >40
+> 250 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -22,12 +22,12 @@
 
 - problem-fix in route.ts — confirmed 3x
 - what-changed in route.ts — confirmed 4x
-- Strengthened types page
 - problem-fix in route.ts — confirmed 3x
-- Fixed null crash in System — prevents null/undefined runtime crashes — confirmed 3x
 - problem-fix in route.ts — confirmed 4x
 - what-changed in database.ts — confirmed 4x
-- Strengthened types Alignment — prevents null/undefined runtime crashes
+- Strengthened types page
+- Fixed null crash in System — prevents null/undefined runtime crashes — confirmed 3x
+- Strengthened types Alias
 
 ## Known Fixes
 
@@ -40,9 +40,9 @@
 ## Recent Decisions
 
 - decision in billing.ts
+- decision in supabase.ts
+- decision in userService.ts
 - decision in task.md
-- Optimized Fixing — prevents null/undefined runtime crashes
-- Optimized Conversion — hardens HTTP security headers
 
 ## Learned Patterns
 

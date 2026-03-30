@@ -1,287 +1,330 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `src\lib\services\controlService.ts` (Domain: **Backend (API/Server)**)
+> Dynamically loaded for active file: `src\app\api\integrations\google\connect\route.ts` (Domain: **Generic Logic**)
 
-### 📐 Backend (API/Server) Conventions & Fixes
-- **[what-changed] what-changed in controlService.ts**: File updated (external): src/lib/services/controlService.ts
+### 📐 Generic Logic Conventions & Fixes
+- **[what-changed] what-changed in route.ts**: File updated (external): src/app/api/inbox/context/route.ts
 
-Content summary (547 lines):
-import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
+Content summary (135 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+
+const contextMap: Record<string, any> = {
+  "conv-1001": {
+    role: "Host AI",
+    managerName: "Host AI",
+    status: "pending",
+    updatedAt: new Date().toISOString(),
+    fields: [
+      { label: "Listing", value: "Sea Breeze Villa" },
+      { label: "Dates", value: "12–15 Oct" },
+      { label: "Availability", value: "Open", tone: "good" },
+      { label: "Booking", value: "
+- **[problem-fix] problem-fix in route.ts**: File updated (external): src/app/api/host/me/route.ts
+
+Content summary (74 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+
+export async function GET() {
+  const supabase = await getSupabaseServer();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const tenantId = await requireActiveTenant();
+
+  const [{ data:
+- **[problem-fix] problem-fix in route.ts**: File updated (external): src/app/api/guest-id/upload/route.ts
+
+Content summary (131 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { randomUUID } from "crypto";
+import { saveEncryptedImage } from "@/lib/guestIdStorage";
+
+export async function GET(request: NextRequest) {
+  try {
+    const token = request.nextUrl.searchParams.get("token");
+    if (!token) {
+      return NextResponse.json({ error: "Missing token" }, { status: 400 });
+    }
+
+    const supabase = await getSupabaseAdmin();
+    const { data: re
+- **[convention] problem-fix in route.ts — confirmed 3x**: File updated (external): src/app/api/guest-id/reject/[id]/route.ts
+
+Content summary (70 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
-import { getPersonaCapabilities } from "@/lib/business-context";
-import { BusinessType } from "@/types";
-import { hasRazorpayCredentials } from "@/lib/runtime-config";
+import { getTenantIdForUser } from "@/app/actions/auth";
 
-export type SystemFlagKey =
-  | "ai_global_enabled"
-  | "bookings_global_enabled"
-  | "incident_mode_enabled"
-  | "messaging_global_enabled"
-  | "payments_global_enabl
-- **[what-changed] what-changed in channelService.ts**: File updated (external): src/lib/services/channelService.ts
-
-Content summary (142 lines):
-import { wahaService } from "./wahaService";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { log } from "@/lib/logger";
-
-export type MessageChannel = 'whatsapp' | 'instagram' | 'messenger' | 'sms' | 'email';
-
-export interface OutboundMessage {
-  tenantId: string;
-  recipientId: string; // phone number, IG handle, or Meta scoped ID
-  content: string;
-  channel: MessageChannel;
-  metadata?: Record<string, any>;
-}
-
-export const ChannelService = {
-  /**
-   * Dispatches an outboun
-- **[what-changed] what-changed in subscriptionService.ts**: File updated (external): src/lib/services/subscriptionService.ts
-
-Content summary (116 lines):
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { EVENT_TYPES } from "@/types/events";
-import { BusinessType } from "@/types";
-import { 
-  PLAN_LIMITS, 
-  PLAN_PRICING, 
-  BOOKING_MULTIPLIERS, 
-  SubscriptionPlan 
-} from "@/lib/constants/pricing";
-
-export type { SubscriptionPlan };
-
-export class SubscriptionService {
-  static async getTenantPlan(tenantId: string): Promise<SubscriptionPlan> {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
     const supabase = await getSupabaseServer();
-    const { data } = await supabase
-   
-- **[convention] Fixed null crash in Tenant — reduces initial bundle size with code splitting — confirmed 4x**: -         kyc_status: tenant.kyc_status || "not_started",
-+         kyc_status: (tenant.kyc_status as import("@/types/index").Tenant["kyc_status"]) || "not_started",
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-📌 IDE AST Context: Modified symbols likely include [userService, mapDbUserToAppUser]
-- **[convention] Strengthened types BusinessType — reduces initial bundle size with code split...**: -         businessType: tenant.business_type || "",
-+         businessType: (tenant.business_type as import("@/types/index").BusinessType) || null,
+  
+- **[convention] what-changed in route.ts — confirmed 4x**: File updated (external): src/app/api/payments/create-link/route.ts
 
-📌 IDE AST Context: Modified symbols likely include [userService, mapDbUserToAppUser]
-- **[what-changed] what-changed in userService.ts**: -       .update({ metadata: updatedMetadata })
-+       .update({ metadata: updatedMetadata as unknown as Json })
+Content summary (329 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { randomUUID } from "crypto";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
+import { ControlService } from "@/lib/services/controlService";
+import { RazorpayService } from "@/lib/services/razorpayService";
+import { SubscriptionService } from "@/lib/services/subscriptionService";
+import { get
+- **[convention] problem-fix in route.ts — confirmed 3x**: File updated (external): src/app/api/guest-id/approve/[id]/route.ts
 
-📌 IDE AST Context: Modified symbols likely include [userService, mapDbUserToAppUser]
-- **[decision] decision in userService.ts**: File updated (external): src/lib/services/userService.ts
+Content summary (73 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
+import { getTenantIdForUser } from "@/app/actions/auth";
 
-Content summary (411 lines):
-import {
-  User,
-  UserFilterOptions,
-  AuditLog,
-  AccountStatus,
-  KYCStatus,
-  KYCDocument,
-  UserMetadata
-} from "@/types/user";
-import { DBUser, UserMetadataJSON } from "@/types/database";
-import { type Json } from "@/types/supabase";
-import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
-import { log } from "@/lib/logger";
+export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const supabase = await getSupabaseServer();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-// Service Methods
+ 
+- **[convention] problem-fix in route.ts — confirmed 4x**: File updated (external): src/app/api/failures/route.ts
 
-export const userService = {
-  async getUsers(filters?: UserFilterOptions): Promise<User[]> {
-    const supabase = await getSu
-- **[what-changed] what-changed in settingsService.ts**: File updated (external): src/lib/services/settingsService.ts
+Content summary (82 lines):
+import { NextResponse } from "next/server";
+import { getSession } from "@/lib/auth/session";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { ControlService } from "@/lib/services/controlService";
+import { FailureRecord } from "@/types/failure";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
-Content summary (419 lines):
-import { DEFAULT_AI_MODEL, DEFAULT_AI_PROVIDER } from "@/lib/ai/config";
-import {
-  AppSettings,
-  SettingsAuditLog,
-  IntegrationConfig,
-  FeatureFlag,
-  AuthSettings,
-  PlatformSettings,
-  NotificationSettings,
-  SecuritySettings,
-  ApiSettings,
-} from "@/types/settings";
-import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
-import { cacheService } from "@/lib/services/cacheService";
+export const dynamic = "force-dynamic";
 
-function detectEnvironment(): "production" | "development" | "test" {
-  if (process.env
-- **[what-changed] what-changed in supabase.ts**: - ﻿export type Json =
-+ export type Json =
-- 
-+ 
-- 
+export async function GET() {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorize
+- **[problem-fix] problem-fix in billing.ts**: File updated (external): src/types/billing.ts
 
-📌 IDE AST Context: Modified symbols likely include [Json, Database, DatabaseWithoutInternals, DefaultSchema, Tables]
-- **[decision] decision in supabase.ts**: File updated (external): src/types/supabase.ts
+Content summary (69 lines):
 
-Content summary (3395 lines):
-﻿export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type PaymentProvider = 'razorpay' | 'stripe';
+export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
+export type BillingInterval = 'month' | 'year' | 'one_time';
+export type SubscriptionStatus = 'active' | 'past_due' | 'canceled' | 'trialing' | 'paused';
 
-export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.4"
-  }
-  public: {
-    Tables: {
-      accounts: {
-        Row: {
-          business_type: string | null
-          created_at: string
-          id: string
-     
-- **[convention] Fixed null crash in Supabase — externalizes configuration for environment fle... — confirmed 5x**: - import type { Database } from '@/types/supabase';
-+ 
-- 
-+ export function getSupabaseAdmin() {
-- export function getSupabaseAdmin() {
-+   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "https://placeholder.supabase.co";
--   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "https://placeholder.supabase.co";
-+   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder";
--   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder";
-+ 
-- 
-+   if (supabaseUrl.includes("placeholder")) {
--   if (supabaseUrl.includes("placeholder")) {
-+     console.error("[Supabase Admin Utility] CRITICAL: SUPABASE_URL is not configured.");
--     console.error("[Supabase Admin Utility] CRITICAL: SUPABASE_URL is not configured.");
-+   }
--   }
-+   if (supabaseServiceKey === "placeholder") {
--   if (supabaseServiceKey === "placeholder") {
-+     console.error("[Supabase Admin Utility] CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not configured.");
--     console.error("[Supabase Admin Utility] CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not configured.");
-+   }
--   }
-+ 
-- 
-+   return createClient(supabaseUrl, supabaseServiceKey, {
--   return createClient<Database>(supabaseUrl, supabaseServiceKey, {
-+     auth: {
--     auth: {
-+       autoRefreshToken: false,
--       autoRefreshToken: false,
-+       persistSession: false
--       persistSession: false
-+     }
--     }
-+   });
--   });
-+ }
+import { Json } from './supabase';
+
+export interface BillingPlan {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  currency: string | null;
+  interval: string | null;
+  product: strin
+- **[what-changed] Added session cookies authentication — formalizes the data contract with expl...**: -   tenant_id: string;
++   tenant_id: string | null;
+-   guest_id?: string;
++   listing_id: string | null;
+-   amount: number;
++   guest_id: string | null;
+-   source?: string;
++   amount: number | null;
+-   status: string;
++   status: string | null;
+-   check_in?: string;
++   check_in: string | null;
+-   check_out?: string;
++   check_out: string | null;
+-   created_at: string;
++   start_date: string | null;
+-   metadata?: Record<string, unknown>;
++   end_date: string | null;
 - }
-+ 
++   source: string | null;
 - 
-
-📌 IDE AST Context: Modified symbols likely include [getSupabaseAdmin]
-- **[what-changed] Replaced auth Database**: - // ==========================================
++   id_status: string | null;
+- export interface DBReferral {
++   guest_contact: string | null;
+-   id: string;
++   payment_id: string | null;
+-   referrer_id: string;
++   metadata: Json | null;
+-   referred_id: string;
++   created_at: string | null;
+-   status: string;
++ }
+-   created_at: string;
 + 
-- // Database Generic Supabase Shape
-- // ==========================================
-- export interface Database {
--   public: {
--     Tables: {
--       users: { Row: DBUser; Insert: Partial<DBUser>; Update: Partial<DBUser> };
--       profiles: { Row: DBProfile; Insert: Partial<DBProfile>; Update: Partial<DBProfile> };
--       kaisa_accounts: { Row: DBKaisaAccount; Insert: Partial<DBKaisaAccount>; Update: Partial<DBKaisaAccount> };
--       accounts: { Row: DBAccount; Insert: Partial<DBAccount>; Update: Partial<DBAccount> };
--       tenants: { Row: DBTenant; Insert: Partial<DBTenant>; Update: Partial<DBTenant> };
--       tenant_users: { Row: DBTenantUser; Insert: Partial<DBTenantUser>; Update: Partial<DBTenantUser> };
--       system_settings: { Row: { key: string; value: any; updated_by?: string; updated_at?: string }; Insert: any; Update: any };
--       kaisa_memories: { Row: any; Insert: any; Update: any };
--       admin_audit_logs: { Row: any; Insert: any; Update: any };
--       messages: { Row: DBMessage; Insert: Partial<DBMessage>; Update: Partial<DBMessage> };
--       wallet_transactions: { Row: DBWalletTransaction; Insert: Partial<DBWalletTransaction>; Update: Partial<DBWalletTransaction> };
--       guest_id_documents: { Row: any; Insert: any; Update: any };
--       kyc_documents: { Row: any; Insert: any; Update: any };
--       [key: string]: { Row: any; Insert: any; Update: any };
--     };
--     Views: Record<string, { Row: any; Insert: any; Update: any }>;
--     Functions: {
--       atomic_wallet_transaction_v1: {
--         Args: {
--           p_tenant_id: string;
--           p_amount: number;
--           p_action_type?: string;
--           p_type?: string;
--           p_model?: string;
--           p_tokens_used?: number;
--           p_metadata?: Record<string, any>;
--         };
--         Returns: { success: boolean; error?: string; code?: string; idempotent?: boolean };
--       };
--       [key: string]: { 
+- }
++ export interface DBReferral {
+- 
++   id: string;
+- export interface DBSupportTicket {
++   referrer_id: string;
+-   id: string;
++   referred_id: string;
+-   user_id: string;
++   status: string;
+-   subject: string;
++   created_at: string;
+-   product?: string;
++ }
+-   status: string;
++ 
+-   priority: string;
++ export interface DBSupportTicket {
+-   created_at: string;
++   id: string;
+-   updated_at: string;
++   user_id: string;
+- }
++   subject: string;
+- 
++   product?: string;
+- export interface DBMessage {
++   status: string;
+-   id: string;
++   priority: string;
+-   tenant_id: string | null;
++   created_at: string;
+-   conversation_id: string | null;
++   updated_at: string;
+-   guest_id: string | null;
++ }
+-   listing_id: string | null;
++ 
+-   role: string;
++ export interface DBMessage {
+-   direction: string | null;
++   id: string;
+-   content: string | null;
++   tenant_id: string | null;
+-   channel: string | null;
++   conversation_id: string | null;
+-   external_id: string | null;
++   guest_id: string | null;
+-   metadata: Json | null;
++   listing_id: string | null;
+-   created_at: string | null;
++   role: string;
+- }
++   direction: string | null;
+- 
++   
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [DBUser, UserMetadataJSON, KYCDocumentJSON, DBProfile, DBKaisaAccount]
-- **[convention] Strengthened types DBMessage — ensures atomic multi-step database operations**: -       [key: string]: { Row: any; Insert: any; Update: any };
-+       messages: { Row: DBMessage; Insert: Partial<DBMessage>; Update: Partial<DBMessage> };
--     };
-+       wallet_transactions: { Row: DBWalletTransaction; Insert: Partial<DBWalletTransaction>; Update: Partial<DBWalletTransaction> };
--     Views: Record<string, { Row: any; Insert: any; Update: any }>;
-+       guest_id_documents: { Row: any; Insert: any; Update: any };
--     Functions: Record<string, { Args: any; Returns: any }>;
-+       kyc_documents: { Row: any; Insert: any; Update: any };
--     Enums: Record<string, any>;
-+       [key: string]: { Row: any; Insert: any; Update: any };
--   };
-+     };
-- }
-+     Views: Record<string, { Row: any; Insert: any; Update: any }>;
-- 
-+     Functions: {
-+       atomic_wallet_transaction_v1: {
-+         Args: {
-+           p_tenant_id: string;
-+           p_amount: number;
-+           p_action_type?: string;
-+           p_type?: string;
-+           p_model?: string;
-+           p_tokens_used?: number;
-+           p_metadata?: Record<string, any>;
-+         };
-+         Returns: { success: boolean; error?: string; code?: string; idempotent?: boolean };
-+       };
-+       [key: string]: { Args: any; Returns: any };
-+     };
-+     Enums: Record<string, any>;
-+   };
-+ }
+📌 IDE AST Context: Modified symbols likely include [Json, DBUser, UserMetadataJSON, KYCDocumentJSON, DBProfile]
+- **[convention] what-changed in database.ts — confirmed 4x**: -   metadata?: Record<string, unknown>;
++   metadata: Json | null;
+-   is_active: boolean;
++   is_active: boolean | null;
+-   resolved_at?: string;
++   resolved_at: string | null;
+-   created_at: string;
++   created_at: string | null;
+
+📌 IDE AST Context: Modified symbols likely include [Json, DBUser, UserMetadataJSON, KYCDocumentJSON, DBProfile]
+- **[convention] Strengthened types Alias**: -     businessType: dbTenant.business_type // Alias for easier access
++     businessType: dbTenant.business_type as any // Alias for easier access
+
+📌 IDE AST Context: Modified symbols likely include [getActiveTenantId, requireActiveTenant, getTenantContext, validateTenantAccess]
+- **[what-changed] Added Supabase Auth authentication — formalizes the data contract with explic...**: - 
++ import { DBTenant } from '@/types/database';
+- /**
 + 
+-  * Gets the full tenant context including business type.
++ /**
+-  * Useful for checking business rules without needing full user profile.
++  * Gets the full tenant context including business type.
+-  */
++  * Useful for checking business rules without needing full user profile.
+- export async function getTenantContext(tenantId: string): Promise<(Tenant & DBTenant) | null> {
++  */
+-   const supabase = await getSupabaseServer();
++ export async function getTenantContext(tenantId: string): Promise<(Tenant & DBTenant) | null> {
+-   const { data: tenant, error } = await supabase
++   const supabase = await getSupabaseServer();
+-     .from("tenants")
++   const { data: tenant, error } = await supabase
+-     .select("*")
++     .from("tenants")
+-     .eq("id", tenantId)
++     .select("*")
+-     .single();
++     .eq("id", tenantId)
+-     
++     .single();
+-   if (error || !tenant) return null;
++     
+-   
++   if (error || !tenant) return null;
+-   const dbTenant = tenant as unknown as DBTenant;
++   
+-   
++   const dbTenant = tenant as unknown as DBTenant;
+-   return {
++   
+-     ...dbTenant,
++   return {
+-     ownerUserId: dbTenant.owner_user_id, // Map for Tenant interface compatibility
++     ...dbTenant,
+-     createdAt: dbTenant.created_at,       // Map for Tenant interface compatibility
++     ownerUserId: dbTenant.owner_user_id, // Map for Tenant interface compatibility
+-     businessType: dbTenant.business_type // Alias for easier access
++     createdAt: dbTenant.created_at,       // Map for Tenant interface compatibility
+-   };
++     businessType: dbTenant.business_type // Alias for easier access
+- }
++   };
+- 
++ }
+- /**
++ 
+-  * Validates that the current user actually has access to the requested tenant.
++ /**
+-  * Useful for critical operations where we don't want to rely solely on RLS for the 'active' check.
++  * Validates that the current user actually has access to the requested tenant.
+-  */
++  * Useful for c
+… [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [DBUser, UserMetadataJSON, KYCDocumentJSON, DBProfile, DBKaisaAccount]
-- **[problem-fix] problem-fix in withErrorHandler.ts**: - export function withErrorHandler(handler: Function) {
-+ export function withErrorHandler(handler: (...args: any[]) => any) {
+📌 IDE AST Context: Modified symbols likely include [getActiveTenantId, requireActiveTenant, getTenantContext, validateTenantAccess]
+- **[what-changed] Replaced dependency Tenant**: - import { DBTenant } from '@/types/database';
++ import { Tenant } from '@/types';
+- export async function getTenantContext(tenantId: string): Promise<(DBTenant & { ownerUserId: string; createdAt: string; businessType?: string | null }) | null> {
++ export async function getTenantContext(tenantId: string): Promise<(Tenant & DBTenant) | null> {
 
-📌 IDE AST Context: Modified symbols likely include [withErrorHandler]
-- **[convention] problem-fix in route.ts — confirmed 3x**: File updated (external): src/app/api/eyes/ingest/route.ts
+📌 IDE AST Context: Modified symbols likely include [getActiveTenantId, requireActiveTenant, getTenantContext, validateTenantAccess]
+- **[what-changed] what-changed in index.ts**: -   };
++   } | null;
 
-Content summary (177 lines):
-import { NextResponse } from "next/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { getSupabaseAdmin } from "@/lib/supabase/admin";
-import crypto from "crypto";
-import { rateLimit } from "@/lib/ratelimit";
-import { withErrorHandler } from "@/lib/api/withErrorHandler";
+📌 IDE AST Context: Modified symbols likely include [Tenant, BusinessType, TenantUser, Host, ListingStatus]
+- **[what-changed] what-changed in index.ts**: -   address?: string;
++   address?: string | null;
+-   tax_id?: string;
++   tax_id?: string | null;
+-   phone?: string;
++   phone?: string | null;
+-   timezone?: string;
++   timezone?: string | null;
+-   username?: string;
++   username?: string | null;
+-     tone?: AITone;
++     tone?: AITone | null;
 
-/**
- * Camera ingest endpoint
- *
- * Accepts JSON:
- * {
- *   cameraId: string,             // required
- *   frameRef?: string,            // optional reference (if already uploaded)
- *   base64Frame?: stri
+📌 IDE AST Context: Modified symbols likely include [Tenant, BusinessType, TenantUser, Host, ListingStatus]
