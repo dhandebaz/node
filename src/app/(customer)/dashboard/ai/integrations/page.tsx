@@ -243,49 +243,50 @@ export default function ListingIntegrationsPage() {
   const isInstagramConnected = instagramStatus?.status === "connected";
 
   return (
-    <div className="space-y-6 pb-24 md:pb-0 max-w-5xl mx-auto">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground uppercase tracking-tight">Integrations</h1>
-        <p className="text-foreground/60">Manage your connected apps and services.</p>
-      </div>
+    <div className="space-y-8 pb-32 max-w-5xl mx-auto">
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-white uppercase tracking-tight">Integrations</h1>
+        <p className="text-zinc-400">Manage your connected apps and services to boost AI capabilities.</p>
+      </header>
 
       <div className="grid gap-6 md:grid-cols-2">
         
 
         {/* Google Integration */}
         {capabilities.integrations.google && (
-          <Card className="public-panel">
-            <CardHeader>
+          <Card className="glass-panel border-white/5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <CardHeader className="relative">
                 <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                            <img src="https://authjs.dev/img/providers/google.svg" alt="Google" className="w-6 h-6" />
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 p-2.5 backdrop-blur-md">
+                            <img src="https://authjs.dev/img/providers/google.svg" alt="Google" className="w-full h-full" />
                         </div>
                         <div>
-                            <CardTitle className="text-foreground">Google Calendar</CardTitle>
-                            <CardDescription className="text-foreground/50">Sync {labels.bookings.toLowerCase()} to your personal calendar</CardDescription>
+                            <CardTitle className="text-white text-lg font-bold">Google Calendar</CardTitle>
+                            <CardDescription className="text-zinc-500 text-sm">Sync {labels.bookings.toLowerCase()} to your personal calendar</CardDescription>
                         </div>
                     </div>
                     {isGoogleConnected ? (
-                      <Badge variant="outline" className="text-green-400 border-green-400/20 bg-green-400/10">Connected</Badge>
+                      <Badge variant="outline" className="text-emerald-400 border-emerald-500/20 bg-emerald-500/10 rounded-full px-3 py-0.5 text-[10px] font-bold">CONNECTED</Badge>
                     ) : isGoogleExpired ? (
-                      <Badge variant="outline" className="text-red-400 border-red-400/20 bg-red-400/10">Expired</Badge>
+                      <Badge variant="outline" className="text-rose-400 border-rose-500/20 bg-rose-500/10 rounded-full px-3 py-0.5 text-[10px] font-bold">EXPIRED</Badge>
                     ) : isGoogleError ? (
-                      <Badge variant="outline" className="text-red-500 border-red-500/20 bg-red-500/10">Error</Badge>
+                      <Badge variant="outline" className="text-rose-500 border-rose-500/20 bg-rose-500/10 rounded-full px-3 py-0.5 text-[10px] font-bold">ERROR</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-muted-foreground border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
+                      <Badge variant="outline" className="text-zinc-500 border-white/10 bg-white/5 rounded-full px-3 py-0.5 text-[10px] font-bold">DISCONNECTED</Badge>
                     )}
                 </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-                <div className={`p-4 rounded-lg border space-y-3 ${isGoogleConnected ? 'bg-green-500/5 border-green-500/10' : isGoogleError ? 'bg-red-500/5 border-red-500/10' : 'bg-muted border-border'}`}>
-                    <div className="flex items-center justify-between text-sm">
-                        <span className="text-foreground/70">Connected Account</span>
-                        <span className="text-foreground font-mono">{googleStatus?.connectedEmail || "-"}</span>
+            <CardContent className="space-y-4 relative">
+                <div className={`p-4 rounded-xl border space-y-3 transition-colors ${isGoogleConnected ? 'bg-emerald-500/5 border-emerald-500/10' : isGoogleError ? 'bg-rose-500/5 border-rose-500/10' : 'bg-white/5 border-white/10'}`}>
+                   <div className="flex items-center justify-between text-xs">
+                        <span className="text-zinc-500 uppercase tracking-widest font-bold">Email</span>
+                        <span className="text-white font-mono">{googleStatus?.connectedEmail || "-"}</span>
                     </div>
-                    <div className="flex items-center justify-between text-sm">
-                        <span className="text-foreground/70">Last synced</span>
-                        <span className="text-foreground font-mono">
+                    <div className="flex items-center justify-between text-xs">
+                        <span className="text-zinc-500 uppercase tracking-widest font-bold">Last Sync</span>
+                        <span className="text-white font-mono">
                           {googleStatus?.lastSyncedAt ? new Date(googleStatus.lastSyncedAt).toLocaleString() : "-"}
                         </span>
                     </div>
@@ -298,41 +299,38 @@ export default function ListingIntegrationsPage() {
                 </div>
                 
                 {isGoogleConnected || isGoogleExpired || isGoogleError ? (
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                  <div className="flex gap-3">
+                    <button 
                       onClick={handleDisconnectGoogle}
                       disabled={isLoading}
+                      className="button-glass flex-1 border-rose-500/20 text-rose-400 hover:bg-rose-500/10"
                     >
-                      <LogOut className="w-4 h-4 mr-2" />
+                      <LogOut className="w-4 h-4" />
                       Disconnect
-                    </Button>
+                    </button>
                     {(isGoogleExpired || isGoogleError) && (
-                        <Button 
-                        variant="default" 
-                        className="w-full public-button"
+                        <button 
                         onClick={handleConnectGoogle}
                         disabled={isConnectingGoogle}
+                        className="button-primary flex-1"
                       >
-                        {isConnectingGoogle ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+                        {isConnectingGoogle ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                         Reconnect
-                      </Button>
+                      </button>
                     )}
                   </div>
                 ) : (
-                  <Button 
-                    variant="default" 
-                    className="w-full public-button"
+                  <button 
                     onClick={handleConnectGoogle}
                     disabled={isConnectingGoogle || isLoading}
+                    className="button-primary w-full"
                   >
                     {isConnectingGoogle ? (
-                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Connecting...</>
+                      <><Loader2 className="w-4 h-4 animate-spin" /> Connecting...</>
                     ) : (
-                      "Connect Google Account"
+                      "Link Google Account"
                     )}
-                  </Button>
+                  </button>
                 )}
             </CardContent>
           </Card>
@@ -340,36 +338,37 @@ export default function ListingIntegrationsPage() {
 
         {/* OTA Integrations (iCal) */}
         {capabilities.integrations.ical && (
-          <Card className="public-panel opacity-95">
-            <CardHeader>
+          <Card className="glass-panel border-white/5 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <CardHeader className="relative">
                 <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#FF5A5F] rounded-full flex items-center justify-center">
-                            <Puzzle className="w-6 h-6 text-foreground" />
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-[#FF5A5F]/20 rounded-2xl flex items-center justify-center border border-[#FF5A5F]/30 p-2.5">
+                            <Puzzle className="w-full h-full text-[#FF5A5F]" />
                         </div>
                         <div>
-                            <CardTitle className="text-foreground">Airbnb, Booking.com, MMT</CardTitle>
-                            <CardDescription className="text-foreground/50">Channel manager & calendar sync</CardDescription>
+                            <CardTitle className="text-white text-lg font-bold">Airbnb / OTAs</CardTitle>
+                            <CardDescription className="text-zinc-500 text-sm">Automated Channel Management</CardDescription>
                         </div>
                     </div>
-                    <Badge variant="outline" className="text-blue-400 border-blue-400/20 bg-blue-400/10">
-                        Managed per {labels.listing}
+                    <Badge variant="outline" className="text-blue-400 border-blue-500/20 bg-blue-500/10 rounded-full px-3 py-0.5 text-[10px] font-bold">
+                        PROPERTY-LEVEL
                     </Badge>
                 </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                    <div className="flex items-start gap-3">
+            <CardContent className="space-y-4 relative">
+                <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                    <div className="flex items-start gap-4">
                         <AlertCircle className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                         <div className="space-y-1">
-                            <p className="text-sm text-blue-200 font-medium">Moved to {labels.listings}</p>
-                            <p className="text-xs text-blue-200/70">
-                                To sync calendars with OTAs like Airbnb or Booking.com, go to a specific {labels.listing.toLowerCase()} and click "Platform Sync".
+                            <p className="text-sm text-blue-100 font-bold">Configuration Moved</p>
+                            <p className="text-xs text-blue-200/60 leading-relaxed">
+                                OTA sync is now configured per {labels.listing.toLowerCase()}. Visit {labels.listings.toLowerCase()} &gt; Settings to link Airbnb, MMT or Booking.com.
                             </p>
                         </div>
                     </div>
                 </div>
-                <Button asChild className="w-full public-button">
+                <Button className="button-primary w-full" asChild>
                     <Link href="/dashboard/ai/listings">
                         Go to {labels.listings} <ExternalLink className="w-4 h-4 ml-2" />
                     </Link>
@@ -385,72 +384,72 @@ export default function ListingIntegrationsPage() {
 
         
         {/* Telegram Integration */}
-        <Card className="public-panel">
+        <Card className="glass-panel border-white/5 opacity-80">
           <CardHeader>
               <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#0088cc]/10 rounded-full flex items-center justify-center">
-                          <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" className="w-6 h-6" />
+                  <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-[#0088cc]/20 rounded-2xl flex items-center justify-center border border-[#0088cc]/30 p-2.5">
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" className="w-full h-full" />
                       </div>
                       <div>
-                          <CardTitle className="text-foreground">Telegram</CardTitle>
-                          <CardDescription className="text-foreground/50">Reply to Telegram Bot messages</CardDescription>
+                          <CardTitle className="text-white text-lg font-bold">Telegram</CardTitle>
+                          <CardDescription className="text-zinc-500 text-sm">Full reply capabilities for Bots</CardDescription>
                       </div>
                   </div>
-                  <Badge variant="outline" className="text-muted-foreground border-zinc-500/20 bg-zinc-500/10">Coming Soon</Badge>
+                  <Badge variant="outline" className="text-zinc-500 border-white/10 bg-white/5 rounded-full px-3 py-0.5 text-[10px] font-bold italic">COMING SOON</Badge>
               </div>
           </CardHeader>
           <CardContent>
-             <Button disabled className="w-full bg-muted text-muted-foreground border border-border">
-                 In Development
-             </Button>
+             <button disabled className="button-glass w-full border-white/5 text-zinc-600 cursor-not-allowed">
+                 Development in Progress
+             </button>
           </CardContent>
         </Card>
 
         {/* Nodebase Voice Integration */}
-        <Card className="public-panel relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-          <CardHeader>
+        <Card className="glass-panel border-white/5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-orange-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          <CardHeader className="relative">
               <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-orange-500/10 rounded-full flex items-center justify-center">
-                          <svg xmlns="http://www.w0.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-orange-500"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                  <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center border border-orange-500/30 p-2.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-500 w-full h-full"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
                       </div>
                       <div>
-                          <CardTitle className="text-foreground">Nodebase Voice</CardTitle>
-                          <CardDescription className="text-foreground/50">AI Phone Agent for your business</CardDescription>
+                          <CardTitle className="text-white text-lg font-bold">Nodebase Voice</CardTitle>
+                          <CardDescription className="text-zinc-500 text-sm">Human-like AI Phone Agents</CardDescription>
                       </div>
                   </div>
-                  <Badge variant="outline" className="text-primary border-primary/20 bg-primary/10">Waitlist</Badge>
+                  <Badge variant="outline" className="text-orange-400 border-orange-500/20 bg-orange-500/10 rounded-full px-3 py-0.5 text-[10px] font-bold">WAITLIST</Badge>
               </div>
           </CardHeader>
-          <CardContent>
-             <Button variant="outline" asChild className="w-full public-button">
-                 <Link href="/dashboard/ai/settings">Join Waitlist</Link>
+          <CardContent className="relative">
+             <Button asChild className="button-primary w-full shadow-orange-500/20 border-orange-500/30">
+                 <Link href="/dashboard/ai/settings">Join Voice Waitlist</Link>
              </Button>
           </CardContent>
         </Card>
 
         {/* Nodebase Eyes (CCTV) */}
-        <Card className="public-panel relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-          <CardHeader>
+        <Card className="glass-panel border-white/5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          <CardHeader className="relative">
               <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-500/10 rounded-full flex items-center justify-center">
-                          <svg xmlns="http://www.w0.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center border border-blue-500/30 p-2.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 w-full h-full"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                       </div>
                       <div>
-                          <CardTitle className="text-foreground">Nodebase Eyes</CardTitle>
-                          <CardDescription className="text-foreground/50">CCTV & Vision Intelligence</CardDescription>
+                          <CardTitle className="text-white text-lg font-bold">Nodebase Eyes</CardTitle>
+                          <CardDescription className="text-zinc-500 text-sm">Vision AI for physical spaces</CardDescription>
                       </div>
                   </div>
-                  <Badge variant="outline" className="text-primary border-primary/20 bg-primary/10">Waitlist</Badge>
+                  <Badge variant="outline" className="text-blue-400 border-blue-500/20 bg-blue-500/10 rounded-full px-3 py-0.5 text-[10px] font-bold">WAITLIST</Badge>
               </div>
           </CardHeader>
-          <CardContent>
-             <Button variant="outline" asChild className="w-full public-button">
-                 <Link href="/dashboard/ai/settings">Join Waitlist</Link>
+          <CardContent className="relative">
+             <Button asChild className="button-primary w-full shadow-blue-500/20">
+                 <Link href="/dashboard/ai/settings">Join Vision Waitlist</Link>
              </Button>
           </CardContent>
         </Card>
@@ -458,68 +457,67 @@ export default function ListingIntegrationsPage() {
 
         {/* Instagram Integration */}
         {capabilities.integrations.instagram && (
-          <Card className="public-panel">
-            <CardHeader>
+          <Card className="glass-panel border-white/5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <CardHeader className="relative">
                 <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] rounded-full flex items-center justify-center">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] rounded-2xl flex items-center justify-center border border-white/10 p-2.5">
                             <Image 
                               src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" 
                               alt="Instagram" 
-                              width={24} 
-                              height={24} 
-                              className="w-6 h-6 invert"
+                              width={32} 
+                              height={32} 
+                              className="w-full h-full invert"
                             />
                         </div>
                         <div>
-                            <CardTitle className="text-foreground">Instagram</CardTitle>
-                            <CardDescription className="text-foreground/50">Reply to DMs & Orders</CardDescription>
+                            <CardTitle className="text-white text-lg font-bold">Instagram</CardTitle>
+                            <CardDescription className="text-zinc-500 text-sm">Automated DM & Social Replies</CardDescription>
                         </div>
                     </div>
                     {isInstagramConnected ? (
-                      <Badge variant="outline" className="text-green-400 border-green-400/20 bg-green-400/10">Connected</Badge>
+                      <Badge variant="outline" className="text-emerald-400 border-emerald-500/20 bg-emerald-500/10 rounded-full px-3 py-0.5 text-[10px] font-bold">CONNECTED</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-muted-foreground border-zinc-500/20 bg-zinc-500/10">Not Connected</Badge>
+                      <Badge variant="outline" className="text-zinc-500 border-white/10 bg-white/5 rounded-full px-3 py-0.5 text-[10px] font-bold">DISCONNECTED</Badge>
                     )}
                 </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-               <div className={`p-4 rounded-lg border space-y-3 ${isInstagramConnected ? 'bg-gradient-to-tr from-[#f09433]/5 via-[#dc2743]/5 to-[#bc1888]/5 border-pink-500/10' : 'bg-muted border-border'}`}>
-                    <div className="flex items-center justify-between text-sm">
-                        <span className="text-foreground/70">Connected Account</span>
-                        <span className="text-foreground font-mono">{instagramStatus?.connectedName || "-"}</span>
+            <CardContent className="space-y-4 relative">
+               <div className={`p-4 rounded-xl border space-y-3 ${isInstagramConnected ? 'bg-gradient-to-tr from-[#f09433]/5 via-[#dc2743]/5 to-[#bc1888]/5 border-pink-500/10' : 'bg-white/5 border-white/10'}`}>
+                    <div className="flex items-center justify-between text-xs">
+                        <span className="text-zinc-500 uppercase tracking-widest font-bold">Handle</span>
+                        <span className="text-white font-mono">{instagramStatus?.connectedName || "-"}</span>
                     </div>
-                    <div className="flex items-center justify-between text-sm">
-                        <span className="text-foreground/70">Last synced</span>
-                        <span className="text-foreground font-mono">
+                    <div className="flex items-center justify-between text-xs">
+                        <span className="text-zinc-500 uppercase tracking-widest font-bold">Last Sync</span>
+                        <span className="text-white font-mono">
                           {instagramStatus?.lastSyncedAt ? new Date(instagramStatus.lastSyncedAt).toLocaleString() : "-"}
                         </span>
                     </div>
                </div>
 
                {isInstagramConnected ? (
-                 <Button 
-                   variant="outline" 
-                   className="w-full border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                 <button 
                    onClick={handleDisconnectInstagram}
                    disabled={isLoading}
+                   className="button-glass w-full border-rose-500/20 text-rose-400 hover:bg-rose-500/10"
                  >
-                   <LogOut className="w-4 h-4 mr-2" />
+                   <LogOut className="w-4 h-4" />
                    Disconnect
-                 </Button>
+                 </button>
                ) : (
-                 <Button 
-                   variant="default" 
-                   className="w-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-foreground hover:opacity-90"
+                 <button 
                    onClick={handleConnectInstagram}
                    disabled={isConnectingInstagram || isLoading}
+                   className="button-primary w-full shadow-pink-500/20 border-pink-500/30"
                  >
                    {isConnectingInstagram ? (
-                     <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Connecting...</>
+                     <><Loader2 className="w-4 h-4 animate-spin" /> Connecting...</>
                    ) : (
-                     "Connect Instagram"
+                     "Link Instagram"
                    )}
-                 </Button>
+                 </button>
                )}
             </CardContent>
           </Card>

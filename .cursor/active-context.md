@@ -1,317 +1,267 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `src\lib\services\controlService.ts` (Domain: **Backend (API/Server)**)
+> Dynamically loaded for active file: `src\components\layout\UniversalNavbar.tsx` (Domain: **Frontend (React/UI)**)
 
-### 🔴 Backend (API/Server) Gotchas
-- **⚠️ GOTCHA: Updated schema Date**: -         const start = new Date(b.start_date);
-+         if (!b.start_date || !b.end_date) return false;
--         const end = new Date(b.end_date);
-+         const start = new Date(b.start_date);
--         return targetDate >= start && targetDate < end;
-+         const end = new Date(b.end_date);
--       });
-+         return targetDate >= start && targetDate < end;
+### 📐 Frontend (React/UI) Conventions & Fixes
+- **[convention] Strengthened types page**: -                   {(recentActivity || []).map((activity: any) => {
++                   {(recentActivity as any[] || []).map((activity: any) => {
+
+📌 IDE AST Context: Modified symbols likely include [dynamic, AIDashboardPage]
+- **[convention] Fixed null crash in System — prevents null/undefined runtime crashes — confirmed 3x**: -                       {f.tenants?.name} • {f.category} • {f.source}
++                       {f.tenants?.name || "System"} • {f.category} • {f.source}
+-                       {new Date(f.created_at).toLocaleString()}
++                       {f.created_at ? new Date(f.created_at).toLocaleString() : "Recently"}
+
+📌 IDE AST Context: Modified symbols likely include [AdminFailureRecord, AdminFailuresPage]
+- **[what-changed] what-changed in page.tsx**: File updated (external): src/app/(admin)/admin/(dashboard)/pricing/page.tsx
+
+Content summary (78 lines):
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { PricingEditor } from "@/components/admin/pricing/PricingEditor";
+import { PlansEditor } from "@/components/admin/pricing/PlansEditor";
+import { BillingPlan } from "@/types";
+import { DollarSign, Tag } from "lucide-react";
+
+export const dynamic = "force-dynamic";
+
+export default async function AdminPricingPage() {
+  const supabase = await getSupabaseServer();
+  
+  // 1. Get Cost Config
+  const { data: configData } = await supabas
+- **[what-changed] what-changed in page.tsx**: File updated (external): src/app/(customer)/dashboard/ai/page.tsx
+
+Content summary (390 lines):
+import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
+import { DBAuditEvent } from "@/types/database";
+import { WalletService } from "@/lib/services/walletService";
+import { ControlService } from "@/lib/services/controlService";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import {
+  CreditCard,
+  MessageSquare,
+  Home,
+  Calendar,
+  Activity,
+  Plus,
+  AlertTriangle,
+  Zap,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
+import Link from "next/link";
+import { r
+- **[convention] what-changed in page.tsx — confirmed 3x**: File updated (external): src/app/(customer)/dashboard/billing/history/page.tsx
+
+Content summary (95 lines):
+export const dynamic = 'force-dynamic';
+
+
+import { getBillingHistory } from "@/app/actions/billing";
+import { Download, Search, Filter } from "lucide-react";
+import Link from "next/link";
+
+export default async function BillingHistoryPage() {
+  const invoices = await getBillingHistory();
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+        
+- **[convention] Strengthened types UNKNOWN — prevents null/undefined runtime crashes**: -               {subscription.status.toUpperCase()}
++               {(subscription.status || 'UNKNOWN').toUpperCase()}
+-               <span className="text-zinc-300">{new Date(subscription.currentPeriodStart).toLocaleDateString()}</span>
++               <span className="text-zinc-300">
+-             </div>
++                 {subscription.currentPeriodStart ? new Date(subscription.currentPeriodStart).toLocaleDateString() : 'N/A'}
+-             <div>
++               </span>
+-               <span className="block text-muted-foreground mb-1">Renews On</span>
++             </div>
+-               <span className="text-zinc-300">{new Date(subscription.currentPeriodEnd).toLocaleDateString()}</span>
++             <div>
+-             </div>
++               <span className="block text-muted-foreground mb-1">Renews On</span>
+-           </div>
++               <span className="text-zinc-300">
+-         </div>
++                 {subscription.currentPeriodEnd ? new Date(subscription.currentPeriodEnd).toLocaleDateString() : 'N/A'}
 - 
-+       });
--       if (isBooked) continue;
++               </span>
+-         {/* Actions */}
++             </div>
+-         <div className="p-6 bg-muted text-foreground/30 space-y-4">
++           </div>
+-           
++         </div>
+-           {subscription.cancelAtPeriodEnd ? (
 + 
-- 
-+       if (isBooked) continue;
--       let multiplier = 1.0;
-+ 
--       let reason = "Base price applied.";
-+       let multiplier = 1.0;
-- 
-+       let reason = "Base price applied.";
--       // Strategy: Balanced
-+ 
--       // Weekend markup
-+       // Strategy: Balanced
--       if (isWeekend) {
-+       // Weekend markup
--         multiplier *= settings.weekend_markup || 1.2;
-+       if (isWeekend) {
--         reason = "Weekend demand surge.";
-+         multiplier *= settings.weekend_markup || 1.2;
--       }
-+         reason = "Weekend demand surge.";
-- 
-+       }
--       // Last minute discount (next 3 days)
-+ 
--       if (i <= 3) {
-+       // Last minute discount (next 3 days)
--         multiplier *= settings.last_minute_discount || 0.8;
-+       if (i <= 3) {
--         reason = "Last-minute occupancy boost.";
-+         multiplier *= settings.last_minute_discount || 0.8;
--       }
-+         reason = "Last-minute occupancy boost.";
-- 
-+       }
--       // Proximity to other bookings (Fill the gaps)
-+ 
--       // (Skipped for simplicity, but could be added here)
-+       // Proximity to other bookings (Fill the gaps)
-- 
-+       // (Skipped for simplicity, but could be added here)
--       const suggestedPrice = Math.round(basePrice * multiplier);
-+ 
-- 
-+       const suggestedPrice = Math.round(basePrice * multiplier);
--       // Clamp to min/max
-+ 
--       const finalPrice = Math.min(
-+       // Clamp to min/max
--         Math.max(suggestedPrice, settings.min_price || 0),
-+       const final
+-              <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 mb-4">
++         {/* Actions */}
+-               <h3 className="text-yellow-400 font-medium mb-1">Cancellation Scheduled</h3>
++         <div className="p-6 bg-muted text-foreground/30 space-y-4">
+-               <p className="text-sm text-yellow-300/80 mb-3">
++           
+-                 Your subscription will end on {new Date(subscription.currentPeriodEnd).toLocaleDateString()}. Access will continue until then.
++           {subscription.cancelAtPeriodEnd ? (
+-               </p>
++              <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 mb-4">
+-               <form action={async () => {
++   
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [PriceSuggestion, DynamicPricingSettings, RevenueService]
+📌 IDE AST Context: Modified symbols likely include [dynamic, SubscriptionDetailsPage]
+- **[discovery] discovery in page.tsx**: File updated (external): src/app/(customer)/dashboard/billing/subscription/[id]/page.tsx
 
-### 📐 Backend (API/Server) Conventions & Fixes
-- **[problem-fix] problem-fix in controlService.ts**: -     const { error } = await supabase.from("system_settings").upsert({
-+     const { error } = await supabase.from("system_flags").upsert([{
--       key: key,
-+       key,
--     });
-+     }]);
+Content summary (154 lines):
+export const dynamic = 'force-dynamic';
 
-📌 IDE AST Context: Modified symbols likely include [SystemFlagKey, TenantControlKey, ActionBlockedError, createActionBlockedError, PostgrestResponse]
-- **[problem-fix] problem-fix in controlService.ts**: -   description: string | null;
-+   description?: string | null;
--   updated_at: string | null;
-+   updated_at?: string | null;
--   updated_by: string | null;
-+   updated_by?: string | null;
--     const { error } = await supabase.from("system_flags").upsert([{
-+     const { error } = await supabase.from("system_settings").upsert({
--       key,
-+       key: key,
--       value,
-+       value: value as any,
--     }]);
-+     });
 
-📌 IDE AST Context: Modified symbols likely include [SystemFlagKey, TenantControlKey, ActionBlockedError, createActionBlockedError, PostgrestResponse]
-- **[what-changed] what-changed in controlService.ts**: File updated (external): src/lib/services/controlService.ts
+import { 
+  getBillingOverview, 
+  cancelSubscriptionAction, 
+  resumeSubscriptionAction 
+} from "@/app/actions/billing";
+import { billingService } from "@/lib/services/billingService";
+import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, CreditCard, Calendar, AlertTriangle, CheckCircle } from "lucide-react";
+import { SubscriptionStatus } from "@/types/billing";
 
-Content summary (562 lines):
-import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
-import { getPersonaCapabilities } from "@/lib/business-context";
-import { BusinessType } from "@/types";
-import { hasRazorpayCredentials } from "@/lib/runtime-config";
+// Client component for actions would be 
+- **[what-changed] what-changed in WalletUI.tsx**: File updated (external): src/app/(customer)/dashboard/billing/WalletUI.tsx
 
-export type SystemFlagKey =
-  | "ai_global_enabled"
-  | "bookings_global_enabled"
-  | "incident_mode_enabled"
-  | "messaging_global_enabled"
-  | "payments_global_enabl
-- **[what-changed] what-changed in adminService.ts**: File updated (external): src/lib/services/adminService.ts
+Content summary (515 lines):
+"use client";
 
-Content summary (118 lines):
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { PLAN_PRICING, SubscriptionPlan } from "@/lib/constants/pricing";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Wallet,
+  TrendingDown,
+  TrendingUp,
+  CreditCard,
+  History,
+  X,
+  Loader2,
+} from "lucide-react";
+import Script from "next/script";
+import { fetchWithAuth } from "@/lib/api/fetcher";
 
-export interface AdminStats {
-  totalUsers: number;
-  activeSubscriptions: number;
-  totalRevenue: number; // Simple MRR estimate
-  walletBalances: number; // Total outstanding wallet credits (liability)
-}
-
-export interface CustomerSummary {
+export interface WalletTransaction {
   id: string;
-  phone: string;
-  email: string | null;
-  plan: string;
-  businessType: string;
-  joinedAt: string;
-  walletB
-- **[what-changed] what-changed in growthService.ts**: -       .eq('external_id', externalId)
-+       .eq('external_id', externalId || "")
-
-📌 IDE AST Context: Modified symbols likely include [GrowthOpportunity, GrowthService]
-- **[what-changed] what-changed in analyticsService.ts**: File updated (external): src/lib/services/analyticsService.ts
-
-Content summary (334 lines):
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { subDays, startOfDay, endOfDay, subMonths } from "date-fns";
-import { PricingService } from "./pricingService";
-
-export type TimeRange = 'today' | '7d' | '30d';
-
-export interface PersonaMetrics {
-  // Airbnb
-  occupancyRate?: number;
-  revenue?: number;
-  directBookings?: number;
-  otaBookings?: number;
-  avgResponseTime?: number; // in minutes
-  aiAssistedBookings?: number;
-
-  // Kirana
-  ordersCount?: number;
-  repeatCustomers?
-- **[what-changed] what-changed in invoiceService.ts**: File updated (external): src/lib/services/invoiceService.ts
-
-Content summary (114 lines):
-import { jsPDF } from "jspdf";
-import { format } from "date-fns";
-import { DBInvoice, DBTenant } from "@/types/database";
-
-export class InvoiceService {
-  static async generatePDF(
-    invoice: DBInvoice,
-    tenant: DBTenant,
-  ): Promise<Blob> {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 20;
-
-    // Header - Brand
-    doc.setFontSize(24);
-    doc.setTextColor(235, 68, 90); // Brand Red
-    doc.text("KAISA", margin, margin + 10);
-
-   
-- **[problem-fix] problem-fix in inboxService.ts**: File updated (external): src/lib/services/inboxService.ts
-
-Content summary (120 lines):
-
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { Conversation, MessageChannel, MessageDirection } from "@/types/omnichannel";
-import { log } from "@/lib/logger";
-
-export class InboxService {
-  /**
-   * Get all conversations for a tenant, ordered by last message
-   */
-  static async getConversations(tenantId: string): Promise<Conversation[]> {
-    const supabase = await getSupabaseServer();
-    const { data, error } = await supabase
-      .from("conversations")
-      .select("
-- **[what-changed] what-changed in growthService.ts**: -           contact_name: guest.name,
-+           contact_name: guest.name || "",
--       guestId: opportunity.guest_id,
-+       guestId: opportunity.guest_id || "",
-
-📌 IDE AST Context: Modified symbols likely include [GrowthOpportunity, GrowthService]
-- **[what-changed] what-changed in kaisaMemoryService.ts**: -       source: data.source || "",
-+       source: (data.source as any) || "",
-
-📌 IDE AST Context: Modified symbols likely include [kaisaMemoryService]
-- **[what-changed] what-changed in knowledgeService.ts**: -         query_embedding: queryEmbedding,
-+         query_embedding: `[${queryEmbedding.join(",")}]`,
-
-📌 IDE AST Context: Modified symbols likely include [KnowledgeService]
-- **[problem-fix] problem-fix in pricingService.ts**: File updated (external): src/lib/services/pricingService.ts
-
-Content summary (106 lines):
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { AppError, ErrorCode } from "@/lib/errors";
-import { log } from "@/lib/logger";
-
-export interface PricingRules {
-  per_1k_tokens: number;
-  action_multipliers: Record<string, number>;
-  persona_multipliers?: Record<string, number>;
-  ai_monthly_price?: number;
-  ai_message_cost?: number;
+  amount: number | null;
+  type: string | null;
+  description: string | null;
+  created_at: string | null;
 }
 
-const DEFAULT_PRICING: PricingRules = {
-  per_1k_tokens: 0.002,
-  action_multipliers: {
-    ai_reply: 1.0,
-    availability_check: 2.0,
-    c
-- **[convention] Fixed null crash in Failed — parallelizes async operations for speed — confirmed 3x**: -     if (!data?.value) return DEFAULT_PRICING;
-+     if (error || !request) {
--     // Merge with default to ensure new fields exist if old data
-+       log.error("Failed to create KYC request", error, { tenantId });
--     return { ...DEFAULT_PRICING, ...(data.value as any) } as PricingRules;
-+       throw new AppError(
--   }
-+         ErrorCode.INTERNAL_ERROR,
+interface WalletUIProps {
+  initialBalance: nu
+- **[discovery] discovery in BookingActivityTimeline.tsx**: File updated (external): src/components/bookings/BookingActivityTimeline.tsx
+
+Content summary (197 lines):
+"use client";
+
+import { useEffect, useState } from "react";
+import { fetchWithAuth } from "@/lib/api/fetcher";
+import { format, parseISO } from "date-fns";
+import { 
+  Loader2, 
+  CreditCard, 
+  Calendar, 
+  CheckCircle, 
+  XCircle, 
+  Bot, 
+  User, 
+  Shield, 
+  Plug,
+  Info
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useDashboardStore } from "@/store/useDashboardStore";
+import { getBusinessLabels } from "@/lib/business-context";
+
+type AuditEvent = {
+  id: string;
+  actor_
+- **[discovery] discovery in PlansEditor.tsx**: File updated (external): src/components/admin/pricing/PlansEditor.tsx
+
+Content summary (206 lines):
+"use client";
+
+import { useState } from "react";
+import { BillingPlan } from "@/types/billing";
+import { updatePlanAction, createPlanAction } from "@/app/actions/admin";
+import { Edit2, Plus, Check, X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
+export function PlansEditor({ plans: initialPlans }: { plans: BillingPlan[] }) {
+  const [plans, setPlans] = useState(initialPlans);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+- **[what-changed] Replaced auth BillingPlan — prevents null/undefined runtime crashes**: - import { DollarSign, Tag } from "lucide-react";
++ import { BillingPlan } from "@/types/billing";
 - 
-+         "Failed to create KYC request",
--   /**
-+       );
--    * Returns all KYC requests for a tenant, newest first.
-+     }
--    * Optionally filtered by status and/or limited in count.
-+     return request as GuestKycRequest;
--    */
-+   }
--   static async listKycRequests(
++ import { DollarSign, Tag } from "lucide-react";
+- export const dynamic = "force-dynamic";
 + 
--     tenantId: string,
-+   /**
--     options?: { status?: KycRequestStatus; limit?: number },
-+    * Returns all KYC requests for a tenant, newest first.
--   ): Promise<GuestKycRequest[]> {
-+    * Optionally filtered by status and/or limited in count.
--     const supabase = await getSupabaseServer();
-+    */
--     let query = supabase
-+   static async listKycRequests(
--       .from("guest_kyc_requests")
-+     tenantId: string,
--       .select("*")
-+     options?: { status?: KycRequestStatus; limit?: number },
--       .eq("tenant_id", tenantId)
-+   ): Promise<GuestKycRequest[]> {
--       .order("created_at", { ascending: false });
-+     const supabase = await getSupabaseServer();
 - 
-+     let query = supabase
--     if (options?.status) query = query.eq("status", options.status);
-+       .from("guest_kyc_requests")
--     if (options?.limit) query = query.limit(options.limit);
-+       .select("*")
++ export const dynamic = "force-dynamic";
+- export default async function AdminPricingPage() {
++ 
+-   const supabase = await getSupabaseServer();
++ export default async function AdminPricingPage() {
+-   
++   const supabase = await getSupabaseServer();
+-   // 1. Get Cost Config
++   
+-   const { data: configData } = await supabase
++   // 1. Get Cost Config
+-     .from('system_settings')
++   const { data: configData } = await supabase
+-     .select('value')
++     .from('system_settings')
+-     .eq('key', 'pricing_config')
++     .select('value')
+-     .single();
++     .eq('key', 'pricing_config')
 - 
-+       .eq("tenant_id", tenantId)
--     const { data, error } = await query;
-+       .order("created_at", { ascending: false });
--     if (error) {
++     .single();
+-   const config = configData?.value || { 
 + 
--       log.error("Failed to list KYC requests", error, { tenantId });
-+     if (options?.status) query = query.eq("status", options.status);
--       return [];
-+     if (options?.limit) query = query.limit(options.limit);
--     }
+-     per_1k_tokens: 5, 
++   const config = configData?.value || { 
+-     multipliers: { ai_reply: 1.0, calendar_sync: 0.5, availability_check: 2.0 } 
++     per_1k_tokens: 5, 
+-   };
++     multipliers: { ai_reply: 1.0, calendar_sync: 0.5, availability_check: 2.0 } 
+- 
++   };
+-   // 2. Get Plans
 + 
--     return (data ?? []) as GuestKycRequest[];
-+  
+-   const { data: plans } = await supabase
++   // 2. Get Plans
+-     .from('billing_plans')
++   const { data: plans } = await supabase
+-     .select('*')
++     .from('billing_plans')
+-     .order('price', { ascending: true }) as { data: BillingPlan[] | null };
++     .select('*')
+- 
++     .order('price', { ascending: true }) as { data: BillingPlan[] | null };
+-   return (
++ 
+-     <div className="space-y-12 pb-20">
++   return (
+-       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-10 mb-10">
++     <div className="space-y-12 pb-20">
+-         <div className="space-y-4">
++       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-10 mb-10">
+-           <div className="flex items-center gap-3">
++         <div className="s
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [KycRequestStatus, GuestDocumentType, DocumentVerificationStatus, ConsentForm, GuestKycRequest]
-- **[decision] decision in revenueService.ts**: File updated (external): src/lib/services/revenueService.ts
-
-Content summary (185 lines):
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { log } from "@/lib/logger";
-
-export interface PriceSuggestion {
-  date: string;
-  suggestedPrice: number;
-  currentPrice: number;
-  reason: string;
-  confidence: number;
-}
-
-export interface DynamicPricingSettings {
-  base_price?: number;
-  weekend_markup?: number;
-  last_minute_discount?: number;
-  min_price?: number;
-  max_price?: number;
-}
-
-export class RevenueService {
-  /**
-   * Analyze occupancy and sugg
+📌 IDE AST Context: Modified symbols likely include [dynamic, AdminPricingPage]

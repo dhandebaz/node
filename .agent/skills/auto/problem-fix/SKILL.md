@@ -1,6 +1,6 @@
 ---
 name: problem-fix
-description: "Problem Fix for node. 10 error→fix pairs."
+description: "Problem Fix for node. 11 error→fix pairs."
 domain: problem-fix
 composesFrom:
   - fix
@@ -28,6 +28,7 @@ Auto-compiled from **2 real patterns** in **node**. This skill is auto-routed to
 | `import { AppError, ErrorCode } from "@/lib/errors"` | problem-fix in pricingService.ts | 2x |
 | `return NextResponse.json({ error: "Unauthorized" }` | problem-fix in route.ts | 2x |
 | `return NextResponse.json({ error: "Missing require` | problem-fix in route.ts | 2x |
+| `error: authError,` | problem-fix in route.ts | 2x |
 | `-     const { error } = await supabase.from("syste` | problem-fix in controlService.ts | 2x |
 | `import { FailureService } from "@/lib/services/fai` | problem-fix in route.ts | 2x |
 

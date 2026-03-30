@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 1 gotchas, 25 conventions, 42 fixes."
+description: "Typescript for node. 1 gotchas, 25 conventions, 43 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **114 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **115 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -29,6 +29,22 @@ Auto-compiled from **114 real patterns** in **node**. This skill is auto-routed 
 
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in route.ts
+File updated (external): src/app/api/team/members/invite/route.ts
+
+Content summary (162 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { getAppUrl } from "@/lib/runtime-config";
+
+export async function POST(req: Request) {
+  try {
+    const supabase = awa
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in route.ts
 File updated (external): src/app/api/payments/webhook/route.ts
@@ -331,25 +347,6 @@ export async function GET()
 +      await FailureService.resolveFailure(tenantId, 'google', 'integration');
 
 📌 IDE AST Context: Modified symbols likely include [REQUIRED_SCOPES, GET]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/host/me/route.ts
-
-Content summary (74 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-
-export async function GET() {
-  const supabase = await getSupabaseServer();
-
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.g
 
 **Actionable Steps:**
 1. Modified 1 files

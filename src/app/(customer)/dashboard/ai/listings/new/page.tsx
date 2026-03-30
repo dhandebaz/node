@@ -153,47 +153,22 @@ export default function AddListingPage() {
   if (sessionExpired) return <SessionExpiredCard />;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 pb-24 md:pb-0">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground mb-1">
-          Add {labels.listing}
-        </h1>
-        <p className="text-foreground/60 text-sm">
-          Step-by-step setup for your {labels.listing.toLowerCase()} and
-          calendar sync.
-        </p>
-      </div>
+    <div className="max-w-3xl mx-auto space-y-8 pb-32">
+      <header className="space-y-2">
+        <h1 className="text-3xl font-bold text-white tracking-tight uppercase">New {labels.listing}</h1>
+        <p className="text-zinc-400">Step {step} of 4: {step === 1 ? "Basic Info" : step === 2 ? "External Platforms" : step === 3 ? "Nodebase Calendar" : "Review"}</p>
+      </header>
 
-      <div className="dashboard-surface p-6 space-y-6">
-        <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-foreground/50">
-          <span className={step >= 1 ? "text-foreground" : ""}>
-            1. Basic Info
-          </span>
-          {capabilities.calendar && (
-            <>
-              <span>•</span>
-              <span className={step >= 2 ? "text-foreground" : ""}>
-                2. External Platforms
-              </span>
-              <span>•</span>
-              <span className={step >= 3 ? "text-foreground" : ""}>
-                3. Nodebase Calendar
-              </span>
-            </>
-          )}
-          <span>•</span>
-          <span className={step >= 4 ? "text-foreground" : ""}>
-            4. Review
-          </span>
-        </div>
+      <div className="glass-panel p-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
         {step === 1 && (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label
                   htmlFor="listing-name"
-                  className="text-xs text-foreground/50 uppercase tracking-wider"
+                  className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
                 >
                   {labels.listing} name
                 </label>
@@ -205,13 +180,13 @@ export default function AddListingPage() {
                   onChange={(event) => setName(event.target.value)}
                   placeholder={`Enter ${labels.listing} name`}
                   aria-required="true"
-                  className="input"
+                  className="input-glass"
                 />
               </div>
               <div className="space-y-2">
                 <label
                   htmlFor="listing-city"
-                  className="text-xs text-foreground/50 uppercase tracking-wider"
+                  className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
                 >
                   {tenant?.businessType === "kirana_store" ||
                   tenant?.businessType === "thrift_store"
@@ -226,13 +201,13 @@ export default function AddListingPage() {
                   onChange={(event) => setCity(event.target.value)}
                   placeholder="City or area (e.g., New Delhi)"
                   aria-required="true"
-                  className="input"
+                  className="input-glass"
                 />
               </div>
               <div className="space-y-2">
                 <label
                   htmlFor="listing-type"
-                  className="text-xs text-foreground/50 uppercase tracking-wider"
+                  className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
                 >
                   {labels.listing} type
                 </label>
@@ -244,7 +219,7 @@ export default function AddListingPage() {
                     setType(event.target.value as ListingType)
                   }
                   aria-label={`${labels.listing} type`}
-                  className="input"
+                  className="input-glass"
                 >
                   {listingTypes.map((option) => (
                     <option key={option} value={option}>
@@ -256,7 +231,7 @@ export default function AddListingPage() {
               <div className="space-y-2">
                 <label
                   htmlFor="listing-timezone"
-                  className="text-xs text-foreground/50 uppercase tracking-wider"
+                  className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
                 >
                   Timezone
                 </label>
@@ -267,14 +242,14 @@ export default function AddListingPage() {
                   onChange={(event) => setTimezone(event.target.value)}
                   placeholder="e.g., Asia/Kolkata"
                   aria-label="Time zone"
-                  className="input"
+                  className="input-glass"
                 />
               </div>
             </div>
             <div className="space-y-2">
               <label
                 htmlFor="listing-notes"
-                className="text-xs text-foreground/50 uppercase tracking-wider"
+                className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
               >
                 Internal notes{" "}
                 <span className="text-xs text-muted-foreground">
@@ -287,7 +262,7 @@ export default function AddListingPage() {
                 value={internalNotes}
                 onChange={(event) => setInternalNotes(event.target.value)}
                 aria-label="Internal notes"
-                className="input min-h-[80px]"
+                className="input-glass min-h-[80px]"
                 placeholder="Internal notes for your team (optional)"
               />
             </div>
@@ -295,12 +270,12 @@ export default function AddListingPage() {
         )}
 
         {step === 2 && (
-          <div className="space-y-5">
+          <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-              <h2 className="text-lg font-semibold text-foreground">
+              <h2 className="text-lg font-semibold text-white">
                 Where is this {labels.listing.toLowerCase()} listed?
               </h2>
-              <p className="text-sm text-foreground/60">
+              <p className="text-sm text-zinc-400">
                 Choose any platform where {labels.customers.toLowerCase()} can
                 book this {labels.listing.toLowerCase()}.
               </p>
@@ -310,7 +285,7 @@ export default function AddListingPage() {
                 (platform) => (
                   <label
                     key={platform}
-                    className="flex items-center gap-3 text-sm text-foreground/80"
+                    className="flex items-center gap-3 text-sm text-zinc-300"
                   >
                     <input
                       type="checkbox"
@@ -325,7 +300,7 @@ export default function AddListingPage() {
             </div>
             {platforms.map((platform) => (
               <div key={platform} className="space-y-2">
-                <div className="text-xs text-foreground/50 uppercase tracking-wider">
+                <div className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
                   Paste the calendar link from {platformLabels[platform]}
                 </div>
                 <input
@@ -337,9 +312,9 @@ export default function AddListingPage() {
                     }))
                   }
                   placeholder="https://example.com/calendar.ics"
-                  className="w-full bg-white/5 border border-border rounded-lg px-3 py-2 text-sm text-foreground"
+                  className="input-glass"
                 />
-                <div className="text-xs text-foreground/40">
+                <div className="text-xs text-zinc-500">
                   We use this link to pull bookings into Nodebase.
                 </div>
               </div>
@@ -348,12 +323,12 @@ export default function AddListingPage() {
         )}
 
         {step === 3 && (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-              <h2 className="text-lg font-semibold text-foreground">
+              <h2 className="text-lg font-semibold text-white">
                 Nodebase calendar link
               </h2>
-              <p className="text-sm text-foreground/60">
+              <p className="text-sm text-zinc-400">
                 Copy this link and paste it into Airbnb or Booking.com to sync
                 bookings from Nodebase.
               </p>
@@ -362,7 +337,7 @@ export default function AddListingPage() {
               <input
                 value={nodebaseIcalUrl}
                 readOnly
-                className="flex-1 bg-white/5 border border-border rounded-lg px-3 py-2 text-xs text-foreground/80"
+                className="flex-1 input-glass text-xs"
               />
               <button
                 onClick={async () => {
@@ -371,12 +346,12 @@ export default function AddListingPage() {
                     setMessage("Calendar link copied.");
                   }
                 }}
-                className="px-3 py-2 rounded-lg border border-white/20 text-foreground text-xs font-semibold"
+                className="px-3 py-2 rounded-lg border border-white/20 text-white text-xs font-semibold hover:bg-white/10"
               >
                 Copy
               </button>
             </div>
-            <div className="text-xs text-foreground/50">
+            <div className="text-xs text-zinc-500">
               This enables two-way sync: external bookings → Nodebase, Nodebase
               bookings → external platforms.
             </div>
@@ -384,16 +359,16 @@ export default function AddListingPage() {
         )}
 
         {step === 4 && (
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h2 className="text-lg font-semibold text-white">
               Review
             </h2>
-            <div className="grid gap-4 text-sm text-foreground/70">
-              <div className="bg-white/5 border border-border rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-foreground/40">
+            <div className="grid gap-4 text-sm text-zinc-300">
+              <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-1">
+                <div className="text-xs uppercase tracking-widest text-zinc-500">
                   {labels.listing}
                 </div>
-                <div className="text-foreground font-semibold">
+                <div className="text-white font-semibold">
                   {name || `Untitled ${labels.listing.toLowerCase()}`}
                 </div>
                 <div>
@@ -401,8 +376,8 @@ export default function AddListingPage() {
                 </div>
                 <div>{timezone}</div>
               </div>
-              <div className="bg-white/5 border border-border rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-foreground/40">
+              <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-1">
+                <div className="text-xs uppercase tracking-widest text-zinc-500">
                   Platforms
                 </div>
                 {platforms.length === 0 ? (
@@ -415,11 +390,11 @@ export default function AddListingPage() {
                   </div>
                 )}
               </div>
-              <div className="bg-white/5 border border-border rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-foreground/40">
+              <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-1">
+                <div className="text-xs uppercase tracking-widest text-zinc-500">
                   Nodebase calendar link
                 </div>
-                <div className="text-xs text-foreground/70 break-all">
+                <div className="text-xs text-zinc-400 break-all">
                   {nodebaseIcalUrl}
                 </div>
               </div>
@@ -428,20 +403,20 @@ export default function AddListingPage() {
         )}
 
         {message && (
-          <div className="text-xs text-foreground/60">{message}</div>
+          <div className="text-xs text-zinc-400 mt-4">{message}</div>
         )}
 
-        <div className="flex flex-wrap gap-3 justify-between sticky bottom-0 bg-[#0A0A0A]/90 backdrop-blur py-4 border-t border-border z-20 mt-4">
+        <div className="fixed bottom-0 left-0 right-0 z-50 flex flex-wrap gap-3 justify-between glass-nav px-6 py-4 border-t border-white/10 md:static md:bg-transparent md:border-none md:p-0 md:mt-8">
           <button
             onClick={prevStep}
-            className="px-4 py-2 rounded-lg border border-white/20 text-foreground text-sm font-semibold"
+            className="button-glass px-8"
           >
             {step === 1 ? "Cancel" : "Back"}
           </button>
           {step < 4 ? (
             <button
               onClick={nextStep}
-              className="button button-primary"
+              className="button-primary"
               aria-label="Continue to next step"
             >
               Continue
@@ -451,7 +426,7 @@ export default function AddListingPage() {
               onClick={handleSave}
               disabled={saving}
               aria-busy={saving ? "true" : "false"}
-              className={`button button-primary ${saving ? "opacity-80 cursor-wait" : ""}`}
+              className={`button-primary ${saving ? "opacity-80 cursor-wait" : ""}`}
               aria-label={`Save ${labels.listing}`}
             >
               {saving ? "Saving..." : `Save ${labels.listing}`}

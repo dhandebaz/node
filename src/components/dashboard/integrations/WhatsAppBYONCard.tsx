@@ -67,49 +67,52 @@ export function WhatsAppBYONCard({ initialStatus }: WhatsAppBYONCardProps) {
   };
 
   return (
-    <div className="col-span-full public-panel rounded-xl overflow-hidden mb-6 relative">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+    <div className="col-span-full glass-panel rounded-3xl overflow-hidden mb-8 relative border-emerald-500/20">
+      <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
       
       <div className="p-6 md:p-8 flex flex-col md:flex-row items-start gap-8">
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-[#25D366]/10 rounded-lg">
-              <Smartphone className="w-8 h-8 text-[#25D366]" />
+            <div className="p-3 bg-[#25D366]/10 rounded-2xl border border-emerald-500/20">
+              <Smartphone className="w-10 h-10 text-[#25D366]" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-foreground">WhatsApp (WAHA / Linked Devices)</h2>
-              <div className="flex items-center gap-2 mt-1">
+              <h2 className="text-2xl font-bold text-white tracking-tight">WhatsApp <span className="text-emerald-500/80">(Linked Devices)</span></h2>
+              <div className="flex items-center gap-2 mt-2">
                 {status === 'connected' ? (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
-                    <CheckCircle2 className="w-3 h-3" />
-                    Connected
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    CONNECTED
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/5 text-muted-foreground border border-border">
-                    <XCircle className="w-3 h-3" />
-                    Not Connected
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/5 text-zinc-500 border border-white/10 italic">
+                    <XCircle className="w-3.5 h-3.5" />
+                    NOT CONNECTED
                   </span>
                 )}
               </div>
             </div>
           </div>
-          <p className="text-muted-foreground text-sm max-w-md">
+          <p className="text-zinc-400 text-sm max-w-md leading-relaxed">
             Scan a QR code to connect your existing WhatsApp number. 
-            Note: This uses a browser-based session via WAHA.
+            Automate replies and orders directly from your business number via Nodebase.
           </p>
         </div>
 
-        <div className="w-full md:w-[400px] bg-muted rounded-lg border border-border p-5 flex flex-col items-center justify-center min-h-[200px]">
+        <div className="w-full md:w-[400px] bg-white/[0.02] rounded-2xl border border-white/10 p-6 flex flex-col items-center justify-center min-h-[240px] relative overflow-hidden backdrop-blur-sm">
           {status === 'connected' ? (
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-8 h-8 text-green-500" />
+              <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
+                <CheckCircle2 className="w-10 h-10 text-emerald-400" />
               </div>
-              <p className="text-foreground font-medium">AI is actively managing your WhatsApp</p>
+              <div className="space-y-1">
+                <p className="text-white font-bold text-lg">Active Session</p>
+                <p className="text-zinc-500 text-sm">AI is now managing your chats</p>
+              </div>
             </div>
           ) : status === 'scanning' && qrCode ? (
             <div className="space-y-4 text-center w-full">
-              <div className="bg-white p-4 rounded-lg inline-block">
+              <div className="bg-white p-4 rounded-3xl inline-block shadow-2xl">
                 <Image
                   src={qrCode!}
                   alt="Scan WhatsApp QR"
@@ -119,27 +122,27 @@ export function WhatsAppBYONCard({ initialStatus }: WhatsAppBYONCardProps) {
                   unoptimized
                 />
               </div>
-              <p className="text-xs text-muted-foreground">Open WhatsApp &gt; Linked Devices &gt; Link a Device</p>
-              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground animate-pulse">
+              <p className="text-xs text-zinc-500 font-mono tracking-tighter uppercase">Settings &gt; Linked Devices &gt; Link a Device</p>
+              <div className="flex items-center justify-center gap-2 text-xs text-emerald-500 font-bold animate-pulse">
                 <Loader2 className="w-3 h-3 animate-spin" />
-                Waiting for scan...
+                WAITING FOR SCAN...
               </div>
             </div>
           ) : (
-            <Button 
+            <button 
               onClick={handleConnect} 
-              className="bg-[#25D366] hover:bg-[#128C7E] text-foreground font-medium"
+              className="button-primary w-full bg-[#25D366] hover:bg-[#128C7E] !shadow-[0_0_30px_rgba(37,211,102,0.3)] border-emerald-400/30"
               disabled={loading}
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Generating QR...
+                  Generating...
                 </>
               ) : (
-                "Generate QR Code"
+                "Link WhatsApp"
               )}
-            </Button>
+            </button>
           )}
         </div>
       </div>

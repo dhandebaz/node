@@ -29,28 +29,31 @@ export default function ListingsPage() {
       aria-label="Listings dashboard"
     >
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[var(--text-default)] uppercase tracking-tight">
-          {labels.listings}
-        </h1>
+        <div>
+          <h1 className="text-3xl font-bold text-white uppercase tracking-tight">
+            {labels.listings}
+          </h1>
+          <p className="text-zinc-500 text-sm mt-1">Manage and sync your business properties</p>
+        </div>
         {canAddListing ? (
           <Link
             href="/dashboard/ai/listings/new"
-            className="button button-primary flex items-center gap-2"
+            className="button-primary flex items-center gap-2"
             aria-label={`Add new ${labels.listing.toLowerCase()}`}
           >
-            <Plus className="w-4 h-4" aria-hidden="true" />
-            <span className="hidden md:inline">Add {labels.listing}</span>
+            <Plus className="w-5 h-5" aria-hidden="true" />
+            <span className="hidden md:inline">New {labels.listing}</span>
           </Link>
         ) : (
           <button
             disabled
-            className="button button-secondary opacity-60 cursor-not-allowed"
+            className="button-glass opacity-50 cursor-not-allowed"
             aria-disabled="true"
             title={`You can only have one ${labels.listing.toLowerCase()}`}
           >
             <Plus className="w-4 h-4" aria-hidden="true" />
             <span className="hidden md:inline">
-              Max {labels.listings} reached
+              Limit Reached
             </span>
           </button>
         )}
@@ -63,36 +66,37 @@ export default function ListingsPage() {
           aria-live="polite"
           aria-label="Loading listings"
         >
-          <Loader2 className="w-8 h-8 animate-spin text-[var(--text-muted)]" />
+          <Loader2 className="w-10 h-10 animate-spin text-zinc-400" />
         </div>
       ) : listings.length === 0 ? (
         <div
-          className="panel panel-muted p-12 text-center space-y-6 flex flex-col items-center"
+          className="glass-panel p-16 text-center space-y-6 flex flex-col items-center relative overflow-hidden"
           role="region"
           aria-label="Empty listings state"
         >
-          <div className="w-12 h-12 bg-[var(--bg-soft)] rounded-full flex items-center justify-center">
+          <div className="absolute inset-0 bg-blue-500/5 blur-3xl rounded-full -translate-y-1/2" />
+          <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center relative border border-white/10">
             <Home
-              className="w-6 h-6 text-[var(--text-muted)]"
+              className="w-8 h-8 text-zinc-400"
               aria-hidden="true"
             />
           </div>
-          <div className="max-w-sm space-y-2">
-            <h2 className="text-lg font-semibold text-[var(--text-default)]">
-              No {labels.listings.toLowerCase()} found
+          <div className="max-w-sm space-y-2 relative">
+            <h2 className="text-2xl font-bold text-white">
+              No {labels.listings.toLowerCase()} yet
             </h2>
-            <p className="text-sm text-[var(--text-muted)]">
+            <p className="text-zinc-500">
               {labels.emptyListings}
             </p>
           </div>
           {canAddListing && (
             <Link
               href="/dashboard/ai/listings/new"
-              className="button button-primary mt-4"
+              className="button-primary mt-4 relative"
               aria-label={`Create your first ${labels.listing.toLowerCase()}`}
             >
-              <Plus className="w-4 h-4" aria-hidden="true" />
-              Add {labels.listing}
+              <Plus className="w-5 h-5" aria-hidden="true" />
+              Create your first {labels.listing}
             </Link>
           )}
         </div>
@@ -105,22 +109,22 @@ export default function ListingsPage() {
             <article
               key={listing.id}
               role="listitem"
-              className="card-elevated group overflow-hidden hover:shadow-md transition-all"
+              className="glass-panel group overflow-hidden hover:-translate-y-1 transition-all duration-300"
             >
               <Link
                 href={`/dashboard/ai/listings/${listing.id}`}
-                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--interactive)] focus-visible:ring-offset-2 rounded-lg"
+                className="block focus:outline-none rounded-2xl"
                 aria-label={`Open ${listing.name} listing details`}
               >
-                <div className="h-36 bg-[var(--bg-muted)] relative">
-                  <div className="absolute inset-0 flex items-center justify-center text-[var(--text-muted)]/20">
-                    <Home className="w-12 h-12" aria-hidden="true" />
+                <div className="h-40 bg-white/5 relative border-b border-white/5">
+                  <div className="absolute inset-0 flex items-center justify-center text-white/5">
+                    <Home className="w-16 h-16" aria-hidden="true" />
                   </div>
                   <div
-                    className={`absolute top-4 right-4 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                    className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border ${
                       listing.status === "active"
-                        ? "bg-[var(--success)]/15 text-[var(--success)]"
-                        : "bg-[var(--warning)]/15 text-[var(--warning)]"
+                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                        : "bg-amber-500/10 text-amber-400 border-amber-500/20"
                     }`}
                     role="status"
                     aria-label={`Status: ${listing.status}`}
@@ -128,41 +132,47 @@ export default function ListingsPage() {
                     {listing.status === "active" ? "Active" : "Incomplete"}
                   </div>
                 </div>
-                <div className="p-5 space-y-4">
+                <div className="p-6 space-y-4">
                   <div>
-                    <h3 className="text-lg font-bold text-[var(--text-default)] truncate">
+                    <h3 className="text-xl font-bold text-white truncate group-hover:text-blue-400 transition-colors">
                       {listing.name}
                     </h3>
-                    <p className="text-sm text-[var(--text-muted)] truncate">
+                    <p className="text-sm text-zinc-500 truncate mt-1">
                       {listing.city}
                     </p>
                   </div>
 
                   <div
-                    className="grid gap-3 pt-4 border-t border-[var(--line)]"
+                    className="grid gap-3 pt-5 border-t border-white/5"
                     role="group"
                     aria-label="Listing details"
                   >
-                    <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+                    <div className="flex items-center justify-between text-xs text-zinc-500">
                       <span className="flex items-center gap-2">
-                        <Link2 className="w-3 h-3" aria-hidden="true" />
+                        <Link2 className="w-4 h-4 text-zinc-600" aria-hidden="true" />
                         Platforms connected
                       </span>
                       <span
-                        className="text-[var(--text-default)] font-semibold"
+                        className="text-white font-mono font-semibold"
                         aria-label={`${listing.platformsConnected?.length || 0} platforms connected`}
                       >
                         {listing.platformsConnected?.length || 0}
                       </span>
                     </div>
                     {showCalendar && (
-                      <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
+                      <div className="flex items-center justify-between text-xs text-zinc-500">
                         <span className="flex items-center gap-2">
-                          <Calendar className="w-3 h-3" aria-hidden="true" />
+                          <Calendar className="w-4 h-4 text-zinc-600" aria-hidden="true" />
                           {labels.calendar} sync
                         </span>
                         <span
-                          className="text-[var(--text-default)] font-semibold"
+                          className={`font-mono font-semibold ${
+                            listing.calendarSyncStatus === "connected"
+                              ? "text-emerald-400"
+                              : listing.calendarSyncStatus === "error"
+                                ? "text-rose-400"
+                                : "text-zinc-400"
+                          }`}
                           aria-label={`Calendar sync: ${listing.calendarSyncStatus}`}
                         >
                           {listing.calendarSyncStatus === "connected"

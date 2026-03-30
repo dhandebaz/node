@@ -65,7 +65,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
 
   return (
     <>
-      <nav className="glass-nav flex items-center justify-between px-4 md:px-6 select-none shadow-sm h-16 w-full shrink-0">
+      <nav className="glass-nav relative flex items-center justify-between px-4 md:px-6 select-none shadow-sm h-16 w-full shrink-0">
         {/* Left Zone: Logo & Mobile Toggle */}
         <div className="flex items-center gap-3">
           <button 
