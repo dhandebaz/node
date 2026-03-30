@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 321 notes | Score threshold: >40
+> 327 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -25,6 +25,7 @@
 
 ## Project Standards
 
+- what-changed in page.tsx — confirmed 3x
 - problem-fix in route.ts — confirmed 3x
 - Fixed null crash in System — confirmed 6x
 - what-changed in route.ts — confirmed 3x
@@ -32,7 +33,6 @@
 - problem-fix in route.ts — confirmed 5x
 - what-changed in route.ts — confirmed 4x
 - Optimized Conversion — hardens HTTP security headers — confirmed 3x
-- Fixed null crash in Failed — parallelizes async operations for speed — confirmed 3x
 
 ## Known Fixes
 
