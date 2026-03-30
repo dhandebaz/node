@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 36 gotchas, 63 conventions, 12 fixes."
+description: "Project for node. 36 gotchas, 65 conventions, 12 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **185 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **195 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -217,6 +217,12 @@ yarn-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Updated src database schema — evolves the database schema to support new requ... — confirmed 4x** — - - [/] Database & Model Expansion
++ - [x] Database & Model Expansion
+-     - [ ] DB Migration: Add 
+- 📐 **Updated Sidebar database schema — confirmed 3x** — - - [/] Update Sidebar & Layout Responsiveness
++ - [x] Update Sidebar & Layout Responsiveness
+-     
 - 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 3x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
 - 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 5x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
 - 📐 **Updated src database schema — formalizes the data contract with explicit types — confirmed 4x** — - - [ ] Fix 'last_sync' vs 'last_synced_at' in Integration Routes
@@ -267,8 +273,6 @@ Content summary (736 lines):
 - 📐 **Rate limit API endpoints to prevent abuse** — Rate limit API endpoints to prevent abuse
 - 📐 **Validate request body with a schema validator (Joi, Zod)** — Validate request body with a schema validator (Joi, Zod)
 - 📐 **Use helmet for security headers** — Use helmet for security headers
-- 📐 **Use middleware.ts for authentication guards, not client-side checks** — Use middleware.ts for authentication guards, not client-side checks
-- 📐 **Use next/image (not img tag) for automatic optimization** — Use next/image (not img tag) for automatic optimization
-- 📐 **Handle loading.tsx and error.tsx for every async route** — Handle loading.tsx and error.tsx for every async r
+- 📐 **Use middlewa
 
 ... [Truncated — see individual observations for full content]

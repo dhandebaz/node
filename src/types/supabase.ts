@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -1304,6 +1304,10 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          id_document_path: string | null
+          id_document_type: string | null
+          id_submitted_at: string | null
+          id_verification_status: string | null
           name: string
           phone: string | null
           tenant_id: string | null
@@ -1314,6 +1318,10 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          id_document_path?: string | null
+          id_document_type?: string | null
+          id_submitted_at?: string | null
+          id_verification_status?: string | null
           name: string
           phone?: string | null
           tenant_id?: string | null
@@ -1324,6 +1332,10 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          id_document_path?: string | null
+          id_document_type?: string | null
+          id_submitted_at?: string | null
+          id_verification_status?: string | null
           name?: string
           phone?: string | null
           tenant_id?: string | null
@@ -2105,6 +2117,8 @@ export type Database = {
       }
       listings: {
         Row: {
+          address: string | null
+          amenities: string[] | null
           base_price: number | null
           calendar_ical_url: string | null
           check_in_time: string | null
@@ -2115,6 +2129,7 @@ export type Database = {
           dynamic_pricing_settings: Json | null
           host_id: string | null
           id: string
+          images: string[] | null
           internal_notes: string | null
           listing_type: string | null
           location: string | null
@@ -2129,6 +2144,8 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          address?: string | null
+          amenities?: string[] | null
           base_price?: number | null
           calendar_ical_url?: string | null
           check_in_time?: string | null
@@ -2139,6 +2156,7 @@ export type Database = {
           dynamic_pricing_settings?: Json | null
           host_id?: string | null
           id?: string
+          images?: string[] | null
           internal_notes?: string | null
           listing_type?: string | null
           location?: string | null
@@ -2153,6 +2171,8 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          address?: string | null
+          amenities?: string[] | null
           base_price?: number | null
           calendar_ical_url?: string | null
           check_in_time?: string | null
@@ -2163,6 +2183,7 @@ export type Database = {
           dynamic_pricing_settings?: Json | null
           host_id?: string | null
           id?: string
+          images?: string[] | null
           internal_notes?: string | null
           listing_type?: string | null
           location?: string | null
@@ -3631,4 +3652,3 @@ export const Constants = {
     },
   },
 } as const
-

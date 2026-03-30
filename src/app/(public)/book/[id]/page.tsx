@@ -28,26 +28,45 @@ export default async function PublicCheckoutPage({
   return (
     <div className="public-container pb-20 pt-28 sm:pt-32 lg:pt-36">
       <div className="mx-auto max-w-4xl space-y-6">
-        <section className="public-panel px-6 py-8 sm:px-8 sm:py-10">
-          <div className="relative z-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+        <section className="public-panel overflow-hidden">
+          {link.listings?.images && link.listings.images.length > 0 && (
+            <div className="relative h-48 w-full sm:h-64">
+              <img 
+                src={link.listings.images[0]} 
+                alt={link.listings.title || "Property"} 
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8">
+                <div className="public-pill bg-primary/20 text-xs font-bold text-primary backdrop-blur-md">
+                   {link.listings.listing_type || "Property"} · {link.listings.city}
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div className="relative z-10 grid gap-6 px-6 py-8 sm:px-8 sm:py-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="space-y-5">
-              <div className="public-pill public-eyebrow">Secure direct booking</div>
+              {!link.listings?.images || link.listings.images.length === 0 ? (
+                <div className="public-pill public-eyebrow">Secure direct booking</div>
+              ) : null}
               <div>
                 <h1 className="public-display text-4xl leading-[0.94] text-foreground sm:text-5xl">
-                  Complete payment and check-in for {link.tenants?.name || "your host"}.
+                   {link.listings?.title || "Complete your booking"}
                 </h1>
-                <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
-                  This portal keeps guest details, ID verification, and payment confirmation
-                  in one track so the host can finalize your stay without back-and-forth.
-                </p>
+                {link.listings?.description && (
+                  <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground line-clamp-3">
+                    {link.listings.description}
+                  </p>
+                )}
               </div>
             </div>
 
             <div className="grid gap-3 sm:min-w-64">
               <div className="public-inset rounded-[1.3rem] px-4 py-4">
-                <div className="public-eyebrow">Listing</div>
+                <div className="public-eyebrow">Location</div>
                 <div className="mt-2 text-sm font-semibold text-foreground">
-                  {link.listings?.title || "Direct booking"}
+                  {link.listings?.address || link.listings?.city || "Direct booking"}
                 </div>
               </div>
               <div className="public-inset rounded-[1.3rem] px-4 py-4">

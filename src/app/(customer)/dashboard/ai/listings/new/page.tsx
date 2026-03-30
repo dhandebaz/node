@@ -11,6 +11,9 @@ import {
   getBusinessLabels,
   getPersonaCapabilities,
 } from "@/lib/business-context";
+import { cn } from "@/lib/utils";
+import { extractAirbnbInfo } from "@/app/actions/listings";
+import { Search, Loader2, Sparkles } from "lucide-react";
 
 const platformLabels: Record<ListingPlatform, string> = {
   airbnb: "Airbnb",
@@ -38,9 +41,13 @@ export default function AddListingPage() {
   );
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
+  const [address, setAddress] = useState("");
   const [type, setType] = useState<ListingType>("Homestay");
   const [timezone, setTimezone] = useState("Asia/Kolkata");
+  const [description, setDescription] = useState("");
   const [internalNotes, setInternalNotes] = useState("");
+  const [images, setImages] = useState<string[]>([]);
+  const [amenities, setAmenities] = useState<string[]>([]);
   const [platforms, setPlatforms] = useState<ListingPlatform[]>([]);
   const [externalIcalUrls, setExternalIcalUrls] = useState<
     Record<ListingPlatform, string>
@@ -52,6 +59,8 @@ export default function AddListingPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
+  const [airbnbUrl, setAirbnbUrl] = useState("");
+  const [isExtracting, setIsExtracting] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -117,9 +126,13 @@ export default function AddListingPage() {
           userId: "current",
           name: name.trim(),
           city: city.trim(),
+          address: address.trim() || null,
           type,
           timezone,
           status: integrations.length > 0 ? "active" : "incomplete",
+          description: description.trim() || null,
+          images: images,
+          amenities: amenities,
           internalNotes: internalNotes.trim() || null,
           createdAt: new Date().toISOString(),
           platformsConnected: integrations
@@ -150,6 +163,46 @@ export default function AddListingPage() {
     }
   };
 
+  const handleExtractAirbnb = async () => {
+    if (!airbnbUrl.trim() || !airbnbUrl.includes("airbnb")) {
+      setMessage("Please paste a valid Airbnb URL.");
+      return;
+    }
+
+    try {
+      setIsExtracting(true);
+      setMessage(null);
+      const result = await extractAirbnbInfo(airbnbUrl.trim());
+      
+      if (result.success && result.data) {
+        setName(result.data.name);
+        setCity(result.data.city);
+        setType(result.data.type as ListingType);
+        
+        if (result.data.description) {
+          setDescription(result.data.description);
+        }
+        
+        if (result.data.images && result.data.images.length > 0) {
+          setImages(result.data.images);
+        }
+
+        if (result.data.amenities && result.data.amenities.length > 0) {
+          setAmenities(result.data.amenities);
+        }
+
+        setMessage("Listing details and images extracted successfully! ✨");
+      } else {
+        setMessage(result.error || "Could not extract details from this link.");
+      }
+    } catch (error) {
+      console.error("Extraction error:", error);
+      setMessage("An error occurred during extraction.");
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
   if (sessionExpired) return <SessionExpiredCard />;
 
   return (
@@ -163,7 +216,77 @@ export default function AddListingPage() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
         {step === 1 && (
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Airbnb Importer Section */}
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-xs font-bold text-primary uppercase tracking-widest">
+                  Quick Import
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400">
+                Paste an Airbnb listing link to automatically pre-fill property details.
+              </p>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <input
+                    type="url"
+                    value={airbnbUrl}
+                    onChange={(e) => setAirbnbUrl(e.target.value)}
+                    placeholder="https://www.airbnb.com/rooms/..."
+                    className="input-glass pl-10 text-xs py-2"
+                  />
+                </div>
+                <button
+                  onClick={handleExtractAirbnb}
+                  disabled={isExtracting || !airbnbUrl}
+                  className={cn(
+                    "px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap",
+                    isExtracting
+                      ? "bg-zinc-800 text-zinc-500 cursor-wait"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(66,133,244,0.3)]"
+                  )}
+                >
+                  {isExtracting ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      Extracting...
+                    </div>
+                  ) : (
+                    "Auto-Fill"
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Image Gallery Preview */}
+            {images.length > 0 && (
+              <div className="space-y-3 animate-in fade-in zoom-in-95 duration-500">
+                <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
+                  Extracted Gallery ({images.length} photos)
+                </label>
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                  {images.map((img, idx) => (
+                    <div 
+                      key={idx} 
+                      className="relative min-w-[200px] h-[130px] rounded-xl overflow-hidden glass-panel border-white/10 group snap-center"
+                    >
+                      <img 
+                        src={img} 
+                        alt={`Property ${idx}`} 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-2">
+                        <span className="text-[10px] text-white/70 font-mono">IMG_{idx + 1}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label
@@ -188,10 +311,7 @@ export default function AddListingPage() {
                   htmlFor="listing-city"
                   className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
                 >
-                  {tenant?.businessType === "kirana_store" ||
-                  tenant?.businessType === "thrift_store"
-                    ? "Address / Delivery Area"
-                    : "City"}
+                  City
                 </label>
                 <input
                   id="listing-city"
@@ -201,6 +321,23 @@ export default function AddListingPage() {
                   onChange={(event) => setCity(event.target.value)}
                   placeholder="City or area (e.g., New Delhi)"
                   aria-required="true"
+                  className="input-glass"
+                />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <label
+                  htmlFor="listing-address"
+                  className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
+                >
+                  Full Address
+                </label>
+                <input
+                  id="listing-address"
+                  name="listingAddress"
+                  type="text"
+                  value={address}
+                  onChange={(event) => setAddress(event.target.value)}
+                  placeholder="Street name, landmark, etc."
                   className="input-glass"
                 />
               </div>
@@ -219,10 +356,10 @@ export default function AddListingPage() {
                     setType(event.target.value as ListingType)
                   }
                   aria-label={`${labels.listing} type`}
-                  className="input-glass"
+                  className="input-glass bg-zinc-900 text-white cursor-pointer"
                 >
                   {listingTypes.map((option) => (
-                    <option key={option} value={option}>
+                    <option key={option} value={option} className="bg-zinc-900 text-white">
                       {option}
                     </option>
                   ))}
@@ -246,6 +383,24 @@ export default function AddListingPage() {
                 />
               </div>
             </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="listing-description"
+                className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
+              >
+                Public Description
+              </label>
+              <textarea
+                id="listing-description"
+                name="listingDescription"
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                className="input-glass min-h-[120px]"
+                placeholder="Describe your property for guests..."
+              />
+            </div>
+
             <div className="space-y-2">
               <label
                 htmlFor="listing-notes"
@@ -372,8 +527,13 @@ export default function AddListingPage() {
                   {name || `Untitled ${labels.listing.toLowerCase()}`}
                 </div>
                 <div>
-                  {city || "City not set"} · {type}
+                  {address || city || "Location not set"} · {type}
                 </div>
+                {images.length > 0 && (
+                  <div className="text-xs text-primary font-bold">
+                    {images.length} photos ready for import
+                  </div>
+                )}
                 <div>{timezone}</div>
               </div>
               <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-1">

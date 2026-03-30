@@ -46,11 +46,20 @@ export async function POST(request: Request) {
     title: listing.name,
     name: listing.name,
     city: listing.city,
-    location: listing.city,
+    location: listing.city, // Defaulting location to city if not provided
+    address: listing.address || null,
     listing_type: listing.type,
     timezone: listing.timezone,
     status: listing.status || (integrations.length > 0 ? "active" : "incomplete"),
-    internal_notes: listing.internalNotes || null
+    description: listing.description || null,
+    images: listing.images || [],
+    amenities: listing.amenities || [],
+    internal_notes: listing.internalNotes || null,
+    base_price: listing.basePrice || null,
+    max_guests: listing.maxGuests || null,
+    check_in_time: listing.checkInTime || null,
+    check_out_time: listing.checkOutTime || null,
+    rules: listing.rules || null
   });
 
   if (listingError) {
@@ -94,9 +103,16 @@ export async function POST(request: Request) {
     name: listing.name,
     city: listing.city,
     type: listing.type,
-    timezone: listing.timezone,
     status: listing.status || (integrations.length > 0 ? "active" : "incomplete"),
+    description: listing.description || null,
+    images: listing.images || [],
+    amenities: listing.amenities || [],
     createdAt: new Date().toISOString(),
+    maxGuests: listing.maxGuests || null,
+    checkInTime: listing.checkInTime || null,
+    checkOutTime: listing.checkOutTime || null,
+    rules: listing.rules || null,
+    basePrice: listing.basePrice || null,
     internalNotes: listing.internalNotes || null,
     platformsConnected: integrations.filter((integration: any) => integration.externalIcalUrl).map((integration: any) => integration.platform),
     calendarSyncStatus: integrations.length > 0 ? "never_synced" : "not_connected",

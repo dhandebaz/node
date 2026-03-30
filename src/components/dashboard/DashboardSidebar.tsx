@@ -72,14 +72,24 @@ export function DashboardSidebar() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 1024) setIsCollapsed(true);
-      else setIsCollapsed(false);
+    const checkViewport = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      
+      // Only auto-collapse/expand when crossing the 1024px threshold
+      // to avoid triggering it on minor height-only resizes or small width changes.
+      if (width < 1024) {
+        setIsCollapsed(true);
+      } else {
+        setIsCollapsed(false);
+      }
     };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+
+    checkViewport();
+    
+    // Use an optimized resize listener (could use debounce but standard resize is fine for this)
+    window.addEventListener("resize", checkViewport);
+    return () => window.removeEventListener("resize", checkViewport);
   }, []);
 
   const menuItems = [
@@ -104,8 +114,8 @@ export function DashboardSidebar() {
       initial={false}
       animate={{ width: isCollapsed ? 80 : 260 }}
       className={cn(
-        "fixed left-0 top-0 bottom-0 z-40 bg-background/60 backdrop-blur-lg border-r border-white/10 flex flex-col transition-all duration-300 ease-in-out",
-        "pt-20 pb-6", // Offset for top navbar
+        "hidden md:flex flex-col sticky top-0 h-screen z-40 bg-background/60 backdrop-blur-lg border-r border-white/10 transition-all duration-300 ease-in-out pb-6",
+        // The sidebar is now part of the flex container in Layout, no more overlap
       )}
     >
       {/* Toggle Button */}

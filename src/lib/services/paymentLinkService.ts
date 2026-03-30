@@ -72,7 +72,7 @@ export class PaymentLinkService {
     const { data, error } = await supabase
       .from("payment_links")
       .select(
-        "*, tenants(name, business_qr_url, upi_id), listings(title, base_price)",
+        "*, tenants(name, business_qr_url, upi_id), listings(id, title, name, description, address, images, amenities, base_price, timezone, listing_type)",
       )
       .eq("id", id)
       .single();

@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 327 notes | Score threshold: >40
+> 347 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -25,14 +25,14 @@
 
 ## Project Standards
 
+- Updated src database schema — evolves the database schema to support new requ... — confirmed 4x
+- Fixed null crash in ListingType — avoids unnecessary re-renders in React — confirmed 3x
+- Updated Sidebar database schema — confirmed 3x
+- Fixed null crash in Search — avoids unnecessary re-renders in React — confirmed 3x
 - what-changed in page.tsx — confirmed 3x
 - problem-fix in route.ts — confirmed 3x
 - Fixed null crash in System — confirmed 6x
 - what-changed in route.ts — confirmed 3x
-- Added session cookies authentication — prevents null/undefined runtime crashes — confirmed 3x
-- problem-fix in route.ts — confirmed 5x
-- what-changed in route.ts — confirmed 4x
-- Optimized Conversion — hardens HTTP security headers — confirmed 3x
 
 ## Known Fixes
 
@@ -40,14 +40,14 @@
 - ❌ import { withErrorHandler } from "@/lib/api/withErrorHandler"; → ✅ problem-fix in route.ts
 - ❌ File updated (external): ts_errors.log → ✅ problem-fix in ts_errors.log
 - ❌ File updated (external): ts_errors.txt → ✅ problem-fix in ts_errors.txt
-- ❌ +       const { data, error } = await supabase.from("system_flags").select("*"); → ✅ problem-fix in inboxService.ts
+- ❌ import { AppError, ErrorCode } from "@/lib/errors"; → ✅ problem-fix in paymentLinkService.ts
 
 ## Recent Decisions
 
+- decision in supabase.ts
+- decision in page.tsx
 - Optimized Argument — hardens HTTP security headers
 - Optimized Argument — hardens HTTP security headers
-- Optimized Overload — hardens HTTP security headers
-- Optimized Overload — hardens HTTP security headers
 
 ## Learned Patterns
 

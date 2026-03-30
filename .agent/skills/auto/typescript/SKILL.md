@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 1 gotchas, 25 conventions, 43 fixes."
+description: "Typescript for node. 1 gotchas, 25 conventions, 46 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **115 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **121 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -29,6 +29,61 @@ Auto-compiled from **115 real patterns** in **node**. This skill is auto-routed 
 
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in paymentLinkService.ts
+File updated (external): src/lib/services/paymentLinkService.ts
+
+Content summary (94 lines):
+import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
+import { log } from "@/lib/logger";
+import { AppError, ErrorCode } from "@/lib/errors";
+import { getAppUrl } from "@/lib/runtime-config";
+
+export class PaymentLinkService {
+  /**
+   * Create a secure payment link for a conversatio
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in ListingType
+- export async function extractAirbnbInfo(url: string) {
++ import { ListingType } from "@/types";
+-   if (!url || !url.includes("airbnb")) {
++ 
+-     throw new Error("Invalid Airbnb URL");
++ export async function extractAirbnbInfo(url: string) {
+-   }
++   if (!url || !url.includes("airbnb")) {
+- 
++     throw new Error("Invalid Airbnb URL");
+-   try {
++   }
+-     const response = await fetch(url, {
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: ListingType
+3. identifier: Error
+4. identifier: Invalid
+5. identifier: Airbnb
+
+### Fixed null crash in Extract
+-     // Parse OG Tags
++     // 1. Extract Images from JSON-LD
+-     const ogTitle = html.match(/<meta property="og:title" content="([^"]+)"/)?.[1] || "";
++     const imageMatches = html.match(/"image":\s*\[([^\]]+)\]/);
+-     const ogDescription = html.match(/<meta property="og:description" content="([^"]+)"/)?.[1] || "";
++     let images: string[] = [];
+-     
++     if (imageMatches && imageMatc
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Extract
+3. identifier: Images
+4. identifier: JSON
+5. identifier: Fallback
 
 ### problem-fix in route.ts
 File updated (external): src/app/api/team/members/invite/route.ts
@@ -309,48 +364,6 @@ export const supportService = {
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in route.ts
-File updated (external): src/app/api/integrations/route.ts
-
-Content summary (108 lines):
-import { NextResponse } from 'next/server';
-import { getSupabaseServer } from '@/lib/supabase/server';
-import { getSession } from '@/lib/auth/session';
-import { encryptToken } from '@/lib/crypto';
-import { requireActiveTenant } from '@/lib/auth/tenant';
-
-export async function GET() {
-  const session = await ge
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/integrations/whatsapp/status/route.ts
-
-Content summary (60 lines):
-import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth/session";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { wahaService } from "@/lib/services/wahaService";
-
-export async function GET() 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
--        tenant_id: data.tenant_id,
-+        tenant_id: tenantId,
--      await FailureService.resolveFailure(data.tenant_id, 'google', 'integration');
-+      await FailureService.resolveFailure(tenantId, 'google', 'integration');
-
-📌 IDE AST Context: Modified symbols likely include [REQUIRED_SCOPES, GET]
-
-**Actionable Steps:**
-1. Modified 1 files
-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
@@ -371,13 +384,6 @@ import
 -     
 - 📐 **problem-fix in route.ts — confirmed 5x** — -     const portalData = (await admin.rpc(
 +     const { data: portalData, error: rpcError } = awai
-- 📐 **what-changed in route.ts — confirmed 4x** — File updated (external): src/app/api/kyc/[token]/documents/route.ts
-
-Content summary (313 lines):
-im
-- 📐 **Fixed null crash in Failed — parallelizes async operations for speed — confirmed 3x** — -     if (!data?.value) return DEFAULT_PRICING;
-+     if (error || !request) {
--     // Merge with d
-- 📐 **what-changed in setti
+- 📐 **what-changed in route.ts — confirmed 4x** — File updated (external)
 
 ... [Truncated — see individual observations for full content]

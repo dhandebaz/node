@@ -17,34 +17,13 @@ export function ListingsGate({ listingsCount }: ListingsGateProps) {
   const labels = getBusinessLabels(tenant?.businessType);
 
   useEffect(() => {
-    // If no listings, and not on listings pages (or settings/billing/support which should be accessible), redirect
-    // User said: "Bookings -> redirect, Calendar -> redirect, Inbox -> show message".
-    // "Integrations -> limited".
-    // "Listings -> FIRST CLASS PAGE".
-    
+    // We are disabling the forced redirect as per user request to allow 
+    // exploring the dashboard even without listings.
+    /*
     if (listingsCount === 0) {
-      // Allow access to:
-      // - /dashboard/ai/listings (and subpages like /new)
-      // - /dashboard/ai/settings (maybe they need to config API keys?)
-      // - /dashboard/billing (need to pay?)
-      // - /dashboard/settings (profile)
-      // - /dashboard/support
-      // - /dashboard/ai/inbox (shows "Inbox is locked" message)
-      // - /dashboard/ai/integrations (shows limited view)
-      
       const allowedPaths = [
         "/dashboard/ai/listings",
-        "/dashboard/ai/bookings",
-        "/dashboard/ai/calendar",
         "/dashboard/ai/settings",
-        "/dashboard/ai/inbox",
-        "/dashboard/ai/integrations",
-        "/dashboard/ai/activity",
-        "/dashboard/ai/insights",
-        "/dashboard/ai/revenue",
-        "/dashboard/ai/team",
-        "/dashboard/ai/growth",
-        "/dashboard/ai/flows",
         "/dashboard/billing",
         "/dashboard/settings",
         "/dashboard/support",
@@ -53,15 +32,12 @@ export function ListingsGate({ listingsCount }: ListingsGateProps) {
       const isAllowed = pathname === "/dashboard/ai" || allowedPaths.some(path => pathname.startsWith(path));
 
       if (!isAllowed) {
-        // Redirect to listings
         console.log(`[ListingsGate] Count is 0. Access denied to ${pathname}. Redirecting to listings.`);
         toast.error(`You must add a ${labels.listing.toLowerCase()} to unlock the dashboard.`);
         router.push("/dashboard/ai/listings");
       }
-    } else {
-        // Count > 0
-        // console.log(`[ListingsGate] Count is ${listingsCount}. Access granted.`);
     }
+    */
   }, [listingsCount, pathname, router, labels]);
 
   return null;
