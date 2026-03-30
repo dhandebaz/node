@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 250 notes | Score threshold: >40
+> 316 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,16 +18,21 @@
 
 **Stack:** JavaScript/TypeScript · Express + Next.js + React + Tailwind · DB: MongoDB
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- problem-fix in route.ts — confirmed 3x
+- **⚠️ GOTCHA: Updated schema Date** — -         const start = new Date(b.start_date);
++         if (!b.star
+
+## Project Standards
+
+- problem-fix in route.ts — confirmed 5x
 - what-changed in route.ts — confirmed 4x
-- problem-fix in route.ts — confirmed 3x
-- problem-fix in route.ts — confirmed 4x
-- what-changed in database.ts — confirmed 4x
-- Strengthened types page
-- Fixed null crash in System — prevents null/undefined runtime crashes — confirmed 3x
-- Strengthened types Alias
+- Optimized Conversion — hardens HTTP security headers — confirmed 3x
+- Fixed null crash in Failed — parallelizes async operations for speed — confirmed 3x
+- Optimized Conversion — hardens HTTP security headers — confirmed 5x
+- what-changed in settingsService.ts — confirmed 3x
+- problem-fix in route.ts — confirmed 6x
+- Updated src database schema — formalizes the data contract with explicit types — confirmed 4x
 
 ## Known Fixes
 
@@ -35,20 +40,20 @@
 - ❌ import { withErrorHandler } from "@/lib/api/withErrorHandler"; → ✅ problem-fix in route.ts
 - ❌ File updated (external): ts_errors.log → ✅ problem-fix in ts_errors.log
 - ❌ File updated (external): ts_errors.txt → ✅ problem-fix in ts_errors.txt
-- ❌ return NextResponse.json({ error: "Missing required fields" }, { status: 400 }); → ✅ problem-fix in route.ts
+- ❌ +       const { data, error } = await supabase.from("system_flags").select("*"); → ✅ problem-fix in inboxService.ts
 
 ## Recent Decisions
 
-- decision in billing.ts
-- decision in supabase.ts
-- decision in userService.ts
-- decision in task.md
+- Optimized Argument — hardens HTTP security headers
+- Optimized Argument — hardens HTTP security headers
+- Optimized Overload — hardens HTTP security headers
+- Optimized Overload — hardens HTTP security headers
 
 ## Learned Patterns
 
-- Decision: Optimized Conversion — hardens HTTP security headers (seen 2x)
-- Always: problem-fix in ts_errors.txt — confirmed 3x (seen 2x)
 - Always: Optimized Conversion — hardens HTTP security headers — confirmed 4x (seen 2x)
+- Decision: Optimized Conversion — hardens HTTP security headers (seen 2x)
+- When encountering this, fix by: Fixed null crash in BusinessType — prevents null/undefined runtime crashes (seen 2x)
 - Agent generates new migration for every change (squash related changes)
 - Agent installs packages without checking if already installed
 

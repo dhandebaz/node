@@ -24,7 +24,7 @@ export class FailureService {
     if (existing) {
       // Alerting Threshold: If we have many recent updates to this failure, escalate severity
       // This is a simple threshold: if it's updated more than 5 times in an hour (approx by checking updated_at)
-      const lastUpdate = new Date(existing.created_at).getTime();
+      const lastUpdate = new Date(existing.created_at || new Date().toISOString()).getTime();
       const now = Date.now();
       const isFrequent = (now - lastUpdate) < (60 * 60 * 1000); // within 1 hour
 

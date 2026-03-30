@@ -20,7 +20,19 @@ export class InboxService {
       return [];
     }
 
-    return data as Conversation[];
+    return (data || []).map((row: any) => ({
+      id: row.id,
+      tenantId: row.tenant_id,
+      externalId: row.external_id,
+      channel: row.channel,
+      contactName: row.contact_name,
+      contactAvatar: row.contact_avatar,
+      lastMessageAt: row.last_message_at,
+      status: row.status as any,
+      metadata: row.metadata || {},
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    })) as Conversation[];
   }
 
   /**
@@ -73,7 +85,7 @@ export class InboxService {
           contact_name: params.contactName || undefined,
           contact_avatar: params.contactAvatar || undefined,
           metadata: {
-            ...existing.metadata,
+            ...(existing.metadata as any),
             last_message_preview: params.lastMessagePreview
           },
           updated_at: new Date().toISOString()

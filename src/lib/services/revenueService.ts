@@ -9,6 +9,14 @@ export interface PriceSuggestion {
   confidence: number;
 }
 
+export interface DynamicPricingSettings {
+  base_price?: number;
+  weekend_markup?: number;
+  last_minute_discount?: number;
+  min_price?: number;
+  max_price?: number;
+}
+
 export class RevenueService {
   /**
    * Analyze occupancy and suggest prices for the next 30 days.
@@ -29,7 +37,7 @@ export class RevenueService {
     if (!listing) throw new Error("Listing not found");
 
     const basePrice = Number(listing.base_price || 1000);
-    const settings = listing.dynamic_pricing_settings || {};
+    const settings = (listing.dynamic_pricing_settings as any as DynamicPricingSettings) || {};
 
     // 2. Get Bookings
     const { data: bookings } = await supabase
@@ -50,6 +58,7 @@ export class RevenueService {
 
       // Check if date is already booked
       const isBooked = (bookings || []).some((b) => {
+        if (!b.start_date || !b.end_date) return false;
         const start = new Date(b.start_date);
         const end = new Date(b.end_date);
         return targetDate >= start && targetDate < end;

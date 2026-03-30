@@ -41,17 +41,19 @@ export async function POST(
     return NextResponse.json({ error: "Listing not found or access denied" }, { status: 404 });
   }
 
+  const tenantId = listing.tenant_id as string;
+
   // Cost Check & Deduction (Calendar Sync)
   // Charge for manual sync action
   const SYNC_TOKEN_EQUIVALENT = 50; 
-  const cost = await PricingService.calculateCost('integration_sync', SYNC_TOKEN_EQUIVALENT, listing.tenant_id);
+  const cost = await PricingService.calculateCost('integration_sync', SYNC_TOKEN_EQUIVALENT, tenantId);
   
-  const hasBalance = await WalletService.hasSufficientBalance(listing.tenant_id, cost);
+  const hasBalance = await WalletService.hasSufficientBalance(tenantId, cost);
   if (!hasBalance) {
      return NextResponse.json({ error: "Insufficient credits for sync" }, { status: 402 });
   }
   
-  await WalletService.deductCredits(listing.tenant_id, cost, 'integration_sync', {
+  await WalletService.deductCredits(tenantId, cost, 'integration_sync', {
     listing_id: listingId,
     platform
   });
@@ -61,7 +63,7 @@ export async function POST(
     .from("listing_integrations")
     .upsert({
       listing_id: listingId,
-      tenant_id: listing.tenant_id,
+      tenant_id: tenantId,
       platform,
       external_ical_url: url,
       status: "connected",
@@ -102,94 +104,56 @@ export async function POST(
     });
 
     if (validEvents.length > 0) {
-      const bookingsToInsert = validEvents.map(e => ({
-        tenant_id: listing.tenant_id,
-        listing_id: listingId,
-        guest_id: "00000000-0000-0000-0000-000000000000", // Placeholder or create a generic guest?
-        // Actually, 'guest_id' is foreign key to 'guests'. 
-        // We need a way to handle external guests. 
-        // Maybe 'guests' table has a generic 'External Guest' or we create one per booking?
-        // Or is guest_id nullable? core memory says "Booking.guestId" is string.
-        // Let's check schema for bookings.guest_id nullability.
-        // If not nullable, we need a placeholder guest.
+      // Get or Create generic External Guest
+      let { data: guest } = await supabase
+        .from("guests")
+        .select("id")
+        .eq("email", `external@${platform}.com`)
+        .eq("tenant_id", tenantId)
+        .maybeSingle();
+
+      if (!guest) {
+        const { data: newGuest, error: guestError } = await supabase
+          .from("guests")
+          .insert({
+            tenant_id: tenantId,
+            name: `${platform} Guest`,
+            email: `external@${platform}.com`,
+            phone: "0000000000"
+          })
+          .select("id")
+          .single();
         
-        start_date: e.startDate.toISOString(),
-        end_date: e.endDate.toISOString(),
-        status: "confirmed",
-        source: platform,
-        amount: 0,
-        // We need to handle guest_id. I'll check if I can insert without it or if I need to fetch/create a dummy guest.
+        if (guestError) {
+           console.error("Failed to create external guest", guestError);
+           throw guestError;
+        }
+        guest = newGuest;
+      }
+
+      const bookingsToInsert = validEvents.map(e => ({
+          tenant_id: tenantId,
+          listing_id: listingId,
+          guest_id: guest!.id,
+          start_date: e.startDate.toISOString(),
+          end_date: e.endDate.toISOString(),
+          status: "confirmed",
+          source: platform,
+          amount: 0
       }));
 
-      // Wait, I need to solve the guest_id issue.
-      // If I cannot insert null, I must have a guest.
-      // I'll check if I can make guest_id optional or if there is a 'system' guest.
-      // For now, I will try to insert. If it fails, I'll know.
-      // But wait, "Do not mock".
-      // Correct approach: Create a "Guest" record for the external platform if it doesn't exist?
-      // Or just use a generic "External Guest".
-      // I'll first check if I can make guest_id nullable.
-      // But I can't change schema easily without migration.
-      // I'll assume guest_id is nullable OR I need to create a guest.
-      // Let's check `bookings` schema in `20240523000002` (if I can find it) or just try.
-      
-      // Let's try to find a guest first.
-      // If no guest, create one "External Guest".
-    }
-    
-    // I will do the insert in a separate step to handle guest_id.
-    
-    // Get or Create generic External Guest
-    let { data: guest } = await supabase
-      .from("guests")
-      .select("id")
-      .eq("email", `external@${platform}.com`)
-      .eq("tenant_id", listing.tenant_id)
-      .maybeSingle();
-
-    if (!guest) {
-      const { data: newGuest, error: guestError } = await supabase
-        .from("guests")
-        .insert({
-          tenant_id: listing.tenant_id,
-          name: `${platform} Guest`,
-          email: `external@${platform}.com`,
-          phone: "0000000000"
-        })
-        .select("id")
-        .single();
-      
-      if (guestError) {
-         // If guest creation fails (maybe constraints), we might be stuck.
-         console.error("Failed to create external guest", guestError);
-         // Try to find ANY guest? No.
-         // If guest_id is nullable, we can skip.
-         // I'll assume it's NOT nullable based on typical schema.
-         throw guestError;
+      if (bookingsToInsert.length > 0) {
+        const { error: insertError } = await supabase
+          .from("bookings")
+          .insert(bookingsToInsert);
+        
+        if (insertError) throw insertError;
       }
-      guest = newGuest;
+
+      return NextResponse.json({ success: true, count: bookingsToInsert.length });
     }
-
-    const bookingsToInsert = validEvents.map(e => ({
-        tenant_id: listing.tenant_id,
-        listing_id: listingId,
-        guest_id: guest!.id,
-        start_date: e.startDate.toISOString(),
-        end_date: e.endDate.toISOString(),
-        status: "confirmed",
-        source: platform,
-        amount: 0
-    }));
-
-    if (bookingsToInsert.length > 0) {
-      const { error: insertError } = await supabase
-        .from("bookings")
-        .insert(bookingsToInsert);
-      
-      if (insertError) throw insertError;
-    }
-
-    return NextResponse.json({ success: true, count: bookingsToInsert.length });
+    
+    return NextResponse.json({ success: true, count: 0 });
 
   } catch (error: any) {
     console.error("Sync failed:", error);

@@ -66,7 +66,7 @@ export class ReferralService {
       .from("referrals")
       .insert({
         referrer_tenant_id: referrer.id,
-        referred_tenant_id: newTenantId,
+        referred_id: newTenantId,
         status: 'pending'
       });
 
@@ -85,7 +85,7 @@ export class ReferralService {
     const { data: referral } = await supabase
       .from("referrals")
       .select("id, referrer_tenant_id, status")
-      .eq("referred_tenant_id", tenantId)
+      .eq("referred_id", tenantId)
       .eq("status", "pending")
       .single();
 
@@ -107,23 +107,23 @@ export class ReferralService {
        const REWARD_AMOUNT = 500; // 500 Credits
 
        // 1. Update status
-       const { error: updateError } = await supabase
-         .from("referrals")
-         .update({ 
-           status: 'rewarded',
-           reward_amount: REWARD_AMOUNT
-         })
-         .eq("id", referral.id);
+        const { error: updateError } = await supabase
+          .from("referrals")
+          .update({ 
+            status: 'rewarded'
+          })
+          .eq("id", referral.id);
        
        if (updateError) throw updateError;
 
-       // 2. Credit Referrer
-       await WalletService.addCredits(
-         referral.referrer_tenant_id, 
-         REWARD_AMOUNT, 
-         'referral_bonus', 
-         { referred_tenant: tenantId }
-       );
+        if (referral.referrer_tenant_id) {
+          await WalletService.addCredits(
+            referral.referrer_tenant_id, 
+            REWARD_AMOUNT, 
+            'referral_bonus', 
+            { referred_tenant: tenantId }
+          );
+        }
 
        // 3. Credit Referee (Optional? "Incentives unlocked ONLY after...". Maybe give them a boost too?)
        // "You earned 500 credits for helping another business..." -> This is for the referrer.
@@ -136,11 +136,12 @@ export class ReferralService {
     
     const { data: referrals } = await supabase
       .from("referrals")
-      .select("status, reward_amount, created_at")
+      .select("status, created_at")
       .eq("referrer_tenant_id", tenantId);
 
-    const totalInvited = referrals?.length || 0; // Only tracks successful signups
-    const totalEarned = referrals?.reduce((sum, r) => sum + (r.reward_amount || 0), 0) || 0;
+    const REWARD_AMOUNT = 500;
+    const totalInvited = referrals?.length || 0; 
+    const totalEarned = (referrals || []).reduce((sum, r) => sum + (r.status === 'rewarded' ? REWARD_AMOUNT : 0), 0);
     const pending = referrals?.filter(r => r.status === 'pending').length || 0;
 
     return {
@@ -189,10 +190,10 @@ export class ReferralService {
         .select("referral_code")
         .single();
       
-      if (retryError || !retryData) throw new Error("Failed to generate referral code");
+      if (retryError || !retryData?.referral_code) throw new Error("Failed to generate referral code");
       return retryData.referral_code;
     }
 
-    return data.referral_code;
+    return data.referral_code || code;
   }
 }

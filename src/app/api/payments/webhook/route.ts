@@ -68,32 +68,34 @@ export async function POST(request: Request) {
     if (status === "paid") {
       // Log Payment Confirmed
       await logEvent({
-        tenant_id: tenantId,
-        actor_type: 'system',
+        tenant_id: tenantId as string,
+        actor_type: "system",
         event_type: EVENT_TYPES.PAYMENT_CONFIRMED,
-        entity_type: 'payment',
+        entity_type: "payment",
         entity_id: paymentId,
-        metadata: { amount: payment.amount }
+        metadata: { amount: payment.amount },
       });
 
-      await supabase
-        .from("bookings")
-        .update({ status: "confirmed" })
-        .eq("id", payment.booking_id);
-      
-      // Log Booking Confirmed
-      await logEvent({
-        tenant_id: tenantId,
-        actor_type: 'system',
-        event_type: EVENT_TYPES.BOOKING_CONFIRMED,
-        entity_type: 'booking',
-        entity_id: payment.booking_id,
-        metadata: { payment_id: paymentId }
-      });
+      if (payment.booking_id) {
+        await supabase
+          .from("bookings")
+          .update({ status: "confirmed" })
+          .eq("id", payment.booking_id as string);
 
-      const { data: booking } = await supabase
-        .from("bookings")
-        .select(`
+        // Log Booking Confirmed
+        await logEvent({
+          tenant_id: tenantId as string,
+          actor_type: "system",
+          event_type: EVENT_TYPES.BOOKING_CONFIRMED,
+          entity_type: "booking",
+          entity_id: payment.booking_id as string,
+          metadata: { payment_id: paymentId },
+        });
+
+        const { data: booking } = await supabase
+          .from("bookings")
+          .select(
+            `
           listing_id, 
           guest_id, 
           start_date, 
@@ -103,71 +105,79 @@ export async function POST(request: Request) {
             channel,
             phone
           )
-        `)
-        .eq("id", payment.booking_id)
-        .maybeSingle();
+        `,
+          )
+          .eq("id", payment.booking_id as string)
+          .maybeSingle();
 
-      const guestData = (booking as any)?.guests;
-      const channel = guestData?.channel || "whatsapp";
-      const recipientId = guestData?.phone || booking?.guest_id;
+        const guestData = (booking as any)?.guests;
+        const channel = guestData?.channel || "whatsapp";
+        const recipientId = guestData?.phone || (booking as any)?.guest_id;
 
-      if (booking?.listing_id && booking?.guest_id) {
-        const startLabel = new Date(booking.start_date).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
-        const endLabel = new Date(booking.end_date).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
-        const content = `Booking confirmed. Your stay from ${startLabel} to ${endLabel} is locked. You will receive details shortly.`;
-        
-        await supabase.from("messages").insert({
-          tenant_id: tenantId, 
-          listing_id: booking.listing_id,
-          guest_id: booking.guest_id,
-          channel,
-          direction: "outbound",
-          content,
-          metadata: { read: false, trigger: 'booking_confirmed' },
-          created_at: new Date().toISOString()
-        });
+        if (booking?.listing_id && booking?.guest_id) {
+          const startLabel = new Date(booking.start_date as string).toLocaleDateString(
+            "en-IN",
+            { day: "numeric", month: "short" },
+          );
+          const endLabel = new Date(booking.end_date as string).toLocaleDateString(
+            "en-IN",
+            { day: "numeric", month: "short" },
+          );
+          const content = `Booking confirmed. Your stay from ${startLabel} to ${endLabel} is locked. You will receive details shortly.`;
 
-        // Dispatch to external channel
-        try {
-          await ChannelService.sendMessage({
-            tenantId,
-            recipientId,
+          await supabase.from("messages").insert({
+            tenant_id: tenantId,
+            listing_id: booking.listing_id,
+            guest_id: booking.guest_id,
+            role: "assistant", // System automated assistant
+            channel,
+            direction: "outbound",
             content,
-            channel: channel as any
+            metadata: { read: false, trigger: "booking_confirmed" },
+            created_at: new Date().toISOString(),
           });
-        } catch (dispatchError) {
-          log.error("Dispatch confirmed message error", dispatchError, { tenantId, recipientId, channel });
-        }
 
-        // Log AI Reply Sent (or System Message Sent)
-        // User classified this as "AI_REPLY_SENT" or just "Message"?
-        // It's a system automated message.
-        // We can use AI_REPLY_SENT or maybe add SYSTEM_MESSAGE_SENT.
-        // Let's stick to AI_REPLY_SENT if it's considered an AI/Automated action, or just leave it for now.
-        // Actually, let's log it as AI_REPLY_SENT with actor=system
-        await logEvent({
-          tenant_id: tenantId,
-          actor_type: 'system',
-          event_type: EVENT_TYPES.AI_REPLY_SENT,
-          entity_type: 'message',
-          metadata: { channel, trigger: 'booking_confirmed' }
-        });
+          // Dispatch to external channel
+          try {
+            await ChannelService.sendMessage({
+              tenantId: tenantId as string,
+              recipientId: recipientId as string,
+              content,
+              channel: channel as any,
+            });
+          } catch (dispatchError) {
+            log.error("Dispatch confirmed message error", dispatchError, {
+              tenantId,
+              recipientId,
+              channel,
+            });
+          }
+
+          // Log AI Reply Sent
+          await logEvent({
+            tenant_id: tenantId as string,
+            actor_type: "system",
+            event_type: EVENT_TYPES.AI_REPLY_SENT,
+            entity_type: "message",
+            metadata: { channel, trigger: "booking_confirmed" },
+          });
+        }
       }
     }
 
-    if (status === "refunded") {
+    if (status === "refunded" && payment.booking_id) {
       await supabase
         .from("bookings")
         .update({ status: "refunded" })
-        .eq("id", payment.booking_id);
-        
+        .eq("id", payment.booking_id as string);
+
       await logEvent({
-        tenant_id: tenantId,
-        actor_type: 'system',
+        tenant_id: tenantId as string,
+        actor_type: "system",
         event_type: EVENT_TYPES.BOOKING_CANCELLED,
-        entity_type: 'booking',
-        entity_id: payment.booking_id,
-        metadata: { reason: 'payment_refunded' }
+        entity_type: "booking",
+        entity_id: payment.booking_id as string,
+        metadata: { reason: "payment_refunded" },
       });
     }
 

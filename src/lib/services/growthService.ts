@@ -62,8 +62,8 @@ export class GrowthService {
 
       // Check gaps between bookings
       (bookings || []).forEach(b => {
-        const bStart = new Date(b.start_date);
-        const bEnd = new Date(b.end_date);
+        const bStart = new Date(b.start_date || "");
+        const bEnd = new Date(b.end_date || "");
 
         if (bStart > lastEnd) {
           const diffDays = Math.ceil((bStart.getTime() - lastEnd.getTime()) / (1000 * 60 * 60 * 24));
@@ -143,7 +143,7 @@ export class GrowthService {
       .from('conversations')
       .select('id')
       .eq('tenant_id', params.tenantId)
-      .eq('external_id', externalId)
+      .eq('external_id', externalId || "")
       .eq('channel', channel)
       .single();
 
@@ -154,7 +154,7 @@ export class GrowthService {
           tenant_id: params.tenantId,
           external_id: externalId,
           channel: channel,
-          contact_name: guest.name,
+          contact_name: guest.name || "",
           status: 'active'
         })
         .select()
@@ -175,8 +175,9 @@ export class GrowthService {
         content: params.message,
         direction: 'outbound',
         channel: channel,
-        external_id: externalId
-      });
+        external_id: externalId,
+        role: 'ai'
+      } as any);
 
     if (msgError) throw msgError;
 
@@ -220,14 +221,17 @@ export class GrowthService {
     // 3. Send Message
     const { conversationId } = await this.sendOmnichannelMessage({
       tenantId: opportunity.tenant_id,
-      guestId: opportunity.guest_id,
+      guestId: opportunity.guest_id || "",
       message: finalMessage
     });
 
     // 4. Update Opportunity Status
     await supabase
       .from('lead_opportunities')
-      .update({ status: 'sent', metadata: { ...opportunity.metadata, conversation_id: conversationId } })
+      .update({ 
+        status: 'sent', 
+        metadata: { ...(opportunity.metadata as any), conversation_id: conversationId } 
+      } as any)
       .eq('id', opportunityId);
 
     revalidatePath("/dashboard/ai/growth");

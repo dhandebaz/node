@@ -174,7 +174,7 @@ export const settingsService = {
     // 2. Save
     const { error } = await supabase.from("system_settings").upsert({
       key: SETTINGS_KEY,
-      value: newSettings,
+      value: newSettings as any,
       updated_by: adminId,
       updated_at: new Date().toISOString(),
     });
@@ -391,13 +391,13 @@ export const settingsService = {
       .order("timestamp", { ascending: false })
       .limit(limit);
 
-    return (data || []).map((log) => ({
+    return (data || []).map((log: any) => ({
       id: log.id,
-      adminId: log.admin_id,
+      adminId: log.admin_id || "",
       section: "platform",
       action: "update",
-      details: log.details,
-      timestamp: log.timestamp,
+      details: log.details || "",
+      timestamp: log.timestamp || new Date().toISOString(),
     }));
   },
 

@@ -18,7 +18,7 @@ export async function GET() {
   // Fetch integrations
   const { data: integrations, error } = await supabase
     .from('integrations')
-    .select('id, user_id, provider, status, last_sync, last_synced_at, expires_at, error_code, metadata, scopes, connected_email, connected_name') // Exclude tokens
+    .select('id, user_id, provider, status, last_synced_at, expires_at, error_code, settings, scopes, connected_email, connected_name') // Exclude tokens
     .eq('tenant_id', tenantId);
 
   if (error) {
@@ -31,11 +31,11 @@ export async function GET() {
     userId: i.user_id,
     provider: i.provider,
     status: i.status,
-    lastSync: i.last_sync,
+    lastSync: i.last_synced_at,
     lastSyncedAt: i.last_synced_at,
     expiresAt: i.expires_at,
     errorCode: i.error_code,
-    metadata: i.metadata,
+    metadata: i.settings,
     scopes: i.scopes,
     connectedEmail: i.connected_email,
     connectedName: i.connected_name
@@ -70,12 +70,11 @@ export async function POST(request: Request) {
     user_id: session.userId,
     provider,
     status: status || 'connected',
-    metadata: metadata || {},
-    updated_at: new Date().toISOString()
+    settings: metadata || {},
   };
 
   if (status === 'connected') {
-      updateData.last_sync = new Date().toISOString();
+      updateData.last_synced_at = new Date().toISOString();
   }
 
   // Handle Tokens (Encrypt)
@@ -102,7 +101,7 @@ export async function POST(request: Request) {
     userId: data.user_id,
     provider: data.provider,
     status: data.status,
-    lastSync: data.last_sync
+    lastSync: data.last_synced_at
   });
 }
 

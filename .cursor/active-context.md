@@ -1,330 +1,317 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `src\app\api\integrations\google\connect\route.ts` (Domain: **Generic Logic**)
+> Dynamically loaded for active file: `src\lib\services\controlService.ts` (Domain: **Backend (API/Server)**)
 
-### 📐 Generic Logic Conventions & Fixes
-- **[what-changed] what-changed in route.ts**: File updated (external): src/app/api/inbox/context/route.ts
+### 🔴 Backend (API/Server) Gotchas
+- **⚠️ GOTCHA: Updated schema Date**: -         const start = new Date(b.start_date);
++         if (!b.start_date || !b.end_date) return false;
+-         const end = new Date(b.end_date);
++         const start = new Date(b.start_date);
+-         return targetDate >= start && targetDate < end;
++         const end = new Date(b.end_date);
+-       });
++         return targetDate >= start && targetDate < end;
+- 
++       });
+-       if (isBooked) continue;
++ 
+- 
++       if (isBooked) continue;
+-       let multiplier = 1.0;
++ 
+-       let reason = "Base price applied.";
++       let multiplier = 1.0;
+- 
++       let reason = "Base price applied.";
+-       // Strategy: Balanced
++ 
+-       // Weekend markup
++       // Strategy: Balanced
+-       if (isWeekend) {
++       // Weekend markup
+-         multiplier *= settings.weekend_markup || 1.2;
++       if (isWeekend) {
+-         reason = "Weekend demand surge.";
++         multiplier *= settings.weekend_markup || 1.2;
+-       }
++         reason = "Weekend demand surge.";
+- 
++       }
+-       // Last minute discount (next 3 days)
++ 
+-       if (i <= 3) {
++       // Last minute discount (next 3 days)
+-         multiplier *= settings.last_minute_discount || 0.8;
++       if (i <= 3) {
+-         reason = "Last-minute occupancy boost.";
++         multiplier *= settings.last_minute_discount || 0.8;
+-       }
++         reason = "Last-minute occupancy boost.";
+- 
++       }
+-       // Proximity to other bookings (Fill the gaps)
++ 
+-       // (Skipped for simplicity, but could be added here)
++       // Proximity to other bookings (Fill the gaps)
+- 
++       // (Skipped for simplicity, but could be added here)
+-       const suggestedPrice = Math.round(basePrice * multiplier);
++ 
+- 
++       const suggestedPrice = Math.round(basePrice * multiplier);
+-       // Clamp to min/max
++ 
+-       const finalPrice = Math.min(
++       // Clamp to min/max
+-         Math.max(suggestedPrice, settings.min_price || 0),
++       const final
+… [diff truncated]
 
-Content summary (135 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
+📌 IDE AST Context: Modified symbols likely include [PriceSuggestion, DynamicPricingSettings, RevenueService]
 
-const contextMap: Record<string, any> = {
-  "conv-1001": {
-    role: "Host AI",
-    managerName: "Host AI",
-    status: "pending",
-    updatedAt: new Date().toISOString(),
-    fields: [
-      { label: "Listing", value: "Sea Breeze Villa" },
-      { label: "Dates", value: "12–15 Oct" },
-      { label: "Availability", value: "Open", tone: "good" },
-      { label: "Booking", value: "
-- **[problem-fix] problem-fix in route.ts**: File updated (external): src/app/api/host/me/route.ts
+### 📐 Backend (API/Server) Conventions & Fixes
+- **[problem-fix] problem-fix in controlService.ts**: -     const { error } = await supabase.from("system_settings").upsert({
++     const { error } = await supabase.from("system_flags").upsert([{
+-       key: key,
++       key,
+-     });
++     }]);
 
-Content summary (74 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
+📌 IDE AST Context: Modified symbols likely include [SystemFlagKey, TenantControlKey, ActionBlockedError, createActionBlockedError, PostgrestResponse]
+- **[problem-fix] problem-fix in controlService.ts**: -   description: string | null;
++   description?: string | null;
+-   updated_at: string | null;
++   updated_at?: string | null;
+-   updated_by: string | null;
++   updated_by?: string | null;
+-     const { error } = await supabase.from("system_flags").upsert([{
++     const { error } = await supabase.from("system_settings").upsert({
+-       key,
++       key: key,
+-       value,
++       value: value as any,
+-     }]);
++     });
 
-export async function GET() {
-  const supabase = await getSupabaseServer();
+📌 IDE AST Context: Modified symbols likely include [SystemFlagKey, TenantControlKey, ActionBlockedError, createActionBlockedError, PostgrestResponse]
+- **[what-changed] what-changed in controlService.ts**: File updated (external): src/lib/services/controlService.ts
 
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const tenantId = await requireActiveTenant();
-
-  const [{ data:
-- **[problem-fix] problem-fix in route.ts**: File updated (external): src/app/api/guest-id/upload/route.ts
-
-Content summary (131 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
-import { randomUUID } from "crypto";
-import { saveEncryptedImage } from "@/lib/guestIdStorage";
-
-export async function GET(request: NextRequest) {
-  try {
-    const token = request.nextUrl.searchParams.get("token");
-    if (!token) {
-      return NextResponse.json({ error: "Missing token" }, { status: 400 });
-    }
-
-    const supabase = await getSupabaseAdmin();
-    const { data: re
-- **[convention] problem-fix in route.ts — confirmed 3x**: File updated (external): src/app/api/guest-id/reject/[id]/route.ts
-
-Content summary (70 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
+Content summary (562 lines):
+import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
-import { getTenantIdForUser } from "@/app/actions/auth";
+import { getPersonaCapabilities } from "@/lib/business-context";
+import { BusinessType } from "@/types";
+import { hasRazorpayCredentials } from "@/lib/runtime-config";
 
-export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const supabase = await getSupabaseServer();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+export type SystemFlagKey =
+  | "ai_global_enabled"
+  | "bookings_global_enabled"
+  | "incident_mode_enabled"
+  | "messaging_global_enabled"
+  | "payments_global_enabl
+- **[what-changed] what-changed in adminService.ts**: File updated (external): src/lib/services/adminService.ts
 
-  
-- **[convention] what-changed in route.ts — confirmed 4x**: File updated (external): src/app/api/payments/create-link/route.ts
-
-Content summary (329 lines):
-import { NextResponse } from "next/server";
+Content summary (118 lines):
 import { getSupabaseServer } from "@/lib/supabase/server";
-import { randomUUID } from "crypto";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
-import { ControlService } from "@/lib/services/controlService";
-import { RazorpayService } from "@/lib/services/razorpayService";
-import { SubscriptionService } from "@/lib/services/subscriptionService";
-import { get
-- **[convention] problem-fix in route.ts — confirmed 3x**: File updated (external): src/app/api/guest-id/approve/[id]/route.ts
+import { PLAN_PRICING, SubscriptionPlan } from "@/lib/constants/pricing";
 
-Content summary (73 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
-import { getTenantIdForUser } from "@/app/actions/auth";
+export interface AdminStats {
+  totalUsers: number;
+  activeSubscriptions: number;
+  totalRevenue: number; // Simple MRR estimate
+  walletBalances: number; // Total outstanding wallet credits (liability)
+}
 
-export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const supabase = await getSupabaseServer();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
- 
-- **[convention] problem-fix in route.ts — confirmed 4x**: File updated (external): src/app/api/failures/route.ts
-
-Content summary (82 lines):
-import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth/session";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { ControlService } from "@/lib/services/controlService";
-import { FailureRecord } from "@/types/failure";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-
-export const dynamic = "force-dynamic";
-
-export async function GET() {
-  const session = await getSession();
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorize
-- **[problem-fix] problem-fix in billing.ts**: File updated (external): src/types/billing.ts
-
-Content summary (69 lines):
-
-export type PaymentProvider = 'razorpay' | 'stripe';
-export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
-export type BillingInterval = 'month' | 'year' | 'one_time';
-export type SubscriptionStatus = 'active' | 'past_due' | 'canceled' | 'trialing' | 'paused';
-
-import { Json } from './supabase';
-
-export interface BillingPlan {
+export interface CustomerSummary {
   id: string;
-  name: string;
-  description: string | null;
-  price: number;
-  currency: string | null;
-  interval: string | null;
-  product: strin
-- **[what-changed] Added session cookies authentication — formalizes the data contract with expl...**: -   tenant_id: string;
-+   tenant_id: string | null;
--   guest_id?: string;
-+   listing_id: string | null;
--   amount: number;
-+   guest_id: string | null;
--   source?: string;
-+   amount: number | null;
--   status: string;
-+   status: string | null;
--   check_in?: string;
-+   check_in: string | null;
--   check_out?: string;
-+   check_out: string | null;
--   created_at: string;
-+   start_date: string | null;
--   metadata?: Record<string, unknown>;
-+   end_date: string | null;
-- }
-+   source: string | null;
+  phone: string;
+  email: string | null;
+  plan: string;
+  businessType: string;
+  joinedAt: string;
+  walletB
+- **[what-changed] what-changed in growthService.ts**: -       .eq('external_id', externalId)
++       .eq('external_id', externalId || "")
+
+📌 IDE AST Context: Modified symbols likely include [GrowthOpportunity, GrowthService]
+- **[what-changed] what-changed in analyticsService.ts**: File updated (external): src/lib/services/analyticsService.ts
+
+Content summary (334 lines):
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { subDays, startOfDay, endOfDay, subMonths } from "date-fns";
+import { PricingService } from "./pricingService";
+
+export type TimeRange = 'today' | '7d' | '30d';
+
+export interface PersonaMetrics {
+  // Airbnb
+  occupancyRate?: number;
+  revenue?: number;
+  directBookings?: number;
+  otaBookings?: number;
+  avgResponseTime?: number; // in minutes
+  aiAssistedBookings?: number;
+
+  // Kirana
+  ordersCount?: number;
+  repeatCustomers?
+- **[what-changed] what-changed in invoiceService.ts**: File updated (external): src/lib/services/invoiceService.ts
+
+Content summary (114 lines):
+import { jsPDF } from "jspdf";
+import { format } from "date-fns";
+import { DBInvoice, DBTenant } from "@/types/database";
+
+export class InvoiceService {
+  static async generatePDF(
+    invoice: DBInvoice,
+    tenant: DBTenant,
+  ): Promise<Blob> {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+
+    // Header - Brand
+    doc.setFontSize(24);
+    doc.setTextColor(235, 68, 90); // Brand Red
+    doc.text("KAISA", margin, margin + 10);
+
+   
+- **[problem-fix] problem-fix in inboxService.ts**: File updated (external): src/lib/services/inboxService.ts
+
+Content summary (120 lines):
+
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { Conversation, MessageChannel, MessageDirection } from "@/types/omnichannel";
+import { log } from "@/lib/logger";
+
+export class InboxService {
+  /**
+   * Get all conversations for a tenant, ordered by last message
+   */
+  static async getConversations(tenantId: string): Promise<Conversation[]> {
+    const supabase = await getSupabaseServer();
+    const { data, error } = await supabase
+      .from("conversations")
+      .select("
+- **[what-changed] what-changed in growthService.ts**: -           contact_name: guest.name,
++           contact_name: guest.name || "",
+-       guestId: opportunity.guest_id,
++       guestId: opportunity.guest_id || "",
+
+📌 IDE AST Context: Modified symbols likely include [GrowthOpportunity, GrowthService]
+- **[what-changed] what-changed in kaisaMemoryService.ts**: -       source: data.source || "",
++       source: (data.source as any) || "",
+
+📌 IDE AST Context: Modified symbols likely include [kaisaMemoryService]
+- **[what-changed] what-changed in knowledgeService.ts**: -         query_embedding: queryEmbedding,
++         query_embedding: `[${queryEmbedding.join(",")}]`,
+
+📌 IDE AST Context: Modified symbols likely include [KnowledgeService]
+- **[problem-fix] problem-fix in pricingService.ts**: File updated (external): src/lib/services/pricingService.ts
+
+Content summary (106 lines):
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { AppError, ErrorCode } from "@/lib/errors";
+import { log } from "@/lib/logger";
+
+export interface PricingRules {
+  per_1k_tokens: number;
+  action_multipliers: Record<string, number>;
+  persona_multipliers?: Record<string, number>;
+  ai_monthly_price?: number;
+  ai_message_cost?: number;
+}
+
+const DEFAULT_PRICING: PricingRules = {
+  per_1k_tokens: 0.002,
+  action_multipliers: {
+    ai_reply: 1.0,
+    availability_check: 2.0,
+    c
+- **[convention] Fixed null crash in Failed — parallelizes async operations for speed — confirmed 3x**: -     if (!data?.value) return DEFAULT_PRICING;
++     if (error || !request) {
+-     // Merge with default to ensure new fields exist if old data
++       log.error("Failed to create KYC request", error, { tenantId });
+-     return { ...DEFAULT_PRICING, ...(data.value as any) } as PricingRules;
++       throw new AppError(
+-   }
++         ErrorCode.INTERNAL_ERROR,
 - 
-+   id_status: string | null;
-- export interface DBReferral {
-+   guest_contact: string | null;
--   id: string;
-+   payment_id: string | null;
--   referrer_id: string;
-+   metadata: Json | null;
--   referred_id: string;
-+   created_at: string | null;
--   status: string;
-+ }
--   created_at: string;
++         "Failed to create KYC request",
+-   /**
++       );
+-    * Returns all KYC requests for a tenant, newest first.
++     }
+-    * Optionally filtered by status and/or limited in count.
++     return request as GuestKycRequest;
+-    */
++   }
+-   static async listKycRequests(
 + 
-- }
-+ export interface DBReferral {
+-     tenantId: string,
++   /**
+-     options?: { status?: KycRequestStatus; limit?: number },
++    * Returns all KYC requests for a tenant, newest first.
+-   ): Promise<GuestKycRequest[]> {
++    * Optionally filtered by status and/or limited in count.
+-     const supabase = await getSupabaseServer();
++    */
+-     let query = supabase
++   static async listKycRequests(
+-       .from("guest_kyc_requests")
++     tenantId: string,
+-       .select("*")
++     options?: { status?: KycRequestStatus; limit?: number },
+-       .eq("tenant_id", tenantId)
++   ): Promise<GuestKycRequest[]> {
+-       .order("created_at", { ascending: false });
++     const supabase = await getSupabaseServer();
 - 
-+   id: string;
-- export interface DBSupportTicket {
-+   referrer_id: string;
--   id: string;
-+   referred_id: string;
--   user_id: string;
-+   status: string;
--   subject: string;
-+   created_at: string;
--   product?: string;
-+ }
--   status: string;
++     let query = supabase
+-     if (options?.status) query = query.eq("status", options.status);
++       .from("guest_kyc_requests")
+-     if (options?.limit) query = query.limit(options.limit);
++       .select("*")
+- 
++       .eq("tenant_id", tenantId)
+-     const { data, error } = await query;
++       .order("created_at", { ascending: false });
+-     if (error) {
 + 
--   priority: string;
-+ export interface DBSupportTicket {
--   created_at: string;
-+   id: string;
--   updated_at: string;
-+   user_id: string;
-- }
-+   subject: string;
-- 
-+   product?: string;
-- export interface DBMessage {
-+   status: string;
--   id: string;
-+   priority: string;
--   tenant_id: string | null;
-+   created_at: string;
--   conversation_id: string | null;
-+   updated_at: string;
--   guest_id: string | null;
-+ }
--   listing_id: string | null;
+-       log.error("Failed to list KYC requests", error, { tenantId });
++     if (options?.status) query = query.eq("status", options.status);
+-       return [];
++     if (options?.limit) query = query.limit(options.limit);
+-     }
 + 
--   role: string;
-+ export interface DBMessage {
--   direction: string | null;
-+   id: string;
--   content: string | null;
-+   tenant_id: string | null;
--   channel: string | null;
-+   conversation_id: string | null;
--   external_id: string | null;
-+   guest_id: string | null;
--   metadata: Json | null;
-+   listing_id: string | null;
--   created_at: string | null;
-+   role: string;
-- }
-+   direction: string | null;
-- 
-+   
+-     return (data ?? []) as GuestKycRequest[];
++  
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [Json, DBUser, UserMetadataJSON, KYCDocumentJSON, DBProfile]
-- **[convention] what-changed in database.ts — confirmed 4x**: -   metadata?: Record<string, unknown>;
-+   metadata: Json | null;
--   is_active: boolean;
-+   is_active: boolean | null;
--   resolved_at?: string;
-+   resolved_at: string | null;
--   created_at: string;
-+   created_at: string | null;
+📌 IDE AST Context: Modified symbols likely include [KycRequestStatus, GuestDocumentType, DocumentVerificationStatus, ConsentForm, GuestKycRequest]
+- **[decision] decision in revenueService.ts**: File updated (external): src/lib/services/revenueService.ts
 
-📌 IDE AST Context: Modified symbols likely include [Json, DBUser, UserMetadataJSON, KYCDocumentJSON, DBProfile]
-- **[convention] Strengthened types Alias**: -     businessType: dbTenant.business_type // Alias for easier access
-+     businessType: dbTenant.business_type as any // Alias for easier access
+Content summary (185 lines):
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { log } from "@/lib/logger";
 
-📌 IDE AST Context: Modified symbols likely include [getActiveTenantId, requireActiveTenant, getTenantContext, validateTenantAccess]
-- **[what-changed] Added Supabase Auth authentication — formalizes the data contract with explic...**: - 
-+ import { DBTenant } from '@/types/database';
-- /**
-+ 
--  * Gets the full tenant context including business type.
-+ /**
--  * Useful for checking business rules without needing full user profile.
-+  * Gets the full tenant context including business type.
--  */
-+  * Useful for checking business rules without needing full user profile.
-- export async function getTenantContext(tenantId: string): Promise<(Tenant & DBTenant) | null> {
-+  */
--   const supabase = await getSupabaseServer();
-+ export async function getTenantContext(tenantId: string): Promise<(Tenant & DBTenant) | null> {
--   const { data: tenant, error } = await supabase
-+   const supabase = await getSupabaseServer();
--     .from("tenants")
-+   const { data: tenant, error } = await supabase
--     .select("*")
-+     .from("tenants")
--     .eq("id", tenantId)
-+     .select("*")
--     .single();
-+     .eq("id", tenantId)
--     
-+     .single();
--   if (error || !tenant) return null;
-+     
--   
-+   if (error || !tenant) return null;
--   const dbTenant = tenant as unknown as DBTenant;
-+   
--   
-+   const dbTenant = tenant as unknown as DBTenant;
--   return {
-+   
--     ...dbTenant,
-+   return {
--     ownerUserId: dbTenant.owner_user_id, // Map for Tenant interface compatibility
-+     ...dbTenant,
--     createdAt: dbTenant.created_at,       // Map for Tenant interface compatibility
-+     ownerUserId: dbTenant.owner_user_id, // Map for Tenant interface compatibility
--     businessType: dbTenant.business_type // Alias for easier access
-+     createdAt: dbTenant.created_at,       // Map for Tenant interface compatibility
--   };
-+     businessType: dbTenant.business_type // Alias for easier access
-- }
-+   };
-- 
-+ }
-- /**
-+ 
--  * Validates that the current user actually has access to the requested tenant.
-+ /**
--  * Useful for critical operations where we don't want to rely solely on RLS for the 'active' check.
-+  * Validates that the current user actually has access to the requested tenant.
--  */
-+  * Useful for c
-… [diff truncated]
+export interface PriceSuggestion {
+  date: string;
+  suggestedPrice: number;
+  currentPrice: number;
+  reason: string;
+  confidence: number;
+}
 
-📌 IDE AST Context: Modified symbols likely include [getActiveTenantId, requireActiveTenant, getTenantContext, validateTenantAccess]
-- **[what-changed] Replaced dependency Tenant**: - import { DBTenant } from '@/types/database';
-+ import { Tenant } from '@/types';
-- export async function getTenantContext(tenantId: string): Promise<(DBTenant & { ownerUserId: string; createdAt: string; businessType?: string | null }) | null> {
-+ export async function getTenantContext(tenantId: string): Promise<(Tenant & DBTenant) | null> {
+export interface DynamicPricingSettings {
+  base_price?: number;
+  weekend_markup?: number;
+  last_minute_discount?: number;
+  min_price?: number;
+  max_price?: number;
+}
 
-📌 IDE AST Context: Modified symbols likely include [getActiveTenantId, requireActiveTenant, getTenantContext, validateTenantAccess]
-- **[what-changed] what-changed in index.ts**: -   };
-+   } | null;
-
-📌 IDE AST Context: Modified symbols likely include [Tenant, BusinessType, TenantUser, Host, ListingStatus]
-- **[what-changed] what-changed in index.ts**: -   address?: string;
-+   address?: string | null;
--   tax_id?: string;
-+   tax_id?: string | null;
--   phone?: string;
-+   phone?: string | null;
--   timezone?: string;
-+   timezone?: string | null;
--   username?: string;
-+   username?: string | null;
--     tone?: AITone;
-+     tone?: AITone | null;
-
-📌 IDE AST Context: Modified symbols likely include [Tenant, BusinessType, TenantUser, Host, ListingStatus]
+export class RevenueService {
+  /**
+   * Analyze occupancy and sugg

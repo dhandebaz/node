@@ -17,9 +17,11 @@ export async function GET(
 
     const admin = await getSupabaseAdmin();
 
-    const { data, error } = await admin.rpc("get_kyc_request_by_token", {
+    const { data: rawData, error } = await admin.rpc("get_kyc_request_by_token", {
       p_token: token,
     });
+
+    const data = rawData as any;
 
     if (error) {
       log.error("get_kyc_request_by_token RPC failed", error, { token });

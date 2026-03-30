@@ -24,7 +24,7 @@ export async function POST() {
   const supabase = await getSupabaseServer();
   const { data: integration, error } = await supabase
     .from("integrations")
-    .select("id, tenant_id, access_token, refresh_token, last_synced_at, last_sync")
+    .select("id, tenant_id, access_token, refresh_token, last_synced_at")
     .eq("tenant_id", tenantId)
     .eq("provider", "google")
     .maybeSingle();

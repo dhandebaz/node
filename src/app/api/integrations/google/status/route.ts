@@ -21,7 +21,7 @@ export async function GET() {
   const supabase = await getSupabaseServer();
   const { data, error } = await supabase
     .from("integrations")
-    .select("tenant_id, status, scopes, expires_at, error_code, connected_email, connected_name, last_sync, last_synced_at")
+    .select("tenant_id, status, scopes, expires_at, error_code, connected_email, connected_name, last_synced_at")
     .eq("tenant_id", tenantId)
     .eq("provider", "google")
     .maybeSingle();
@@ -56,7 +56,7 @@ export async function GET() {
   // Failure Handling
   if (isExpired || status === 'error') {
      await FailureService.raiseFailure({
-       tenant_id: data.tenant_id,
+       tenant_id: tenantId,
        category: 'integration',
        source: 'google',
        severity: 'critical', // Auth expired is critical
@@ -64,7 +64,7 @@ export async function GET() {
        metadata: { expiresAt }
      });
   } else if (status === 'connected') {
-     await FailureService.resolveFailure(data.tenant_id, 'google', 'integration');
+     await FailureService.resolveFailure(tenantId, 'google', 'integration');
   }
 
   return NextResponse.json({
@@ -72,7 +72,7 @@ export async function GET() {
     services,
     connectedEmail: data.connected_email || null,
     connectedName: data.connected_name || null,
-    lastSyncedAt: data.last_synced_at || data.last_sync || null,
+    lastSyncedAt: data.last_synced_at || null,
     expiresAt: data.expires_at || null,
     errorCode: data.error_code || null
   });

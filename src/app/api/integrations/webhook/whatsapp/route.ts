@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
     if (existingGuest) {
       guestId = existingGuest.id;
-      aiPaused = existingGuest.ai_paused;
+      aiPaused = !!existingGuest.ai_paused;
     } else {
       const { data: newGuest } = await supabase.from("guests").insert({
         tenant_id: tenantId,
@@ -148,10 +148,13 @@ export async function POST(request: Request) {
       provider: appSettings.api.kaisaProvider,
       model: appSettings.api.kaisaModel,
     });
+
+    const aiSettings = tenant?.ai_settings as any;
+
     const prompt = [
       `You are an AI assistant for a ${businessType} business.`,
-      getToneInstruction(tenant?.ai_settings?.tone),
-      tenant?.ai_settings?.customInstructions?.trim(),
+      getToneInstruction(aiSettings?.tone),
+      aiSettings?.customInstructions?.trim(),
       `Reply to this customer message: ${text}`,
     ]
       .filter(Boolean)

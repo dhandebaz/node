@@ -1,32 +1,32 @@
 {
   "typescript": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T00:16:37.773Z",
-    "observationCount": 69,
+    "lastGenerated": "2026-03-30T02:35:11.763Z",
+    "observationCount": 114,
     "skillCount": 0,
     "domain": "typescript",
     "triggerGlobs": [
       "**/*.ts",
       "**/*.tsx"
     ],
-    "description": "Typescript for node. 16 conventions, 23 fixes."
+    "description": "Typescript for node. 1 gotchas, 25 conventions, 42 fixes."
   },
   "project": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T00:16:37.774Z",
-    "observationCount": 152,
+    "lastGenerated": "2026-03-30T02:35:11.764Z",
+    "observationCount": 180,
     "skillCount": 0,
     "domain": "project",
     "triggerGlobs": [
       "**/*"
     ],
-    "description": "Project for node. 36 gotchas, 59 conventions, 9 fixes."
+    "description": "Project for node. 36 gotchas, 63 conventions, 12 fixes."
   },
   "decision": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T00:16:37.776Z",
+    "lastGenerated": "2026-03-30T02:35:11.766Z",
     "observationCount": 0,
-    "skillCount": 2,
+    "skillCount": 4,
     "domain": "decision",
     "triggerGlobs": [
       "**/*"
@@ -35,7 +35,7 @@
   },
   "javascript": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T00:16:37.775Z",
+    "lastGenerated": "2026-03-30T02:35:11.765Z",
     "observationCount": 8,
     "skillCount": 0,
     "domain": "javascript",
@@ -47,9 +47,9 @@
   },
   "convention": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T00:16:37.776Z",
+    "lastGenerated": "2026-03-30T02:35:11.766Z",
     "observationCount": 0,
-    "skillCount": 2,
+    "skillCount": 4,
     "domain": "convention",
     "triggerGlobs": [
       "**/*"
@@ -58,7 +58,7 @@
   },
   "typescript-react": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T00:16:37.774Z",
+    "lastGenerated": "2026-03-30T02:35:11.765Z",
     "observationCount": 14,
     "skillCount": 0,
     "domain": "typescript-react",
@@ -66,5 +66,16 @@
       "**/*.tsx"
     ],
     "description": "Typescript React for node. 4 conventions, 1 fixes."
+  },
+  "problem-fix": {
+    "enabled": true,
+    "lastGenerated": "2026-03-30T02:35:11.767Z",
+    "observationCount": 0,
+    "skillCount": 2,
+    "domain": "problem-fix",
+    "triggerGlobs": [
+      "**/*"
+    ],
+    "description": "Problem Fix for node. 10 error→fix pairs."
   }
 }

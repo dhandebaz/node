@@ -75,7 +75,7 @@ export async function POST(req: Request) {
       .select("id")
       .eq("tenant_id", tenantId)
       .eq("email", normalizedEmail)
-      .eq("status", "pending")
+      .gte("expires_at", new Date().toISOString())
       .maybeSingle();
 
     if (existingInvite) {
@@ -99,15 +99,16 @@ export async function POST(req: Request) {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7); // 7-day expiry
 
+    const token = crypto.randomUUID();
+
     const { data: inviteRecord, error: inviteInsertError } = await admin
       .from("tenant_invitations")
       .insert({
         tenant_id: tenantId,
-        invited_by: user.id,
         email: normalizedEmail,
         role: normalizedRole,
-        status: "pending",
         expires_at: expiresAt.toISOString(),
+        token,
       })
       .select("id")
       .single();

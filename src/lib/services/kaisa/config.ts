@@ -120,7 +120,7 @@ export const kaisaConfigService = {
             }
 
             // Merge with default to ensure new fields are present
-            const dbConfig = data.value as KaisaGlobalConfig;
+            const dbConfig = (data.value as any) as KaisaGlobalConfig;
             return {
                 ...DEFAULT_GLOBAL_CONFIG,
                 ...dbConfig,
@@ -138,11 +138,11 @@ export const kaisaConfigService = {
         const supabase = await getSupabaseAdmin();
         const { error } = await supabase
             .from("system_settings")
-            .upsert({
+            .upsert([{
                 key: KAISA_CONFIG_KEY,
-                value: config,
+                value: config as any,
                 updated_by: adminId && adminId !== "SYSTEM" ? adminId : null
-            });
+            }]);
 
         if (error) {
             log.error("Failed to save kaisa config:", error);

@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { paymentsApi } from "@/lib/api/payments";
 import { WalletTransaction } from "@/types";
-import { Loader2, Wallet, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { Wallet, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 
-export function WalletDemo() {
+export function WalletOverview() {
   const [balance, setBalance] = useState<number>(0);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,6 +50,8 @@ export function WalletDemo() {
         <p className="text-xs text-brand-bone/40 uppercase tracking-widest font-mono mb-2">Recent Transactions</p>
         {loading ? (
           [1, 2].map(i => <div key={i} className="h-12 w-full bg-brand-bone/5 animate-pulse rounded-lg" />)
+        ) : transactions.length === 0 ? (
+          <p className="text-xs text-brand-bone/40 text-center py-4">No recent transactions</p>
         ) : (
           transactions.map(tx => (
             <div key={tx.id} className="flex items-center justify-between p-3 bg-black/20 rounded-lg border border-brand-bone/5 hover:bg-brand-bone/5 transition-colors">
@@ -58,8 +60,8 @@ export function WalletDemo() {
                   {tx.type === 'credit' ? <ArrowDownLeft className="w-3 h-3" /> : <ArrowUpRight className="w-3 h-3" />}
                 </div>
                 <div>
-                  <p className="text-sm text-brand-bone font-medium">{tx.reason}</p>
-                  <p className="text-[10px] text-brand-bone/40 font-mono">{new Date(tx.timestamp).toLocaleDateString()}</p>
+                  <p className="text-sm text-brand-bone font-medium">{tx.description}</p>
+                  <p className="text-[10px] text-brand-bone/40 font-mono">{tx.created_at ? new Date(tx.created_at).toLocaleDateString() : 'N/A'}</p>
                 </div>
               </div>
               <span className={`text-sm font-mono ${tx.type === 'credit' ? 'text-green-400' : 'text-brand-bone'}`}>

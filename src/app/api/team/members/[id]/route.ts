@@ -76,11 +76,12 @@ export async function DELETE(
         );
       }
 
-      // Cancel the pending invitation
+      // Cancel the pending invitation (delete the record)
       const { error: cancelError } = await admin
         .from("tenant_invitations")
-        .update({ status: "cancelled", updated_at: new Date().toISOString() })
-        .eq("id", membershipId);
+        .delete()
+        .eq("id", membershipId)
+        .eq("tenant_id", tenantId);
 
       if (cancelError) {
         return NextResponse.json(

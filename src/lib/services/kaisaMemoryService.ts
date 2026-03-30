@@ -116,14 +116,14 @@ export const kaisaMemoryService = {
       id: data.id,
       userId: data.user_id,
       type: data.type as MemoryType,
-      source: data.source,
-      description: data.description,
-      confidence: Number(data.confidence),
-      createdAt: data.created_at,
-      lastUsedAt: data.last_used_at,
-      status: data.status,
-      moduleId: data.module_id,
-      metadata: data.metadata
+      source: (data.source as any) || "",
+      description: data.description || "",
+      confidence: Number(data.confidence || 0),
+      createdAt: data.created_at || new Date().toISOString(),
+      lastUsedAt: data.last_used_at || undefined,
+      status: (data.status as any) || "active",
+      moduleId: data.module_id || undefined,
+      metadata: (data.metadata as any) || {}
     };
   },
 

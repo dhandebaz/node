@@ -11,7 +11,7 @@ export async function GET() {
     const [{ data: integrations, error: integrationsError }, { data: logs, error: logsError }] = await Promise.all([
       supabase
         .from("integrations")
-        .select("provider, status, last_sync, expires_at, error_code"),
+        .select("provider, status, last_synced_at, expires_at, error_code"),
       supabase
         .from("system_logs")
         .select("service, severity, message, timestamp")
@@ -36,9 +36,9 @@ export async function GET() {
       if (integration.expires_at && new Date(integration.expires_at) < now) {
         bucket.expired += 1;
       }
-      if (integration.last_sync) {
-        if (!bucket.lastSync || new Date(integration.last_sync) > new Date(bucket.lastSync)) {
-          bucket.lastSync = integration.last_sync;
+      if (integration.last_synced_at) {
+        if (!bucket.lastSync || new Date(integration.last_synced_at) > new Date(bucket.lastSync)) {
+          bucket.lastSync = integration.last_synced_at;
         }
       }
     });

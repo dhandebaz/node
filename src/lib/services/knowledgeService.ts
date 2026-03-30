@@ -16,7 +16,7 @@ export class KnowledgeService {
       
       // 2. Call the RPC function to find similar chunks
       const { data, error } = await supabase.rpc('match_knowledge_chunks', {
-        query_embedding: queryEmbedding,
+        query_embedding: `[${queryEmbedding.join(",")}]`,
         match_threshold: 0.5,
         match_count: limit,
         p_tenant_id: tenantId
@@ -48,12 +48,15 @@ export class KnowledgeService {
       // 3. Generate embeddings and save
       for (const text of chunks) {
         const embedding = await geminiService.generateEmbedding(text);
+        // Format as Postgres vector string [x,y,z]
+        const vectorString = `[${embedding.join(",")}]`;
+        
         await supabase.from("knowledge_chunks").insert({
           document_id: docId,
           tenant_id: tenantId,
           content: text,
-          embedding: embedding
-        });
+          embedding: vectorString
+        } as any);
       }
 
       // 4. Mark active

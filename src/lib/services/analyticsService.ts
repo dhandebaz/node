@@ -111,7 +111,7 @@ export class AnalyticsService {
     // Fetch potential AI interactions
     // We need to find guests who booked and check their message history
     if (bookings && bookings.length > 0) {
-        const guestIds = bookings.map(b => b.guest_id).filter(Boolean);
+        const guestIds = (bookings || []).map(b => b.guest_id).filter((id): id is string => !!id);
         if (guestIds.length > 0) {
             // Find messages for these guests sent by assistant
             const { data: messages } = await supabase
@@ -123,10 +123,10 @@ export class AnalyticsService {
 
              if (messages) {
                  bookings.forEach(booking => {
-                     const bookingTime = new Date(booking.created_at).getTime();
+                     const bookingTime = new Date(booking.created_at || "").getTime();
                      const hasRecentAiMsg = messages.some(m => {
                          if (m.guest_id !== booking.guest_id) return false;
-                         const msgTime = new Date(m.created_at).getTime();
+                         const msgTime = new Date(m.created_at || "").getTime();
                          // Check if message was before booking and within 24h
                          return msgTime < bookingTime && (bookingTime - msgTime) < 24 * 60 * 60 * 1000;
                      });
@@ -156,11 +156,11 @@ export class AnalyticsService {
        const totalCapacityDays = activeListings * daysInRange;
        
        // Improved: Sum actual booking duration if available, else 3 days
-       const totalBookedDays = bookings?.reduce((sum, b) => {
-           if (b.check_in && b.check_out) {
-               const stay = (new Date(b.check_out).getTime() - new Date(b.check_in).getTime()) / (1000 * 60 * 60 * 24);
-               return sum + Math.max(1, stay);
-           }
+        const totalBookedDays = (bookings || []).reduce((sum, b) => {
+            if (b.check_in && b.check_out) {
+                const stay = (new Date(b.check_out || "").getTime() - new Date(b.check_in || "").getTime()) / (1000 * 60 * 60 * 24);
+                return sum + Math.max(1, stay);
+            }
            return sum + 3; // Fallback avg
        }, 0) || 0;
 
@@ -236,7 +236,7 @@ export class AnalyticsService {
     let valueGenerated = 0;
 
     if (bookings && bookings.length > 0) {
-        const guestIds = bookings.map(b => b.guest_id);
+        const guestIds = bookings.map(b => b.guest_id).filter((id): id is string => !!id);
         
         // Find if these guests received AI messages BEFORE booking
         // We look for messages in the 24h window before booking
@@ -249,13 +249,13 @@ export class AnalyticsService {
             .in("guest_id", guestIds)
             .eq("role", "assistant") // AI messages
             .gte("created_at", subDays(new Date(start), 1).toISOString()); // Look back a bit further
-
+ 
         if (messages) {
             bookings.forEach(booking => {
-                const bookingTime = new Date(booking.created_at).getTime();
+                const bookingTime = new Date(booking.created_at || "").getTime();
                 // Check if there's an AI message for this guest within 24h before booking
                 const hasAIInteraction = messages.some(m => {
-                    const msgTime = new Date(m.created_at).getTime();
+                    const msgTime = new Date(m.created_at || "").getTime();
                     return m.guest_id === booking.guest_id && 
                            msgTime < bookingTime && 
                            (bookingTime - msgTime) < 24 * 60 * 60 * 1000;

@@ -103,6 +103,7 @@ export async function POST(
       count: integrations.length,
     });
 
+    // 3. Process integrations
     const today = new Date().toISOString().split("T")[0];
     const results: {
       platform: string;
@@ -111,7 +112,8 @@ export async function POST(
     }[] = [];
 
     for (const integration of integrations) {
-      const { platform, external_ical_url } = integration;
+      const platform = integration.platform as string;
+      const external_ical_url = integration.external_ical_url as string;
 
       try {
         // Fetch the iCal feed
@@ -128,22 +130,23 @@ export async function POST(
         const icalText = await icalRes.text();
         const events = parseICal(icalText);
 
-        // Wipe future bookings for this platform and re-insert
-        const { error: deleteError } = await supabase
+        // Delete existing future bookings for this platform
+        await supabase
           .from("bookings")
           .delete()
           .eq("listing_id", listingId)
           .eq("source", platform)
           .gte("start_date", today);
 
-        if (deleteError) throw deleteError;
+        // Filter valid events
+        const validEvents = events.filter((e) => {
+          if (!e.startDate || !e.endDate) return false;
+          return e.endDate.getTime() > Date.now();
+        });
 
-        const validEvents = events.filter(
-          (e) => e.startDate && e.endDate && e.endDate.getTime() > Date.now(),
-        );
-
+        let importedCount = 0;
         if (validEvents.length > 0) {
-          // Get or create a placeholder external guest for this platform
+          // Get or Create generic External Guest
           let { data: guest } = await supabase
             .from("guests")
             .select("id")
@@ -171,9 +174,9 @@ export async function POST(
             tenant_id: tenantId,
             listing_id: listingId,
             guest_id: guest!.id,
-            start_date: e.startDate.toISOString(),
-            end_date: e.endDate.toISOString(),
-            status: "confirmed",
+            start_date: e.startDate!.toISOString(),
+            end_date: e.endDate!.toISOString(),
+            status: "confirmed" as const,
             source: platform,
             amount: 0,
           }));
@@ -183,6 +186,7 @@ export async function POST(
             .insert(bookingsToInsert);
 
           if (insertError) throw insertError;
+          importedCount = bookingsToInsert.length;
         }
 
         // Mark integration as synced
@@ -196,24 +200,30 @@ export async function POST(
           .eq("listing_id", listingId)
           .eq("platform", platform);
 
-        results.push({ platform, imported: validEvents.length });
-      } catch (err: any) {
-        console.error(`[Sync Push] Failed for platform ${platform}:`, err);
+        results.push({ platform, imported: importedCount });
+      } catch (error: any) {
+        console.error(`Push sync failed for ${platform}:`, error);
 
-        // Mark the integration as errored without failing the whole batch
+        // Update status to error
         await supabase
           .from("listing_integrations")
           .update({
             status: "error",
             last_synced_at: new Date().toISOString(),
-            error_message: err.message || "Unknown error",
+            error_message: error.message || "Unknown sync error",
           })
           .eq("listing_id", listingId)
           .eq("platform", platform);
 
-        results.push({ platform, imported: 0, error: err.message });
+        results.push({ platform, imported: 0, error: error.message });
       }
     }
+
+    // 4. Update overall listing updated_at
+    await supabase
+      .from("listings")
+      .update({ updated_at: new Date().toISOString() })
+      .eq("id", listingId);
 
     const syncedCount = results.filter((r) => !r.error).length;
     const errorCount = results.filter((r) => !!r.error).length;
@@ -236,16 +246,14 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      message: `Synced ${syncedCount} of ${integrations.length} platform(s).`,
-      synced: syncedCount,
-      failed: errorCount,
       results,
-      syncedAt: new Date().toISOString(),
+      syncedCount,
+      errorCount,
     });
-  } catch (error: any) {
-    console.error("[Sync Push] Unexpected error:", error);
+  } catch (err: any) {
+    console.error("[Sync Push] Fatal error:", err);
     return NextResponse.json(
-      { error: error?.message || "Sync failed" },
+      { error: err.message || "Internal server error" },
       { status: 500 },
     );
   }

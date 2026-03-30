@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 16 conventions, 23 fixes."
+description: "Typescript for node. 1 gotchas, 25 conventions, 42 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,9 +11,329 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **69 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **114 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+
+## ⚠️ Anti-Patterns & Gotchas
+
+> **CRITICAL:** These are real gotchas from this project. Ignoring them WILL cause bugs.
+
+### ❌ ⚠️ GOTCHA: Updated schema Date
+-         const start = new Date(b.start_date);
++         if (!b.start_date || !b.end_date) return false;
+-         const end = new Date(b.end_date);
++         const start = new Date(b.start_date);
+-         return targetDate >= start && targetDa
+- Modified 1 files
+- identifier: Date
+- identifier: Base
+
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in route.ts
+File updated (external): src/app/api/payments/webhook/route.ts
+
+Content summary (189 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { logEvent } from "@/lib/events";
+import { log } from "@/lib/logger";
+import { EVENT_TYPES } from "@/types/events";
+import { ChannelService } from "@/lib/services/channelService";
+
+type Payload = {
+
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in Boolean — prevents null/undefined runtime crashes
+-     const aiDefaults = getPersonaAIDefaults(tenant?.business_type);
++     const aiDefaults = getPersonaAIDefaults(tenant?.business_type as any);
+-     const systemPrompt = [
++     const aiConfig = (tenant?.ai_settings || {}) as any;
+-       aiDefaults.instructions,
++     const systemPrompt = [
+-       getToneInstruction(tenant?.ai_settings?.tone),
++       aiDefaults.instructions,
+-       tenant?
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Boolean
+3. identifier: Guest
+4. identifier: Name
+5. identifier: Message
+
+### problem-fix in route.ts
+File updated (external): src/app/api/messages/ai-reply/route.ts
+
+Content summary (318 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
+import { FailureService } from "@/lib/services/failureServi
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in Fetch
+-       const { platform, external_ical_url } = integration;
++       const platform = integration.platform as string;
+- 
++       const external_ical_url = integration.external_ical_url as string;
+-       if (!external_ical_url) {
++ 
+-         results.push({ platform, imported: 0, error: "Missing iCal URL" });
++       try {
+-         continue;
++         // Fetch the iCal feed
+-       }
++
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Fetch
+3. identifier: User
+4. identifier: Agent
+5. identifier: Nodebase
+
+### Fixed null crash in Process — prevents null/undefined runtime crashes
+-     const today = new Date().toISOString().split("T")[0];
++     // 3. Process integrations
+-     const results: {
++     const today = new Date().toISOString().split("T")[0];
+-       platform: string;
++     const results: {
+-       imported: number;
++       platform: string;
+-       error?: string;
++       imported: number;
+-     }[] = [];
++       error?: string;
+- 
++     }[] = [];
+
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Process
+3. identifier: Date
+4. identifier: Missing
+5. identifier: URL
+
+### problem-fix in route.ts
+File updated (external): src/app/api/integrations/webhook/whatsapp/route.ts
+
+Content summary (213 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { ControlService } from "@/lib/services/controlService";
+import { wahaService } from "@/lib/services/wahaService";
+import { FlowService } from "@/lib/services/flowService";
+import { ge
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/integrations/webhook/meta/route.ts
+
+Content summary (182 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { log } from "@/lib/logger";
+import { ControlService } from "@/lib/services/controlService";
+import { ChannelService } from "@/lib/services/channelService";
+import { FlowService } from "@/l
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+-           source: failed.platform,
++           source: failed.platform || "unknown",
+-             connected.platform,
++             connected.platform || "unknown",
+
+📌 IDE AST Context: Modified symbols likely include [getBaseUrl, GET, POST]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in User — reduces initial bundle size with code splitting
+-         "id, listing_id, tenant_id, guest_id, start_date, end_date, status, source, amount, created_at, guest_contact",
++         "id, listing_id, tenant_id, guest_id, guest_name, start_date, end_date, status, source, amount, created_at, guest_contact",
+-       const { platform, external_ical_url } = integration;
++       try {
+-       try {
++         const icalRes = await fetch(external_ica
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: User
+3. identifier: Agent
+4. identifier: Nodebase
+5. identifier: CalendarSync
+
+### Fixed null crash in Guest — reduces initial bundle size with code splitting
+-         guestId: b.guest_id,
++         guestName: b.guest_name || "Guest",
+-         tenant_id: tenantId,
++         tenant_id: tenantId || "",
+-         actor_type: "user",
++         listing_id: listingId,
+-         event_type: EVENT_TYPES.ACTION_BLOCKED,
++         event_type: 'calendar_sync',
+-         entity_type: "calendar",
++         entity_type: 'listing',
+-         metadata: {
++
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Guest
+3. identifier: NextResponse
+4. identifier: Insufficient
+5. identifier: Fetch
+
+### problem-fix in route.ts
+File updated (external): src/app/api/listings/[id]/calendar/route.ts
+
+Content summary (391 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSession } from "@/lib/auth/session";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/ty
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in inboxService.ts
+File updated (external): src/lib/services/inboxService.ts
+
+Content summary (120 lines):
+
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { Conversation, MessageChannel, MessageDirection } from "@/types/omnichannel";
+import { log } from "@/lib/logger";
+
+export class InboxService {
+  /**
+   * Get all conversations for a tenant, ordered by last message
+   */
+  static async getConver
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in pricingService.ts
+File updated (external): src/lib/services/pricingService.ts
+
+Content summary (106 lines):
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { AppError, ErrorCode } from "@/lib/errors";
+import { log } from "@/lib/logger";
+
+export interface PricingRules {
+  per_1k_tokens: number;
+  action_multipliers: Record<string, number>;
+  persona_multipliers?: Record<string, number>;
+  ai_monthl
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in controlService.ts
+-     const { error } = await supabase.from("system_settings").upsert({
++     const { error } = await supabase.from("system_flags").upsert([{
+-       key: key,
++       key,
+-     });
++     }]);
+
+📌 IDE AST Context: Modified symbols likely include [SystemFlagKey, TenantControlKey, ActionBlockedError, createActionBlockedError, PostgrestResponse]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in controlService.ts
+-   description: string | null;
++   description?: string | null;
+-   updated_at: string | null;
++   updated_at?: string | null;
+-   updated_by: string | null;
++   updated_by?: string | null;
+-     const { error } = await supabase.from("system_flags").upsert([{
++     const { error } = await supabase.from("system_settings").upsert({
+-       key,
++       key: key,
+-       value,
++       value: value 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in supportService.ts
+File updated (external): src/lib/services/supportService.ts
+
+Content summary (119 lines):
+
+import { SupportTicket, TicketStatus, TicketPriority, TicketMessage, TicketProduct } from "@/types/support";
+import { getSupabaseServer } from "@/lib/supabase/server";
+
+export const supportService = {
+  async getUserTickets(userId: string): Promise<SupportTicket[]> {
+    const supabase = await getSupabaseSer
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/integrations/route.ts
+
+Content summary (108 lines):
+import { NextResponse } from 'next/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
+import { getSession } from '@/lib/auth/session';
+import { encryptToken } from '@/lib/crypto';
+import { requireActiveTenant } from '@/lib/auth/tenant';
+
+export async function GET() {
+  const session = await ge
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/integrations/whatsapp/status/route.ts
+
+Content summary (60 lines):
+import { NextResponse } from "next/server";
+import { getSession } from "@/lib/auth/session";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { wahaService } from "@/lib/services/wahaService";
+
+export async function GET() 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+-        tenant_id: data.tenant_id,
++        tenant_id: tenantId,
+-      await FailureService.resolveFailure(data.tenant_id, 'google', 'integration');
++      await FailureService.resolveFailure(tenantId, 'google', 'integration');
+
+📌 IDE AST Context: Modified symbols likely include [REQUIRED_SCOPES, GET]
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in route.ts
 File updated (external): src/app/api/host/me/route.ts
@@ -34,359 +354,33 @@ export async function GET() {
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in route.ts
-File updated (external): src/app/api/guest-id/upload/route.ts
-
-Content summary (131 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
-import { randomUUID } from "crypto";
-import { saveEncryptedImage } from "@/lib/guestIdStorage";
-
-export async function GET(request: NextRequest) {
-  try {
-    const token = request.nextUrl.sear
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/guests/[id]/upload-id/route.ts
-
-Content summary (243 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
-import { withErrorHandler } from "@/l
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/chat/init/route.ts
-
-Content summary (68 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-
-export async function POST(request: NextRequest) {
-  try {
-    const { businessId, name, phone } = await request.json();
-    if (!businessId || !name) {
-        return NextResponse.json({ error: "Mi
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in billing.ts
-File updated (external): src/types/billing.ts
-
-Content summary (69 lines):
-
-export type PaymentProvider = 'razorpay' | 'stripe';
-export type PaymentStatus = 'pending' | 'completed' | 'failed' | 'refunded';
-export type BillingInterval = 'month' | 'year' | 'one_time';
-export type SubscriptionStatus = 'active' | 'past_due' | 'canceled' | 'trialing' | 'paused';
-
-import { Json } from './supabase';
-
-exp
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/wallet/transactions/route.ts
-
-Content summary (39 lines):
-import { NextResponse } from 'next/server';
-import { getSupabaseServer } from '@/lib/supabase/server';
-import { requireActiveTenant } from '@/lib/auth/tenant';
-
-export async function GET() {
-  const supabase = await getSupabaseServer();
-
-  // Get current user
-  const { data: { user }, error: authError } 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/bookings/route.ts
-
-Content summary (48 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-
-export async function GET(_request: NextRequest) {
-  try {
-    const supabase = await getSupabaseServer();
-    const { data: { user }, error: 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/inbox/send/route.ts
-
-Content summary (99 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { ControlService } from "@/lib/services/controlService";
-
-export async function POST(request: Request) {
-  try {
-    const body = await request.jso
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/inbox/messages/route.ts
-
-Content summary (47 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-
-export async function GET(request: NextRequest) {
-  const supabase = await getSupabaseServer();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-  if (authError ||
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/admin/pricing/update/route.ts
-
-Content summary (55 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { getSession } from "@/lib/auth/session";
-
-export async function POST(request: Request) {
-  const session = await getSession();
-  if (!session || session.role !== 'superadmin') {
-    return Next
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in walletService.ts
-File updated (external): src/lib/services/walletService.ts
-
-Content summary (193 lines):
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { log } from "@/lib/logger";
-import { AppError, ErrorCode } from "@/lib/errors";
-
-export class WalletService {
-  /**
-   * Get current wallet balance for a tenant
-   */
-  static async getBalance(tenantId: string): Promise<number> {
-    const supa
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in TenantControlsRow — parallelizes async operations for speed
-- type SystemFlagRow = { key: string; value: boolean };
-+ type TenantControlsRow = {
-- type TenantControlsRow = {
-+   is_ai_enabled: boolean | null;
--   is_ai_enabled: boolean | null;
-+   is_messaging_enabled: boolean | null;
--   is_messaging_enabled: boolean | null;
-+   is_bookings_enabled: boolean | null;
--   is_bookings_enabled: boolean | null;
-+   is_wallet_enabled: boolean | null;
--   is_wall
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: TenantControlsRow
-3. identifier: ControlService
-4. identifier: Get
-5. identifier: Global
-
-### Fixed null crash in Json — prevents null/undefined runtime crashes
--         createdAt: user.created_at,
-+         createdAt: user.created_at || "",
--           businessType: kaisaAccount.business_type || tenant?.business_type || "",
-+           businessType: tenant?.business_type || "",
--         lastActivity: user.updated_at || user.created_at
-+         lastActivity: user.updated_at || user.created_at || ""
--         createdAt: tenant.created_at || user.created
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Json
-
-### Fixed null crash in AccountStatus — prevents null/undefined runtime crashes
--         phone: user.phone || null,
-+         phone: user.phone || "",
--         email: user.email || null,
-+         email: user.email || undefined,
--         account: account?.status || "active",
-+         account: (account?.status as AccountStatus) || "active",
--         kyc: tenant?.kyc_status || "pending",
-+         kyc: (tenant?.kyc_status as KYCStatus) || "not_started",
--           busines
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: AccountStatus
-3. identifier: KYCStatus
-
-### Fixed null crash in Database — wraps unsafe operation in error boundary
-- 
-+ import type { Database } from '@/types/supabase';
-- // Standard client for authenticated user actions (Respects RLS)
-+ 
-- export async function getSupabaseServer() {
-+ // Standard client for authenticated user actions (Respects RLS)
--   const cookieStore = await cookies();
-+ export async function getSupabaseServer() {
-- 
-+   const cookieStore = await cookies();
--   const url = process.env.NEX
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Database
-3. identifier: Standard
-4. identifier: Respects
-5. identifier: RLS
-
-### Fixed null crash in Database — externalizes configuration for environment fle...
-- 
-+ import type { Database } from '@/types/database';
-- export function getSupabaseAdmin() {
-+ 
--   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "https://placeholder.supabase.co";
-+ export function getSupabaseAdmin() {
--   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder";
-+   const supabaseUrl = process.env.NEXT_PUBLIC_SU
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Database
-3. identifier: Supabase
-4. identifier: Admin
-5. identifier: Utility
-
-### Fixed null crash in Database — externalizes configuration for environment fle...
-- 
-+ import type { Database } from '@/types/database';
-- let browserClient: ReturnType<typeof createBrowserClient> | null = null;
-+ 
-- 
-+ let browserClient: ReturnType<typeof createBrowserClient<Database>> | null = null;
-- export function getSupabaseBrowser() {
-+ 
--   if (browserClient) return browserClient;
-+ export function getSupabaseBrowser() {
--   const url = process.env.NEXT_PUBLIC_SUPABASE_
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Database
-3. identifier: ReturnType
-4. identifier: database
-5. identifier: NEXT_PUBLIC_SUPABASE_URL
-
-### Fixed null crash in Database — wraps unsafe operation in error boundary
-- 
-+ import type { Database } from '@/types/database';
-- // Standard client for authenticated user actions (Respects RLS)
-+ 
-- export async function getSupabaseServer() {
-+ // Standard client for authenticated user actions (Respects RLS)
--   const cookieStore = await cookies();
-+ export async function getSupabaseServer() {
-- 
-+   const cookieStore = await cookies();
--   const url = process.env.NEX
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Database
-3. identifier: Standard
-4. identifier: Respects
-5. identifier: RLS
-
-### Fixed null crash in Cache
--       revalidateTag(key);
-+       // @ts-ignore
--     } catch (e) {
-+       revalidateTag(key);
--       console.error('Cache Revalidate Error (del):', e);
-+     } catch (e) {
--     }
-+       console.error('Cache Revalidate Error (del):', e);
--   },
-+     }
--   
-+   },
--   async delPattern(pattern: string): Promise<void> {
-+   
--     try {
-+   async delPattern(pattern: string): Promise<void> {
-- 
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Cache
-3. identifier: Revalidate
-4. identifier: Error
-5. identifier: Promise
-
-### problem-fix in withErrorHandler.ts
-- export function withErrorHandler(handler: Function) {
-+ export function withErrorHandler(handler: (...args: any[]) => any) {
-
-📌 IDE AST Context: Modified symbols likely include [withErrorHandler]
-
-**Actionable Steps:**
-1. Modified 1 files
-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
-- 📐 **problem-fix in route.ts — confirmed 3x** — File updated (external): src/app/api/guest-id/reject/[id]/route.ts
+- 📐 **problem-fix in route.ts — confirmed 3x** — File updated (external): src/app/api/public/ical/[id]/route.ts
 
-Content summary (70 lines):
-impo
-- 📐 **what-changed in route.ts — confirmed 4x** — File updated (external): src/app/api/payments/create-link/route.ts
+Content summary (79 lines):
 
-Content summary (329 lines):
-imp
-- 📐 **problem-fix in route.ts — confirmed 3x** — File updated (external): src/app/api/guest-id/approve/[id]/route.ts
+import 
+- 📐 **Fixed null crash in System — confirmed 6x** — -             channel,
++             role: "assistant", // System automated assistant
+-             
+- 📐 **what-changed in route.ts — confirmed 3x** — - }
++ }
 
-Content summary (73 lines):
-imp
-- 📐 **problem-fix in route.ts — confirmed 4x** — File updated (external): src/app/api/failures/route.ts
+📌 IDE AST Context: Modified symbols likely include [POST]
+- 📐 **Added session cookies authentication — prevents null/undefined runtime crashes — confirmed 3x** — -           .eq("listing_id", listingId)
++           .eq("listing_id", listingId as string)
+-     
+- 📐 **problem-fix in route.ts — confirmed 5x** — -     const portalData = (await admin.rpc(
++     const { data: portalData, error: rpcError } = awai
+- 📐 **what-changed in route.ts — confirmed 4x** — File updated (external): src/app/api/kyc/[token]/documents/route.ts
 
-Content summary (82 lines):
-import { NextRes
-- 📐 **what-changed in database.ts — confirmed 4x** — -   metadata?: Record<string, unknown>;
-+   metadata: Json | null;
--   is_active: boolean;
-+   is_ac
-- 📐 **Strengthened types Alias** — -     businessType: dbTenant.business_type // Alias for easier access
-+     businessType: dbTenant.b
-- 📐 **Strengthened types Json — formalizes the data contract with explicit types** — -   tenant_id?: string;
-+   tenant_id: string | null;
--   actor_type: string;
-+   actor_id: string |
-- 📐 **Strengthened types Subscription** — -     status: db.status as Subscription["status"],
-+     s
+Content summary (313 lines):
+im
+- 📐 **Fixed null crash in Failed — parallelizes async operations for speed — confirmed 3x** — -     if (!data?.value) return DEFAULT_PRICING;
++     if (error || !request) {
+-     // Merge with d
+- 📐 **what-changed in setti
 
 ... [Truncated — see individual observations for full content]

@@ -1,5 +1,5 @@
 
-import { SupportTicket, TicketStatus, TicketPriority, TicketMessage } from "@/types/support";
+import { SupportTicket, TicketStatus, TicketPriority, TicketMessage, TicketProduct } from "@/types/support";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
 export const supportService = {
@@ -48,13 +48,13 @@ export const supportService = {
 
     return tickets.map((t: any) => ({
       id: t.id,
-      userId: t.user_id,
+      userId: t.user_id || "",
       subject: t.subject,
-      product: t.product,
-      status: t.status,
-      priority: t.priority,
-      createdAt: t.created_at,
-      updatedAt: t.updated_at,
+      product: (t.product as TicketProduct) || "general",
+      status: (t.status as TicketStatus) || "open",
+      priority: (t.priority as TicketPriority) || "medium",
+      createdAt: t.created_at || new Date().toISOString(),
+      updatedAt: t.updated_at || new Date().toISOString(),
       messages: messageMap.get(t.id) || []
     }));
   },
@@ -98,20 +98,20 @@ export const supportService = {
                 id: msgData.id,
                 sender: 'user',
                 message: msgData.message,
-                timestamp: msgData.created_at
+                timestamp: msgData.created_at || new Date().toISOString()
             });
         }
     }
 
     return {
       id: newTicket.id,
-      userId: newTicket.user_id,
+      userId: newTicket.user_id || "",
       subject: newTicket.subject,
-      product: newTicket.product,
-      status: newTicket.status,
-      priority: newTicket.priority,
-      createdAt: newTicket.created_at,
-      updatedAt: newTicket.updated_at,
+      product: (newTicket.product as TicketProduct) || "general",
+      status: (newTicket.status as TicketStatus) || "open",
+      priority: (newTicket.priority as TicketPriority) || "medium",
+      createdAt: newTicket.created_at || new Date().toISOString(),
+      updatedAt: newTicket.updated_at || new Date().toISOString(),
       messages: messages
     };
   }

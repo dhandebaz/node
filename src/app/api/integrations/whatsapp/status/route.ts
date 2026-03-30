@@ -27,7 +27,6 @@ export async function GET() {
             status: "active",
             connected_name: "WhatsApp",
             last_synced_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
           },
           { onConflict: "tenant_id, provider" }
         );
@@ -35,7 +34,7 @@ export async function GET() {
   } catch {}
   const { data, error } = await supabase
     .from("integrations")
-    .select("tenant_id, status, connected_name, last_synced_at, metadata")
+    .select("tenant_id, status, connected_name, last_synced_at")
     .eq("tenant_id", tenantId)
     .eq("provider", "whatsapp")
     .maybeSingle();

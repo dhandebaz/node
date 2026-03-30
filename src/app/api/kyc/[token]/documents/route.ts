@@ -145,7 +145,7 @@ export async function POST(
     const { data: portalData, error: rpcError } = await admin.rpc(
       "get_kyc_request_by_token",
       { p_token: token }
-    );
+    ) as { data: any, error: any };
 
     if (rpcError || !portalData || portalData.success === false) {
       const code = portalData?.code ?? "UNKNOWN";

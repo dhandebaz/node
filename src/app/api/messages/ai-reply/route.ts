@@ -157,13 +157,17 @@ export async function POST(request: Request) {
       supabase
         .from("listings")
         .select("name, city")
-        .eq("id", listingId)
+        .eq("id", listingId as string)
         .single(),
-      supabase.from("guests").select("name").eq("id", guestId).single(),
+      supabase
+        .from("guests")
+        .select("name")
+        .eq("id", guestId as string)
+        .single(),
       supabase
         .from("bookings")
         .select("start_date, end_date, status")
-        .eq("listing_id", listingId)
+        .eq("listing_id", listingId as string)
         .gte("end_date", new Date().toISOString())
         .neq("status", "cancelled"),
     ]);
@@ -185,7 +189,7 @@ export async function POST(request: Request) {
       .eq("id", tenantId)
       .single();
 
-    const aiDefaults = getPersonaAIDefaults(tenant?.business_type);
+    const aiDefaults = getPersonaAIDefaults(tenant?.business_type as any);
     const appSettings = await settingsService.getSettings();
     const kaisaRuntime = resolveAISettings({
       provider: appSettings.api.kaisaProvider,
@@ -197,7 +201,7 @@ export async function POST(request: Request) {
     if (tenant?.is_memory_enabled) {
       try {
         const memories = await MemoryService.getMemories(tenantId, {
-          listingId,
+          listingId: listingId as string,
         });
         if (memories.length > 0) {
           // Update usage stats for retrieved memories
@@ -217,10 +221,11 @@ ${memories.map((m) => `- [${m.memory_type.toUpperCase()}] ${m.summary} (Confiden
     }
 
     // 5. Generate Reply
+    const aiConfig = (tenant?.ai_settings || {}) as any;
     const systemPrompt = [
       aiDefaults.instructions,
-      getToneInstruction(tenant?.ai_settings?.tone),
-      tenant?.ai_settings?.customInstructions?.trim(),
+      getToneInstruction(aiConfig.tone),
+      aiConfig.customInstructions?.trim(),
       memoryContext,
     ]
       .filter(Boolean)

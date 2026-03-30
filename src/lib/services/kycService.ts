@@ -299,7 +299,7 @@ export class KycService {
         guest_email: data.guest_email ?? null,
         guest_phone: data.guest_phone ?? null,
         booking_reference: data.booking_reference ?? null,
-      })
+      } as any)
       .select()
       .single();
 
@@ -466,10 +466,10 @@ export class KycService {
         document_type: data.document_type,
         front_image_path: data.front_image_path,
         back_image_path: data.back_image_path ?? null,
-        extracted_data: safeExtractedData,
+        extracted_data: safeExtractedData as any,
         aadhaar_last4: aadhaarLast4,
         verification_status: "ai_processed",
-      })
+      } as any)
       .select()
       .single();
 

@@ -25,11 +25,11 @@ export class InvoiceService {
       margin + 25,
     );
     doc.text(
-      `Date: ${format(new Date(invoice.created_at), "PPP")}`,
+      `Date: ${format(new Date(invoice.created_at || new Date().toISOString()), "PPP")}`,
       margin,
       margin + 30,
     );
-    doc.text(`Status: ${invoice.status.toUpperCase()}`, margin, margin + 35);
+    doc.text(`Status: ${(invoice.status || "paid").toUpperCase()}`, margin, margin + 35);
 
     // Business Details (From)
     doc.setTextColor(0);

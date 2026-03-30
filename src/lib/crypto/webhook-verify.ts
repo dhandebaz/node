@@ -6,16 +6,16 @@ import crypto from 'crypto';
  * @param signature Razorpay signature from headers 'x-razorpay-signature'
  * @returns boolean indicating if signature is valid
  */
-export function verifyRazorpayWebhook(body: string, signature: string): boolean {
+export function verifyRazorpayWebhook(body: string, signature: string, secret?: string): boolean {
   try {
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
-    if (!secret) {
+    const webhookSecret = secret || process.env.RAZORPAY_WEBHOOK_SECRET;
+    if (!webhookSecret) {
       console.warn("RAZORPAY_WEBHOOK_SECRET is not defined");
       return false;
     }
 
     const expectedSignature = crypto
-      .createHmac('sha256', secret)
+      .createHmac('sha256', webhookSecret)
       .update(body)
       .digest('hex');
 

@@ -93,7 +93,7 @@ export class AdminService {
       email: u.email,
       plan: u.subscription_plan || "starter",
       businessType: u.business_type || "unknown",
-      joinedAt: u.created_at,
+      joinedAt: u.created_at || new Date().toISOString(),
       // @ts-ignore - Supabase types join handling
       walletBalance: u.wallets?.[0]?.balance || 0
     }));

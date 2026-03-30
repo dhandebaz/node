@@ -43,7 +43,7 @@ export class PricingService {
 
     if (!data?.value) return DEFAULT_PRICING;
     // Merge with default to ensure new fields exist if old data
-    return { ...DEFAULT_PRICING, ...data.value } as PricingRules;
+    return { ...DEFAULT_PRICING, ...(data.value as any) } as PricingRules;
   }
 
   static async updateRules(newRules: Partial<PricingRules>): Promise<PricingRules> {

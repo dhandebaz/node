@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 36 gotchas, 59 conventions, 9 fixes."
+description: "Project for node. 36 gotchas, 63 conventions, 12 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **152 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **180 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -56,6 +56,41 @@ Auto-compiled from **152 real patterns** in **node**. This skill is auto-routed 
 | Never force push to main, master, or production br | Never force push to main, master, or production branches |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in tsc_errors.txt
+File updated (external): tsc_errors.txt
+
+Content summary (243 lines):
+��s
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in BusinessType — prevents null/undefined runtime crashes
+- I will apply type casting to `tenant?.business_type` in the following files to match the expected `BusinessType` type.
++ I will apply type casting to `tenant?.business_type` in the following files to match the expected `BusinessType` type and ensure the `BusinessType` type is imported.
+- Cast `tenant?.business_type` to `BusinessType` when calling `getPersonaCapabilities`.
++ - Import `BusinessTyp
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: BusinessType
+3. identifier: Import
+4. identifier: Cast
+5. identifier: MODIFY
+
+### Fixed null crash in BusinessType — prevents null/undefined runtime crashes
+- I will apply type casting to `tenant?.business_type` in the following files to match the expected `BusinessType` type.
++ I will apply type casting to `tenant?.business_type` in the following files to match the expected `BusinessType` type and ensure the `BusinessType` type is imported.
+- Cast `tenant?.business_type` to `BusinessType` when calling `getPersonaCapabilities`.
++ - Import `BusinessTyp
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: BusinessType
+3. identifier: Import
+4. identifier: Cast
+5. identifier: MODIFY
 
 ### problem-fix in build_output_utf8.txt
 - 
@@ -182,6 +217,12 @@ yarn-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 3x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
+- 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 5x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
+- 📐 **Updated src database schema — formalizes the data contract with explicit types — confirmed 4x** — - - [ ] Fix 'last_sync' vs 'last_synced_at' in Integration Routes
++ - [x] Fix 'last_sync' vs 'last_s
+- 📐 **Updated API endpoint task — confirmed 3x** — - - [/] Fix `src/app/api/integrations/instagram/connect/route.ts`
++ - [x] Fix `src/app/api/integrati
 - 📐 **what-changed in build_log.txt — confirmed 3x**
 - 📐 **Strengthened types Alignment — prevents null/undefined runtime crashes** — - # Fixing TypeScript Build Errors (Billing & Wallet Transactions)
 + # Alignment of TypeScript with 
@@ -228,22 +269,6 @@ Content summary (736 lines):
 - 📐 **Use helmet for security headers** — Use helmet for security headers
 - 📐 **Use middleware.ts for authentication guards, not client-side checks** — Use middleware.ts for authentication guards, not client-side checks
 - 📐 **Use next/image (not img tag) for automatic optimization** — Use next/image (not img tag) for automatic optimization
-- 📐 **Handle loading.tsx and error.tsx for every async route** — Handle loading.tsx and error.tsx for every async route
-- 📐 **Use Server Components by default — add "use client" only when needed** — Use Server Components by default — add "use client" only when needed
-- 📐 **Use Suspense and Error Boundaries for async operations** — Use Suspense and Error Boundaries for async operations
-- 📐 **Don't prop-drill more than 2 levels — use Context or state management** — Don't prop-drill more than 2 levels — use Context or state management
-- 📐 **Use useMemo for expensive computations, useCallback for stable references** — Use useMemo for expensive computations, useCallback for stable references
-- 📐 **Enable strict mode in tsconfig.json** — Enable strict mode in tsconfig.json
-- 📐 **Prefer Array methods (map, filter, reduce) over manual loops** — Prefer Array methods (map, filter, reduce) over manual loops
-- 📐 **Use template literals for string interpolation, not concatenation** — Use template literals for string interpolation, not concatenation
-- 📐 **Use optional chaining (?.) and nullish coalescing (??) for safe access** — Use optional chaining (?.) and nullish coalescing (??) for safe access
-- 📐 **Use const by default, let when reassignment needed, never var** — Use const by default, let when reassignment needed, never var
-- 📐 **Version your API from day 1 (/api/v1/)** — Version your API from day 1 (/api/v1/)
-- 📐 **Use consistent response format across all endpoints** — Use consistent response format across all endpoints
-- 📐 **Implement soft delete for important data — don't hard delete without confirmation** — Implement soft delete for important data — don't hard delete without confirmation
-- 📐 **Handle timezone correctly — store UTC, display in user's timezone** — Handle timezone correctly — store UTC, display in user's timezone
-- 📐 **Make layouts responsive from the start — mobile-first approach** — Make layouts responsive from the start — mobile-first approach
-- 📐 **Disable submit button during form submission — prevent double-submit** — Disable submit button during form submission — prevent double-submit
-- 📐 **Always add empty states ("No items yet" with call-to-acti
+- 📐 **Handle loading.tsx and error.tsx for every async route** — Handle loading.tsx and error.tsx for every async r
 
 ... [Truncated — see individual observations for full content]

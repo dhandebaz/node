@@ -41,7 +41,7 @@ export class ExportService {
       row.created_at,
     ]);
 
-    return [headers.join(","), ...rows.map((r) => r.map(escapeCSV).join(","))].join("\n");
+    return [headers.join(","), ...rows.map((r) => r.map((v) => escapeCSV(v || "")).join(","))].join("\n");
   }
 
   /**
@@ -70,7 +70,7 @@ export class ExportService {
       row.created_at,
     ]);
 
-    return [headers.join(","), ...rows.map((r) => r.map(escapeCSV).join(","))].join("\n");
+    return [headers.join(","), ...rows.map((r) => r.map((v) => escapeCSV(v || "")).join(","))].join("\n");
   }
 
   /**
@@ -100,7 +100,7 @@ export class ExportService {
       row.created_at,
     ]);
 
-    return [headers.join(","), ...rows.map((r) => r.map(escapeCSV).join(","))].join("\n");
+    return [headers.join(","), ...rows.map((r) => r.map((v) => escapeCSV(v || "")).join(","))].join("\n");
   }
 
   /**
@@ -127,7 +127,7 @@ export class ExportService {
       row.date,
     ]);
 
-    return [headers.join(","), ...rows.map((r) => r.map(escapeCSV).join(","))].join("\n");
+    return [headers.join(","), ...rows.map((r) => r.map((v) => escapeCSV(v || "")).join(","))].join("\n");
   }
 }
 

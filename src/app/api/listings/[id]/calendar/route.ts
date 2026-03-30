@@ -98,7 +98,7 @@ export async function GET(
         await FailureService.raiseFailure({
           tenant_id: tenantId,
           category: "calendar",
-          source: failed.platform,
+          source: failed.platform || "unknown",
           severity: "warning",
           message: `Calendar sync failed for ${failed.platform}`,
           metadata: { listing_id: listingId, platform: failed.platform },
@@ -112,7 +112,7 @@ export async function GET(
         if (connected.status === "connected") {
           await FailureService.resolveFailure(
             tenantId,
-            connected.platform,
+            connected.platform || "unknown",
             "calendar",
           );
         }
@@ -123,7 +123,7 @@ export async function GET(
     const { data: dbBookings } = await supabase
       .from("bookings")
       .select(
-        "id, listing_id, tenant_id, guest_id, start_date, end_date, status, source, amount, created_at, guest_contact",
+        "id, listing_id, tenant_id, guest_id, guest_name, start_date, end_date, status, source, amount, created_at, guest_contact",
       )
       .eq("listing_id", listingId)
       .neq("status", "cancelled");
@@ -167,7 +167,7 @@ export async function GET(
         id: b.id,
         tenantId: b.tenant_id,
         listingId: b.listing_id,
-        guestId: b.guest_id,
+        guestName: b.guest_name || "Guest",
         startDate: b.start_date,
         endDate: b.end_date,
         status: b.status,
@@ -219,16 +219,17 @@ export async function POST(
 
     if (!hasBalance) {
       await logEvent({
-        tenant_id: tenantId,
-        actor_type: "user",
-        event_type: EVENT_TYPES.ACTION_BLOCKED,
-        entity_type: "calendar",
+        tenant_id: tenantId || "",
+        listing_id: listingId,
+        event_type: 'calendar_sync',
+        entity_type: 'listing',
         entity_id: listingId,
-        metadata: {
-          reason: "Insufficient funds for sync",
-          cost: estimatedCost,
-        },
-      });
+        metadata: { 
+          source: 'external_ical', 
+          count: 0,
+          sync_url: ""
+        }
+      } as any);
       return NextResponse.json(
         { error: "Insufficient credits for calendar sync." },
         { status: 402 },
@@ -256,9 +257,9 @@ export async function POST(
     }[] = [];
 
     for (const integration of integrations ?? []) {
-      const { platform, external_ical_url } = integration;
+      const { platform, external_ical_url } = integration as { platform: string; external_ical_url: string | null };
       try {
-        const icalRes = await fetch(external_ical_url, {
+        const icalRes = await fetch(external_ical_url || "", {
           headers: { "User-Agent": "Nodebase-CalendarSync/1.0" },
         });
         if (!icalRes.ok)

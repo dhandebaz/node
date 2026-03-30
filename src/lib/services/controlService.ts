@@ -44,6 +44,14 @@ type TenantControlsRow = {
   kyc_status: string | null;
 };
 
+type SystemFlagRow = {
+  key: string;
+  value: boolean | null;
+  description?: string | null;
+  updated_at?: string | null;
+  updated_by?: string | null;
+};
+
 export class ControlService {
   /**
    * Get all system flags (Global Kill Switches)
@@ -92,12 +100,12 @@ export class ControlService {
   ) {
     const supabase = await getSupabaseAdmin();
 
-    const { error } = await supabase.from("system_flags").upsert({
+    const { error } = await supabase.from("system_flags").upsert([{
       key,
-      value,
+      value: value as any,
       updated_by: userId,
       updated_at: new Date().toISOString(),
-    });
+    }]);
 
     if (error) throw error;
 

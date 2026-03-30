@@ -50,18 +50,13 @@ export async function GET(
     "END:VTIMEZONE"
   ];
 
-  bookings?.forEach(booking => {
+  bookings?.forEach((booking) => {
+    // Check if start/end are valid strings
+    if (!booking.start_date || !booking.end_date) return;
+
     // Format dates to YYYYMMDD format (all day events usually for bookings)
-    // Or YYYYMMDDTHHMMSSZ if specific times.
-    // Assuming bookings are date-based (check-in/check-out).
-    // iCal for accommodation usually uses VALUE=DATE for DTSTART/DTEND.
-    // DTEND is exclusive (check-out date).
-    
-    const start = booking.start_date.replace(/-/g, '').split('T')[0];
-    const end = booking.end_date.replace(/-/g, '').split('T')[0];
-    
-    // Check if start/end are valid
-    if (!start || !end) return;
+    const start = booking.start_date.replace(/-/g, "").split("T")[0];
+    const end = booking.end_date.replace(/-/g, "").split("T")[0];
 
     icalContent.push("BEGIN:VEVENT");
     icalContent.push(`UID:${booking.id}@nodebase.com`);

@@ -41,22 +41,24 @@ export async function GET(
     `X-WR-CALNAME:${listing.name} (Nodebase)`,
   ];
 
-  bookings?.forEach((booking) => {
-    const start = booking.start_date.replace(/[-:]/g, "").split(".")[0] + "Z";
-    const end = booking.end_date.replace(/[-:]/g, "").split(".")[0] + "Z";
-    const uid = `${booking.start_date}-${listingId}@nodebase.com`; // Stable UID
+  bookings
+    ?.filter((b) => b.start_date && b.end_date)
+    .forEach((booking) => {
+      const start = booking.start_date!.replace(/[-:]/g, "").split(".")[0] + "Z";
+      const end = booking.end_date!.replace(/[-:]/g, "").split(".")[0] + "Z";
+      const uid = `${booking.start_date}-${listingId}@nodebase.com`; // Stable UID
 
-    icalContent.push(
-      "BEGIN:VEVENT",
-      `UID:${uid}`,
-      `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
-      `DTSTART:${start}`,
-      `DTEND:${end}`,
-      `SUMMARY:Reserved`, // Obfuscate details for public export
-      "STATUS:CONFIRMED",
-      "END:VEVENT"
-    );
-  });
+      icalContent.push(
+        "BEGIN:VEVENT",
+        `UID:${uid}`,
+        `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
+        `DTSTART:${start}`,
+        `DTEND:${end}`,
+        `SUMMARY:Reserved`, // Obfuscate details for public export
+        "STATUS:CONFIRMED",
+        "END:VEVENT"
+      );
+    });
 
   icalContent.push("END:VCALENDAR");
 

@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 });
     }
 
-    const tenantId = listing.tenant_id;
+    const tenantId = listing.tenant_id as string;
 
     // Check kill switch for bookings
     try {
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     }
 
     // 4. Find or Create Guest
-    let guestId = null;
+    let guestId: string | null = null;
     if (payload.guest_name) {
        // Simple lookup by email if present, else create
        if (payload.guest_email) {
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
            .eq("email", payload.guest_email)
            .eq("tenant_id", tenantId)
            .maybeSingle();
-         guestId = existingGuest?.id;
+         guestId = existingGuest?.id || null;
        }
 
        if (!guestId) {
