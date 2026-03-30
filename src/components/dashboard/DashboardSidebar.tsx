@@ -42,14 +42,14 @@ function SidebarItem({
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group relative",
         active
-          ? "bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_rgba(66,133,244,0.15)]"
-          : "text-muted-foreground hover:text-foreground hover:bg-white/5",
+          ? "bg-primary/10 text-primary border border-primary/20 shadow-[0_4px_12px_rgba(66,133,244,0.1)]"
+          : "text-zinc-400 hover:text-white hover:bg-white/5",
       )}
     >
       <Icon
         className={cn(
           "w-5 h-5 shrink-0",
-          active ? "text-primary flex-shrink-0" : "text-muted-foreground group-hover:text-foreground",
+          active ? "text-primary flex-shrink-0" : "text-zinc-500 group-hover:text-white",
         )}
       />
       {!collapsed && (
@@ -137,14 +137,20 @@ export function DashboardSidebar() {
           {isCollapsed && <div className="h-px bg-white/5 my-4" />}
         </div>
 
-        {menuItems.map((item) => (
-          <SidebarItem
-            key={item.href}
-            {...item}
-            active={pathname === item.href}
-            collapsed={isCollapsed}
-          />
-        ))}
+        {menuItems.map((item) => {
+          const isActive = item.href === "/dashboard/ai" 
+            ? pathname === item.href 
+            : pathname.startsWith(item.href);
+            
+          return (
+            <SidebarItem
+              key={item.href}
+              {...item}
+              active={isActive}
+              collapsed={isCollapsed}
+            />
+          );
+        })}
       </div>
 
       {/* Bottom Section */}

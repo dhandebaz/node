@@ -18,17 +18,22 @@ export async function GET(request: Request) {
   }
 
   const tenantId = await requireActiveTenant();
-
   const supabase = await getSupabaseServer();
   
+  const { data: { user } } = await supabase.auth.getUser();
+  console.log(`[Listings API] Fetching for User: ${user?.id}, Tenant: ${tenantId}`);
+
   const { data: listings, error } = await supabase
     .from("listings")
     .select("*")
     .eq("tenant_id", tenantId);
 
   if (error) {
+    console.error("[Listings API] Error fetching listings:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  console.log(`[Listings API] Found ${listings?.length || 0} listings for tenant ${tenantId}`);
 
   const listingIds = (listings || []).map((listing: any) => listing.id);
   const [{ data: integrations }, { data: calendars }] = await Promise.all([
