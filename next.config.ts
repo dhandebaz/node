@@ -1,3 +1,4 @@
+import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -86,4 +87,28 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options
+
+  // Suppresses source map uploading logs during bundling
+  silent: true,
+  org: "dhandebaz-agency",
+  project: "javascript-nextjs",
+
+  // Routes HTTP requests through "tunnelRoute" to circumvent ad-blockers.
+  tunnelRoute: "/monitoring",
+
+  // Upload a larger set of source maps for prettier stack traces (increases build time)
+  widenClientFileUpload: true,
+
+  webpack: {
+    // Automatically tree-shake Sentry logger statements to reduce bundle size
+    treeshake: {
+      removeDebugLogging: true,
+    },
+
+    // Enables automatic instrumentation of Vercel Cron Monitors.
+    automaticVercelMonitors: true,
+  },
+});

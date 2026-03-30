@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 381 notes | Score threshold: >40
+> 384 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -44,10 +44,10 @@
 
 ## Recent Decisions
 
+- Optimized Auto — reduces excessive function call frequency
 - decision in DashboardSidebar.tsx
 - Optimized Only — reduces excessive function call frequency
 - decision in supabase.ts
-- decision in page.tsx
 
 ## Learned Patterns
 
