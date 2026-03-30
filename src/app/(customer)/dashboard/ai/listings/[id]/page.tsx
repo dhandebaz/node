@@ -240,14 +240,21 @@ export default function ListingDetailPage() {
             </p>
             <div className="flex gap-2">
               <div className="flex-1 bg-black/20 border border-border rounded-md px-3 py-2 text-sm text-foreground/80 font-mono truncate">
-                {nodebaseIcalUrl}
+                {nodebaseIcalUrl}.ics
               </div>
               <Button variant="outline" size="icon" onClick={() => {
-                navigator.clipboard.writeText(nodebaseIcalUrl);
-                toast.success("Copied to clipboard");
+                const urlWithExt = `${nodebaseIcalUrl}.ics`;
+                navigator.clipboard.writeText(urlWithExt);
+                toast.success("Copied link with .ics extension");
               }}>
                 <Copy className="w-4 h-4" />
               </Button>
+            </div>
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 space-y-1">
+              <p className="text-xs text-primary font-bold uppercase tracking-wider">Airbnb Note</p>
+              <p className="text-xs text-zinc-400">
+                Airbnb requires the calendar link to end in <strong>.ics</strong>. Please ensure the full link above is pasted into Airbnb's "Connect to another website" step.
+              </p>
             </div>
           </div>
 

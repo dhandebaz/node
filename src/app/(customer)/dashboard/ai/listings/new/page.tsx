@@ -86,20 +86,12 @@ export default function AddListingPage() {
   };
 
   const nextStep = () => {
-    if (step === 1 && !capabilities.calendar) {
-      setStep(4);
-      return;
-    }
-    setStep((prev) => Math.min(prev + 1, 4));
+    setStep((prev) => Math.min(prev + 1, 2));
   };
 
   const prevStep = () => {
     if (step === 1) {
       router.push("/dashboard/ai/listings");
-      return;
-    }
-    if (step === 4 && !capabilities.calendar) {
-      setStep(1);
       return;
     }
     setStep((prev) => prev - 1);
@@ -209,7 +201,7 @@ export default function AddListingPage() {
     <div className="max-w-3xl mx-auto space-y-8 pb-32">
       <header className="space-y-2">
         <h1 className="text-3xl font-bold text-white tracking-tight uppercase">New {labels.listing}</h1>
-        <p className="text-zinc-400">Step {step} of 4: {step === 1 ? "Basic Info" : step === 2 ? "External Platforms" : step === 3 ? "Nodebase Calendar" : "Review"}</p>
+        <p className="text-zinc-400">Step {step} of 2: {step === 1 ? "Basic Info" : "Review"}</p>
       </header>
 
       <div className="glass-panel p-8 relative overflow-hidden">
@@ -425,95 +417,6 @@ export default function AddListingPage() {
         )}
 
         {step === 2 && (
-          <div className="space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div>
-              <h2 className="text-lg font-semibold text-white">
-                Where is this {labels.listing.toLowerCase()} listed?
-              </h2>
-              <p className="text-sm text-zinc-400">
-                Choose any platform where {labels.customers.toLowerCase()} can
-                book this {labels.listing.toLowerCase()}.
-              </p>
-            </div>
-            <div className="space-y-3">
-              {(Object.keys(platformLabels) as ListingPlatform[]).map(
-                (platform) => (
-                  <label
-                    key={platform}
-                    className="flex items-center gap-3 text-sm text-zinc-300"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={platforms.includes(platform)}
-                      onChange={() => togglePlatform(platform)}
-                      className="h-4 w-4 rounded border-white/30 bg-white/10"
-                    />
-                    {platformLabels[platform]}
-                  </label>
-                ),
-              )}
-            </div>
-            {platforms.map((platform) => (
-              <div key={platform} className="space-y-2">
-                <div className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
-                  Paste the calendar link from {platformLabels[platform]}
-                </div>
-                <input
-                  value={externalIcalUrls[platform]}
-                  onChange={(event) =>
-                    setExternalIcalUrls((prev) => ({
-                      ...prev,
-                      [platform]: event.target.value,
-                    }))
-                  }
-                  placeholder="https://example.com/calendar.ics"
-                  className="input-glass"
-                />
-                <div className="text-xs text-zinc-500">
-                  We use this link to pull bookings into Nodebase.
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {step === 3 && (
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div>
-              <h2 className="text-lg font-semibold text-white">
-                Nodebase calendar link
-              </h2>
-              <p className="text-sm text-zinc-400">
-                Copy this link and paste it into Airbnb or Booking.com to sync
-                bookings from Nodebase.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                value={nodebaseIcalUrl}
-                readOnly
-                className="flex-1 input-glass text-xs"
-              />
-              <button
-                onClick={async () => {
-                  if (navigator?.clipboard?.writeText) {
-                    await navigator.clipboard.writeText(nodebaseIcalUrl);
-                    setMessage("Calendar link copied.");
-                  }
-                }}
-                className="px-3 py-2 rounded-lg border border-white/20 text-white text-xs font-semibold hover:bg-white/10"
-              >
-                Copy
-              </button>
-            </div>
-            <div className="text-xs text-zinc-500">
-              This enables two-way sync: external bookings → Nodebase, Nodebase
-              bookings → external platforms.
-            </div>
-          </div>
-        )}
-
-        {step === 4 && (
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-lg font-semibold text-white">
               Review
@@ -536,27 +439,13 @@ export default function AddListingPage() {
                 )}
                 <div>{timezone}</div>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-zinc-500">
-                  Platforms
+              <div className="bg-white/10 border border-primary/20 rounded-lg p-4 space-y-2">
+                <div className="text-xs uppercase tracking-widest text-primary font-bold">
+                  Next Steps
                 </div>
-                {platforms.length === 0 ? (
-                  <div>No platforms linked yet.</div>
-                ) : (
-                  <div>
-                    {platforms
-                      .map((platform) => platformLabels[platform])
-                      .join(", ")}
-                  </div>
-                )}
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-lg p-4 space-y-1">
-                <div className="text-xs uppercase tracking-widest text-zinc-500">
-                  Nodebase calendar link
-                </div>
-                <div className="text-xs text-zinc-400 break-all">
-                  {nodebaseIcalUrl}
-                </div>
+                <p className="text-xs text-zinc-400">
+                  After saving, you'll be able to connect Airbnb/Booking.com calendars and set up dynamic pricing from the property dashboard.
+                </p>
               </div>
             </div>
           </div>
@@ -573,7 +462,7 @@ export default function AddListingPage() {
           >
             {step === 1 ? "Cancel" : "Back"}
           </button>
-          {step < 4 ? (
+          {step < 2 ? (
             <button
               onClick={nextStep}
               className="button-primary"

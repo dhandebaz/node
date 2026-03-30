@@ -6,7 +6,13 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id: listingId } = await params;
+  let { id: listingId } = await params;
+  
+  // Strip .ics extension if present (e.g. from Airbnb or manual URL)
+  if (listingId.endsWith(".ics")) {
+    listingId = listingId.slice(0, -4);
+  }
+
   const supabase = await getSupabaseServer();
 
   // 1. Fetch Listing & Bookings
@@ -31,7 +37,7 @@ export async function GET(
     return new NextResponse("Error fetching bookings", { status: 500 });
   }
 
-  // 2. Generate iCal Content
+  // 2. Generate iCal Content (Strict Compliance with RFC 5545)
   const icalContent = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -39,31 +45,23 @@ export async function GET(
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `X-WR-CALNAME:${listing.name} (Nodebase)`,
-    "BEGIN:VTIMEZONE",
-    "TZID:UTC",
-    "BEGIN:STANDARD",
-    "DTSTART:19700101T000000",
-    "TZOFFSETFROM:+0000",
-    "TZOFFSETTO:+0000",
-    "TZNAME:UTC",
-    "END:STANDARD",
-    "END:VTIMEZONE"
   ];
 
   bookings?.forEach((booking) => {
-    // Check if start/end are valid strings
     if (!booking.start_date || !booking.end_date) return;
 
-    // Format dates to YYYYMMDD format (all day events usually for bookings)
+    // DTSTART & DTEND for all-day events (VALUE=DATE)
     const start = booking.start_date.replace(/-/g, "").split("T")[0];
     const end = booking.end_date.replace(/-/g, "").split("T")[0];
 
     icalContent.push("BEGIN:VEVENT");
     icalContent.push(`UID:${booking.id}@nodebase.com`);
-    icalContent.push(`DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`);
+    icalContent.push(`DTSTAMP:${new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15)}Z`);
     icalContent.push(`DTSTART;VALUE=DATE:${start}`);
     icalContent.push(`DTEND;VALUE=DATE:${end}`);
-    icalContent.push(`SUMMARY:Reserved`); // Privacy: don't show guest name
+    icalContent.push("SUMMARY:Reserved (Nodebase)");
+    icalContent.push("STATUS:CONFIRMED");
+    icalContent.push("TRANSP:OPAQUE"); // Busy
     icalContent.push("END:VEVENT");
   });
 
@@ -72,7 +70,7 @@ export async function GET(
   return new NextResponse(icalContent.join("\r\n"), {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": `attachment; filename="calendar-${listingId}.ics"`
+      "Content-Disposition": `attachment; filename="${listingId}.ics"`
     }
   });
 }

@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 1 gotchas, 25 conventions, 48 fixes."
+description: "Typescript for node. 1 gotchas, 25 conventions, 49 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **124 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **125 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -29,6 +29,26 @@ Auto-compiled from **124 real patterns** in **node**. This skill is auto-routed 
 
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Strip — prevents null/undefined runtime crashes
+-   const { id: listingId } = await params;
++   let { id: listingId } = await params;
+-   const supabase = await getSupabaseServer();
++   
+- 
++   // Strip .ics extension if present (e.g. from Airbnb or manual URL)
+-   // 1. Fetch Listing & Bookings
++   if (listingId.endsWith(".ics")) {
+-   const { data: listing, error: listingError } = await supabase
++     listingId = listingId.slice(0, -4);
+-    
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Strip
+3. identifier: Airbnb
+4. identifier: URL
+5. identifier: Fetch
 
 ### Fixed null crash in Extract — prevents null/undefined runtime crashes
 -     // 1. Extract Images from multiple patterns
@@ -353,19 +373,6 @@ export interface PricingRules {
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in controlService.ts
--     const { error } = await supabase.from("system_settings").upsert({
-+     const { error } = await supabase.from("system_flags").upsert([{
--       key: key,
-+       key,
--     });
-+     }]);
-
-📌 IDE AST Context: Modified symbols likely include [SystemFlagKey, TenantControlKey, ActionBlockedError, createActionBlockedError, PostgrestResponse]
-
-**Actionable Steps:**
-1. Modified 1 files
-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
@@ -381,9 +388,6 @@ import
 + }
 
 📌 IDE AST Context: Modified symbols likely include [POST]
-- 📐 **Added session cookies authentication — prevents null/undefined runtime crashes — confirmed 3x** — -           .eq("listing_id", listingId)
-+           .eq("listing_id", listingId as string)
--     
-- 📐 **problem-fix in rout
+- 📐 **Added session cookies authentication — prevents null
 
 ... [Truncated — see individual observations for full content]
