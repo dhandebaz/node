@@ -7,7 +7,7 @@ import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
 import { log } from "@/lib/logger";
 
-const SUPER_ADMIN_PHONE = process.env.SUPER_ADMIN_PHONE || "9910778576";
+const SUPER_ADMIN_PHONE = process.env.SUPER_ADMIN_PHONE;
 
 // Helper to resolve tenant for logging
 export async function getTenantIdForUser(userId: string): Promise<string | null> {

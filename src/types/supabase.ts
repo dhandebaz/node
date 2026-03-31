@@ -2252,6 +2252,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "messages_listing_id_fkey"
             columns: ["listing_id"]
             isOneToOne: false

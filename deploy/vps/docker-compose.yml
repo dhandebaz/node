@@ -1,7 +1,7 @@
 services:
   # WhatsApp HTTP API
   waha:
-    image: devlikeapro/waha:latest
+    image: devlikeapro/waha:2024.24.3
     restart: always
     environment:
       # Print QR code in logs

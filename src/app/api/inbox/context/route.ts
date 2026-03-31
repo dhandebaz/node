@@ -1,80 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
-const contextMap: Record<string, any> = {
-  "conv-1001": {
-    role: "Host AI",
-    managerName: "Host AI",
-    status: "pending",
-    updatedAt: new Date().toISOString(),
-    fields: [
-      { label: "Listing", value: "Sea Breeze Villa" },
-      { label: "Dates", value: "12–15 Oct" },
-      { label: "Availability", value: "Open", tone: "good" },
-      { label: "Booking", value: "Awaiting confirmation", tone: "warn" },
-      { label: "Payment", value: "Pending", tone: "warn" },
-      { label: "ID Status", value: "Not submitted", tone: "bad" }
-    ],
-    quickActions: [
-      { id: "send-price", label: "Send price", variant: "primary", action: "send_price" },
-      { id: "send-payment", label: "Send payment link", variant: "primary", action: "send_payment_link" },
-      { id: "remind-payment", label: "Remind for payment", variant: "secondary", action: "remind_payment" },
-      { id: "request-id", label: "Request ID", variant: "secondary", action: "request_id" }
-    ]
-  },
-  "conv-1002": {
-    role: "Dukan AI",
-    managerName: "Dukan AI",
-    status: "active",
-    updatedAt: new Date().toISOString(),
-    fields: [
-      { label: "Customer", value: "Riya Patel" },
-      { label: "Order", value: "Shipped", tone: "good" },
-      { label: "Payment", value: "Paid", tone: "good" },
-      { label: "Delivery", value: "ETA Tomorrow", tone: "warn" }
-    ],
-    quickActions: [
-      { id: "send-tracking", label: "Send tracking", variant: "primary", action: "send_tracking" },
-      { id: "confirm-delivery", label: "Confirm delivery", variant: "primary", action: "confirm_delivery" },
-      { id: "escalate", label: "Escalate to staff", variant: "secondary", action: "escalate" }
-    ]
-  },
-  "conv-1003": {
-    role: "Nurse AI",
-    managerName: "Nurse AI",
-    status: "active",
-    updatedAt: new Date().toISOString(),
-    fields: [
-      { label: "Patient", value: "Dr. Nikhil Verma" },
-      { label: "Appointment", value: "Friday 4 PM", tone: "warn" },
-      { label: "Status", value: "Reschedule requested", tone: "warn" },
-      { label: "Follow-up", value: "Required", tone: "bad" }
-    ],
-    quickActions: [
-      { id: "schedule", label: "Schedule appointment", variant: "primary", action: "schedule_appointment" },
-      { id: "send-reminder", label: "Send reminder", variant: "primary", action: "send_reminder" },
-      { id: "escalate", label: "Escalate to staff", variant: "secondary", action: "escalate" }
-    ]
-  },
-  "conv-1004": {
-    role: "Host AI",
-    managerName: "Host AI",
-    status: "active",
-    updatedAt: new Date().toISOString(),
-    fields: [
-      { label: "Listing", value: "Palm Studio" },
-      { label: "Dates", value: "March (TBD)" },
-      { label: "Availability", value: "Check calendar", tone: "warn" },
-      { label: "Payment", value: "Not started", tone: "bad" },
-      { label: "Booking", value: "Inquiry", tone: "warn" }
-    ],
-    quickActions: [
-      { id: "send-price", label: "Send price", variant: "primary", action: "send_price" },
-      { id: "confirm-booking", label: "Confirm booking", variant: "primary", action: "confirm_booking" },
-      { id: "request-id", label: "Request ID", variant: "secondary", action: "request_id" }
-    ]
-  }
-};
+interface ContextField {
+  label: string;
+  value: string;
+  tone?: "good" | "warn" | "bad";
+}
+
+interface QuickAction {
+  id: string;
+  label: string;
+  variant: "primary" | "secondary";
+  action: string;
+}
+
+interface ContextResponse {
+  role: string;
+  managerName: string;
+  status: string;
+  updatedAt: string;
+  fields: ContextField[];
+  quickActions: QuickAction[];
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -85,50 +33,175 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const tenantId = await requireActiveTenant();
     const conversationId = request.nextUrl.searchParams.get("conversationId");
     const bookingIdParam = request.nextUrl.searchParams.get("bookingId");
-    if (!conversationId) {
-      return NextResponse.json({ error: "Missing conversationId" }, { status: 400 });
+
+    if (!conversationId && !bookingIdParam) {
+      return NextResponse.json({ error: "Missing conversationId or bookingId" }, { status: 400 });
     }
 
-    if (bookingIdParam || conversationId.startsWith("booking-")) {
-      const bookingId = bookingIdParam || conversationId.replace("booking-", "");
-      const { data: booking, error: bookingError } = await supabase
+    // Get conversation details
+    let conversation: any = null;
+    let guestId: string | null = null;
+    let guestChannel = "web";
+    let contactName = "Guest";
+
+    if (conversationId && !conversationId.startsWith("booking-")) {
+      const { data: conv } = await supabase
+        .from("conversations")
+        .select("*")
+        .eq("id", conversationId)
+        .eq("tenant_id", tenantId)
+        .maybeSingle();
+      
+      conversation = conv;
+      guestChannel = conv?.channel || "web";
+      contactName = conv?.contact_name || "Guest";
+    }
+
+    // Get booking data if available
+    let booking: any = null;
+    const bookingId = bookingIdParam || conversation?.metadata?.booking_id;
+
+    if (bookingId) {
+      const { data: b } = await supabase
         .from("bookings")
-        .select("id, id_status, start_date, end_date, guests(name), listings(name)")
+        .select(`
+          id, 
+          id_status, 
+          start_date, 
+          end_date, 
+          status,
+          amount,
+          guests(id, name, phone, email, channel),
+          listings(id, name)
+        `)
         .eq("id", bookingId)
         .maybeSingle();
-
-      if (bookingError || !booking) {
-        return NextResponse.json(null);
+      
+      booking = b;
+      if (booking?.guests) {
+        guestId = booking.guests.id;
+        if (!contactName || contactName === "Guest") {
+          contactName = booking.guests.name || "Guest";
+        }
       }
-
-      const listing = Array.isArray(booking.listings) ? booking.listings[0] : booking.listings;
-      const idStatus = booking.id_status || "not_requested";
-      const startDate = booking.start_date ? new Date(booking.start_date).toLocaleDateString("en-IN") : "TBD";
-      const endDate = booking.end_date ? new Date(booking.end_date).toLocaleDateString("en-IN") : "TBD";
-
-      const fields = [
-        { label: "Listing", value: listing?.name || "Property" },
-        { label: "Dates", value: `${startDate} → ${endDate}` },
-        { label: "ID Status", value: idStatus.replace("_", " "), tone: idStatus === "approved" ? "good" : idStatus === "rejected" ? "bad" : "warn" }
-      ];
-
-      return NextResponse.json({
-        role: "Host AI",
-        managerName: "Host AI",
-        status: "active",
-        updatedAt: new Date().toISOString(),
-        fields,
-        quickActions: [
-          { id: "send-payment", label: "Send payment link", variant: "primary", action: "send_payment_link" },
-          { id: "request-id", label: "Request ID", variant: "secondary", action: "request_id" }
-        ]
-      });
     }
 
-    return NextResponse.json(contextMap[conversationId] || null);
+    // Get recent messages count for context
+    let recentMessages: any[] = [];
+    if (conversationId) {
+      const { data: msgs } = await supabase
+        .from("messages")
+        .select("content, role, created_at")
+        .eq("conversation_id", conversationId)
+        .order("created_at", { ascending: false })
+        .limit(5);
+      recentMessages = msgs || [];
+    }
+
+    // Build fields based on available data
+    const fields: ContextField[] = [];
+    const quickActions: QuickAction[] = [];
+
+    // Listing info
+    if (booking?.listings) {
+      const listing = Array.isArray(booking.listings) ? booking.listings[0] : booking.listings;
+      fields.push({ label: "Listing", value: listing?.name || "Property" });
+    }
+
+    // Booking dates
+    if (booking?.start_date && booking?.end_date) {
+      const startDate = new Date(booking.start_date).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+      const endDate = new Date(booking.end_date).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+      fields.push({ label: "Dates", value: `${startDate} → ${endDate}` });
+    }
+
+    // Booking status
+    if (booking) {
+      const statusTone = booking.status === "confirmed" ? "good" : booking.status === "cancelled" ? "bad" : "warn";
+      fields.push({ label: "Status", value: booking.status, tone: statusTone });
+    }
+
+    // ID verification status
+    if (booking?.id_status) {
+      const idTone = booking.id_status === "approved" ? "good" : booking.id_status === "rejected" ? "bad" : "warn";
+      fields.push({ label: "ID Status", value: booking.id_status.replace(/_/g, " "), tone: idTone });
+    }
+
+    // Guest info
+    if (contactName !== "Guest") {
+      fields.push({ label: "Guest", value: contactName });
+    }
+
+    // Payment status
+    if (booking?.amount) {
+      const paidStatus = booking.status === "confirmed" ? "Paid" : "Pending";
+      const paymentTone = booking.status === "confirmed" ? "good" : "warn";
+      fields.push({ label: "Payment", value: `₹${booking.amount} - ${paidStatus}`, tone: paymentTone });
+    }
+
+    // Channel info
+    fields.push({ label: "Channel", value: guestChannel });
+
+    // Recent message context
+    if (recentMessages.length > 0) {
+      const lastMsg = recentMessages[0];
+      fields.push({ label: "Last Message", value: lastMsg.content?.slice(0, 50) + (lastMsg.content?.length > 50 ? "..." : "") });
+    }
+
+    // Quick actions based on booking status
+    if (booking) {
+      if (booking.status !== "confirmed") {
+        quickActions.push({ id: "send-payment", label: "Send payment link", variant: "primary", action: "send_payment_link" });
+      }
+      if (booking.id_status !== "approved") {
+        quickActions.push({ id: "request-id", label: "Request ID", variant: "secondary", action: "request_id" });
+      }
+    }
+
+    // Generic quick actions
+    quickActions.push({ id: "send-message", label: "Send message", variant: "primary", action: "send_message" });
+    quickActions.push({ id: "escalate", label: "Escalate", variant: "secondary", action: "escalate" });
+
+    // Determine manager based on business type
+    const { data: tenant } = await supabase
+      .from("tenants")
+      .select("business_type")
+      .eq("id", tenantId)
+      .single();
+
+    let managerName = "Host AI";
+    let role = "Host AI";
+    
+    switch (tenant?.business_type) {
+      case "kirana_store":
+      case "thrift_store":
+        managerName = "Dukan AI";
+        role = "Dukan AI";
+        break;
+      case "doctor_clinic":
+        managerName = "Nurse AI";
+        role = "Nurse AI";
+        break;
+      default:
+        managerName = "Host AI";
+        role = "Host AI";
+    }
+
+    const response: ContextResponse = {
+      role,
+      managerName,
+      status: conversation?.status || (booking?.status === "confirmed" ? "active" : "pending"),
+      updatedAt: new Date().toISOString(),
+      fields,
+      quickActions
+    };
+
+    return NextResponse.json(response);
   } catch (error: any) {
+    console.error("Context error:", error);
     return NextResponse.json({ error: error?.message || "Failed to load context" }, { status: 500 });
   }
 }

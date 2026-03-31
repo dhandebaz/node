@@ -3,6 +3,7 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { ControlService } from "@/lib/services/controlService";
 import { wahaService } from "@/lib/services/wahaService";
 import { FlowService } from "@/lib/services/flowService";
+import { InboxService } from "@/lib/services/inboxService";
 import { generateText } from "ai";
 import { getToneInstruction, resolveAISettings } from "@/lib/ai/config";
 import { settingsService } from "@/lib/services/settingsService";
@@ -27,6 +28,19 @@ export async function POST(request: Request) {
 
     const supabase = await getSupabaseServer();
 
+    // Verify tenant has WhatsApp integration
+    const { data: integration } = await supabase
+      .from("integrations")
+      .select("id, status")
+      .eq("tenant_id", tenantId)
+      .eq("type", "whatsapp")
+      .eq("status", "active")
+      .maybeSingle();
+
+    if (!integration) {
+      return NextResponse.json({ error: "WhatsApp not configured for this tenant" }, { status: 403 });
+    }
+
     // Get or create guest
     let guestId = null;
     let aiPaused = false;
@@ -50,8 +64,20 @@ export async function POST(request: Request) {
       guestId = newGuest?.id;
     }
 
+    // Sync conversation and get conversation_id
+    const conversation = await InboxService.syncConversation({
+      tenantId,
+      externalId: sender,
+      channel: "whatsapp",
+      contactName: sender,
+      lastMessagePreview: text?.slice(0, 100)
+    });
+    const conversationId = conversation?.id;
+
+    // Insert message with conversation_id
     await supabase.from("messages").insert({
       tenant_id: tenantId,
+      conversation_id: conversationId,
       guest_id: guestId,
       direction: "inbound",
       role: "user",
@@ -181,6 +207,7 @@ export async function POST(request: Request) {
 
     await supabase.from("messages").insert({
       tenant_id: tenantId,
+      conversation_id: conversationId,
       guest_id: guestId,
       direction: "outbound",
       role: "assistant",

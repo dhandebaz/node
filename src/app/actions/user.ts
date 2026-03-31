@@ -4,12 +4,14 @@
 import { userService } from "@/lib/services/userService";
 import { AccountStatus, KYCStatus } from "@/types/user";
 import { revalidatePath } from "next/cache";
-
-// In a real app, we would get the adminId from the session
-const ADMIN_ID = "admin-session-id"; 
+import { getSession } from "@/lib/auth/session";
 
 export async function updateUserStatusAction(userId: string, status: AccountStatus) {
-  const success = await userService.updateUserStatus(ADMIN_ID, userId, status);
+  const session = await getSession();
+  if (!session?.userId) {
+    throw new Error("Unauthorized: No active session");
+  }
+  const success = await userService.updateUserStatus(session.userId, userId, status);
   if (success) {
     revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/users");
@@ -18,7 +20,11 @@ export async function updateUserStatusAction(userId: string, status: AccountStat
 }
 
 export async function updateKYCStatusAction(userId: string, status: KYCStatus, reason?: string) {
-  const success = await userService.updateKYCStatus(ADMIN_ID, userId, status, reason);
+  const session = await getSession();
+  if (!session?.userId) {
+    throw new Error("Unauthorized: No active session");
+  }
+  const success = await userService.updateKYCStatus(session.userId, userId, status, reason);
   if (success) {
     revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/users");
@@ -27,7 +33,11 @@ export async function updateKYCStatusAction(userId: string, status: KYCStatus, r
 }
 
 export async function addNoteAction(userId: string, note: string) {
-  const success = await userService.addNote(ADMIN_ID, userId, note);
+  const session = await getSession();
+  if (!session?.userId) {
+    throw new Error("Unauthorized: No active session");
+  }
+  const success = await userService.addNote(session.userId, userId, note);
   if (success) {
     revalidatePath(`/admin/users/${userId}`);
   }
@@ -35,7 +45,11 @@ export async function addNoteAction(userId: string, note: string) {
 }
 
 export async function updateTagsAction(userId: string, tags: string[]) {
-  const success = await userService.updateTags(ADMIN_ID, userId, tags);
+  const session = await getSession();
+  if (!session?.userId) {
+    throw new Error("Unauthorized: No active session");
+  }
+  const success = await userService.updateTags(session.userId, userId, tags);
   if (success) {
     revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/users");

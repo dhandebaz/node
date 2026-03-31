@@ -1,5 +1,5 @@
 
-export type MessageChannel = 'whatsapp' | 'instagram' | 'airbnb' | 'voice' | 'email';
+export type MessageChannel = 'whatsapp' | 'instagram' | 'messenger' | 'airbnb' | 'voice' | 'email' | 'web';
 export type MessageDirection = 'inbound' | 'outbound';
 
 export interface Conversation {

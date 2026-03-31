@@ -4,6 +4,7 @@ import { logEvent } from "@/lib/events";
 import { log } from "@/lib/logger";
 import { EVENT_TYPES } from "@/types/events";
 import { ChannelService } from "@/lib/services/channelService";
+import { FlowService } from "@/lib/services/flowService";
 
 type Payload = {
   paymentId?: string;
@@ -125,32 +126,51 @@ export async function POST(request: Request) {
           );
           const content = `Booking confirmed. Your stay from ${startLabel} to ${endLabel} is locked. You will receive details shortly.`;
 
-          await supabase.from("messages").insert({
-            tenant_id: tenantId,
-            listing_id: booking.listing_id,
-            guest_id: booking.guest_id,
-            role: "assistant", // System automated assistant
-            channel,
-            direction: "outbound",
-            content,
-            metadata: { read: false, trigger: "booking_confirmed" },
-            created_at: new Date().toISOString(),
-          });
-
-          // Dispatch to external channel
-          try {
-            await ChannelService.sendMessage({
-              tenantId: tenantId as string,
-              recipientId: recipientId as string,
-              content,
-              channel: channel as any,
-            });
-          } catch (dispatchError) {
-            log.error("Dispatch confirmed message error", dispatchError, {
-              tenantId,
-              recipientId,
+          // Execute booking_confirmed flow automation first
+          const flowResults = await FlowService.executeTrigger(
+            tenantId as string,
+            "booking_confirmed",
+            {
+              bookingId: payment.booking_id,
+              listingId: booking.listing_id,
+              guestId: booking.guest_id,
               channel,
+              startDate: booking.start_date,
+              endDate: booking.end_date,
+            },
+          );
+
+          // If flow handled the message, skip default message
+          const flowHandledMessage = flowResults?.some((r) => r.halted);
+
+          if (!flowHandledMessage) {
+            await supabase.from("messages").insert({
+              tenant_id: tenantId,
+              listing_id: booking.listing_id,
+              guest_id: booking.guest_id,
+              role: "assistant",
+              channel,
+              direction: "outbound",
+              content,
+              metadata: { read: false, trigger: "booking_confirmed" },
+              created_at: new Date().toISOString(),
             });
+
+            // Dispatch to external channel
+            try {
+              await ChannelService.sendMessage({
+                tenantId: tenantId as string,
+                recipientId: recipientId as string,
+                content,
+                channel: channel as any,
+              });
+            } catch (dispatchError) {
+              log.error("Dispatch confirmed message error", dispatchError, {
+                tenantId,
+                recipientId,
+                channel,
+              });
+            }
           }
 
           // Log AI Reply Sent

@@ -1,7 +1,17 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 
 const ALGORITHM = 'aes-256-cbc';
-const SECRET_KEY = process.env.ENCRYPTION_KEY || 'default-secret-key-32-chars-long!!'; // Must be 32 chars
+const rawKey = process.env.ENCRYPTION_KEY;
+
+if (!rawKey) {
+  throw new Error('ENCRYPTION_KEY environment variable is required');
+}
+
+if (rawKey.length < 32) {
+  throw new Error('ENCRYPTION_KEY must be at least 32 characters long');
+}
+
+const SECRET_KEY = rawKey;
 const IV_LENGTH = 16;
 
 export function encryptToken(text: string): string {

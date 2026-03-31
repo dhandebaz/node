@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
 import { ControlService } from "@/lib/services/controlService";
+import { ChannelService } from "@/lib/services/channelService";
+import { InboxService } from "@/lib/services/inboxService";
 
 export async function POST(request: Request) {
   try {
@@ -36,9 +38,8 @@ export async function POST(request: Request) {
       .single();
 
     let finalContent = content;
-    // Append branding if enabled and not already present (to avoid double stamping)
     if (tenant?.is_branding_enabled) {
-      let brandingText = "Powered by Nodebase AI"; // Default
+      let brandingText = "Powered by Nodebase AI";
       
       switch (tenant.business_type) {
         case 'kirana_store':
@@ -61,15 +62,39 @@ export async function POST(request: Request) {
 
     const [listingId, guestId] = conversationId.split(":");
     
-    // Insert into DB
+    // Fetch conversation to get channel and externalId
+    const { data: conversation } = await supabase
+      .from("conversations")
+      .select("id, channel, external_id")
+      .eq("id", conversationId)
+      .eq("tenant_id", tenantId)
+      .maybeSingle();
+
+    // If conversation exists, use it; otherwise sync it
+    let convId = conversation?.id;
+    const channel = body?.channel || conversation?.channel || "web";
+    const externalId = conversation?.external_id;
+
+    if (!convId && externalId) {
+      const synced = await InboxService.syncConversation({
+        tenantId,
+        externalId,
+        channel: channel as any,
+        lastMessagePreview: finalContent?.slice(0, 100)
+      });
+      convId = synced?.id;
+    }
+    
+    // Insert into DB with conversation_id
     const { data: message, error } = await supabase.from("messages").insert({
         tenant_id: tenantId,
+        conversation_id: convId,
         listing_id: listingId,
         guest_id: guestId,
         direction: 'outbound',
         role: senderType === 'ai' ? 'assistant' : 'host',
         content: finalContent,
-        channel: body?.channel || "web",
+        channel: channel,
         created_at: new Date().toISOString(),
         metadata: { read: true }
     }).select().single();
@@ -81,10 +106,24 @@ export async function POST(request: Request) {
 
     const m = message as any;
 
+    // Dispatch via ChannelService for non-web channels
+    if (channel !== "web" && externalId) {
+      try {
+        await ChannelService.sendMessage({
+          tenantId,
+          recipientId: externalId,
+          content: finalContent,
+          channel: channel as any
+        });
+      } catch (dispatchError) {
+        console.error("Failed to dispatch message via channel:", dispatchError);
+      }
+    }
+
     return NextResponse.json({ 
         message: {
             id: m.id,
-            conversationId: m.conversation_id || conversationId,
+            conversationId: convId || conversationId,
             senderType,
             channel: m.channel,
             content: m.content,

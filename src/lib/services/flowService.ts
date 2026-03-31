@@ -122,8 +122,78 @@ export class FlowService {
         return { handle: 'next', halt: node.data.haltAfterReply };
 
       case 'action_handover':
-        // logic to pause AI for guest
         return { handle: 'next', halt: true };
+
+      case 'action_api':
+        try {
+          const { url, method, headers, bodyTemplate } = node.data;
+          
+          if (!url) {
+            log.warn("action_api node missing URL");
+            return { handle: 'next', error: "Missing URL" };
+          }
+
+          // Build request headers
+          const requestHeaders: Record<string, string> = {
+            'Content-Type': 'application/json',
+            ...headers,
+          };
+
+          // Replace template variables in URL and body
+          let requestUrl = url;
+          let requestBody = bodyTemplate ? JSON.parse(bodyTemplate) : undefined;
+
+          // Simple template replacement: {{variable}}
+          const replaceTemplate = (str: string, data: any) => {
+            return str.replace(/\{\{(\w+)\}\}/g, (_, key) => {
+              return data[key] !== undefined ? String(data[key]) : `{{${key}}}`;
+            });
+          };
+
+          if (typeof requestUrl === 'string') {
+            requestUrl = replaceTemplate(requestUrl, triggerData);
+          }
+
+          if (requestBody && typeof requestBody === 'object') {
+            const replacedBody: any = {};
+            for (const [key, val] of Object.entries(requestBody)) {
+              if (typeof val === 'string') {
+                replacedBody[key] = replaceTemplate(val, triggerData);
+              } else {
+                replacedBody[key] = val;
+              }
+            }
+            requestBody = replacedBody;
+          }
+
+          // Make the API call
+          const response = await fetch(requestUrl, {
+            method: method || 'GET',
+            headers: requestHeaders,
+            body: requestBody ? JSON.stringify(requestBody) : undefined,
+          });
+
+          // Store response data for subsequent nodes
+          if (triggerData._apiResponse === undefined) {
+            triggerData._apiResponse = {};
+          }
+
+          try {
+            const responseData = await response.json();
+            triggerData._apiResponse[node.id] = responseData;
+          } catch {
+            triggerData._apiResponse[node.id] = await response.text();
+          }
+
+          // Check if response indicates success or failure
+          const successHandle = response.ok ? 'success' : 'error';
+          return { handle: successHandle };
+
+        } catch (error) {
+          log.error("action_api node execution failed:", error);
+          triggerData._apiError = error;
+          return { handle: 'error', error: String(error) };
+        }
 
       default:
         return { handle: 'next' };

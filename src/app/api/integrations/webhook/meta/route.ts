@@ -4,6 +4,7 @@ import { log } from "@/lib/logger";
 import { ControlService } from "@/lib/services/controlService";
 import { ChannelService } from "@/lib/services/channelService";
 import { FlowService } from "@/lib/services/flowService";
+import { InboxService } from "@/lib/services/inboxService";
 import { generateText } from "ai";
 import { getToneInstruction, resolveAISettings } from "@/lib/ai/config";
 import { settingsService } from "@/lib/services/settingsService";
@@ -52,15 +53,28 @@ export async function POST(request: Request) {
 
     const senderId = messaging.sender.id;
     const text = messaging.message.text;
-    const channel = entry.id ? 'instagram' : 'messenger'; // Simplified logic for channel detection
+    const channel = entry.id ? 'instagram' : 'messenger';
 
     const supabase = await getSupabaseAdmin();
+
+    // Verify tenant has Meta integration
+    const integrationType = channel === 'instagram' ? 'instagram' : 'messenger';
+    const { data: integration } = await supabase
+      .from("integrations")
+      .select("id, status")
+      .eq("tenant_id", tenantId)
+      .eq("type", integrationType)
+      .eq("status", "active")
+      .maybeSingle();
+
+    if (!integration) {
+      return NextResponse.json({ error: `${channel} not configured for this tenant` }, { status: 403 });
+    }
 
     // Get or create guest
     let guestId = null;
     let aiPaused = false;
     
-    // We use sender_id (scoped to the Meta App) as the unique identifier
     const { data: existingGuest } = await supabase
       .from("guests")
       .select("id, ai_paused")
@@ -81,9 +95,20 @@ export async function POST(request: Request) {
       guestId = newGuest?.id;
     }
 
-    // Record Inbound Message
+    // Sync conversation and get conversation_id
+    const conversation = await InboxService.syncConversation({
+      tenantId,
+      externalId: senderId,
+      channel: channel as 'instagram' | 'messenger',
+      contactName: `User ${senderId.slice(-4)}`,
+      lastMessagePreview: text?.slice(0, 100)
+    });
+    const conversationId = conversation?.id;
+
+    // Record Inbound Message with conversation_id
     await supabase.from("messages").insert({
       tenant_id: tenantId,
+      conversation_id: conversationId,
       guest_id: guestId,
       direction: "inbound",
       role: "user",
@@ -155,9 +180,10 @@ export async function POST(request: Request) {
       prompt,
     });
 
-    // 4. Record and Dispatch Outbound
+    // 4. Record and Dispatch Outbound with conversation_id
     await supabase.from("messages").insert({
       tenant_id: tenantId,
+      conversation_id: conversationId,
       guest_id: guestId,
       direction: "outbound",
       role: "assistant",

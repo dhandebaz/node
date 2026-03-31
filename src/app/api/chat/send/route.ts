@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/ratelimit";
 import { withErrorHandler } from "@/lib/api/withErrorHandler";
+import { InboxService } from "@/lib/services/inboxService";
 
 export const POST = withErrorHandler(async function(request: NextRequest) {
   try {
@@ -23,9 +24,18 @@ export const POST = withErrorHandler(async function(request: NextRequest) {
 
     const supabase = await getSupabaseServer();
 
+    // Sync conversation to get conversation_id
+    const conversation = await InboxService.syncConversation({
+      tenantId: (await supabase.auth.getUser()).data.user?.id || '',
+      externalId: guestId,
+      channel: 'web',
+      lastMessagePreview: content?.slice(0, 100)
+    });
+
     const { error } = await supabase
         .from("messages")
         .insert({
+            conversation_id: conversation?.id,
             guest_id: guestId,
             listing_id: listingId,
             role: sender === 'guest' ? 'guest' : 'host',
