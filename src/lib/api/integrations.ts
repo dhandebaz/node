@@ -64,9 +64,6 @@ function enrichWithMeta(raw: any): Integration {
 }
 
 export const integrationsApi = {
-  /**
-   * Fetch all integrations for the current tenant from the real backend.
-   */
   getIntegrations: async (): Promise<Integration[]> => {
     try {
       const response = await apiClient.get("/api/integrations");
@@ -74,54 +71,75 @@ export const integrationsApi = {
       return data.map(enrichWithMeta);
     } catch (err: any) {
       console.error("[integrationsApi] getIntegrations failed:", err?.message);
-      // Return empty list instead of crashing the UI
       return [];
     }
   },
 
-  /**
-   * Connect an integration by provider ID.
-   * For iCal-based platforms (airbnb, booking, vrbo) this expects a `url` in options.
-   * For WhatsApp this starts a WAHA session and may return a QR code URL.
-   * For Instagram/Google this initiates the OAuth flow.
-   */
   connect: async (
     id: string,
     options?: { url?: string; listingId?: string },
   ): Promise<Integration> => {
-    const response = await apiClient.post(
-      `/api/integrations/${id}/connect`,
-      options ?? {},
-    );
+    let response;
+    
+    switch (id) {
+      case "whatsapp":
+        response = await apiClient.post("/api/integrations/whatsapp/connect", options ?? {});
+        break;
+      case "instagram":
+        response = await apiClient.post("/api/integrations/instagram/connect", options ?? {});
+        break;
+      case "google":
+        response = await apiClient.post("/api/integrations/google/connect", options ?? {});
+        break;
+      default:
+        response = await apiClient.post("/api/integrations", { provider: id, ...options });
+    }
+    
     return enrichWithMeta({ provider: id, ...(response.data ?? {}) });
   },
 
-  /**
-   * Disconnect an integration by provider ID.
-   */
   disconnect: async (id: string): Promise<void> => {
-    await apiClient.post(`/api/integrations/${id}/disconnect`);
+    switch (id) {
+      case "whatsapp":
+        await apiClient.post("/api/integrations/whatsapp/disconnect");
+        break;
+      case "instagram":
+        await apiClient.post("/api/integrations/instagram/disconnect");
+        break;
+      case "google":
+        await apiClient.post("/api/integrations/google/disconnect");
+        break;
+      default:
+        await apiClient.delete(`/api/integrations?provider=${id}`);
+    }
   },
 
-  /**
-   * Get the current status of a single integration.
-   */
   getStatus: async (id: string): Promise<Integration | null> => {
     try {
-      const response = await apiClient.get(`/api/integrations/${id}/status`);
+      let response;
+      
+      switch (id) {
+        case "whatsapp":
+          response = await apiClient.get("/api/integrations/whatsapp/status");
+          break;
+        case "instagram":
+          response = await apiClient.get("/api/integrations/instagram/status");
+          break;
+        case "google":
+          response = await apiClient.get("/api/integrations/google/status");
+          break;
+        default:
+          response = await apiClient.get(`/api/integrations?provider=${id}`);
+      }
+      
       return enrichWithMeta({ provider: id, ...(response.data ?? {}) });
     } catch {
       return null;
     }
   },
 
-  /**
-   * Trigger a manual re-sync for a listing's connected iCal sources.
-   */
   syncListing: async (listingId: string): Promise<{ syncedAt: string }> => {
-    const response = await apiClient.post(
-      `/api/listings/${listingId}/calendar`,
-    );
+    const response = await apiClient.post(`/api/listings/${listingId}/calendar`);
     return response.data;
   },
 };

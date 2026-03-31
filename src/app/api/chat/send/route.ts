@@ -3,9 +3,12 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/ratelimit";
 import { withErrorHandler } from "@/lib/api/withErrorHandler";
 import { InboxService } from "@/lib/services/inboxService";
+import { requireActiveTenant } from "@/lib/auth/tenant";
 
 export const POST = withErrorHandler(async function(request: NextRequest) {
   try {
+    const tenantId = await requireActiveTenant();
+    
     const ip = request.headers.get("x-forwarded-for") || 'unknown';
     const { success } = await rateLimit.limit(`chat_send_${ip}`);
     if (!success) {
@@ -26,7 +29,7 @@ export const POST = withErrorHandler(async function(request: NextRequest) {
 
     // Sync conversation to get conversation_id
     const conversation = await InboxService.syncConversation({
-      tenantId: (await supabase.auth.getUser()).data.user?.id || '',
+      tenantId,
       externalId: guestId,
       channel: 'web',
       lastMessagePreview: content?.slice(0, 100)
@@ -35,6 +38,7 @@ export const POST = withErrorHandler(async function(request: NextRequest) {
     const { error } = await supabase
         .from("messages")
         .insert({
+            tenant_id: tenantId,
             conversation_id: conversation?.id,
             guest_id: guestId,
             listing_id: listingId,
@@ -51,6 +55,7 @@ export const POST = withErrorHandler(async function(request: NextRequest) {
     return NextResponse.json({ success: true });
 
   } catch (error: any) {
+    console.error("Chat send error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 });

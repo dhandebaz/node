@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/ratelimit";
 
 export async function GET(request: NextRequest) {
     try {
-        const tenantId = await requireActiveTenant();
-        
+        const ip = request.headers.get("x-forwarded-for") || 'unknown';
+        const { success } = await rateLimit.limit(`public_chat_${ip}`);
+        if (!success) {
+            return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+        }
+
         const conversationId = request.nextUrl.searchParams.get("conversationId");
         if (!conversationId) {
             return NextResponse.json({ error: "conversationId required" }, { status: 400 });
         }
 
-        const supabase = await getSupabaseServer();
+        const supabase = await getSupabaseAdmin();
         
         const { data: messages, error } = await supabase
             .from("messages")
             .select("*")
             .eq("conversation_id", conversationId)
-            .eq("tenant_id", tenantId)
             .order("created_at", { ascending: true });
             
         if (error) throw error;
@@ -33,7 +36,7 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({ messages: formatted });
     } catch (error: any) {
-        console.error("Chat messages error:", error);
+        console.error("Public chat messages error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

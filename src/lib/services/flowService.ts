@@ -117,12 +117,58 @@ export class FlowService {
         
         return { handle: isTriggered ? 'true' : 'false' };
       
-      case 'action_reply':
-        // logic to send AI reply via existing AIService/WahaService
-        return { handle: 'next', halt: node.data.haltAfterReply };
+      case 'action_reply': {
+        const replyContent = node.data.message || triggerData.aiReply || triggerData.content || "Thank you for your message.";
+        const channel = triggerData.channel || 'whatsapp';
+        const recipientId = triggerData.sender || triggerData.recipientId;
+        
+        // Record the reply in messages table
+        const supabaseNode = await getSupabaseAdmin();
+        await supabaseNode.from("messages").insert({
+          tenant_id: tenantId,
+          conversation_id: triggerData.conversationId,
+          guest_id: triggerData.guestId,
+          direction: "outbound",
+          role: "assistant",
+          channel,
+          content: replyContent,
+          metadata: { 
+            read: true, 
+            flow_id: node.id,
+            trigger: triggerData.triggerType 
+          },
+          created_at: new Date().toISOString()
+        });
 
-      case 'action_handover':
+        // Send via channel if externalId is available
+        if (recipientId && channel !== 'web') {
+          const { ChannelService } = await import("./channelService");
+          try {
+            await ChannelService.sendMessage({
+              tenantId,
+              recipientId,
+              content: replyContent,
+              channel: channel as any
+            });
+          } catch (err) {
+            log.error("Failed to send flow reply via channel:", err);
+          }
+        }
+
+        return { handle: 'next', halt: node.data.haltAfterReply };
+      }
+
+      case 'action_handover': {
+        // Pause AI for this guest
+        const supabaseHandover = await getSupabaseAdmin();
+        if (triggerData.guestId) {
+          await supabaseHandover
+            .from("guests")
+            .update({ ai_paused: true })
+            .eq("id", triggerData.guestId);
+        }
         return { handle: 'next', halt: true };
+      }
 
       case 'action_api':
         try {

@@ -59,20 +59,21 @@ export class InboxService {
    */
   static async syncConversation(params: {
     tenantId: string;
-    externalId: string;
+    externalId: string | null | undefined;
     channel: MessageChannel;
     contactName?: string;
     contactAvatar?: string;
     lastMessagePreview?: string;
   }) {
     const supabase = await getSupabaseServer();
+    const externalId = params.externalId || `guest_${Date.now()}`;
 
     // 1. Try to find existing conversation
     const { data: existing } = await supabase
       .from("conversations")
       .select("id, metadata")
       .eq("tenant_id", params.tenantId)
-      .eq("external_id", params.externalId)
+      .eq("external_id", externalId)
       .eq("channel", params.channel)
       .maybeSingle();
 
@@ -101,9 +102,9 @@ export class InboxService {
         .from("conversations")
         .insert({
           tenant_id: params.tenantId,
-          external_id: params.externalId,
+          external_id: externalId,
           channel: params.channel,
-          contact_name: params.contactName || params.externalId,
+          contact_name: params.contactName || externalId,
           contact_avatar: params.contactAvatar,
           last_message_at: new Date().toISOString(),
           metadata: {

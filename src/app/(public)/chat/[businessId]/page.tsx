@@ -64,13 +64,14 @@ export default function PublicChatPage() {
 
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`/api/chat/messages?conversationId=${session.conversationId}`);
+        const response = await fetch(`/api/chat/guest/messages?conversationId=${session.conversationId}`);
         if (!response.ok) return;
 
         const data = await response.json();
         setMessages((current) => {
           const localOnly = current.filter((message) => message.status === "sending");
-          const merged = [...data, ...localOnly];
+          const apiMessages = data.messages || [];
+          const merged = [...apiMessages, ...localOnly];
           const unique = new Map(merged.map((message) => [message.id, message]));
           return [...unique.values()].sort(
             (left, right) =>
@@ -137,7 +138,7 @@ export default function PublicChatPage() {
 
     try {
       const csrf = getCsrfToken();
-      const response = await fetch("/api/chat/send", {
+      const response = await fetch("/api/chat/guest/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -146,7 +147,8 @@ export default function PublicChatPage() {
         body: JSON.stringify({
           conversationId: session.conversationId,
           content,
-          sender: "guest",
+          guestName: session.name,
+          guestPhone: session.phone,
         }),
       });
 

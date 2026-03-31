@@ -173,26 +173,97 @@ export class AnalyticsService {
          otaBookings: ota,
          aiAssistedBookings: aiAssistedCount
        };
-    } else if (businessType === 'kirana_store') {
-       metrics = {
-         ordersCount: totalCount,
-         revenue: totalRevenue,
-         avgOrderValue: totalCount ? totalRevenue / totalCount : 0,
-         aiHandledOrders: 0
-       };
-    } else if (businessType === 'doctor_clinic') {
-       metrics = {
-         appointmentsCount: totalCount,
-         revenue: totalRevenue,
-         noShowRate: 0 // Need status='no_show'
-       };
-    } else {
-       metrics = {
-         dmsConverted: 0,
-         revenue: totalRevenue,
-         aiResponseSpeed: 0
-       };
-    }
+     } else if (businessType === 'kirana_store') {
+        // Count AI-handled orders by checking messages table for AI responses
+        const { data: aiMessages } = await supabase
+          .from("messages")
+          .select("guest_id", { count: 'exact', head: true })
+          .eq("tenant_id", tenantId)
+          .eq("role", "assistant")
+          .gte("created_at", start)
+          .lte("created_at", end);
+        
+        const aiHandledOrders = aiMessages?.length || 0;
+        
+        metrics = {
+          ordersCount: totalCount,
+          revenue: totalRevenue,
+          avgOrderValue: totalCount ? totalRevenue / totalCount : 0,
+          aiHandledOrders
+        };
+     } else if (businessType === 'doctor_clinic') {
+        // Count no-shows from bookings with appropriate status
+        const { data: allBookings } = await supabase
+          .from("bookings")
+          .select("id", { count: 'exact' })
+          .eq("tenant_id", tenantId)
+          .gte("created_at", start)
+          .lte("created_at", end);
+        
+        const { data: noShows } = await supabase
+          .from("bookings")
+          .select("id", { count: 'exact' })
+          .eq("tenant_id", tenantId)
+          .eq("status", "no_show")
+          .gte("created_at", start)
+          .lte("created_at", end);
+        
+        const totalAppointments = allBookings?.length || 0;
+        const noShowCount = noShows?.length || 0;
+        const noShowRate = totalAppointments > 0 ? Math.round((noShowCount / totalAppointments) * 100) : 0;
+        
+        metrics = {
+          appointmentsCount: totalCount,
+          revenue: totalRevenue,
+          noShowRate
+        };
+     } else {
+        // For thrift or other businesses - calculate from messages
+        const { data: aiMessages } = await supabase
+          .from("messages")
+          .select("guest_id, created_at")
+          .eq("tenant_id", tenantId)
+          .eq("role", "assistant")
+          .gte("created_at", start)
+          .lte("created_at", end)
+          .order("created_at", { ascending: true });
+        
+        const { data: inboundMessages } = await supabase
+          .from("messages")
+          .select("guest_id, created_at")
+          .eq("tenant_id", tenantId)
+          .eq("direction", "inbound")
+          .gte("created_at", start)
+          .lte("created_at", end)
+          .order("created_at", { ascending: true });
+        
+        // Calculate AI response speed (avg time between guest message and AI reply)
+        let totalResponseTime = 0;
+        let responseCount = 0;
+        
+        if (aiMessages && inboundMessages) {
+          for (const aiMsg of aiMessages) {
+            const guestMsg = inboundMessages.find(m => 
+              m.guest_id === aiMsg.guest_id && 
+              new Date(m.created_at || "").getTime() < new Date(aiMsg.created_at || "").getTime()
+            );
+            if (guestMsg) {
+              const responseTime = (new Date(aiMsg.created_at || "").getTime() - new Date(guestMsg.created_at || "").getTime()) / (1000 * 60);
+              totalResponseTime += responseTime;
+              responseCount++;
+            }
+          }
+        }
+        
+        const aiResponseSpeed = responseCount > 0 ? Math.round(totalResponseTime / responseCount) : 0;
+        const dmsConverted = aiMessages?.length || 0;
+        
+        metrics = {
+          dmsConverted,
+          revenue: totalRevenue,
+          aiResponseSpeed
+        };
+     }
 
     return metrics;
   }

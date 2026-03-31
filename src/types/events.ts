@@ -16,6 +16,9 @@ export const EVENT_TYPES = {
   PAYMENT_CAPTURED: 'PAYMENT_CAPTURED',
   PAYMENT_CONFIRMED: 'PAYMENT_CONFIRMED',
   PAYMENT_FAILED: 'PAYMENT_FAILED',
+  PAYMENT_SUBMITTED: 'PAYMENT_SUBMITTED',
+  PAYMENT_VERIFIED: 'PAYMENT_VERIFIED',
+  PAYMENT_REJECTED: 'PAYMENT_REJECTED',
   WALLET_DEBITED: 'WALLET_DEBITED',
   WALLET_CREDITED: 'WALLET_CREDITED',
   WALLET_TOPUP: 'WALLET_TOPUP',
@@ -70,7 +73,7 @@ export const EVENT_TYPES = {
 
 export type EventType = typeof EVENT_TYPES[keyof typeof EVENT_TYPES];
 
-export type ActorType = 'user' | 'ai' | 'system' | 'admin';
+export type ActorType = 'user' | 'ai' | 'system' | 'admin' | 'guest';
 
 export interface AuditEvent {
   id: string;

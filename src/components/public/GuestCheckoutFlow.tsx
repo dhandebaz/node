@@ -8,11 +8,14 @@ import {
   CheckCircle2,
   CreditCard,
   FileUp,
+  ImageIcon,
   Loader2,
   QrCode,
   ShieldCheck,
   Sparkles,
+  Upload,
   UserCheck,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -51,11 +54,14 @@ function readFileAsBase64(file: File) {
 
 export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
   const [step, setStep] = useState<FlowStep>(
-    link.status === "paid" ? "complete" : "details",
+    link.status === "paid" || link.status === "pending_verification" ? "complete" : "details",
   );
   const [loading, setLoading] = useState(false);
   const [extracting, setExtracting] = useState(false);
+  const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const screenshotInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -77,6 +83,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
   }, [link.amount]);
 
   const stayLabel = link.metadata?.startDate || "Dates shared by the host";
+  const hasUPI = link.tenants?.business_qr_url || link.tenants?.upi_id || link.tenants?.upi_mobile;
 
   const handleDetailsSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -123,10 +130,72 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
     }
   };
 
+  const handleScreenshotUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    setUploadingScreenshot(true);
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setScreenshotPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      toast.error("Failed to read screenshot");
+    } finally {
+      setUploadingScreenshot(false);
+    }
+  };
+
+  const removeScreenshot = () => {
+    setScreenshotPreview(null);
+    if (screenshotInputRef.current) {
+      screenshotInputRef.current.value = "";
+    }
+  };
+
   const handlePaymentComplete = async () => {
     setLoading(true);
 
     try {
+      // If screenshot is uploaded, submit it first
+      if (screenshotPreview) {
+        const formDataScreenshot = new FormData();
+        formDataScreenshot.append("paymentLinkId", link.id);
+        formDataScreenshot.append("screenshot", screenshotPreview);
+
+        const response = await fetch("/api/payments/screenshot", {
+          method: "POST",
+          body: formDataScreenshot,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || "Failed to submit payment screenshot");
+        }
+
+        const result = await response.json();
+        
+        if (result.status === "pending_verification") {
+          setStep("complete");
+          toast.success("Payment screenshot submitted. Host will verify shortly.");
+          return;
+        }
+      }
+
+      // Complete check-in without screenshot
       await completeGuestCheckinAction({
         linkId: link.id,
         tenantId: link.tenant_id,
@@ -448,53 +517,105 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                 Complete payment
               </h3>
               <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
-                Use the host instructions below, then confirm once payment is
-                done.
+                {hasUPI 
+                  ? "Scan the QR code or use UPI details to pay, then upload screenshot."
+                  : "Contact the host for payment instructions."}
               </p>
             </div>
 
-            {link.tenants?.business_qr_url ? (
+            {hasUPI && (
               <div className="grid gap-5 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-center">
-                <div className="rounded-[1.8rem] border border-border bg-white p-5 shadow-lg">
-                  <img
-                    src={link.tenants.business_qr_url}
-                    alt="Payment QR code"
-                    className="h-full w-full rounded-[1.1rem] object-cover"
-                  />
-                </div>
+                {link.tenants?.business_qr_url && (
+                  <div className="rounded-[1.8rem] border border-border bg-white p-5 shadow-lg">
+                    <img
+                      src={link.tenants.business_qr_url}
+                      alt="Payment QR code"
+                      className="h-full w-full rounded-[1.1rem] object-cover"
+                    />
+                  </div>
+                )}
                 <div className="space-y-4">
-                  <div className="public-inset flex items-center gap-3 rounded-[1.3rem] px-4 py-4">
-                    <QrCode className="h-5 w-5 text-primary" />
-                    <div>
-                      <div className="text-sm font-semibold text-foreground">
-                        Scan to pay with UPI
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        UPI ID: {link.tenants.upi_id || "business@upi"}
+                  {link.tenants?.upi_id && (
+                    <div className="public-inset flex items-center gap-3 rounded-[1.3rem] px-4 py-4">
+                      <QrCode className="h-5 w-5 text-primary" />
+                      <div>
+                        <div className="text-sm font-semibold text-foreground">
+                          UPI ID
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {link.tenants.upi_id}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="public-inset flex items-center gap-3 rounded-[1.3rem] px-4 py-4">
-                    <ShieldCheck className="h-5 w-5 text-[var(--public-success)]" />
+                  )}
+                  {link.tenants?.upi_mobile && (
+                    <div className="public-inset flex items-center gap-3 rounded-[1.3rem] px-4 py-4">
+                      <div className="text-sm font-semibold text-foreground">
+                        Phone
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {link.tenants.upi_mobile}
+                      </div>
+                    </div>
+                  )}
+                  <div className="public-inset flex items-start gap-3 rounded-[1.3rem] px-4 py-4">
+                    <ShieldCheck className="h-5 w-5 shrink-0 text-[var(--public-success)]" />
                     <p className="text-sm leading-6 text-muted-foreground">
-                      Once payment is complete, use the confirmation button
-                      below so the host can finalize your check-in.
+                      Upload payment screenshot after paying. Host will verify within 24 hours.
                     </p>
                   </div>
                 </div>
               </div>
-            ) : (
-              <div className="rounded-[1.6rem] border border-border bg-background/90 p-6 text-center">
-                <CreditCard className="mx-auto h-10 w-10 text-primary" />
-                <div className="mt-4 text-lg font-semibold text-foreground">
-                  External payment gateway
-                </div>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  The host will complete payment collection outside this window.
-                  Confirm here after payment is made.
-                </p>
-              </div>
             )}
+
+            {/* Screenshot Upload Section */}
+            <div className="rounded-[1.6rem] border border-dashed border-[rgba(61,44,25,0.16)] bg-[rgba(255,251,244,0.76)] p-5">
+              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+                <ImageIcon className="h-4 w-4" />
+                Upload Payment Screenshot
+              </div>
+              
+              {screenshotPreview ? (
+                <div className="relative inline-block">
+                  <img
+                    src={screenshotPreview}
+                    alt="Payment screenshot"
+                    className="max-h-48 rounded-lg border border-border"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeScreenshot}
+                    className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <label className="cursor-pointer">
+                  <input
+                    ref={screenshotInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleScreenshotUpload}
+                    disabled={uploadingScreenshot}
+                  />
+                  <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border bg-white p-4 py-6 text-center hover:border-primary/50">
+                    {uploadingScreenshot ? (
+                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    ) : (
+                      <Upload className="h-8 w-8 text-muted-foreground" />
+                    )}
+                    <div className="text-sm text-muted-foreground">
+                      <span className="font-medium text-primary">Click to upload</span> payment screenshot
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      PNG, JPG up to 5MB
+                    </div>
+                  </div>
+                </label>
+              )}
+            </div>
 
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
@@ -508,14 +629,14 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                 type="button"
                 onClick={handlePaymentComplete}
                 disabled={loading}
-                className="public-button px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+                className="public-button flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <CheckCircle2 className="h-4 w-4" />
                 )}
-                I have paid
+                {screenshotPreview ? "Submit payment" : "I have paid"}
               </button>
             </div>
           </div>
@@ -530,11 +651,14 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
             </div>
             <div>
               <h2 className="public-display text-4xl text-foreground">
-                Booking confirmed
+                {link.status === "pending_verification" 
+                  ? "Payment submitted" 
+                  : "Booking confirmed"}
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                Thank you{formData.name ? `, ${formData.name}` : ""}. Your stay
-                at {listingTitle} is all set.
+                {link.status === "pending_verification"
+                  ? "Your payment screenshot has been submitted. The host will verify it shortly."
+                  : `Thank you${formData.name ? `, ${formData.name}` : ""}. Your stay at ${listingTitle} is all set.`}
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -548,7 +672,9 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                 <div className="public-eyebrow">Verification</div>
                 <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground">
                   <ShieldCheck className="h-4 w-4 text-[var(--public-success)]" />
-                  ID verified and payment noted
+                  {link.status === "pending_verification" 
+                    ? "Awaiting host verification"
+                    : "ID verified and payment complete"}
                 </div>
               </div>
             </div>
