@@ -586,6 +586,74 @@ export type Database = {
           },
         ]
       }
+      contacts: {
+        Row: {
+          created_at: string | null
+          customer_type: string | null
+          email: string | null
+          first_seen_at: string | null
+          id: string
+          last_ip: string | null
+          last_seen_at: string | null
+          last_user_agent: string | null
+          lifetime_value: number | null
+          metadata: Json | null
+          name: string | null
+          notes: string | null
+          phone: string | null
+          preferred_name: string | null
+          tags: string[] | null
+          tenant_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_type?: string | null
+          email?: string | null
+          first_seen_at?: string | null
+          id?: string
+          last_ip?: string | null
+          last_seen_at?: string | null
+          last_user_agent?: string | null
+          lifetime_value?: number | null
+          metadata?: Json | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_name?: string | null
+          tags?: string[] | null
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_type?: string | null
+          email?: string | null
+          first_seen_at?: string | null
+          id?: string
+          last_ip?: string | null
+          last_seen_at?: string | null
+          last_user_agent?: string | null
+          lifetime_value?: number | null
+          metadata?: Json | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_name?: string | null
+          tags?: string[] | null
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversations: {
         Row: {
           channel: string
@@ -1297,10 +1365,62 @@ export type Database = {
           },
         ]
       }
+      guest_identifiers: {
+        Row: {
+          channel: string
+          contact_id: string | null
+          created_at: string | null
+          first_seen_at: string | null
+          id: string
+          identifier_type: string
+          identifier_value: string
+          last_seen_at: string | null
+          tenant_id: string | null
+        }
+        Insert: {
+          channel: string
+          contact_id?: string | null
+          created_at?: string | null
+          first_seen_at?: string | null
+          id?: string
+          identifier_type: string
+          identifier_value: string
+          last_seen_at?: string | null
+          tenant_id?: string | null
+        }
+        Update: {
+          channel?: string
+          contact_id?: string | null
+          created_at?: string | null
+          first_seen_at?: string | null
+          id?: string
+          identifier_type?: string
+          identifier_value?: string
+          last_seen_at?: string | null
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guest_identifiers_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guest_identifiers_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guests: {
         Row: {
           ai_paused: boolean | null
           channel: string | null
+          contact_id: string | null
           created_at: string
           email: string | null
           id: string
@@ -1315,6 +1435,7 @@ export type Database = {
         Insert: {
           ai_paused?: boolean | null
           channel?: string | null
+          contact_id?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -1329,6 +1450,7 @@ export type Database = {
         Update: {
           ai_paused?: boolean | null
           channel?: string | null
+          contact_id?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -1341,6 +1463,13 @@ export type Database = {
           tenant_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "guests_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "guests_tenant_id_fkey"
             columns: ["tenant_id"]
@@ -2303,6 +2432,73 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      notifications: {
+        Row: {
+          channel: string | null
+          contact_id: string | null
+          created_at: string | null
+          data: Json | null
+          guest_id: string | null
+          id: string
+          message: string
+          read: boolean | null
+          read_at: string | null
+          tenant_id: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          channel?: string | null
+          contact_id?: string | null
+          created_at?: string | null
+          data?: Json | null
+          guest_id?: string | null
+          id?: string
+          message: string
+          read?: boolean | null
+          read_at?: string | null
+          tenant_id?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          channel?: string | null
+          contact_id?: string | null
+          created_at?: string | null
+          data?: Json | null
+          guest_id?: string | null
+          id?: string
+          message?: string
+          read?: boolean | null
+          read_at?: string | null
+          tenant_id?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "guests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payment_accounts: {
         Row: {

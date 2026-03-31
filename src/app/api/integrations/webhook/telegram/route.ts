@@ -11,27 +11,38 @@ import { generateText } from "ai";
 import { getToneInstruction, resolveAISettings } from "@/lib/ai/config";
 import { settingsService } from "@/lib/services/settingsService";
 
-/**
- * Meta Webhook Verification (GET)
- */
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const mode = searchParams.get("hub.mode");
-  const token = searchParams.get("hub.verify_token");
-  const challenge = searchParams.get("hub.challenge");
-
-  const verifyToken = process.env.META_VERIFY_TOKEN || "nodebase_verify_token";
-
-  if (mode === "subscribe" && token === verifyToken) {
-    return new Response(challenge, { status: 200 });
-  }
-
-  return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+interface TelegramUpdate {
+  update_id: number;
+  message?: {
+    message_id: number;
+    from?: {
+      id: number;
+      first_name?: string;
+      last_name?: string;
+      username?: string;
+    };
+    chat: {
+      id: number;
+      type: string;
+    };
+    text?: string;
+    date: number;
+  };
+  edited_message?: {
+    message_id: number;
+    from?: { id: number };
+    chat: { id: number };
+    text?: string;
+    edit_date: number;
+  };
 }
 
-/**
- * Meta Webhook Message Processing (POST)
- */
+interface TelegramWebhookBody {
+  update_id: number;
+  message?: TelegramUpdate["message"];
+  edited_message?: TelegramUpdate["edited_message"];
+}
+
 export async function POST(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -41,56 +52,65 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing tenantId" }, { status: 400 });
     }
 
-    const body = await request.json();
-
-    // Meta sends messages in entry -> messaging/changes
-    const entry = body.entry?.[0];
-    if (!entry) return NextResponse.json({ success: true, ignored: true });
-
-    // Handle Instagram/Messenger Messaging
-    const messaging = entry.messaging?.[0];
-    if (!messaging || !messaging.message || messaging.message.is_echo) {
-      return NextResponse.json({ success: true, ignored: true });
-    }
-
-    const senderId = messaging.sender.id;
-    const text = messaging.message.text;
-    const channel = entry.id ? 'instagram' : 'messenger';
-
+    const body: TelegramWebhookBody = await request.json();
     const supabase = await getSupabaseAdmin();
 
-    // Verify tenant has Meta integration
-    const integrationType = channel === 'instagram' ? 'instagram' : 'messenger';
+    // Verify tenant has Telegram integration
     const { data: integration } = await supabase
       .from("integrations")
-      .select("id, status")
+      .select("id, status, credentials")
       .eq("tenant_id", tenantId)
-      .eq("type", integrationType)
+      .eq("provider", "telegram")
       .eq("status", "active")
       .maybeSingle();
 
     if (!integration) {
-      return NextResponse.json({ error: `${channel} not configured for this tenant` }, { status: 403 });
+      return NextResponse.json({ error: "Telegram not configured for this tenant" }, { status: 403 });
     }
 
-    const contactName = `User ${senderId.slice(-4)}`;
-    const identifierType = channel === 'instagram' ? 'instagram_id' : 'other';
+    // Handle edited messages
+    const editedMsg = body.edited_message;
+    if (editedMsg) {
+      log.info("Telegram edited message received (ignoring)", { updateId: body.update_id });
+      return NextResponse.json({ success: true, ignored: "edited_message" });
+    }
+
+    const message = body.message;
+    if (!message) {
+      return NextResponse.json({ success: true, ignored: true });
+    }
+
+    // Ignore group messages
+    if (message.chat.type !== "private") {
+      return NextResponse.json({ success: true, ignored: "group_message" });
+    }
+
+    const senderId = message.from?.id?.toString();
+    const chatId = message.chat.id.toString();
+    const text = message.text;
+    const senderName = message.from
+      ? [message.from.first_name, message.from.last_name].filter(Boolean).join(" ") || `User ${senderId?.slice(-4)}`
+      : `User ${senderId?.slice(-4)}`;
+
+    if (!senderId) {
+      return NextResponse.json({ error: "Missing sender ID" }, { status: 400 });
+    }
 
     // Resolve contact (unified customer profile)
     const contactResult = await ContactService.resolveContact(tenantId, [
-      { type: identifierType, value: senderId }
+      { type: "telegram_id", value: senderId }
     ], {
-      name: contactName
+      name: senderName
     });
 
     const contact = contactResult.contact;
-    let guestId = null;
+    let guestId: string | null = null;
     let aiPaused = false;
 
     if (contactResult.wasLinked) {
-      log.info(`Existing contact linked via ${channel}`, { 
-        contactId: contact?.id, 
-        linkedChannels: contactResult.linkedChannels 
+      log.info("Existing contact linked via Telegram", {
+        contactId: contact?.id,
+        linkedChannels: contactResult.linkedChannels
       });
     }
 
@@ -101,8 +121,8 @@ export async function POST(request: Request) {
       wasLinked: contactResult.wasLinked,
       linkedChannels: contactResult.linkedChannels,
       contactId: contact?.id,
-      contactName: contact?.name || contactName,
-      channel: channel as string
+      contactName: contact?.name || senderName,
+      channel: "telegram"
     });
 
     // Get or create guest linked to contact
@@ -116,7 +136,7 @@ export async function POST(request: Request) {
     if (existingGuest) {
       guestId = existingGuest.id;
       aiPaused = !!existingGuest.ai_paused;
-      
+
       if (contact?.id && !existingGuest.contact_id) {
         await ContactService.linkGuestToContact(tenantId, existingGuest.id, contact.id);
       }
@@ -124,41 +144,41 @@ export async function POST(request: Request) {
       const { data: newGuest } = await supabase.from("guests").insert({
         tenant_id: tenantId,
         contact_id: contact?.id,
-        name: contactName,
+        name: senderName,
         phone: senderId,
-        channel
+        channel: "telegram"
       } as any).select("id").single();
-      guestId = newGuest?.id;
+      guestId = newGuest?.id ?? null;
     }
 
     // Sync conversation and get conversation_id
     const conversation = await InboxService.syncConversation({
       tenantId,
       externalId: senderId,
-      channel: channel as 'instagram' | 'messenger',
-      contactName: contact?.name || contactName,
+      channel: "telegram" as any,
+      contactName: contact?.name || senderName,
       lastMessagePreview: text?.slice(0, 100)
     });
     const conversationId = conversation?.id;
 
-    // Record Inbound Message with conversation_id
+    // Record inbound message with conversation_id
     await supabase.from("messages").insert({
       tenant_id: tenantId,
       conversation_id: conversationId,
       guest_id: guestId,
       direction: "inbound",
       role: "user",
-      channel: channel,
+      channel: "telegram",
       content: text,
       created_at: new Date().toISOString(),
-      metadata: { read: false, meta_message_id: messaging.message.mid }
+      metadata: { read: false, telegram_message_id: message.message_id?.toString() || null }
     });
 
     if (aiPaused) {
       return NextResponse.json({ success: true, ai_paused: true });
     }
 
-    // Basic Action Checks
+    // Basic action checks
     try {
       await ControlService.checkAction(tenantId, "ai");
       await ControlService.checkAction(tenantId, "message");
@@ -166,8 +186,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, blocked: true });
     }
 
-    // Logic for AI Reply (Same/Similar to WhatsApp Hook)
-    // 1. Check Wallet
+    // Check wallet balance
     const { data: wallet } = await supabase
       .from("wallets")
       .select("balance")
@@ -178,18 +197,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, blocked: true, reason: "Insufficient credits" });
     }
 
-    // 2. Visual Flow Execution
+    // Visual flow execution
     const flowResults = await FlowService.executeTrigger(tenantId, "message_received", {
       content: text,
       sender: senderId,
-      channel: channel
+      channel: "telegram"
     });
 
     if (flowResults?.some((r) => r.halted)) {
       return NextResponse.json({ success: true, flow_handled: true });
     }
 
-    // 3. Generate AI Reply
+    // Generate AI reply
     const { data: tenant } = await supabase
       .from("tenants")
       .select("business_type, ai_settings")
@@ -216,30 +235,30 @@ export async function POST(request: Request) {
       prompt,
     });
 
-    // 4. Record and Dispatch Outbound with conversation_id
+    // Record outbound message
     await supabase.from("messages").insert({
       tenant_id: tenantId,
       conversation_id: conversationId,
       guest_id: guestId,
       direction: "outbound",
       role: "assistant",
-      channel: channel,
+      channel: "telegram",
       content: aiReply,
       created_at: new Date().toISOString(),
       metadata: { read: true }
     });
 
-    // Dispatch via ChannelService (uses Meta Graph API Send endpoint)
+    // Dispatch via ChannelService (Telegram Bot API)
     await ChannelService.sendMessage({
       tenantId,
-      recipientId: senderId,
+      recipientId: chatId,
       content: aiReply,
-      channel: channel as 'instagram' | 'messenger'
+      channel: "telegram"
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    log.error("Meta Webhook error:", { error });
+    log.error("Telegram Webhook error:", { error });
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

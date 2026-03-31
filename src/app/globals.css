@@ -328,4 +328,55 @@
     .public-site {
         /* Namespace for public pages */
     }
+
+    .public-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        color: white;
+        font-size: 0.9375rem;
+        transition: all 0.2s;
+    }
+
+    .public-input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .public-input:focus {
+        outline: none;
+        border-color: rgba(96, 165, 250, 0.5);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .public-display {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+
+    .public-eyebrow {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .public-shimmer {
+        background: linear-gradient(
+            110deg,
+            rgba(255, 255, 255, 0.03) 0%,
+            rgba(255, 255, 255, 0.08) 50%,
+            rgba(255, 255, 255, 0.03) 100%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 2s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
 }

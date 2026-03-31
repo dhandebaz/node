@@ -4,9 +4,12 @@ import { ControlService } from "@/lib/services/controlService";
 import { wahaService } from "@/lib/services/wahaService";
 import { FlowService } from "@/lib/services/flowService";
 import { InboxService } from "@/lib/services/inboxService";
+import { ContactService } from "@/lib/services/contactService";
+import { NotificationService } from "@/lib/services/notificationService";
 import { generateText } from "ai";
 import { getToneInstruction, resolveAISettings } from "@/lib/ai/config";
 import { settingsService } from "@/lib/services/settingsService";
+import { log } from "@/lib/logger";
 
 export async function POST(request: Request) {
   try {
@@ -41,26 +44,62 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "WhatsApp not configured for this tenant" }, { status: 403 });
     }
 
-    // Get or create guest
+    // Resolve contact (unified customer profile)
+    const contactResult = await ContactService.resolveContact(tenantId, [
+      { type: "phone", value: sender },
+      { type: "whatsapp_id", value: sender }
+    ], {
+      name: sender
+    });
+
+    const contact = contactResult.contact;
     let guestId = null;
     let aiPaused = false;
+
+    if (contactResult.isNewContact) {
+      log.info("New contact created from WhatsApp", { contactId: contact?.id, phone: sender });
+    } else if (contactResult.wasLinked) {
+      log.info("Existing contact linked via WhatsApp", { 
+        contactId: contact?.id, 
+        linkedChannels: contactResult.linkedChannels 
+      });
+    }
+
+    // Send notification to host about new customer/cross-channel link
+    await NotificationService.notifyNewCustomer({
+      tenantId,
+      isNewContact: contactResult.isNewContact,
+      wasLinked: contactResult.wasLinked,
+      linkedChannels: contactResult.linkedChannels,
+      contactId: contact?.id,
+      contactName: contact?.name || sender,
+      channel: "whatsapp"
+    });
+
+    // Get or create guest linked to contact
     const { data: existingGuest } = await supabase
       .from("guests")
-      .select("id, ai_paused")
+      .select("id, ai_paused, contact_id")
       .eq("phone", sender)
       .eq("tenant_id", tenantId)
-      .maybeSingle();
+      .maybeSingle() as any;
 
     if (existingGuest) {
       guestId = existingGuest.id;
       aiPaused = !!existingGuest.ai_paused;
+      
+      // Link guest to contact if not already linked
+      if (contact?.id && !existingGuest.contact_id) {
+        await ContactService.linkGuestToContact(tenantId, existingGuest.id, contact.id);
+      }
     } else {
       const { data: newGuest } = await supabase.from("guests").insert({
         tenant_id: tenantId,
+        contact_id: contact?.id,
         name: sender,
         phone: sender,
         channel: "whatsapp"
-      }).select("id").single();
+      } as any).select("id").single();
       guestId = newGuest?.id;
     }
 
@@ -69,7 +108,7 @@ export async function POST(request: Request) {
       tenantId,
       externalId: sender,
       channel: "whatsapp",
-      contactName: sender,
+      contactName: contact?.name || sender,
       lastMessagePreview: text?.slice(0, 100)
     });
     const conversationId = conversation?.id;

@@ -2,7 +2,7 @@ import { wahaService } from "./wahaService";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
 
-export type MessageChannel = 'whatsapp' | 'instagram' | 'messenger' | 'sms' | 'email';
+export type MessageChannel = 'whatsapp' | 'instagram' | 'messenger' | 'sms' | 'email' | 'telegram';
 
 export interface OutboundMessage {
   tenantId: string;
@@ -87,6 +87,52 @@ export const ChannelService = {
         // Email requires SMTP or Resend integration
         await this.recordFailure(tenantId, 'integration', 'email', 'Email provider not configured.');
         return { success: false, error: 'Email provider not configured' };
+
+      case 'telegram': {
+        // Telegram Bot API - requires bot token stored in integrations table
+        const supabase = await getSupabaseServer();
+        const { data: integration } = await supabase
+          .from('integrations')
+          .select('credentials')
+          .eq('tenant_id', tenantId)
+          .eq('provider', 'telegram')
+          .eq('enabled', true)
+          .maybeSingle();
+
+        const botToken = (integration?.credentials as any)?.bot_token;
+        if (!botToken) {
+          await this.recordFailure(tenantId, 'integration', 'telegram', 'Telegram bot token not configured. Connect Telegram in Integrations.');
+          return { success: false, error: 'Telegram not connected. Configure Telegram integration first.' };
+        }
+
+        try {
+          // recipientId is the Telegram chat_id for direct messages
+          const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: recipientId,
+              text: content,
+              parse_mode: 'Markdown'
+            })
+          });
+
+          if (!response.ok) {
+            const errorBody = await response.text();
+            log.error(`[ChannelService] Telegram API error`, { status: response.status, body: errorBody });
+            await this.recordFailure(tenantId, 'integration', 'telegram', `Telegram API returned ${response.status}: ${errorBody.slice(0, 200)}`);
+            return { success: false, error: `Telegram API error: ${response.status}` };
+          }
+
+          const result = await response.json();
+          return { success: true, messageId: result.result?.message_id?.toString() };
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Unknown error';
+          log.error(`[ChannelService] Telegram dispatch failed`, { error: message });
+          await this.recordFailure(tenantId, 'integration', 'telegram', `Telegram dispatch error: ${message}`);
+          return { success: false, error: message };
+        }
+      }
 
       default:
         throw new Error(`Unsupported channel: ${channel}`);

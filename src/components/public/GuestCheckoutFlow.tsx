@@ -85,11 +85,31 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
   const stayLabel = link.metadata?.startDate || "Dates shared by the host";
   const hasUPI = link.tenants?.business_qr_url || link.tenants?.upi_id || link.tenants?.upi_mobile;
 
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    const cleaned = phone.replace(/\D/g, '');
+    return cleaned.length >= 10;
+  };
+
   const handleDetailsSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.phone) {
-      toast.error("Please provide your name, email, and phone number.");
+    if (!formData.name.trim()) {
+      toast.error("Please enter your full name.");
+      return;
+    }
+
+    if (!formData.email.trim() || !validateEmail(formData.email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    if (!formData.phone.trim() || !validatePhone(formData.phone)) {
+      toast.error("Please enter a valid phone number (at least 10 digits).");
       return;
     }
 
@@ -678,13 +698,31 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                 </div>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => window.close()}
-              className="public-button-secondary px-6 py-3 text-sm font-semibold"
-            >
-              Close portal
-            </button>
+            <div className="pt-4 border-t border-white/10">
+              <p className="text-sm text-muted-foreground mb-4">
+                You can close this tab or return to chat with the host.
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={`/chat/${link.tenant_id}`}
+                  className="public-button-secondary px-6 py-3 text-sm font-semibold text-center"
+                >
+                  Back to Chat
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const msg = link.status === "pending_verification" 
+                      ? "Thank you! The host will verify your payment shortly. You can close this tab."
+                      : "Thank you for completing your booking! You can close this tab.";
+                    alert(msg);
+                  }}
+                  className="public-button px-6 py-3 text-sm font-semibold"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
           </div>
         </section>
       ) : null}
