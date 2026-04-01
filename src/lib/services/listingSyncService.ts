@@ -23,6 +23,10 @@ export class ListingSyncService {
     log.info(`[ListingSyncService] Found ${integrations.length} calendar(s) to sync`);
 
     for (const integration of integrations) {
+      if (!integration.listing_id) {
+        log.warn("[ListingSyncService] Found integration without listing_id", { id: integration.id });
+        continue;
+      }
       try {
         await this.syncListing(integration.listing_id, integration);
       } catch (e) {

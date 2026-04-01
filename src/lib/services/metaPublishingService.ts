@@ -121,4 +121,28 @@ export class MetaPublishingService {
       return { success: false, error: (e as Error).message };
     }
   }
+
+  /**
+   * Get Instagram Media (Health Check)
+   */
+  static async getMedia(igBusinessAccountId: string, accessToken: string) {
+    try {
+      const response = await fetch(
+        `https://graph.facebook.com/${GRAPH_API_VERSION}/${igBusinessAccountId}/media?` +
+        new URLSearchParams({
+          fields: "id,caption,media_type,media_url,timestamp",
+          limit: "1",
+          access_token: accessToken
+        })
+      );
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || "Failed to fetch media");
+
+      return { success: true, data: data.data };
+    } catch (e) {
+      log.error("[MetaPublishing] Get media failed", { error: e });
+      return { success: false, error: (e as Error).message };
+    }
+  }
 }

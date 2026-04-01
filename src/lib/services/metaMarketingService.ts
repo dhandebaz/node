@@ -214,4 +214,27 @@ export class MetaMarketingService {
       return { success: false, error: (e as Error).message };
     }
   }
+
+  /**
+   * Get Ad Account (Health Check)
+   */
+  static async getAdAccount(adAccountId: string, accessToken: string) {
+    try {
+      const response = await fetch(
+        `https://graph.facebook.com/${GRAPH_API_VERSION}/act_${adAccountId}?` +
+        new URLSearchParams({
+          fields: "id,name,account_status,disable_reason",
+          access_token: accessToken
+        })
+      );
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || "Failed to fetch ad account");
+
+      return { success: true, data };
+    } catch (e) {
+      log.error("[MetaMarketing] Get ad account failed", { error: e });
+      return { success: false, error: (e as Error).message };
+    }
+  }
 }
