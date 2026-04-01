@@ -58,13 +58,13 @@ export default async function AIDashboardPage() {
       .select("*", { count: "exact", head: true })
       .eq("tenant_id", tenantId)
       .eq("direction", "outbound")
-      .eq("sender_type", "ai"),
+      .eq("sender_type" as any, "ai"),
     supabase
       .from("messages")
       .select("*", { count: "exact", head: true })
       .eq("tenant_id", tenantId)
       .eq("direction", "outbound")
-      .eq("sender_type", "human"),
+      .eq("sender_type" as any, "human"),
     supabase
       .from("listing_integrations")
       .select("*", { count: "exact", head: true })

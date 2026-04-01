@@ -62,7 +62,7 @@ export async function GET() {
       .from("tenant_invitations")
       .select("id, email, role, created_at, expires_at")
       .eq("tenant_id", tenantId)
-      .eq("status", "pending")
+      .eq("status" as any, "pending")
       .order("created_at", { ascending: false });
 
     const members = (tenantUsers ?? []).map((tu: any) => {

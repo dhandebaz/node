@@ -6,7 +6,6 @@ import {
   MessageSquare,
   Phone,
   Mail,
-  Instagram,
   MessageCircle,
   Globe,
   Search,
@@ -41,7 +40,7 @@ type Contact = {
 
 const channelIcons: Record<string, React.ReactNode> = {
   whatsapp: <MessageCircle className="h-4 w-4 text-green-500" />,
-  instagram: <Instagram className="h-4 w-4 text-pink-500" />,
+  instagram: <MessageCircle className="h-4 w-4 text-pink-500" />,
   telegram: <MessageSquare className="h-4 w-4 text-blue-500" />,
   web: <Globe className="h-4 w-4 text-gray-500" />,
   airbnb: <Globe className="h-4 w-4 text-green-600" />,

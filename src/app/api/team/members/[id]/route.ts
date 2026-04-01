@@ -59,7 +59,7 @@ export async function DELETE(
         .select("id, email")
         .eq("id", membershipId)
         .eq("tenant_id", tenantId)
-        .eq("status", "pending")
+        .eq("status" as any, "pending")
         .maybeSingle();
 
       if (inviteError) {

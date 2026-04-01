@@ -1,4 +1,4 @@
-import { wahaService } from "./wahaService";
+import { ChannelManager, type Channel } from "./channelManager";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
 
@@ -6,7 +6,7 @@ export type MessageChannel = 'whatsapp' | 'instagram' | 'messenger' | 'sms' | 'e
 
 export interface OutboundMessage {
   tenantId: string;
-  recipientId: string; // phone number, IG handle, or Meta scoped ID
+  recipientId: string;
   content: string;
   channel: MessageChannel;
   metadata?: Record<string, any>;
@@ -15,128 +15,108 @@ export interface OutboundMessage {
 export const ChannelService = {
   /**
    * Dispatches an outbound message to the appropriate provider based on the channel.
-   * All channels either dispatch via real API or log a tracked failure  -  no simulated responses.
    */
   async sendMessage(params: OutboundMessage) {
     const { tenantId, recipientId, content, channel } = params;
 
     log.info(`[ChannelService] Dispatching ${channel} message to ${recipientId} for tenant ${tenantId}`);
 
-    switch (channel) {
-      case 'whatsapp':
-        return await wahaService.sendText({
-          sessionName: tenantId,
-          chatId: recipientId,
-          text: content
-        });
+    try {
+      const result = await ChannelManager.sendMessage(tenantId, {
+        channel: channel as Channel,
+        recipientId,
+        content,
+        metadata: params.metadata,
+      });
 
-      case 'instagram':
-      case 'messenger': {
-        // Meta Graph API Send: requires a Page Access Token stored in the integrations table
-        const supabase = await getSupabaseServer();
-        const { data: integration } = await supabase
-          .from('integrations')
-          .select('credentials')
-          .eq('tenant_id', tenantId)
-          .eq('provider', 'meta')
-          .eq('enabled', true)
-          .maybeSingle();
-
-        const pageAccessToken = (integration?.credentials as any)?.page_access_token;
-        if (!pageAccessToken) {
-          await this.recordFailure(tenantId, 'integration', channel, 'Meta Page Access Token not configured. Connect Instagram/Messenger in Integrations.');
-          return { success: false, error: `${channel} not connected. Configure Meta integration first.` };
-        }
-
-        try {
-          const response = await fetch(`https://graph.facebook.com/v19.0/me/messages`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${pageAccessToken}`
-            },
-            body: JSON.stringify({
-              recipient: { id: recipientId },
-              message: { text: content }
-            })
-          });
-
-          if (!response.ok) {
-            const errorBody = await response.text();
-            log.error(`[ChannelService] Meta API error for ${channel}`, { status: response.status, body: errorBody });
-            await this.recordFailure(tenantId, 'integration', channel, `Meta API returned ${response.status}: ${errorBody.slice(0, 200)}`);
-            return { success: false, error: `Meta API error: ${response.status}` };
-          }
-
-          const result = await response.json();
-          return { success: true, messageId: result.message_id };
-        } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : 'Unknown error';
-          log.error(`[ChannelService] Meta dispatch failed`, { error: message });
-          await this.recordFailure(tenantId, 'integration', channel, `Meta dispatch error: ${message}`);
-          return { success: false, error: message };
-        }
+      if (!result.success && result.error) {
+        await this.recordFailure(tenantId, 'integration', channel, result.error);
       }
 
-      case 'sms':
-        // SMS requires Twilio/MSG91 integration  -  not yet connected for this tenant
-        await this.recordFailure(tenantId, 'integration', 'sms', 'SMS provider not configured. Connect Twilio or MSG91 in Integrations.');
-        return { success: false, error: 'SMS provider not configured' };
-
-      case 'email':
-        // Email requires SMTP or Resend integration
-        await this.recordFailure(tenantId, 'integration', 'email', 'Email provider not configured.');
-        return { success: false, error: 'Email provider not configured' };
-
-      case 'telegram': {
-        // Telegram Bot API - requires bot token stored in integrations table
-        const supabase = await getSupabaseServer();
-        const { data: integration } = await supabase
-          .from('integrations')
-          .select('credentials')
-          .eq('tenant_id', tenantId)
-          .eq('provider', 'telegram')
-          .eq('enabled', true)
-          .maybeSingle();
-
-        const botToken = (integration?.credentials as any)?.bot_token;
-        if (!botToken) {
-          await this.recordFailure(tenantId, 'integration', 'telegram', 'Telegram bot token not configured. Connect Telegram in Integrations.');
-          return { success: false, error: 'Telegram not connected. Configure Telegram integration first.' };
-        }
-
-        try {
-          // recipientId is the Telegram chat_id for direct messages
-          const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: recipientId,
-              text: content,
-              parse_mode: 'Markdown'
-            })
-          });
-
-          if (!response.ok) {
-            const errorBody = await response.text();
-            log.error(`[ChannelService] Telegram API error`, { status: response.status, body: errorBody });
-            await this.recordFailure(tenantId, 'integration', 'telegram', `Telegram API returned ${response.status}: ${errorBody.slice(0, 200)}`);
-            return { success: false, error: `Telegram API error: ${response.status}` };
-          }
-
-          const result = await response.json();
-          return { success: true, messageId: result.result?.message_id?.toString() };
-        } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : 'Unknown error';
-          log.error(`[ChannelService] Telegram dispatch failed`, { error: message });
-          await this.recordFailure(tenantId, 'integration', 'telegram', `Telegram dispatch error: ${message}`);
-          return { success: false, error: message };
-        }
-      }
-
-      default:
-        throw new Error(`Unsupported channel: ${channel}`);
+      return result;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      await this.recordFailure(tenantId, 'integration', channel, message);
+      return { success: false, error: message };
     }
+  },
+
+  /**
+   * Send media message through any channel
+   */
+  async sendMedia(
+    tenantId: string,
+    channel: MessageChannel,
+    recipientId: string,
+    mediaType: "image" | "video" | "audio" | "document",
+    mediaUrl: string,
+    caption?: string
+  ) {
+    try {
+      const result = await ChannelManager.sendMedia(
+        tenantId,
+        channel as Channel,
+        recipientId,
+        mediaType,
+        mediaUrl,
+        caption
+      );
+
+      if (!result.success && result.error) {
+        await this.recordFailure(tenantId, 'integration', channel, result.error);
+      }
+
+      return result;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      await this.recordFailure(tenantId, 'integration', channel, message);
+      return { success: false, error: message };
+    }
+  },
+
+  /**
+   * Send quick reply buttons
+   */
+  async sendQuickReply(
+    tenantId: string,
+    channel: MessageChannel,
+    recipientId: string,
+    message: string,
+    buttons: Array<{ text: string; payload?: string }>
+  ) {
+    try {
+      const result = await ChannelManager.sendQuickReply(
+        tenantId,
+        channel as Channel,
+        recipientId,
+        message,
+        buttons
+      );
+
+      if (!result.success && result.error) {
+        await this.recordFailure(tenantId, 'integration', channel, result.error);
+      }
+
+      return result;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      await this.recordFailure(tenantId, 'integration', channel, message);
+      return { success: false, error: message };
+    }
+  },
+
+  /**
+   * Check if a channel is configured for a tenant
+   */
+  async isChannelConfigured(tenantId: string, channel: MessageChannel): Promise<boolean> {
+    return ChannelManager.isChannelConfigured(tenantId, channel as Channel);
+  },
+
+  /**
+   * Get all configured channels for a tenant
+   */
+  async getConfiguredChannels(tenantId: string): Promise<Channel[]> {
+    return ChannelManager.getConfiguredChannels(tenantId);
   },
 
   /**

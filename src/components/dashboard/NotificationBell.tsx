@@ -1,17 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Bell, Check, CheckCheck, X, MessageCircle, UserPlus, CreditCard, Calendar, AlertCircle } from "lucide-react";
-
-type Notification = {
-  id: string;
-  type: string;
-  title: string;
-  message: string;
-  read: boolean;
-  created_at: string;
-  channel?: string;
-};
+import { useState, useRef } from "react";
+import { Bell, Check, CheckCheck, MessageCircle, UserPlus, CreditCard, Calendar, AlertCircle } from "lucide-react";
+import { useNotifications, type Notification } from "@/hooks/useNotifications";
 
 const notificationIcons: Record<string, React.ReactNode> = {
   new_customer: <UserPlus className="h-4 w-4 text-green-500" />,
@@ -24,59 +15,8 @@ const notificationIcons: Record<string, React.ReactNode> = {
 
 export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(10);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    fetchNotifications();
-    
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const fetchNotifications = async () => {
-    try {
-      const response = await fetch("/api/notifications?limit=10");
-      const data = await response.json();
-      setNotifications(data.notifications || []);
-      setUnreadCount(data.unreadCount || 0);
-    } catch (error) {
-      console.error("Failed to fetch notifications:", error);
-    }
-  };
-
-  const markAsRead = async (id: string) => {
-    try {
-      await fetch(`/api/notifications/${id}`, { method: "PATCH" });
-      setNotifications(prev => 
-        prev.map(n => n.id === id ? { ...n, read: true } : n)
-      );
-      setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (error) {
-      console.error("Failed to mark as read:", error);
-    }
-  };
-
-  const markAllAsRead = async () => {
-    try {
-      await fetch("/api/notifications", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "markAllRead" })
-      });
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-      setUnreadCount(0);
-    } catch (error) {
-      console.error("Failed to mark all as read:", error);
-    }
-  };
 
   const formatTime = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -91,6 +31,15 @@ export function NotificationBell() {
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
     return date.toLocaleDateString();
+  };
+
+  const handleNotificationClick = (notification: Notification) => {
+    if (!notification.read) {
+      markAsRead(notification.id);
+    }
+    if (notification.contact_id) {
+      window.location.href = `/dashboard/ai/customers/${notification.contact_id}`;
+    }
   };
 
   return (
@@ -132,7 +81,8 @@ export function NotificationBell() {
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors ${
+                  onClick={() => handleNotificationClick(notification)}
+                  className={`p-4 border-b border-border last:border-0 hover:bg-muted/50 transition-colors cursor-pointer ${
                     !notification.read ? "bg-primary/5" : ""
                   }`}
                 >
@@ -146,13 +96,7 @@ export function NotificationBell() {
                           {notification.title}
                         </p>
                         {!notification.read && (
-                          <button
-                            onClick={() => markAsRead(notification.id)}
-                            className="flex-shrink-0 p-1 hover:bg-muted rounded"
-                            title="Mark as read"
-                          >
-                            <Check className="h-3 w-3 text-muted-foreground" />
-                          </button>
+                          <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-1.5" />
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-2">

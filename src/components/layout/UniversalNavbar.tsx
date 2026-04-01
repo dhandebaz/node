@@ -19,6 +19,7 @@ import { Logo } from "@/components/ui/Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { logoutAction } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
+import { NotificationBell } from "@/components/dashboard/NotificationBell";
 
 interface UniversalNavbarProps {
   tenantName?: string;
@@ -105,12 +106,15 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
           })}
         </div>
 
-        {/* Right Zone: User Profile */}
-        <div 
-          className="relative"
-          onMouseEnter={() => setIsDropdownOpen(true)}
-          onMouseLeave={() => setIsDropdownOpen(false)}
-        >
+        {/* Right Zone: Notifications & User Profile */}
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          
+          <div 
+            className="relative"
+            onMouseEnter={() => setIsDropdownOpen(true)}
+            onMouseLeave={() => setIsDropdownOpen(false)}
+          >
           <button 
             className="flex items-center gap-3 outline-none group"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -176,6 +180,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
         </div>
       </nav>
 

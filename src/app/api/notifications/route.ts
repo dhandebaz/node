@@ -6,7 +6,8 @@ export async function GET(request: NextRequest) {
   try {
     const tenantId = await requireActiveTenant();
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const limitParam = searchParams.get("limit");
+    const limit = limitParam ? Math.min(Math.max(parseInt(limitParam, 10) || 20, 1), 100) : 20;
 
     const notifications = await NotificationService.getRecentNotifications(tenantId, limit);
     const unreadCount = await NotificationService.getUnreadCount(tenantId);

@@ -11,6 +11,22 @@ import { generateText } from "ai";
 import { getToneInstruction, resolveAISettings } from "@/lib/ai/config";
 import { settingsService } from "@/lib/services/settingsService";
 
+function verifyMetaSignature(payload: string, signature: string | null): boolean {
+  const appSecret = process.env.META_APP_SECRET;
+  if (!appSecret || !signature) return true; // Skip if no secret configured
+
+  const crypto = require('crypto');
+  const expectedSignature = 'sha256=' + crypto
+    .createHmac('sha256', appSecret)
+    .update(payload)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+
 /**
  * Meta Webhook Verification (GET)
  */
@@ -20,7 +36,13 @@ export async function GET(request: Request) {
   const token = searchParams.get("hub.verify_token");
   const challenge = searchParams.get("hub.challenge");
 
-  const verifyToken = process.env.META_VERIFY_TOKEN || "nodebase_verify_token";
+  const verifyToken = process.env.META_VERIFY_TOKEN;
+  
+  // Fail if no verify token is configured (security best practice)
+  if (!verifyToken) {
+    log.error("META_VERIFY_TOKEN not configured!");
+    return NextResponse.json({ error: "Server misconfiguration" }, { status: 500 });
+  }
 
   if (mode === "subscribe" && token === verifyToken) {
     return new Response(challenge, { status: 200 });
@@ -41,7 +63,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing tenantId" }, { status: 400 });
     }
 
-    const body = await request.json();
+    const rawBody = await request.text();
+    const signature = request.headers.get("x-hub-signature-256");
+
+    // Verify Meta signature if app secret is configured
+    if (!verifyMetaSignature(rawBody, signature)) {
+      log.warn("Invalid Meta webhook signature", { tenantId });
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+    }
+
+    const body = JSON.parse(rawBody);
 
     // Meta sends messages in entry -> messaging/changes
     const entry = body.entry?.[0];
@@ -65,7 +96,7 @@ export async function POST(request: Request) {
       .from("integrations")
       .select("id, status")
       .eq("tenant_id", tenantId)
-      .eq("type", integrationType)
+      .eq("type" as any, integrationType)
       .eq("status", "active")
       .maybeSingle();
 

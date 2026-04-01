@@ -384,7 +384,8 @@ export default function ListingIntegrationsPage() {
 
         
         {/* Telegram Integration */}
-        <Card className="glass-panel border-white/5 opacity-80">
+        <Card className="glass-panel border-white/5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#0088cc]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
           <CardHeader>
               <div className="flex justify-between items-start">
                   <div className="flex items-center gap-4">
@@ -393,16 +394,18 @@ export default function ListingIntegrationsPage() {
                       </div>
                       <div>
                           <CardTitle className="text-white text-lg font-bold">Telegram</CardTitle>
-                          <CardDescription className="text-zinc-500 text-sm">Full reply capabilities for Bots</CardDescription>
+                          <CardDescription className="text-zinc-500 text-sm">AI-powered bot messaging</CardDescription>
                       </div>
                   </div>
-                  <Badge variant="outline" className="text-zinc-500 border-white/10 bg-white/5 rounded-full px-3 py-0.5 text-[10px] font-bold italic">COMING SOON</Badge>
+                  <Badge variant="outline" className="text-zinc-500 border-white/10 bg-white/5 rounded-full px-3 py-0.5 text-[10px] font-bold">BETA</Badge>
               </div>
           </CardHeader>
           <CardContent>
-             <button disabled className="button-glass w-full border-white/5 text-zinc-600 cursor-not-allowed">
-                 Development in Progress
-             </button>
+             <Button asChild className="button-primary w-full shadow-[#0088cc]/20 border-[#0088cc]/30">
+                 <Link href="/dashboard/integrations/telegram">
+                     Configure Telegram Bot <ExternalLink className="w-4 h-4 ml-2" />
+                 </Link>
+             </Button>
           </CardContent>
         </Card>
 

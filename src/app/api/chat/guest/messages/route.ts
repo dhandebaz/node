@@ -15,8 +15,25 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "conversationId required" }, { status: 400 });
         }
 
+        // Validate UUID format to prevent SQL injection
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(conversationId)) {
+            return NextResponse.json({ error: "Invalid conversation ID format" }, { status: 400 });
+        }
+
         const supabase = await getSupabaseAdmin();
         
+        // Verify the conversation exists and belongs to a valid listing
+        const { data: conversation } = await supabase
+            .from("conversations")
+            .select("id, tenant_id, listing_id")
+            .eq("id", conversationId)
+            .single();
+            
+        if (!conversation) {
+            return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
+        }
+
         const { data: messages, error } = await supabase
             .from("messages")
             .select("*")
@@ -25,6 +42,7 @@ export async function GET(request: NextRequest) {
             
         if (error) throw error;
         
+        // Filter sensitive data - don't expose internal metadata
         const formatted = messages?.map((m: any) => ({
             id: m.id,
             content: m.content,
@@ -37,6 +55,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ messages: formatted });
     } catch (error: any) {
         console.error("Public chat messages error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

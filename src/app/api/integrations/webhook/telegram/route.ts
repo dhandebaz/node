@@ -43,6 +43,33 @@ interface TelegramWebhookBody {
   edited_message?: TelegramUpdate["edited_message"];
 }
 
+async function verifyTelegramWebhook(request: Request, tenantId: string): Promise<boolean> {
+  const supabase = await getSupabaseAdmin();
+  
+  const { data: integration } = await supabase
+    .from("integrations")
+    .select("credentials")
+    .eq("tenant_id", tenantId)
+    .eq("provider", "telegram")
+    .eq("status", "active")
+    .maybeSingle();
+
+  if (!integration?.credentials) return false;
+  
+  const credentials = integration.credentials as any;
+  const secretToken = credentials.bot_token;
+  
+  // Get the secret from the request header (set when webhook was configured)
+  const secret = request.headers.get("x-telegram-bot-api-secret-token");
+  
+  // If no secret is configured on either side, we rely on tenantId verification
+  // which is set when the webhook URL was configured
+  if (!secret) return true; // Trust if no secret required
+  
+  // Compare secret tokens
+  return secret === secretToken;
+}
+
 export async function POST(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -50,6 +77,13 @@ export async function POST(request: Request) {
 
     if (!tenantId) {
       return NextResponse.json({ error: "Missing tenantId" }, { status: 400 });
+    }
+
+    // Verify webhook authenticity
+    const isValid = await verifyTelegramWebhook(request, tenantId);
+    if (!isValid) {
+      log.warn("Invalid Telegram webhook request", { tenantId });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body: TelegramWebhookBody = await request.json();

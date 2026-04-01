@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     const botUsername = data.result.username;
 
-    const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://app.nodebase.ai"}/api/integrations/webhook/telegram?tenantId=${tenantId}`;
+    const webhookUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/integrations/webhook/telegram?tenantId=${tenantId}`;
 
     const setWebhookUrl = `https://api.telegram.org/bot${bot_token}/setWebhook?url=${encodeURIComponent(webhookUrl)}`;
     await fetch(setWebhookUrl);

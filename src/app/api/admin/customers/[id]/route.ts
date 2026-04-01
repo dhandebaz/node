@@ -56,7 +56,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
         ]);
 
         walletBalance = Number(wallet?.balance || 0);
-        transactions = (txs || []).map(tx => ({
+        transactions = (txs || []).map((tx: any) => ({
             id: tx.id,
             type: tx.type,
             amount: Number(tx.amount),
@@ -80,7 +80,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     }
 
     if (usageEvents.length === 0) {
-        const { data: events } = await supabase.from("ai_usage_events").select("id, manager_slug, tokens_used, message_count, created_at").eq("user_id", customerId).order("created_at", { ascending: false }).limit(200);
+        const { data: events } = await supabase.from("ai_usage_events").select("id, manager_slug, tokens_used, message_count, created_at").eq("user_id" as any, customerId).order("created_at", { ascending: false }).limit(200);
         if (events && events.length > 0) usageEvents = events;
     }
 
@@ -93,7 +93,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     );
 
     // Fetch system logs
-    const { data: logs } = await supabase.from("system_logs").select("id, severity, service, message, timestamp").eq("user_id", customerId).order("timestamp", { ascending: false }).limit(50);
+    const { data: logs } = await supabase.from("system_logs").select("id, severity, service, message, timestamp").eq("user_id" as any, customerId).order("timestamp", { ascending: false }).limit(50);
 
     return NextResponse.json({
       profile: {

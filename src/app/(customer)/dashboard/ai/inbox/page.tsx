@@ -11,7 +11,6 @@ import {
   Copy,
   Filter,
   Globe,
-  Instagram,
   Loader2,
   MessageCircle,
   MessageSquare,
@@ -21,7 +20,6 @@ import {
   Send,
   User,
   X,
-  Facebook,
   Zap,
   Sparkles,
   CheckCircle,
@@ -135,8 +133,8 @@ type ListingSummary = {
 
 const channelIcon = {
   whatsapp: MessageCircle,
-  instagram: Instagram,
-  messenger: Facebook,
+  instagram: MessageCircle,
+  messenger: MessageSquare,
   web: Globe,
   voice: Mic,
 };

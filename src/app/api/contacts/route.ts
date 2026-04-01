@@ -8,7 +8,8 @@ export async function GET(request: NextRequest) {
     const tenantId = await requireActiveTenant();
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search");
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const limitParam = searchParams.get("limit");
+    const limit = limitParam ? Math.min(Math.max(parseInt(limitParam, 10) || 20, 1), 100) : 20;
 
     if (search) {
       const contacts = await ContactService.searchContacts(tenantId, search, limit);

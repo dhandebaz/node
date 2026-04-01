@@ -16,6 +16,8 @@ import {
   ChevronLeft,
   ChevronRight,
   CreditCard,
+  Users,
+  Bell,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
@@ -102,11 +104,13 @@ export function DashboardSidebar() {
   const menuItems = [
     { label: "Overview", icon: LayoutDashboard, href: "/dashboard/ai" },
     { label: "Inbox", icon: MessageSquare, href: "/dashboard/ai/inbox" },
+    { label: "Customers", icon: Users, href: "/dashboard/ai/customers" },
     { label: "Bookings", icon: Calendar, href: "/dashboard/ai/bookings" },
     { label: "Calendar", icon: CalendarDays, href: "/dashboard/ai/calendar" },
     { label: "Listings", icon: Briefcase, href: "/dashboard/ai/listings" },
     { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },
     { label: "Integrations", icon: Puzzle, href: "/dashboard/ai/integrations" },
+    { label: "Notifications", icon: Bell, href: "/dashboard/notifications" },
   ];
 
   const bottomItems = [
