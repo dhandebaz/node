@@ -1,10 +1,13 @@
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: "https://832f79bf8b49039202d0e29f52839843@o4511131934588928.ingest.us.sentry.io/4511131936292864",
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
+  // Tracing must be enabled for MCP monitoring to work
   tracesSampleRate: 1.0,
+
+  // Enable default PII to capture user contexts
+  sendDefaultPii: true,
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,

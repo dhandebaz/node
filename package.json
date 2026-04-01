@@ -16,6 +16,7 @@
     "@ai-sdk/google": "^3.0.54",
     "@ai-sdk/react": "^3.0.144",
     "@google/generative-ai": "^0.24.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@playwright/test": "^1.58.2",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-tabs": "^1.1.13",
