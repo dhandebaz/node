@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/admin";
+import { getSession } from "@/lib/auth/session";
 import { ControlService, TenantControlKey } from "@/lib/services/controlService";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const adminUserId = await requireAdmin();
-    // id is not strictly needed if tenantId is in body, but good for validation if we wanted to
-    // const { id } = await params; 
+    const authError = await requireAdmin();
+    if (authError) return authError;
     
     const body = await request.json();
     const { tenantId, control, value, reason } = body;
@@ -15,7 +15,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
     }
 
-    // Call ControlService to toggle
+    const session = await getSession();
+    const adminUserId = session?.userId || "system";
+
     await ControlService.toggleTenantControl(
       tenantId,
       control as TenantControlKey,

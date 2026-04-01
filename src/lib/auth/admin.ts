@@ -1,19 +1,18 @@
 import { getSession } from "./session";
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
+import { NextResponse } from "next/server";
 
 export async function requireAdmin() {
   const session = await getSession();
   if (!session?.userId) {
-    throw new Error("Unauthorized");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Check role from session first (fast path)
   if (session.role === 'admin' || session.role === 'superadmin') {
     await logAdminAccess(session.userId);
-    return session.userId;
+    return null;
   }
 
-  // Verify against database (source of truth)
   const supabase = await getSupabaseServer();
   const { data: user, error } = await supabase
     .from("users")
@@ -22,16 +21,15 @@ export async function requireAdmin() {
     .single();
 
   if (error || !user) {
-    console.error("Admin check failed: User not found or error", error);
-    throw new Error("Forbidden: Admin access required");
+    return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 });
   }
 
   if (user.role !== 'admin' && user.role !== 'superadmin') {
-    throw new Error("Forbidden: Admin access required");
+    return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 });
   }
 
   await logAdminAccess(session.userId);
-  return session.userId;
+  return null;
 }
 
 async function logAdminAccess(userId: string) {
