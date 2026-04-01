@@ -16,30 +16,7 @@ export async function GET(request: NextRequest) {
 
     const supabase = await getSupabaseAdmin();
 
-    let query = supabase
-      .from("tenants")
-      .select(`
-        id,
-        name,
-        username,
-        phone,
-        timezone,
-        business_type,
-        kyc_status,
-        kyc_verified_at,
-        created_at,
-        is_ai_enabled,
-        is_messaging_enabled,
-        is_bookings_enabled,
-        is_wallet_enabled,
-        early_access,
-        owner_user_id,
-        users:users!tenants_owner_user_id_fkey(
-          id,
-          email,
-          name
-        )
-      `, { count: "exact" });
+    let query = supabase.from("tenants").select("*", { count: "exact" });
 
     if (status === "active") {
       query = query.eq("kyc_status", "verified");
@@ -70,27 +47,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const tenantsWithOwner = tenants?.map((t: any) => ({
-      id: t.id,
-      name: t.name,
-      username: t.username,
-      phone: t.phone,
-      timezone: t.timezone,
-      business_type: t.business_type,
-      kyc_status: t.kyc_status,
-      kyc_verified_at: t.kyc_verified_at,
-      created_at: t.created_at,
-      is_ai_enabled: t.is_ai_enabled,
-      is_messaging_enabled: t.is_messaging_enabled,
-      is_bookings_enabled: t.is_bookings_enabled,
-      is_wallet_enabled: t.is_wallet_enabled,
-      early_access: t.early_access,
-      owner_email: t.users?.email || null,
-      owner_name: t.users?.name || null,
-    })) || [];
-
     return NextResponse.json({
-      tenants: tenantsWithOwner,
+      tenants: tenants || [],
       total: count || 0,
       page,
       pages: Math.ceil((count || 0) / limit),
