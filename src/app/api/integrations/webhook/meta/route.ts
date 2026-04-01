@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
+import { cache } from "@/lib/cache/redis";
+import { waitUntil } from "@vercel/functions";
 import { ControlService } from "@/lib/services/controlService";
 import { ChannelService } from "@/lib/services/channelService";
 import { FlowService } from "@/lib/services/flowService";
@@ -140,8 +142,40 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, ignored: true });
     }
 
-    const senderId = messaging.sender.id;
+    const messageId = messaging.message.mid;
+    const cacheKey = `meta_msg_id:${messageId}`;
+
+    // IDEMPOTENCY CHECK
+    const processed = await cache.get(cacheKey);
+    if (processed) {
+      log.info("[Meta] Duplicate message ignored", { messageId });
+      return NextResponse.json({ success: true, duplicate: true });
+    }
+
+    // Mark as processing (24h TTL)
+    await cache.set(cacheKey, "processing", 86400);
+
+    // BACKGROUND PROCESSING
+    waitUntil(
+      processIncomingMetaMessage(tenantId, messaging, entry, supabase)
+    );
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    log.error("Meta Webhook error:", { error: (error as Error).message });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+async function processIncomingMetaMessage(
+  tenantId: string,
+  messaging: any,
+  entry: any,
+  supabase: any
+) {
+  try {
     const text = messaging.message.text;
+    const senderId = messaging.sender.id;
     const channel = entry.id ? 'instagram' : 'messenger';
 
     // Verify tenant has Meta integration
@@ -155,7 +189,8 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (!integration) {
-      return NextResponse.json({ error: `${channel} not configured for this tenant` }, { status: 403 });
+      log.error(`${channel} not configured for tenant ${tenantId}`);
+      return;
     }
 
     const contactName = `User ${senderId.slice(-4)}`;
@@ -240,15 +275,15 @@ export async function POST(request: Request) {
     });
 
     if (aiPaused) {
-      return NextResponse.json({ success: true, ai_paused: true });
+      return;
     }
 
     // Basic Action Checks
     try {
       await ControlService.checkAction(tenantId, "ai");
       await ControlService.checkAction(tenantId, "message");
-    } catch (error: unknown) {
-      return NextResponse.json({ success: true, blocked: true });
+    } catch {
+      return;
     }
 
     // Logic for AI Reply (Same/Similar to WhatsApp Hook)
@@ -260,7 +295,7 @@ export async function POST(request: Request) {
       .single();
 
     if (!wallet || wallet.balance < 1) {
-      return NextResponse.json({ success: true, blocked: true, reason: "Insufficient credits" });
+      return;
     }
 
     // 2. Visual Flow Execution
@@ -271,7 +306,7 @@ export async function POST(request: Request) {
     });
 
     if (flowResults?.some((r) => r.halted)) {
-      return NextResponse.json({ success: true, flow_handled: true });
+      return;
     }
 
     // 3. Generate AI Reply
@@ -322,9 +357,8 @@ export async function POST(request: Request) {
       channel: channel as 'instagram' | 'messenger'
     });
 
-    return NextResponse.json({ success: true });
+    return;
   } catch (error) {
-    log.error("Meta Webhook error:", { error: (error as Error).message });
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    log.error("Meta Webhook background processing error:", { error: (error as Error).message });
   }
 }

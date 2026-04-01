@@ -1,4 +1,5 @@
 import { log } from "@/lib/logger";
+import { cache } from "@/lib/cache/redis";
 
 export interface MetaMessage {
   from: string;
@@ -184,7 +185,12 @@ export const metaService = {
    * Get pages for a user
    */
   async getUserPages(accessToken: string): Promise<{ success: boolean; pages?: Array<{ id: string; name: string; access_token: string; category: string }>; error?: string }> {
+    const cacheKey = `meta:pages:${accessToken.slice(-10)}`;
+    
     try {
+      const cached = await cache.get<any[]>(cacheKey);
+      if (cached) return { success: true, pages: cached };
+
       const response = await fetch(
         `https://graph.facebook.com/${GRAPH_API_VERSION}/me/accounts?access_token=${accessToken}`
       );
@@ -195,6 +201,7 @@ export const metaService = {
         return { success: false, error: data.error?.message || "Failed to get pages" };
       }
 
+      await cache.set(cacheKey, data.data, 900); // 15 mins
       return { success: true, pages: data.data };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -206,7 +213,12 @@ export const metaService = {
    * Get Instagram accounts linked to a page
    */
   async getInstagramAccounts(pageAccessToken: string): Promise<{ success: boolean; accounts?: Array<{ id: string; username: string; name: string }>; error?: string }> {
+    const cacheKey = `meta:ig:${pageAccessToken.slice(-10)}`;
+    
     try {
+      const cached = await cache.get<any[]>(cacheKey);
+      if (cached) return { success: true, accounts: cached };
+
       // First get the Instagram business account ID
       const response = await fetch(
         `https://graph.facebook.com/${GRAPH_API_VERSION}/me/accounts?` +
@@ -245,18 +257,17 @@ export const metaService = {
       );
 
       const igDetails = await igDetailsResponse.json();
+      const accounts = [{
+        id: igData.instagram_business_account.id,
+        username: igDetails.username,
+        name: igDetails.name || igDetails.username,
+      }];
 
-      return {
-        success: true,
-        accounts: [{
-          id: igData.instagram_business_account.id,
-          username: igDetails.username,
-          name: igDetails.name || igDetails.username,
-        }],
-      };
+      await cache.set(cacheKey, accounts, 900); // 15 mins
+      return { success: true, accounts };
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      return { success: false, error: message };
+       const message = error instanceof Error ? error.message : "Unknown error";
+       return { success: false, error: message };
     }
   },
 
@@ -345,7 +356,7 @@ export const metaService = {
    * Send template message (buttons, lists, etc.)
    */
   async sendTemplate(params: SendTemplateParams, config: MetaConfig): Promise<{ success: boolean; messageId?: string; error?: string }> {
-    const { recipientId, templateName, languageCode = "en", components } = params;
+    const { recipientId, templateName, components } = params;
 
     try {
       const response = await fetch(
@@ -458,7 +469,12 @@ export const metaService = {
    * Get user profile info
    */
   async getUserProfile(userId: string, config: MetaConfig): Promise<{ success: boolean; profile?: { name: string; profile_pic: string; email?: string }; error?: string }> {
+    const cacheKey = `meta:profile:${userId}`;
+    
     try {
+      const cached = await cache.get<any>(cacheKey);
+      if (cached) return { success: true, profile: cached };
+
       const response = await fetch(
         `https://graph.facebook.com/${GRAPH_API_VERSION}/${userId}?` +
         new URLSearchParams({
@@ -473,14 +489,14 @@ export const metaService = {
         return { success: false, error: data.error?.message };
       }
 
-      return {
-        success: true,
-        profile: {
-          name: data.name,
-          profile_pic: data.profile_pic,
-          email: data.email,
-        },
+      const profile = {
+        name: data.name,
+        profile_pic: data.profile_pic,
+        email: data.email,
       };
+
+      await cache.set(cacheKey, profile, 3600); // 1 hour
+      return { success: true, profile };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       return { success: false, error: message };

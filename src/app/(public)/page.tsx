@@ -26,6 +26,8 @@ export const metadata: Metadata = {
   // Add canonical via layout metadataBase if needed.
 };
 
+export const revalidate = 3600; // Revalidate every hour
+
 export default function Page() {
   return <HomePage />;
 }

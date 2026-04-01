@@ -37,10 +37,21 @@ export class ListingSyncService {
 
   /**
    * Sync a specific listing's external calendar.
+   * @param force Explicitly bypass the 30-minute cooldown
    */
-  static async syncListing(listingId: string, integration: any) {
-    const { external_ical_url, platform } = integration;
+  static async syncListing(listingId: string, integration: any, force: boolean = false) {
+    const { id, external_ical_url, platform, last_synced_at } = integration;
     if (!external_ical_url) return;
+
+    // --- Optimization: 30-minute cooldown ---
+    const MIN_SYNC_INTERVAL = 30 * 60 * 1000; // 30 minutes
+    const now = Date.now();
+    const lastSync = last_synced_at ? new Date(last_synced_at).getTime() : 0;
+    
+    if (!force && lastSync > (now - MIN_SYNC_INTERVAL)) {
+      log.info(`[ListingSyncService] Skipping listing ${listingId} (${platform}) - synced recently (${Math.round((now - lastSync) / 60000)}m ago)`);
+      return;
+    }
 
     log.info(`[ListingSyncService] Syncing ${platform} calendar for listing ${listingId}`);
 

@@ -49,6 +49,13 @@ const operatingSequence = [
   "Let the AI answer questions and take bookings 24/7.",
 ];
 
+const socialProof = [
+  { name: "GreenView Stays", type: "Airbnb Host", logo: "🏡" },
+  { name: "Wellness Clinic", type: "Doctor's Office", logo: "🏥" },
+  { name: "Kirana Direct", type: "Retail Store", logo: "🛒" },
+  { name: "ThriftHub", type: "Second-hand Store", logo: "👕" },
+];
+
 const reveal = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0 },
@@ -120,10 +127,11 @@ export function HomePage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/company/contact"
+              href="/features"
               className="rounded-full glass-panel px-8 py-4 text-sm font-semibold text-white hover:bg-white/10 hover:border-white/20 transition-all flex items-center gap-2"
             >
-              Talk to Sales
+              View Features
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
 
@@ -334,6 +342,25 @@ export function HomePage() {
                 </motion.div>
               );
             })}
+          </div>
+        </section>
+
+        {/* SOCIAL PROOF */}
+        <section className="py-8">
+          <div className="text-center mb-8">
+            <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">Trusted by businesses across</div>
+            <div className="text-sm font-bold text-zinc-400">Homestays • Clinics • Retail • Social Commerce</div>
+          </div>
+          <div className="flex flex-wrap justify-center gap-6">
+            {socialProof.map((business) => (
+              <div key={business.name} className="flex items-center gap-3 glass-panel px-6 py-4 rounded-2xl">
+                <span className="text-2xl">{business.logo}</span>
+                <div>
+                  <div className="text-sm font-bold text-white">{business.name}</div>
+                  <div className="text-xs text-zinc-500">{business.type}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 

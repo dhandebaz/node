@@ -15,7 +15,9 @@ import {
   AlertTriangle,
   XCircle,
   ShieldCheck,
-  Loader2
+  Loader2,
+  HardDrive,
+  Trash2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SystemFlagKey } from "@/lib/services/controlService";
@@ -34,17 +36,36 @@ interface ServiceHealth {
   latency?: number;
 }
 
+interface CacheStats {
+  keys: number;
+  memory_used: string;
+  memory_total: string;
+  hit_rate: number | null;
+  key_patterns: { pattern: string; label: string; count: number }[];
+  breakdown?: {
+    user_sessions: number;
+    meta_data: number;
+    message_ids: number;
+  };
+}
+
 export default function AdminSystemPage() {
   const [health, setHealth] = useState<SystemStatus | null>(null);
   const [flags, setFlags] = useState<Record<string, boolean>>({});
+  const [cacheStats, setCacheStats] = useState<CacheStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
+  const [clearingCache, setClearingCache] = useState(false);
 
   const loadData = async () => {
     try {
-      const data = await fetchWithAuth<{ health: SystemStatus; flags: Record<string, boolean> }>("/api/admin/system/dashboard");
-      setHealth(data.health);
-      setFlags(data.flags);
+      const [systemData, cacheData] = await Promise.all([
+        fetchWithAuth<{ health: SystemStatus; flags: Record<string, boolean> }>("/api/admin/system/dashboard"),
+        fetchWithAuth<CacheStats>("/api/admin/cache").catch(() => null)
+      ]);
+      setHealth(systemData.health);
+      setFlags(systemData.flags);
+      setCacheStats(cacheData);
     } catch (err) {
       console.error("Failed to load system status", err);
     } finally {
@@ -72,6 +93,23 @@ export default function AdminSystemPage() {
       alert("Failed to update flag");
     } finally {
       setToggling(null);
+    }
+  };
+
+  const clearCache = async (clearAll: boolean = true, pattern?: string) => {
+    if (!confirm(`Are you sure you want to clear the cache?${clearAll ? ' This will clear ALL cached data.' : ''}`)) {
+      return;
+    }
+
+    setClearingCache(true);
+    try {
+      await postWithAuth("/api/admin/cache", { clear_all: clearAll, pattern });
+      await loadData();
+      alert("Cache cleared successfully");
+    } catch (err) {
+      alert("Failed to clear cache");
+    } finally {
+      setClearingCache(false);
     }
   };
 
@@ -164,6 +202,47 @@ export default function AdminSystemPage() {
           icon={Globe} 
           health={health?.integrations} 
         />
+      </div>
+
+      {/* Cache Management */}
+      <div>
+        <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-8 flex items-center gap-3 ml-2">
+          <HardDrive className="w-5 h-5 text-primary" />
+          Redis Cache Management
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-card rounded-2xl p-6 border border-border">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Total Keys</span>
+              <HardDrive className="w-5 h-5 text-muted-foreground/40" />
+            </div>
+            <div className="text-3xl font-black text-foreground">{cacheStats?.keys ?? "-"}</div>
+          </div>
+          <div className="bg-card rounded-2xl p-6 border border-border">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">User Sessions</span>
+              <Activity className="w-5 h-5 text-muted-foreground/40" />
+            </div>
+            <div className="text-3xl font-black text-foreground">{cacheStats?.breakdown?.user_sessions ?? "-"}</div>
+          </div>
+          <div className="bg-card rounded-2xl p-6 border border-border">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Message IDs</span>
+              <MessageSquare className="w-5 h-5 text-muted-foreground/40" />
+            </div>
+            <div className="text-3xl font-black text-foreground">{cacheStats?.breakdown?.message_ids ?? "-"}</div>
+          </div>
+        </div>
+        <div className="mt-4 flex gap-3">
+          <button
+            onClick={() => clearCache(true)}
+            disabled={clearingCache}
+            className="px-4 py-2 bg-destructive/10 text-destructive border border-destructive/20 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-destructive/20 transition-all disabled:opacity-50 flex items-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            {clearingCache ? "Clearing..." : "Clear All Cache"}
+          </button>
+        </div>
       </div>
 
       {/* Global Kill Switches */}

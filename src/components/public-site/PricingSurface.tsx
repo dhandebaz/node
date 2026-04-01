@@ -365,12 +365,18 @@ export function PricingSurface() {
                  Talk to sales
                  <ArrowRight className="h-4 w-4" />
                </Link>
-               <Link
-                 href="/employees"
-                 className="rounded-full glass-panel border border-white/20 px-10 py-4 text-sm font-bold text-white hover:bg-white/10 transition-colors flex items-center justify-center"
-               >
-                 Compare employees
-               </Link>
+                <Link
+                  href="/employees"
+                  className="rounded-full glass-panel border border-white/20 px-10 py-4 text-sm font-bold text-white hover:bg-white/10 transition-colors flex items-center justify-center"
+                >
+                  Compare employees
+                </Link>
+                <Link
+                  href="/features"
+                  className="rounded-full glass-panel border border-white/20 px-10 py-4 text-sm font-bold text-white hover:bg-white/10 transition-colors flex items-center justify-center"
+                >
+                  View Features
+                </Link>
              </div>
           </div>
         </section>

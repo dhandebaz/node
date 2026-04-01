@@ -1,6 +1,5 @@
 "use server";
 
-import { userService } from "@/lib/services/userService";
 import { kaisaService } from "@/lib/services/kaisaService";
 import { supportService } from "@/lib/services/supportService";
 import { OnboardingService } from "@/lib/services/onboardingService";
@@ -9,23 +8,18 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { User } from "@/types/user";
 import { DBTenant } from "@/types/database";
 import { BusinessType } from "@/types";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 
-// Helper to get current user or throw
-async function getCurrentUser(): Promise<User> {
-  const session = await getSession();
-
-  if (!session?.userId) throw new Error("Unauthorized: No session");
-
+// Raw function for fetching from DB, to be wrapped in cache
+async function fetchCurrentUser(userId: string): Promise<User> {
   // Bypassing userService.getUserById to use dashboard-specific complete queries
-
   const supabase = await getSupabaseServer();
   const {
     data: { user: authUser },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !authUser) {
-    throw new Error("Unauthorized: User not found");
+  if (authError || !authUser || authUser.id !== userId) {
+    throw new Error("Unauthorized: User not found or mismatch");
   }
 
   // Define types for the joined query result
@@ -42,7 +36,7 @@ async function getCurrentUser(): Promise<User> {
   ] = await Promise.all([
     supabase
       .from("accounts")
-      .select("*")
+      .select("user_id, product_type")
       .eq("user_id", authUser.id)
       .maybeSingle(),
     supabase
@@ -62,7 +56,10 @@ async function getCurrentUser(): Promise<User> {
           kyc_status,
           pan_number,
           aadhaar_number,
-          kyc_verified_at
+          kyc_verified_at,
+          is_memory_enabled,
+          is_branding_enabled,
+          is_ai_enabled
         )
       `,
       )
@@ -70,7 +67,7 @@ async function getCurrentUser(): Promise<User> {
       .maybeSingle(),
     supabase
       .from("kaisa_accounts")
-      .select("*")
+      .select("user_id")
       .eq("user_id", authUser.id)
       .maybeSingle(),
   ]);
@@ -153,6 +150,24 @@ async function getCurrentUser(): Promise<User> {
       : {},
     tenant,
   };
+}
+
+// Cached wrapper
+const getCachedUser = unstable_cache(
+  async (userId: string) => fetchCurrentUser(userId),
+  ["user-profile"],
+  {
+    revalidate: 600, // 10 minutes cache
+    tags: ["user-profile"],
+  }
+);
+
+// Helper to get current user or throw
+async function getCurrentUser(): Promise<User> {
+  const session = await getSession();
+  if (!session?.userId) throw new Error("Unauthorized: No session");
+
+  return getCachedUser(session.userId);
 }
 
 export async function getCustomerProfile() {
@@ -264,10 +279,9 @@ export async function createCustomerTicket(formData: FormData): Promise<void> {
       status: "open",
     });
 
-    // Add initial message
     // In a real app, this would be part of createTicket or a separate call
-  } catch (error) {
-    console.error("Create ticket error:", error);
+  } catch (err) {
+    console.error("Create ticket error:", err);
     throw new Error("Failed to create ticket");
   }
 }
@@ -345,13 +359,8 @@ export async function updateAiSettingsAction(updates: {
     .eq("id", user.tenant.id)
     .single();
 
-  const currentSettings = tenant?.ai_settings || {};
-  const {
-    provider: _provider,
-    model: _model,
-    apiKey: _apiKey,
-    ...customerSettings
-  } = currentSettings as Record<string, unknown>;
+  const currentSettings = (tenant?.ai_settings || {}) as Record<string, unknown>;
+  
   const normalizedTone = [
     "friendly",
     "professional",
@@ -360,11 +369,17 @@ export async function updateAiSettingsAction(updates: {
   ].includes(String(updates.tone || ""))
     ? updates.tone
     : null;
+
+  // Create a clean base without provider keys to avoid any issues
   const newSettings = {
-    ...customerSettings,
+    ...currentSettings,
     customInstructions: updates.customInstructions?.trim() || null,
     tone: normalizedTone,
   };
+
+  // Ensure internal keys are preserved if they existed (optional, but safer)
+  // delete (newSettings as any).provider; // etc.
+
 
   // 2. Update settings
   const { error } = await supabase

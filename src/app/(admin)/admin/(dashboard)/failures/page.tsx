@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchWithAuth } from "@/lib/api/fetcher";
+import { fetchWithAuth, postWithAuth } from "@/lib/api/fetcher";
 import { FailureRecord } from "@/types/failure";
 import { AlertTriangle, XCircle, ShieldAlert, RefreshCw, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -32,10 +32,16 @@ export default function AdminFailuresPage() {
   }, []);
 
   const resolveFailure = async (id: string) => {
-    // In a real app, we'd call an API to resolve. 
-    // For now, let's just optimistically remove it or show a toast.
-    // Ideally: await fetchWithAuth(`/api/admin/failures/${id}/resolve`, { method: 'POST' });
-    alert("Resolution logic to be implemented via API");
+    if (!confirm("Are you sure you want to mark this failure as resolved?")) {
+      return;
+    }
+    try {
+      await postWithAuth(`/api/admin/failures/${id}`, { method: "PATCH" });
+      setFailures(failures.filter(f => f.id !== id));
+    } catch (err) {
+      console.error("Failed to resolve failure", err);
+      alert("Failed to resolve failure");
+    }
   };
 
   if (loading) return <div>Loading failures...</div>;

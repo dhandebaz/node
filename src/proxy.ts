@@ -51,34 +51,50 @@ export async function proxy(request: NextRequest) {
   }
 
   // ==========================================
-  // 1. Supabase Initialization
+  // 1. Conditional Supabase Auth (Optimization)
   // ==========================================
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => {
-            request.cookies.set(name, value);
-          });
-          response = NextResponse.next({
-            request: {
-              headers: requestHeaders,
-            },
-          });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
+  
+  // Only trigger Supabase Auth for routes that actually need session information
+  const needsAuth = 
+    pathname.startsWith("/dashboard") || 
+    pathname.startsWith("/admin") || 
+    pathname.startsWith("/api") || 
+    pathname.startsWith("/login") || 
+    pathname.startsWith("/signup") || 
+    pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/api/wallet");
 
-  const { data: { user } } = await supabase.auth.getUser();
+  let user: any = null;
+
+  if (needsAuth) {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) => {
+              request.cookies.set(name, value);
+            });
+            response = NextResponse.next({
+              request: {
+                headers: requestHeaders,
+              },
+            });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            );
+          },
+        },
+      }
+    );
+
+    const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+    user = supabaseUser;
+  }
 
   response.cookies.set("nodebase-csrf-token", csrfTokenForSession, {
     path: "/",

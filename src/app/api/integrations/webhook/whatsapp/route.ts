@@ -10,6 +10,8 @@ import { generateText } from "ai";
 import { getToneInstruction, resolveAISettings } from "@/lib/ai/config";
 import { settingsService } from "@/lib/services/settingsService";
 import { log } from "@/lib/logger";
+import { cache } from "@/lib/cache/redis";
+import { waitUntil } from "@vercel/functions";
 
 const VERIFY_TOKEN = process.env.META_WHATSAPP_VERIFY_TOKEN;
 
@@ -100,11 +102,27 @@ export async function POST(request: Request) {
 
         // Process each message
         for (const message of value.messages) {
-          await processIncomingMessage(tenantId, message, value, supabase, {
-            accessToken,
-            phoneNumberId,
-            appSecret
-          });
+          const messageId = message.id;
+          const cacheKey = `wa_msg_id:${messageId}`;
+
+          // IDEMPOTENCY CHECK
+          const processed = await cache.get(cacheKey);
+          if (processed) {
+            log.info("[WhatsApp] Duplicate message ignored", { messageId });
+            continue;
+          }
+
+          // Mark as processing (24h TTL)
+          await cache.set(cacheKey, "processing", 86400);
+
+          // BACKGROUND PROCESSING
+          waitUntil(
+            processIncomingMessage(tenantId, message, value, supabase, {
+              accessToken,
+              phoneNumberId,
+              appSecret
+            })
+          );
         }
       }
     }

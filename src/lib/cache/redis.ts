@@ -1,0 +1,60 @@
+import { Redis } from "@upstash/redis";
+
+/**
+ * Global Redis client instance for Nodebase.
+ * Uses Upstash Redis for edge-compatible, high-performance caching.
+ */
+export const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL || "",
+  token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
+});
+
+/**
+ * Cache helper utilities for common patterns.
+ */
+export const cache = {
+  /**
+   * Set a value in cache with an optional TTL (seconds).
+   */
+  set: async (key: string, value: unknown, ttl?: number) => {
+    try {
+      if (ttl) {
+        await redis.set(key, JSON.stringify(value), { ex: ttl });
+      } else {
+        await redis.set(key, JSON.stringify(value));
+      }
+    } catch (error) {
+      console.error(`[Redis] Error setting key ${key}:`, error);
+    }
+  },
+
+  /**
+   * Get a value from cache and parse it.
+   */
+  get: async <T>(key: string): Promise<T | null> => {
+    try {
+      const data = await redis.get(key);
+      if (!data) return null;
+      return typeof data === "string" ? JSON.parse(data) : (data as T);
+    } catch (error) {
+      console.error(`[Redis] Error getting key ${key}:`, error);
+      return null;
+    }
+  },
+
+  /**
+   * Delete a key from cache.
+   */
+  del: async (key: string) => {
+    try {
+      await redis.del(key);
+    } catch (error) {
+      console.error(`[Redis] Error deleting key ${key}:`, error);
+    }
+  },
+
+  /**
+   * Generate a standard cache key.
+   */
+  key: (...parts: string[]) => `nodebase:${parts.join(":")}`,
+};

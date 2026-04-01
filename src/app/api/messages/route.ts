@@ -17,12 +17,15 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const listingId = searchParams.get('listingId');
   const channel = searchParams.get('channel');
+  const limit = parseInt(searchParams.get("limit") || "50");
+  const offset = parseInt(searchParams.get("offset") || "0");
 
   let query = supabase
     .from('messages')
     .select('*, guests(name)')
     .eq('tenant_id', tenantId)
-    .order('timestamp', { ascending: false });
+    .order('timestamp', { ascending: false })
+    .range(offset, offset + limit - 1);
 
   if (listingId) {
     query = query.eq('listing_id', listingId);

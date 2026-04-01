@@ -97,12 +97,12 @@ export type PublicDirectoryPageData = {
 
 export const publicNavLinks = [
   {
-    label: "AI Assistants",
-    href: "/employees",
+    label: "Features",
+    href: "/features",
   },
   {
-    label: "Integrations",
-    href: "/integrations",
+    label: "AI Assistants",
+    href: "/employees",
   },
   {
     label: "Pricing",
@@ -126,6 +126,7 @@ export const footerLinkGroups = [
   {
     title: "Product",
     links: [
+      { label: "Features", href: "/features" },
       { label: "AI Assistants", href: "/employees" },
       { label: "Pricing", href: "/pricing" },
       { label: "Trust Center", href: "/trust" },

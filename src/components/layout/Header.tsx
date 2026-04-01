@@ -11,7 +11,6 @@ import {
   LogOut,
   Menu,
   Settings,
-  Shield,
   X,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
@@ -34,9 +33,16 @@ const menuTransition = { duration: 0.2, ease: "easeOut" } as const;
 
 export function Header({ viewer }: HeaderProps) {
   const pathname = usePathname();
-  const { host, logout } = useAuthStore();
+  const { host, fetchHost, logout } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+
+  useEffect(() => {
+    // Only fetch if not already in store
+    if (!host) {
+      fetchHost();
+    }
+  }, [host, fetchHost]);
 
   useEffect(() => {
     setMenuOpen(false);

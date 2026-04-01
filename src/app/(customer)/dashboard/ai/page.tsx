@@ -1,5 +1,4 @@
 import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
-import { DBAuditEvent } from "@/types/database";
 import { WalletService } from "@/lib/services/walletService";
 import { ControlService } from "@/lib/services/controlService";
 import { getSupabaseServer } from "@/lib/supabase/server";
@@ -23,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { timeAgo } from "@/lib/utils";
 import { DashboardErrorBoundary } from "@/components/ui/ErrorBoundary";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export default async function AIDashboardPage() {
   const tenantId = await getActiveTenantId();
@@ -47,36 +46,31 @@ export default async function AIDashboardPage() {
     ControlService.getSystemFlags(),
     supabase
       .from("listings")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true })
       .eq("tenant_id", tenantId),
     supabase
       .from("bookings")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true })
       .eq("tenant_id", tenantId),
     supabase
       .from("messages")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true })
       .eq("tenant_id", tenantId)
       .eq("direction", "outbound")
-      .eq("sender_type" as any, "ai"),
+      .eq("role", "assistant"),
     supabase
       .from("messages")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true })
       .eq("tenant_id", tenantId)
       .eq("direction", "outbound")
-      .eq("sender_type" as any, "human"),
+      .eq("role", "human"),
     supabase
       .from("listing_integrations")
-      .select("*", { count: "exact", head: true })
-      .in(
-        "listing_id",
-        (
-          await supabase.from("listings").select("id").eq("tenant_id", tenantId)
-        ).data?.map((l) => l.id) || [],
-      ),
+      .select("id", { count: "exact", head: true })
+      .eq("tenant_id", tenantId),
     supabase
       .from("audit_events")
-      .select("*")
+      .select("id, event_type, actor_type, created_at")
       .eq("tenant_id", tenantId)
       .order("created_at", { ascending: false })
       .limit(5),
@@ -86,6 +80,7 @@ export default async function AIDashboardPage() {
       .eq("tenant_id", tenantId)
       .maybeSingle(),
   ]);
+
 
   const milestones = (accountData?.onboarding_milestones as string[]) || [];
 
@@ -265,9 +260,9 @@ export default async function AIDashboardPage() {
                 </div>
               ) : (
                 <div className="divide-y divide-zinc-800/50">
-                  {(recentActivity as any[] || []).map((activity: any) => {
-                      const eventType = String(activity?.event_type ?? "");
-                      const actorType = String(activity?.actor_type ?? "");
+                  {recentActivity.map((activity) => {
+                      const eventType = String(activity.event_type ?? "");
+                      const actorType = String(activity.actor_type ?? "");
                       const createdAt = activity?.created_at
                         ? timeAgo(activity.created_at)
                         : "";

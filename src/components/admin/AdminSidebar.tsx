@@ -22,13 +22,21 @@ import {
   Flag,
   Rocket,
   TrendingUp,
-  Code
+  Code,
+  Building,
+  Database,
+  Clock,
+  BarChart3,
+  Gauge,
+  Activity,
+  Eye
 } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/ui/Logo";
 
 const navItems = [
   { name: "Overview", href: "/admin/overview", icon: LayoutDashboard },
+  { name: "Tenants", href: "/admin/tenants", icon: Building },
   { name: "Vibecoding", href: "/admin/vibecoding", icon: Code },
   { name: "AI Managers", href: "/admin/ai-managers", icon: Cpu },
   { name: "AI Rules", href: "/admin/ai-rules", icon: ShieldCheck },
@@ -40,6 +48,12 @@ const navItems = [
   { name: "System Failures", href: "/admin/failures", icon: AlertTriangle },
   { name: "Launch Control", href: "/admin/launch", icon: Rocket },
   { name: "System Controls", href: "/admin/system", icon: Settings },
+  { name: "Database", href: "/admin/database", icon: Database },
+  { name: "Jobs", href: "/admin/jobs", icon: Clock },
+  { name: "Metrics", href: "/admin/metrics", icon: BarChart3 },
+  { name: "Rate Limits", href: "/admin/ratelimits", icon: Gauge },
+  { name: "Sessions", href: "/admin/sessions", icon: Activity },
+  { name: "Environment", href: "/admin/environment", icon: Eye },
   { name: "Feature Flags", href: "/admin/features", icon: Flag },
   { name: "Audit Logs", href: "/admin/audit", icon: ClipboardList },
   { name: "System Logs", href: "/admin/logs", icon: FileText },

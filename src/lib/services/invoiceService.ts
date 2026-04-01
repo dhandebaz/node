@@ -1,4 +1,3 @@
-import { jsPDF } from "jspdf";
 import { format } from "date-fns";
 import { DBInvoice, DBTenant } from "@/types/database";
 
@@ -7,6 +6,7 @@ export class InvoiceService {
     invoice: DBInvoice,
     tenant: DBTenant,
   ): Promise<Blob> {
+    const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 20;

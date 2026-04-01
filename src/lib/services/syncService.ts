@@ -64,10 +64,22 @@ export class SyncService {
 
   /**
    * Processes a single integration: handles token refresh and provider-specific sync tasks.
+   * @param integration The integration record from Supabase
+   * @param force Explicitly bypass the 30-minute cooldown (useful for UI triggers)
    */
-  static async processIntegration(integration: any) {
+  static async processIntegration(integration: any, force: boolean = false) {
     const admin = await getSupabaseAdmin();
-    const { id, provider, tenant_id, refresh_token, expires_at } = integration;
+    const { id, provider, tenant_id, refresh_token, expires_at, last_synced_at } = integration;
+
+    // --- Optimization: 30-minute cooldown to prevent redundant work ---
+    const MIN_SYNC_INTERVAL = 30 * 60 * 1000; // 30 minutes
+    const now = Date.now();
+    const lastSync = last_synced_at ? new Date(last_synced_at).getTime() : 0;
+    
+    if (!force && lastSync > (now - MIN_SYNC_INTERVAL)) {
+      log.info(`[SyncService] Skipping integration ${id} (${provider}) - synced recently (${Math.round((now - lastSync) / 60000)}m ago)`);
+      return;
+    }
 
     log.info(`[SyncService] Processing integration ${id} (${provider}) for tenant ${tenant_id}`);
 

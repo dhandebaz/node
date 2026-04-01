@@ -4,7 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/components/providers";
 import { getAppUrl } from "@/lib/runtime-config";
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
