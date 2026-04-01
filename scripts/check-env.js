@@ -31,6 +31,14 @@ const recommendedGroups = [
     label: "Razorpay key secret",
     keys: ["RAZORPAY_KEY_SECRET", "key_secret"],
   },
+  {
+    label: "Meta App Credentials",
+    keys: ["META_APP_ID", "META_APP_SECRET"],
+  },
+  {
+    label: "Meta Webhook Verify Token",
+    keys: ["META_VERIFY_TOKEN"],
+  },
 ];
 
 const missingVars = requiredVars.filter((key) => !process.env[key]);

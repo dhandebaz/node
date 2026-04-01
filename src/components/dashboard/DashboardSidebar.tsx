@@ -18,6 +18,9 @@ import {
   CreditCard,
   Users,
   Bell,
+  Megaphone,
+  Share2,
+  ShoppingBag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
@@ -106,6 +109,9 @@ export function DashboardSidebar() {
     { label: "Inbox", icon: MessageSquare, href: "/dashboard/ai/inbox" },
     { label: "Customers", icon: Users, href: "/dashboard/ai/customers" },
     { label: "Bookings", icon: Calendar, href: "/dashboard/ai/bookings" },
+    { label: "Marketing", icon: Megaphone, href: "/dashboard/ai/marketing" },
+    { label: "Content Hub", icon: Share2, href: "/dashboard/ai/content" },
+    { label: "Meta Catalog", icon: ShoppingBag, href: "/dashboard/ai/catalog" },
     { label: "Calendar", icon: CalendarDays, href: "/dashboard/ai/calendar" },
     { label: "Listings", icon: Briefcase, href: "/dashboard/ai/listings" },
     { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },

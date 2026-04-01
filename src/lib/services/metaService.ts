@@ -72,6 +72,43 @@ const GRAPH_API_VERSION = "v21.0";
 
 export const metaService = {
   /**
+   * Get the Meta OAuth authorization URL with all required scopes
+   */
+  getOAuthUrl(redirectUri: string, state: string): string {
+    const clientId = process.env.META_APP_ID;
+    if (!clientId) return "";
+
+    const scopes = [
+      "public_profile",
+      "email",
+      "pages_show_list",
+      "pages_read_engagement",
+      "pages_manage_metadata",
+      "pages_manage_posts",
+      "pages_manage_engagement",
+      "ads_management",
+      "ads_read",
+      "business_management",
+      "instagram_basic",
+      "instagram_content_publish",
+      "instagram_manage_comments",
+      "instagram_manage_insights",
+      "catalog_management",
+      "whatsapp_business_management",
+      "whatsapp_business_messaging"
+    ];
+
+    return `https://www.facebook.com/v21.0/dialog/oauth?` + 
+      new URLSearchParams({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        state: state,
+        scope: scopes.join(","),
+        response_type: "code"
+      }).toString();
+  },
+
+  /**
    * Get page access token via OAuth code
    */
   async getAccessTokenFromCode(code: string, redirectUri: string): Promise<{ success: boolean; data?: MetaOAuthTokens; error?: string }> {
@@ -477,6 +514,80 @@ export const metaService = {
       return true;
     } catch (error) {
       log.error("[Meta] Subscribe exception", { error });
+      return false;
+    }
+  },
+
+  /**
+   * Get comments on a Page post or Instagram media
+   */
+  async getComments(id: string, accessToken: string): Promise<{ success: boolean; data?: any[]; error?: string }> {
+    try {
+      const response = await fetch(
+        `https://graph.facebook.com/${GRAPH_API_VERSION}/${id}/comments?` +
+        new URLSearchParams({
+          fields: "id,from,message,timestamp,like_count",
+          access_token: accessToken
+        })
+      );
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || "Failed to fetch comments");
+
+      return { success: true, data: data.data };
+    } catch (e) {
+      log.error("[Meta] Get comments failed", { error: e });
+      return { success: false, error: (e as Error).message };
+    }
+  },
+
+  /**
+   * Reply to a comment
+   */
+  async replyToComment(commentId: string, accessToken: string, message: string) {
+    try {
+      const response = await fetch(
+        `https://graph.facebook.com/${GRAPH_API_VERSION}/${commentId}/comments`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message }),
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || "Failed to reply to comment");
+
+      return { success: true, id: data.id };
+    } catch (e) {
+      log.error("[Meta] Reply to comment failed", { error: e });
+      return { success: false, error: (e as Error).message };
+    }
+  },
+
+  /**
+   * Delete or Hide a comment
+   */
+  async hideComment(commentId: string, accessToken: string) {
+    try {
+      const response = await fetch(
+        `https://graph.facebook.com/${GRAPH_API_VERSION}/${commentId}`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ is_hidden: true }),
+        }
+      );
+
+      return response.ok;
+    } catch (e) {
+      log.error("[Meta] Hide comment failed", { error: e });
       return false;
     }
   },

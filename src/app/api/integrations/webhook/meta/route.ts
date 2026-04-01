@@ -78,7 +78,63 @@ export async function POST(request: Request) {
     const entry = body.entry?.[0];
     if (!entry) return NextResponse.json({ success: true, ignored: true });
 
-    // Handle Instagram/Messenger Messaging
+    const supabase = await getSupabaseAdmin();
+
+    // 1. Handle Changes (LeadGen, Feed, Comments)
+    if (entry.changes) {
+      for (const change of entry.changes) {
+        const { field, value } = change;
+
+        // --- Lead Generation Use Case ---
+        if (field === "leadgen") {
+          const leadgenId = value.leadgen_id;
+          log.info("[MetaWebhook] New lead received", { leadgenId, tenantId });
+          
+          // Fetch full lead data using Marketing Service
+          const { data: integration } = await supabase
+            .from("integrations")
+            .select("access_token")
+            .eq("tenant_id", tenantId)
+            .eq("provider", "meta")
+            .maybeSingle();
+
+          if (integration?.access_token) {
+            const { decryptToken } = await import("@/lib/crypto");
+            const { MetaMarketingService } = await import("@/lib/services/metaMarketingService");
+            const leadData = await MetaMarketingService.getLeads(leadgenId, decryptToken(integration.access_token));
+            
+            // Record lead in contacts or a specific leads table
+            if (leadData.success && leadData.leads?.[0]) {
+              const lead = leadData.leads[0];
+              await ContactService.resolveContact(tenantId, [
+                { type: "other", value: lead.id }
+              ], {
+                name: "Meta Lead"
+              });
+            }
+          }
+        }
+
+        // --- Page Feed / Moderation Use Case ---
+        if (field === "feed" || field === "comments") {
+          const item = value.item; // 'comment' or 'status'
+          const verb = value.verb; // 'add', 'edited', 'deleted'
+          
+          if (verb === "add" && (item === "comment" || item === "status")) {
+            log.info("[MetaWebhook] New Page activity", { item, tenantId });
+            // Here we could trigger a notification or record a message in a "Moderation" inbox
+            await NotificationService.notifyNewCustomer({
+               tenantId,
+               channel: "facebook_page",
+               contactName: value.from?.name || "Page Visitor"
+            } as any);
+          }
+        }
+      }
+      return NextResponse.json({ success: true, processed: "changes" });
+    }
+
+    // 2. Handle Messaging (Instagram/Messenger)
     const messaging = entry.messaging?.[0];
     if (!messaging || !messaging.message || messaging.message.is_echo) {
       return NextResponse.json({ success: true, ignored: true });
@@ -87,8 +143,6 @@ export async function POST(request: Request) {
     const senderId = messaging.sender.id;
     const text = messaging.message.text;
     const channel = entry.id ? 'instagram' : 'messenger';
-
-    const supabase = await getSupabaseAdmin();
 
     // Verify tenant has Meta integration
     const integrationType = channel === 'instagram' ? 'instagram' : 'messenger';
@@ -242,7 +296,7 @@ export async function POST(request: Request) {
       `Reply to this customer message: ${text}`,
     ].filter(Boolean).join(" ");
 
-    const { text: aiReply, usage } = await generateText({
+    const { text: aiReply } = await generateText({
       model: kaisaRuntime.model,
       prompt,
     });
@@ -270,7 +324,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    log.error("Meta Webhook error:", { error });
+    log.error("Meta Webhook error:", { error: (error as Error).message });
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
