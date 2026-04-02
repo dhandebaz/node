@@ -16,17 +16,17 @@ export class OnboardingService {
    * Get the current onboarding status for a user.
    * This is the single source of truth for the entire app.
    */
-  static async getStatus(userId: string): Promise<OnboardingStatus> {
-    const supabase = await getSupabaseServer();
+  static async getStatus(userId: string, supabase?: any): Promise<OnboardingStatus> {
+    const client = supabase || (await getSupabaseServer());
     
     // 1. Fetch Account & Tenant Membership in parallel
     const [accountRes, membershipRes] = await Promise.all([
-      supabase
+      client
         .from("accounts")
         .select("onboarding_status, tenant_id, business_type")
         .eq("user_id", userId)
         .maybeSingle(),
-      supabase
+      client
         .from("tenant_users")
         .select("tenant_id")
         .eq("user_id", userId)

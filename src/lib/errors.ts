@@ -11,10 +11,10 @@ export enum ErrorCode {
 export class AppError extends Error {
     public code: ErrorCode;
     public statusCode: number;
-    public details?: any;
+    public details?: unknown;
     public isOperational: boolean;
 
-    constructor(code: ErrorCode, message: string, details?: any, isOperational: boolean = true) {
+    constructor(code: ErrorCode, message: string, details?: unknown, isOperational: boolean = true) {
         super(message);
         this.name = "AppError";
         this.code = code;
@@ -54,7 +54,7 @@ export class AppError extends Error {
 }
 
 export class ValidationError extends AppError {
-    constructor(message: string, details?: any) {
+    constructor(message: string, details?: unknown) {
         super(ErrorCode.VALIDATION_ERROR, message, details);
     }
 }

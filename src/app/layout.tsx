@@ -27,12 +27,21 @@ export const metadata: Metadata = {
     url: getAppUrl(),
     siteName: "Nodebase",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Nodebase — The AI Assistant for Local Businesses",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Nodebase | The AI Assistant for Local Businesses",
     description:
       "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically - 24/7.",
+    images: ["/og-image.png"],
   },
 };
 

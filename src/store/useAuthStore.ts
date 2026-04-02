@@ -3,6 +3,9 @@ import { Host } from '@/types';
 import { authApi } from '@/lib/api/auth';
 import { getSupabaseBrowser } from '@/lib/supabase/client';
 
+/** Default phone country prefix. Externalize to an env var if multi-region support is needed. */
+const DEFAULT_PHONE_PREFIX = '+91';
+
 interface AuthState {
   host: Host | null;
   isLoading: boolean;
@@ -45,16 +48,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({ isLoading: false });
         return 'email';
       } else {
-        const formattedPhone = contact.startsWith('+') ? contact : '+91' + contact;
+        const formattedPhone = contact.startsWith('+') ? contact : `${DEFAULT_PHONE_PREFIX}${contact}`;
         const { error } = await supabase.auth.signInWithOtp({ phone: formattedPhone });
         if (error) throw error;
         set({ isLoading: false });
         return 'phone';
       }
-    } catch (error: any) {
-      console.error("Auth Code Send Error:", error);
-      set({ error: error.message || "Failed to send auth code", isLoading: false });
-      throw error;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to send auth code';
+      console.error('Auth Code Send Error:', err);
+      set({ error: message, isLoading: false });
+      throw err;
     }
   },
 
@@ -66,14 +70,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { error } = await supabase.auth.verifyOtp({ phone, token: otp, type: 'sms' });
       if (error) throw error;
       
-      set({ 
-        host: { id: 'temp', email: '', name: 'User', role: 'customer' } as any,
-        isLoading: false 
-      });
+      // Fetch the real host profile instead of setting a placeholder
+      await get().fetchHost();
 
-    } catch (error: any) {
-      console.error("OTP Verify Error:", error);
-      set({ error: error.message || "Invalid OTP", isLoading: false });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Invalid OTP';
+      console.error('OTP Verify Error:', err);
+      set({ error: message, isLoading: false });
     }
   },
 
@@ -88,8 +91,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const host = await authApi.getCurrentHost();
       set({ host, isLoading: false });
-    } catch (error) {
-      set({ error: (error as Error).message, isLoading: false });
+    } catch (err: unknown) {
+      set({ error: (err as Error).message, isLoading: false });
     }
   },
 }));

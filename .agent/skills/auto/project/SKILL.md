@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **220 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **221 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 

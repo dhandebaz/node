@@ -223,7 +223,7 @@ export interface WalletTransaction {
   amount: number | null;
   type: string | null;
   description: string | null;
-  metadata?: any | null;
+  metadata?: Record<string, unknown> | null;
   created_at: string | null;
 }
 
@@ -235,7 +235,7 @@ export interface BillingPlan {
   currency: string | null;
   interval: string | null;
   product: string | null;
-  features: any | null;
+  features: Record<string, unknown>[] | null;
   type: string | null;
   created_at: string | null;
 }
@@ -256,6 +256,6 @@ export interface Integration {
   lastSync?: string;
   expiresAt?: string;
   errorCode?: string;
-  metadata?: Record<string, any>;
-  credentials?: Record<string, any>;
+  metadata?: Record<string, unknown>;
+  credentials?: Record<string, unknown>;
 }

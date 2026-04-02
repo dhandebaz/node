@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { SessionExpiredOverlay } from "@/components/auth/SessionExpiredOverlay";
@@ -25,7 +25,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<UserRole | null>(null);
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>("loading");
   const router = useRouter();
-  const supabase = getSupabaseBrowser();
+  // Memoize to avoid recreating the client on every render
+  const supabase = useMemo(() => getSupabaseBrowser(), []);
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();

@@ -109,7 +109,8 @@ async function fetchCurrentUser(userId: string): Promise<User> {
   const isKaisaUser = !!kaisaAccount || account?.product_type === "ai_employee";
 
   // Robust Onboarding Check (Consistent with API/Middleware)
-  const onboardingStatus = await OnboardingService.getStatus(authUser.id);
+  // Passing supabase admin client since we are inside unstable_cache (cookies prohibited)
+  const onboardingStatus = await OnboardingService.getStatus(userId, supabase);
   const onboarding = onboardingStatus.isComplete ? "completed" : "pending";
 
   return {
