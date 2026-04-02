@@ -95,12 +95,20 @@ export interface PersonaCapabilities {
   payments: boolean;
   id_verification: boolean;
   direct_booking: boolean;
+  reviews: boolean;
+  tasks: boolean;
+  loyalty: boolean;
+  channels: boolean;
   integrations: {
     airbnb: boolean;
     google: boolean;
     ical: boolean;
     whatsapp: boolean;
     instagram: boolean;
+    booking: boolean;
+    mmt: boolean;
+    Vrbo: boolean;
+    expedia: boolean;
   };
 }
 
@@ -113,60 +121,92 @@ export const PERSONA_CAPABILITIES: Record<BusinessType, PersonaCapabilities> = {
     payments: true,
     id_verification: true,
     direct_booking: true,
+    reviews: true,
+    tasks: true,
+    loyalty: true,
+    channels: true,
     integrations: {
       airbnb: true,
       google: true,
       ical: true,
       whatsapp: false,
       instagram: false,
+      booking: true,
+      mmt: true,
+      Vrbo: true,
+      expedia: true,
     },
   },
   kirana_store: {
     listings: true,
     multi_listing: false,
     calendar: false,
-    bookings: true, // orders
+    bookings: true,
     payments: true,
     id_verification: false,
     direct_booking: true,
+    reviews: false,
+    tasks: false,
+    loyalty: true,
+    channels: false,
     integrations: {
       airbnb: false,
       google: false,
       ical: false,
       whatsapp: true,
       instagram: false,
+      booking: false,
+      mmt: false,
+      Vrbo: false,
+      expedia: false,
     },
   },
   doctor_clinic: {
-    listings: true, // clinic
+    listings: true,
     multi_listing: false,
     calendar: true,
-    bookings: true, // appointments
+    bookings: true,
     payments: true,
-    id_verification: false, // optional in spec, set to false default for now
+    id_verification: false,
     direct_booking: false,
+    reviews: false,
+    tasks: false,
+    loyalty: false,
+    channels: false,
     integrations: {
       airbnb: false,
       google: true,
       ical: false,
       whatsapp: true,
       instagram: false,
+      booking: false,
+      mmt: false,
+      Vrbo: false,
+      expedia: false,
     },
   },
   thrift_store: {
-    listings: true, // shop
+    listings: true,
     multi_listing: false,
     calendar: false,
-    bookings: true, // orders
+    bookings: true,
     payments: true,
     id_verification: false,
     direct_booking: true,
+    reviews: false,
+    tasks: false,
+    loyalty: true,
+    channels: false,
     integrations: {
       airbnb: false,
       google: false,
       ical: false,
       whatsapp: true,
       instagram: true,
+      booking: false,
+      mmt: false,
+      Vrbo: false,
+      expedia: false,
     },
   },
 };

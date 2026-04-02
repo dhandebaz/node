@@ -1,377 +1,592 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `src\app\api\listings\route.ts` (Domain: **Generic Logic**)
+> Dynamically loaded for active file: `src\components\admin\settings\SettingsAuditLog.tsx` (Domain: **Frontend (React/UI)**)
 
-### 📐 Generic Logic Conventions & Fixes
-- **[what-changed] Added session cookies authentication**: -     id: data.id,
-+     id: listingId,
--     userId: data.host_id,
-+     userId: session.userId,
--     name: data.name,
-+     name: listing.name,
--     city: data.city,
-+     city: listing.city,
--     type: data.listing_type,
-+     type: listing.type,
--     status: data.status,
-+     status: listing.status || (integrations.length > 0 ? "active" : "incomplete"),
--     description: data.description,
-+     description: listing.description || null,
--     images: data.images,
-+     images: listing.images || [],
--     amenities: data.amenities,
-+     amenities: listing.amenities || [],
--     createdAt: data.created_at,
-+     createdAt: new Date().toISOString(),
--     maxGuests: data.max_guests,
-+     maxGuests: listing.maxGuests || null,
--     checkInTime: data.check_in_time,
-+     checkInTime: listing.checkInTime || null,
--     checkOutTime: data.check_out_time,
-+     checkOutTime: listing.checkOutTime || null,
--     rules: data.rules,
-+     rules: listing.rules || null,
--     basePrice: data.base_price,
-+     basePrice: listing.basePrice || null,
--     internalNotes: data.internal_notes,
-+     internalNotes: listing.internalNotes || null,
-
-📌 IDE AST Context: Modified symbols likely include [getBaseUrl, POST]
-- **[what-changed] what-changed in route.ts**: File updated (external): src/app/api/listings/create/route.ts
-
-Content summary (115 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { getSession } from "@/lib/auth/session";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { SubscriptionService } from "@/lib/services/subscriptionService";
-import { ReferralService } from "@/lib/services/referralService";
-
-const getBaseUrl = (request: Request) => {
-  const headers = request.headers;
-  const protocol = headers.get("x-forwarded-proto") || "http";
-  const h
-- **[problem-fix] problem-fix in route.ts**: File updated (external): src/app/api/team/members/invite/route.ts
-
-Content summary (162 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { getAppUrl } from "@/lib/runtime-config";
-
-export async function POST(req: Request) {
-  try {
-    const supabase = await getSupabaseServer();
-    const admin = await getSupabaseAdmin();
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-- **[convention] problem-fix in route.ts — confirmed 3x**: File updated (external): src/app/api/public/ical/[id]/route.ts
-
-Content summary (79 lines):
-
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id: listingId } = await params;
-  const supabase = await getSupabaseServer();
-
-  // 1. Fetch Listing & Bookings
-  const { data: listing, error: listingError } = await supabase
-    .from("listings")
-    .select("name, tenant_id")
-    .eq("id", listingId)
-    .single();
-
-  if (listingE
-- **[convention] Fixed null crash in System — confirmed 6x**: -             channel,
-+             role: "assistant", // System automated assistant
--             direction: "outbound",
-+             channel,
--             content,
-+             direction: "outbound",
--             metadata: { read: false, trigger: "booking_confirmed" },
-+             content,
--             created_at: new Date().toISOString(),
-+             metadata: { read: false, trigger: "booking_confirmed" },
--           });
-+             created_at: new Date().toISOString(),
+### 📐 Frontend (React/UI) Conventions & Fixes
+- **[convention] Fixed null crash in Memoize — avoids unnecessary re-renders in React — confirmed 3x**: -   const supabase = getSupabaseBrowser();
++   // Memoize to avoid recreating the client on every render
 - 
-+           });
--           // Dispatch to external channel
++   const supabase = useMemo(() => getSupabaseBrowser(), []);
+-   const logout = useCallback(async () => {
 + 
--           try {
-+           // Dispatch to external channel
--             await ChannelService.sendMessage({
-+           try {
--               tenantId: tenantId as string,
-+             await ChannelService.sendMessage({
--               recipientId: recipientId as string,
-+               tenantId: tenantId as string,
--               content,
-+               recipientId: recipientId as string,
--               channel: channel as any,
-+               content,
--             });
-+               channel: channel as any,
--           } catch (dispatchError) {
-+             });
--             log.error("Dispatch confirmed message error", dispatchError, {
-+           } catch (dispatchError) {
--               tenantId,
-+             log.error("Dispatch confirmed message error", dispatchError, {
--               recipientId,
-+               tenantId,
--               channel,
-+               recipientId,
--             });
-+               channel,
--           }
-+             });
-- 
-+           }
--           // Log AI Reply Sent
-+ 
--           await logEvent({
-+           // Log AI Reply Sent
--             tenant_id: tenantId as string,
-+           await logEvent({
--             actor_type: "system",
-+             tenant_id: tenantId as string,
--             event_type: EVENT_TYPES.AI_REPLY_SENT,
-+             actor_type: "system",
--             entity_type: "message",
-+             event_type: EVENT_TYPES.AI_REPLY_SENT,
--          
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [Payload, POST]
-- **[convention] what-changed in route.ts — confirmed 3x**: - }
-+ }
-
-📌 IDE AST Context: Modified symbols likely include [POST]
-- **[convention] Added session cookies authentication — prevents null/undefined runtime crashes — confirmed 3x**: -           .eq("listing_id", listingId)
-+           .eq("listing_id", listingId as string)
--           .eq("platform", platform);
-+           .eq("platform", platform as string);
--       } catch (err: any) {
-+       } catch (error: any) {
--         console.error(`[Sync Push] Failed for platform ${platform}:`, err);
-+         console.error(`Push sync failed for ${platform}:`, error);
--         // Mark the integration as errored without failing the whole batch
-+         // Update status to error
--             error_message: err.message || "Unknown error",
-+             error_message: error.message || "Unknown sync error",
--           .eq("listing_id", listingId)
-+           .eq("listing_id", listingId as string)
--           .eq("platform", platform);
-+           .eq("platform", platform as string);
--         results.push({ platform, imported: 0, error: err.message });
-+         results.push({ platform, imported: 0, error: error.message });
--     const syncedCount = results.filter((r) => !r.error).length;
-+     // 4. Update overall listing last_synced_at
--     const errorCount = results.filter((r) => !!r.error).length;
-+     await supabase
-- 
-+       .from("listings")
--     await logEvent({
-+       .update({ last_synced_at: new Date().toISOString() })
--       tenant_id: tenantId,
-+       .eq("id", listingId as string);
--       actor_type: "user",
-+ 
--       actor_id: session.userId,
-+     const syncedCount = results.filter((r) => !r.error).length;
--       event_type: EVENT_TYPES.SYSTEM_CALENDAR_SYNC,
-+     const errorCount = results.filter((r) => !!r.error).length;
--       entity_type: "listing",
-+ 
--       entity_id: listingId,
-+     await logEvent({
--       metadata: {
-+       tenant_id: tenantId,
--         type: "push_sync",
-+       actor_type: "user",
--         results,
-+       actor_id: session.userId,
--         synced: syncedCount,
-+       event_type: EVENT_TYPES.SYSTEM_CALENDAR_SYNC,
--         errors: errorCount,
-+
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [POST]
-- **[convention] problem-fix in route.ts — confirmed 5x**: -     const portalData = (await admin.rpc(
-+     const { data: portalData, error: rpcError } = await admin.rpc(
--     )).data as any;
-+     ) as { data: any, error: any };
-
-📌 IDE AST Context: Modified symbols likely include [runtime, ALLOWED_MIME_TYPES, MAX_FILE_SIZE_BYTES, isValidUuid, isValidMagicBytes]
-- **[convention] what-changed in route.ts — confirmed 4x**: File updated (external): src/app/api/kyc/[token]/documents/route.ts
-
-Content summary (313 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
-import { geminiService } from "@/lib/services/geminiService";
-import { KycService, maskAadhaar, GuestDocumentType } from "@/lib/services/kycService";
-import { log } from "@/lib/logger";
-
-export const runtime = "nodejs";
-
-const ALLOWED_MIME_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-  "image/heic",
-  "image/heif",
-];
-
-const MAX_FILE_SIZE_BYTES = 10 * 
-- **[what-changed] Updated schema Reply — prevents null/undefined runtime crashes**: -     const prompt = [
-+     const aiSettings = tenant?.ai_settings as any;
--       `You are an AI assistant for a ${tenant?.business_type || "business"}.`,
-+ 
--       getToneInstruction(tenant?.ai_settings?.tone),
-+     const prompt = [
--       tenant?.ai_settings?.customInstructions?.trim(),
-+       `You are an AI assistant for a ${tenant?.business_type || "business"}.`,
--       `Reply to this customer message: ${text}`,
-+       getToneInstruction(aiSettings?.tone),
--     ].filter(Boolean).join(" ");
-+       aiSettings?.customInstructions?.trim(),
-- 
-+       `Reply to this customer message: ${text}`,
--     const { text: aiReply, usage } = await generateText({
-+     ].filter(Boolean).join(" ");
--       model: kaisaRuntime.model,
-+ 
--       prompt,
-+     const { text: aiReply, usage } = await generateText({
--     });
-+       model: kaisaRuntime.model,
-- 
-+       prompt,
--     // 4. Record and Dispatch Outbound
-+     });
--     await supabase.from("messages").insert({
-+ 
--       tenant_id: tenantId,
-+     // 4. Record and Dispatch Outbound
--       guest_id: guestId,
-+     await supabase.from("messages").insert({
--       direction: "outbound",
-+       tenant_id: tenantId,
--       role: "assistant",
-+       guest_id: guestId,
--       channel: channel,
-+       direction: "outbound",
--       content: aiReply,
-+       role: "assistant",
--       created_at: new Date().toISOString(),
-+       channel: channel,
--       metadata: { read: true }
-+       content: aiReply,
--     });
-+       created_at: new Date().toISOString(),
-- 
-+       metadata: { read: true }
--     // Dispatch via ChannelService (uses Meta Graph API Send endpoint)
-+     });
--     await ChannelService.sendMessage({
-+ 
--       tenantId,
-+     // Dispatch via ChannelService (uses Meta Graph API Send endpoint)
--       recipientId: senderId,
-+     await ChannelService.sendMessage({
--       content: aiReply,
-+       tenantId,
--       channel: channel as 'instagram' | 'messenger'
-+       recipientId: senderId,
+-     await supabase.auth.signOut();
++   const logout = useCallback(async () => {
+-     setUser(null);
++     await supabase.auth.signOut();
+-     setRole(null);
++     setUser(null);
+-     // Clear the tenant cookie via server route
++     setRole(null);
+-     try {
++     // Clear the tenant cookie via server route
+-       const csrf = getCsrfToken();
++     try {
+-       await fetch("/api/auth/tenant-cookie/clear", {
++       const csrf = getCsrfToken();
+-         method: "POST",
++       await fetch("/api/auth/tenant-cookie/clear", {
+-         headers: csrf ? { "x-csrf-token": csrf } : undefined,
++         method: "POST",
+-       });
++         headers: csrf ? { "x-csrf-token": csrf } : undefined,
+-     } catch {}
++       });
 -     
++     } catch {}
+-     setSessionStatus("unauthenticated");
++     
+-     router.push("/login");
++     setSessionStatus("unauthenticated");
+-   }, [supabase, router]);
++     router.push("/login");
+- 
++   }, [supabase, router]);
+-   const refreshSession = useCallback(async () => {
++ 
+-     try {
++   const refreshSession = useCallback(async () => {
+-       const { data, error } = await supabase.auth.refreshSession();
++     try {
+-       if (error || !data.session) {
++       const { data, error } = await supabase.auth.refreshSession();
+-         setSessionStatus("expired");
++       if (error || !data.session) {
+-       } else {
++         setSessionStatus("expired");
+-         const user = data.session.user;
++       } else {
+-         setUser(user);
++         const user = data.session.user;
+-         setRole((user.user_metadata?.role as UserRole) || "customer");
++         setUser(user);
+-         setSessionStatus("authenticated");
++         setRole((user.user_metadata?.role as UserRole) || "customer");
+-       }
++         setSession
 … [diff truncated]
 
-📌 IDE AST Context: Modified symbols likely include [GET, POST]
-- **[convention] problem-fix in route.ts — confirmed 6x**: File updated (external): src/app/api/admin/integrations/health/route.ts
+📌 IDE AST Context: Modified symbols likely include [UserRole, SessionStatus, AuthContextType, AuthContext, AuthProvider]
+- **[convention] Strengthened types Nodebase — improves module reusability**: -   },
++     images: [
+-   twitter: {
++       {
+-     card: "summary_large_image",
++         url: "/og-image.png",
+-     title: "Nodebase | The AI Assistant for Local Businesses",
++         width: 1200,
+-     description:
++         height: 630,
+-       "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically - 24/7.",
++         alt: "Nodebase — The AI Assistant for Local Businesses",
+-     images: ["/og-image.png"],
++       },
+-   },
++     ],
+-   openGraph: {
++   },
+-     title: "Nodebase | The AI Assistant for Local Businesses",
++   twitter: {
+-     description:
++     card: "summary_large_image",
+-       "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically - 24/7.",
++     title: "Nodebase | The AI Assistant for Local Businesses",
+-     url: getAppUrl(),
++     description:
+-     siteName: "Nodebase",
++       "Nodebase connects to your WhatsApp and website to instantly answer customer questions, schedule bookings, and collect payments automatically - 24/7.",
+-     type: "website",
++     images: ["/og-image.png"],
+-     images: [
++   },
+-       {
++ };
+-         url: "/og-image.png",
++ 
+-         width: 1200,
++ export default async function RootLayout({
+-         height: 630,
++   children,
+-         alt: "Nodebase — The AI Assistant for Local Businesses",
++ }: Readonly<{
+-       },
++   children: React.ReactNode;
+-     ],
++ }>) {
+-   },
++   return (
+- };
++     <html lang="en" className="dark scroll-smooth">
+- 
++       <body
+- export default async function RootLayout({
++         className={`${montserrat.variable} min-h-screen bg-black text-foreground font-sans antialiased selection:bg-blue-500/30 selection:text-white`}
+-   children,
++       >
+- }: Readonly<{
++         {/* Immersive Background Engine */}
+-   children: React.ReactNode;
++         <div className="noise-overlay" />
+- }>) {
++         <div 
+… [diff truncated]
 
-Content summary (73 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
+📌 IDE AST Context: Modified symbols likely include [montserrat, metadata, RootLayout]
+- **[what-changed] what-changed in layout.tsx**: File updated (external): src/app/layout.tsx
 
-export async function GET() {
-  try {
-    const supabase = await getSupabaseServer();
-    const since = new Date();
-    since.setDate(since.getDate() - 7);
-    const now = new Date();
+Content summary (89 lines):
+import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
+import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
+import { Providers } from "@/components/providers";
+import { getAppUrl } from "@/lib/runtime-config";
+// export const dynamic = "force-dynamic";
 
-    const [{ data: integrations, error: integrationsError }, { data: logs, error: logsError }] = await Promise.all([
-      supabase
-        .from("integrations")
-        .select("provider, status, last_synced_at
-- **[convention] problem-fix in route.ts — confirmed 3x**: File updated (external): src/app/api/guest-id/reject/[id]/route.ts
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  display: "swap",
+});
 
-Content summary (70 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
-import { getTenantIdForUser } from "@/app/actions/auth";
+export const metadata: Metadata = {
+  metadataBase: new URL(getAppUrl()),
+  title: "
+- **[decision] decision in AuthContext.tsx**: File updated (external): src/contexts/AuthContext.tsx
 
-export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const supabase = await getSupabaseServer();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+Content summary (142 lines):
+"use client";
 
-  
-- **[convention] what-changed in route.ts — confirmed 4x**: File updated (external): src/app/api/payments/create-link/route.ts
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { getSupabaseBrowser } from "@/lib/supabase/client";
+import { SessionExpiredOverlay } from "@/components/auth/SessionExpiredOverlay";
+import type { User, AuthChangeEvent, Session } from "@supabase/supabase-js";
+import { getCsrfToken } from "@/lib/api/csrf";
 
-Content summary (329 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { randomUUID } from "crypto";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
-import { ControlService } from "@/lib/services/controlService";
-import { RazorpayService } from "@/lib/services/razorpayService";
-import { SubscriptionService } from "@/lib/services/subscriptionService";
-import { get
-- **[convention] problem-fix in route.ts — confirmed 3x**: File updated (external): src/app/api/guest-id/approve/[id]/route.ts
+type UserRole = "customer" | "business" | "admin" | "superadmin";
+type SessionSt
+- **[decision] Optimized Auto — reduces excessive function call frequency**: -       // Only auto-collapse/expand when crossing the 1024px threshold
++       // Auto-collapse logic based on width
+-       // to avoid triggering it on minor height-only resizes or small width changes.
++       if (width >= 768 && width < 1024) {
+-       if (width < 1024) {
++         setIsCollapsed(true);
+-         setIsCollapsed(true);
++       } else if (width >= 1024) {
+-       } else {
++         setIsCollapsed(false);
+-         setIsCollapsed(false);
++       }
+-       }
++     };
+-     };
++ 
+- 
++     // Use a small delay/timeout if resize feels too aggressive
+-     checkViewport();
++     let timeoutId: NodeJS.Timeout;
+-     
++     const debouncedCheck = () => {
+-     // Use an optimized resize listener (could use debounce but standard resize is fine for this)
++       clearTimeout(timeoutId);
+-     window.addEventListener("resize", checkViewport);
++       timeoutId = setTimeout(checkViewport, 100);
+-     return () => window.removeEventListener("resize", checkViewport);
++     };
+-   }, []);
++ 
+- 
++     checkViewport();
+-   const menuItems = [
++     window.addEventListener("resize", debouncedCheck);
+-     { label: "Overview", icon: LayoutDashboard, href: "/dashboard/ai" },
++     return () => {
+-     { label: "Inbox", icon: MessageSquare, href: "/dashboard/ai/inbox" },
++       window.removeEventListener("resize", debouncedCheck);
+-     { label: "Bookings", icon: Calendar, href: "/dashboard/ai/bookings" },
++       clearTimeout(timeoutId);
+-     { label: "Calendar", icon: CalendarDays, href: "/dashboard/ai/calendar" },
++     };
+-     { label: "Listings", icon: Briefcase, href: "/dashboard/ai/listings" },
++   }, []);
+-     { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },
++ 
+-     { label: "Integrations", icon: Puzzle, href: "/dashboard/ai/integrations" },
++   const menuItems = [
+-   ];
++     { label: "Overview", icon: LayoutDashboard, href: "/dashboard/ai" },
+- 
++     { label: "Inbox", icon: MessageSquare, href: "/dashboard/ai/inbox" },
+-   const
+… [diff truncated]
 
-Content summary (73 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
-import { getTenantIdForUser } from "@/app/actions/auth";
+📌 IDE AST Context: Modified symbols likely include [SidebarItemProps, SidebarItem, DashboardSidebar]
+- **[convention] Fixed null crash in Timezone — confirmed 3x**: -                   className="input-glass bg-zinc-900 text-white cursor-pointer"
++                   className="input-glass bg-[#0a0a0a] border-white/10 text-white cursor-pointer appearance-none"
+-                 >
++                   style={{
+-                   {listingTypes.map((option) => (
++                     backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+-                     <option key={option} value={option} className="bg-zinc-900 text-white">
++                     backgroundRepeat: 'no-repeat',
+-                       {option}
++                     backgroundPosition: 'right 1rem center',
+-                     </option>
++                     backgroundSize: '1em',
+-                   ))}
++                   }}
+-                 </select>
++                 >
+-               </div>
++                   {listingTypes.map((option) => (
+-               <div className="space-y-2">
++                     <option key={option} value={option} className="bg-zinc-950 text-white">
+-                 <label
++                       {option}
+-                   htmlFor="listing-timezone"
++                     </option>
+-                   className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
++                   ))}
+-                 >
++                 </select>
+-                   Timezone
++               </div>
+-                 </label>
++               <div className="space-y-2">
+-                 <input
++                 <label
+-                   id="listing-timezone"
++                   htmlFor="listing-timezone"
+-                   name="listingTimezone"
++                   className="text-xs font-bold text-zinc-500 uppercase tracking-widest"
+-                   value={timezone}
++                 >
+-                   on
+… [diff truncated]
 
-export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const supabase = await getSupabaseServer();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+📌 IDE AST Context: Modified symbols likely include [platformLabels, listingTypes, AddListingPage]
+- **[decision] decision in DashboardSidebar.tsx**: -           ? "bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_rgba(66,133,244,0.15)]"
++           ? "bg-primary/10 text-primary border border-primary/20 shadow-[0_4px_12px_rgba(66,133,244,0.1)]"
+-           : "text-muted-foreground hover:text-foreground hover:bg-white/5",
++           : "text-zinc-400 hover:text-white hover:bg-white/5",
+-           active ? "text-primary flex-shrink-0" : "text-muted-foreground group-hover:text-foreground",
++           active ? "text-primary flex-shrink-0" : "text-zinc-500 group-hover:text-white",
+-         {menuItems.map((item) => (
++         {menuItems.map((item) => {
+-           <SidebarItem
++           const isActive = item.href === "/dashboard/ai" 
+-             key={item.href}
++             ? pathname === item.href 
+-             {...item}
++             : pathname.startsWith(item.href);
+-             active={pathname === item.href}
++             
+-             collapsed={isCollapsed}
++           return (
+-           />
++             <SidebarItem
+-         ))}
++               key={item.href}
+-       </div>
++               {...item}
+- 
++               active={isActive}
+-       {/* Bottom Section */}
++               collapsed={isCollapsed}
+-       <div className="px-4 space-y-2">
++             />
+-         <div className="h-px bg-white/5 my-4 mx-2" />
++           );
+-         {bottomItems.map((item) => (
++         })}
+-           <SidebarItem
++       </div>
+-             key={item.href}
++ 
+-             {...item}
++       {/* Bottom Section */}
+-             active={pathname === item.href}
++       <div className="px-4 space-y-2">
+-             collapsed={isCollapsed}
++         <div className="h-px bg-white/5 my-4 mx-2" />
+-           />
++         {bottomItems.map((item) => (
+-         ))}
++           <SidebarItem
+-       </div>
++             key={item.href}
+-     </motion.aside>
++             {...item}
+-   );
++             active={pathname === item.href}
+- }
++             collapsed={isCollapsed}
+- 
++           
+… [diff truncated]
 
- 
-- **[convention] problem-fix in route.ts — confirmed 4x**: File updated (external): src/app/api/failures/route.ts
+📌 IDE AST Context: Modified symbols likely include [SidebarItemProps, SidebarItem, DashboardSidebar]
+- **[convention] Fixed null crash in Math — confirmed 4x**: -     if (step === 1 && !capabilities.calendar) {
++     setStep((prev) => Math.min(prev + 1, 2));
+-       setStep(4);
++   };
+-       return;
++ 
+-     }
++   const prevStep = () => {
+-     setStep((prev) => Math.min(prev + 1, 4));
++     if (step === 1) {
+-   };
++       router.push("/dashboard/ai/listings");
+- 
++       return;
+-   const prevStep = () => {
++     }
+-     if (step === 1) {
++     setStep((prev) => prev - 1);
+-       router.push("/dashboard/ai/listings");
++   };
+-       return;
++ 
+-     }
++   const handleSave = async () => {
+-     if (step === 4 && !capabilities.calendar) {
++     if (!name.trim() || !city.trim()) {
+-       setStep(1);
++       setMessage("Property name and city are required.");
+-     setStep((prev) => prev - 1);
++     const integrations: ListingIntegration[] = platforms.map((platform) => ({
+-   };
++       listingId,
+- 
++       platform,
+-   const handleSave = async () => {
++       externalIcalUrl: externalIcalUrls[platform] || null,
+-     if (!name.trim() || !city.trim()) {
++       lastSyncedAt: null,
+-       setMessage("Property name and city are required.");
++       status: externalIcalUrls[platform] ? "connected" : "not_connected",
+-       return;
++     }));
+-     }
++     try {
+-     const integrations: ListingIntegration[] = platforms.map((platform) => ({
++       setSaving(true);
+-       listingId,
++       setMessage(null);
+-       platform,
++       const payload = {
+-       externalIcalUrl: externalIcalUrls[platform] || null,
++         listing: {
+-       lastSyncedAt: null,
++           id: listingId,
+-       status: externalIcalUrls[platform] ? "connected" : "not_connected",
++           userId: "current",
+-     }));
++           name: name.trim(),
+-     try {
++           city: city.trim(),
+-       setSaving(true);
++           address: address.trim() || null,
+-       setMessage(null);
++           type,
+-       const payload = {
++           timezone,
+-         listing: {
++           status: integrations.length > 0 ? "active" : "incomplete"
+… [diff truncated]
 
-Content summary (82 lines):
-import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth/session";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { ControlService } from "@/lib/services/controlService";
-import { FailureRecord } from "@/types/failure";
-import { requireActiveTenant } from "@/lib/auth/tenant";
+📌 IDE AST Context: Modified symbols likely include [platformLabels, listingTypes, AddListingPage]
+- **[convention] what-changed in page.tsx — confirmed 3x**: -                   className="input-glass"
++                   className="input-glass bg-zinc-900 text-white cursor-pointer"
 
-export const dynamic = "force-dynamic";
+📌 IDE AST Context: Modified symbols likely include [platformLabels, listingTypes, AddListingPage]
+- **[decision] Optimized Only — reduces excessive function call frequency**: -     const checkMobile = () => {
++     const checkViewport = () => {
+-       setIsMobile(window.innerWidth < 768);
++       const width = window.innerWidth;
+-       if (window.innerWidth < 1024) setIsCollapsed(true);
++       setIsMobile(width < 768);
+-       else setIsCollapsed(false);
++       
+-     };
++       // Only auto-collapse/expand when crossing the 1024px threshold
+-     checkMobile();
++       // to avoid triggering it on minor height-only resizes or small width changes.
+-     window.addEventListener("resize", checkMobile);
++       if (width < 1024) {
+-     return () => window.removeEventListener("resize", checkMobile);
++         setIsCollapsed(true);
+-   }, []);
++       } else {
+- 
++         setIsCollapsed(false);
+-   const menuItems = [
++       }
+-     { label: "Overview", icon: LayoutDashboard, href: "/dashboard/ai" },
++     };
+-     { label: "Inbox", icon: MessageSquare, href: "/dashboard/ai/inbox" },
++ 
+-     { label: "Bookings", icon: Calendar, href: "/dashboard/ai/bookings" },
++     checkViewport();
+-     { label: "Calendar", icon: CalendarDays, href: "/dashboard/ai/calendar" },
++     
+-     { label: "Listings", icon: Briefcase, href: "/dashboard/ai/listings" },
++     // Use an optimized resize listener (could use debounce but standard resize is fine for this)
+-     { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },
++     window.addEventListener("resize", checkViewport);
+-     { label: "Integrations", icon: Puzzle, href: "/dashboard/ai/integrations" },
++     return () => window.removeEventListener("resize", checkViewport);
+-   ];
++   }, []);
+-   const bottomItems = [
++   const menuItems = [
+-     { label: "Billing", icon: CreditCard, href: "/dashboard/billing" },
++     { label: "Overview", icon: LayoutDashboard, href: "/dashboard/ai" },
+-     { label: "Settings", icon: Settings, href: "/dashboard/ai/settings" },
++     { label: "Inbox", icon: MessageSquare, href: "/dashboard/ai/inbox" },
+-   ];
++     { label: "Bookings", icon: Cal
+… [diff truncated]
 
-export async function GET() {
-  const session = await getSession();
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorize
+📌 IDE AST Context: Modified symbols likely include [SidebarItemProps, SidebarItem, DashboardSidebar]
+- **[convention] Fixed null crash in ListingType — avoids unnecessary re-renders in React — confirmed 3x**: -   const [type, setType] = useState<ListingType>("Homestay");
++   const [address, setAddress] = useState("");
+-   const [timezone, setTimezone] = useState("Asia/Kolkata");
++   const [type, setType] = useState<ListingType>("Homestay");
+-   const [internalNotes, setInternalNotes] = useState("");
++   const [timezone, setTimezone] = useState("Asia/Kolkata");
+-   const [platforms, setPlatforms] = useState<ListingPlatform[]>([]);
++   const [description, setDescription] = useState("");
+-   const [externalIcalUrls, setExternalIcalUrls] = useState<
++   const [internalNotes, setInternalNotes] = useState("");
+-     Record<ListingPlatform, string>
++   const [images, setImages] = useState<string[]>([]);
+-   >({
++   const [amenities, setAmenities] = useState<string[]>([]);
+-     airbnb: "",
++   const [platforms, setPlatforms] = useState<ListingPlatform[]>([]);
+-     booking: "",
++   const [externalIcalUrls, setExternalIcalUrls] = useState<
+-     mmt: "",
++     Record<ListingPlatform, string>
+-   });
++   >({
+-   const [saving, setSaving] = useState(false);
++     airbnb: "",
+-   const [message, setMessage] = useState<string | null>(null);
++     booking: "",
+-   const [sessionExpired, setSessionExpired] = useState(false);
++     mmt: "",
+-   const [airbnbUrl, setAirbnbUrl] = useState("");
++   });
+-   const [isExtracting, setIsExtracting] = useState(false);
++   const [saving, setSaving] = useState(false);
+- 
++   const [message, setMessage] = useState<string | null>(null);
+-   useEffect(() => {
++   const [sessionExpired, setSessionExpired] = useState(false);
+-     fetchDashboardData();
++   const [airbnbUrl, setAirbnbUrl] = useState("");
+-   }, [fetchDashboardData]);
++   const [isExtracting, setIsExtracting] = useState(false);
+-     if (!capabilities.multi_listing && listings.length > 0) {
++     fetchDashboardData();
+-       router.push("/dashboard/ai/listings");
++   }, [fetchDashboardData]);
+-     }
++ 
+-   }, [capabilities.multi_listing, listings.length, router]);
++   useEffect(() => 
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [platformLabels, listingTypes, AddListingPage]
+- **[convention] Fixed null crash in Search — avoids unnecessary re-renders in React — confirmed 3x**: - import { extractAirbnbInfo } from "@/app/actions/listings";
++ import { cn } from "@/lib/utils";
+- import { Search, Loader2, Sparkles } from "lucide-react";
++ import { extractAirbnbInfo } from "@/app/actions/listings";
+- 
++ import { Search, Loader2, Sparkles } from "lucide-react";
+- const platformLabels: Record<ListingPlatform, string> = {
++ 
+-   airbnb: "Airbnb",
++ const platformLabels: Record<ListingPlatform, string> = {
+-   booking: "Booking.com",
++   airbnb: "Airbnb",
+-   mmt: "MakeMyTrip / GoIbibo",
++   booking: "Booking.com",
+- };
++   mmt: "MakeMyTrip / GoIbibo",
+- 
++ };
+- const listingTypes: ListingType[] = [
++ 
+-   "Apartment",
++ const listingTypes: ListingType[] = [
+-   "Villa",
++   "Apartment",
+-   "Homestay",
++   "Villa",
+-   "Guest House",
++   "Homestay",
+- ];
++   "Guest House",
+- 
++ ];
+- export default function AddListingPage() {
++ 
+-   const router = useRouter();
++ export default function AddListingPage() {
+-   const { tenant, listings, fetchDashboardData } = useDashboardStore();
++   const router = useRouter();
+-   const labels = getBusinessLabels(tenant?.businessType);
++   const { tenant, listings, fetchDashboardData } = useDashboardStore();
+-   const capabilities = getPersonaCapabilities(tenant?.businessType);
++   const labels = getBusinessLabels(tenant?.businessType);
+-   const [step, setStep] = useState(1);
++   const capabilities = getPersonaCapabilities(tenant?.businessType);
+-   const [listingId] = useState(() =>
++   const [step, setStep] = useState(1);
+-     typeof crypto !== "undefined" && "randomUUID" in crypto
++   const [listingId] = useState(() =>
+-       ? crypto.randomUUID()
++     typeof crypto !== "undefined" && "randomUUID" in crypto
+-       : `local-${Date.now()}`,
++       ? crypto.randomUUID()
+-   );
++       : `local-${Date.now()}`,
+-   const [name, setName] = useState("");
++   );
+-   const [city, setCity] = useState("");
++   const [name, setName] = useState("");
+-   const [type, setType] = useState<ListingType>("Homestay");
++   const
+… [diff truncated]
+
+📌 IDE AST Context: Modified symbols likely include [platformLabels, listingTypes, AddListingPage]
+- **[decision] decision in page.tsx**: -                     <option key={option} value={option}>
++                     <option key={option} value={option} className="bg-zinc-900 text-white">
+
+📌 IDE AST Context: Modified symbols likely include [platformLabels, listingTypes, AddListingPage]
+- **[what-changed] what-changed in WhatsAppBYONCard.tsx**: -               <p className="text-xs text-zinc-500 font-mono tracking-tighter uppercase">Settings > Linked Devices > Link a Device</p>
++               <p className="text-xs text-zinc-500 font-mono tracking-tighter uppercase">Settings &gt; Linked Devices &gt; Link a Device</p>
+
+📌 IDE AST Context: Modified symbols likely include [WhatsAppBYONCardProps, WhatsAppBYONCard]
+- **[convention] what-changed in page.tsx — confirmed 3x**: File updated (external): src/app/(customer)/dashboard/ai/listings/page.tsx
+
+Content summary (198 lines):
+"use client";
+
+import { useDashboardStore } from "@/store/useDashboardStore";
+import { useEffect, useMemo, useState } from "react";
+import { Loader2, Home, Plus, Calendar, Link2 } from "lucide-react";
+import Link from "next/link";
+import { Listing } from "@/types";
+import {
+  getBusinessLabels,
+  isCalendarEnabled,
+  getPersonaCapabilities,
+} from "@/lib/business-context";
+
+export default function ListingsPage() {
+  const { listings, fetchDashboardData, isLoading, tenant } =
+    useDashboardStor

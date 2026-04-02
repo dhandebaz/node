@@ -48,7 +48,7 @@ export const POST = withErrorHandler(async function(request: NextRequest) {
             content,
             metadata: { read: false },
             created_at: new Date().toISOString()
-        });
+        } as any);
 
     if (error) throw error;
 

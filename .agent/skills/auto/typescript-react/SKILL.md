@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 10 conventions, 3 fixes."
+description: "Typescript React for node. 2 gotchas, 17 conventions, 8 fixes."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,9 +12,139 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **29 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **58 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+
+## ⚠️ Anti-Patterns & Gotchas
+
+> **CRITICAL:** These are real gotchas from this project. Ignoring them WILL cause bugs.
+
+### ❌ ⚠️ GOTCHA: Fixed null crash in Task — prevents null/undefined runtime crashes
+-       const res = await fetchWithAuth("/api/tasks", {
++       const newTask = await fetchWithAuth<{ task: Task }>("/api/tasks", {
+-       if (res.ok) {
++       setTasks([...tasks, newTask.task]);
+-         const newTask = await res.json();
++       
+- Modified 1 files
+- identifier: Task
+- identifier: Failed
+
+### ❌ ⚠️ GOTCHA: Fixed null crash in Task — prevents null/undefined runtime crashes
+-       const [tasksRes, listingsRes, bookingsRes] = await Promise.all([
++       const tasksData = await fetchWithAuth<{ tasks: Task[] }>(`/api/tasks?tenant_id=${tenant?.id}`);
+-         fetchWithAuth(`/api/tasks?tenant_id=${tenant?.id}`),
++       se
+- Modified 1 files
+- identifier: Task
+- identifier: Listing
+
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Review — prevents null/undefined runtime crashes
+- 
++   const [showAddModal, setShowAddModal] = useState(false);
+-   useEffect(() => {
++   const [newReview, setNewReview] = useState({
+-     if (tenant?.id) {
++     listingId: "",
+-       loadData();
++     guestName: "",
+-     }
++     platform: "direct",
+-   }, [tenant?.id]);
++     rating: 5,
+- 
++     title: "",
+-   const loadData = async () => {
++     content: ""
+-     try {
++   });
+-       const
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Review
+3. identifier: Listing
+4. identifier: Failed
+5. identifier: POST
+
+### Fixed null crash in Promise — parallelizes async operations for speed
+-       const [reviewsRes, listingsRes] = await Promise.all([
++       const [reviewsRes, listingsRes]: [Promise<{ reviews: Review[] }>, Promise<{ listings: Listing[] }>] = await Promise.all([
+-       if (reviewsRes.ok) {
++       const reviewsData = await reviewsRes;
+-         const reviewsData = await reviewsRes.json() as { reviews: any[] };
++       setReviews(reviewsData.reviews || []);
+-        
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Promise
+3. identifier: Review
+4. identifier: Listing
+5. identifier: Failed
+
+### Fixed null crash in Failed — prevents null/undefined runtime crashes
+-       const reviewsData = await res.json() as { reviews: any[] };
++       if (reviewsRes.ok) {
+-       setReviews(reviewsData.reviews || []);
++         const reviewsData = await reviewsRes.json() as { reviews: any[] };
+-       if (listingsRes.ok) {
++         setReviews(reviewsData.reviews || []);
+-         const listingsData = await listingsRes.json() as { listings: any[] };
++       }
+-         
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Failed
+3. identifier: POST
+4. identifier: JSON
+5. identifier: Review
+
+### Fixed null crash in AmenitiesEditor — avoids unnecessary re-renders in React
+- import { fetchWithAuth } from "@/lib/api/fetcher";
++ import { AmenitiesEditor } from "@/components/listings/AmenitiesEditor";
+- 
++ import { fetchWithAuth } from "@/lib/api/fetcher";
+- const platformLabels: Record<ListingPlatform, string> = {
++ 
+-   airbnb: "Airbnb",
++ const platformLabels: Record<ListingPlatform, string> = {
+-   booking: "Booking.com",
++   airbnb: "Airbnb",
+-   mmt: "MakeMyTrip 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: AmenitiesEditor
+3. identifier: Record
+4. identifier: ListingPlatform
+5. identifier: Airbnb
+
+### Fixed null crash in Auto — reduces excessive function call frequency
+- 
++   const { tenant } = useDashboardStore();
+-   useEffect(() => {
++   const isHost = tenant?.businessType === "airbnb_host";
+-     const checkViewport = () => {
++ 
+-       const width = window.innerWidth;
++   useEffect(() => {
+-       setIsMobile(width < 768);
++     const checkViewport = () => {
+-       
++       const width = window.innerWidth;
+-       // Auto-collapse logic based on width
++   
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Auto
+3. identifier: Use
+4. identifier: NodeJS
+5. identifier: Timeout
 
 ### Fixed null crash in Search — avoids unnecessary re-renders in React
 - 
@@ -80,6 +210,35 @@ Auto-compiled from **29 real patterns** in **node**. This skill is auto-routed t
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 3x** — -     </div>
++ 
+-   );
++       {/* Add Review Modal */}
+- }
++       {showAddModal && (
+- 
++         
+- 📐 **discovery in page.tsx — confirmed 4x** — File updated (external): src/app/(customer)/dashboard/ai/revenue/reports/page.tsx
+
+Content summary (
+- 📐 **Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 5x** — -       const [reviewsRes, listingsRes]: [Promise<{ reviews: Review[] }>, Promise<{ listings: Listin
+- 📐 **what-changed in page.tsx — confirmed 3x** — -     </div>
++ 
+-   );
++       {tab === "amenities" && (
+- }
++         <div className="space-y-6">
+-
+- 📐 **Strengthened types Amenities** — -           { id: "messages", label: "Messages" }
++           { id: "amenities", label: "Amenities" 
+- 📐 **Fixed null crash in Memoize — avoids unnecessary re-renders in React — confirmed 3x** — -   const supabase = getSupabaseBrowser();
++   // Memoize to avoid recreating the client on every re
+- 📐 **Strengthened types Nodebase — improves module reusability** — -   },
++     images: [
+-   twitter: {
++       {
+-     card: "summary_large_image",
++         url: "/
 - 📐 **Fixed null crash in Timezone — confirmed 3x** — -                   className="input-glass bg-zinc-900 text-white cursor-pointer"
 +                 
 - 📐 **Fixed null crash in Math — confirmed 4x** — -     if (step === 1 && !capabilities.calendar) {
@@ -107,14 +266,20 @@ Content summary (95
 
 ## 🤔 Decisions & Trade-offs
 
+- **trade-off in DashboardSidebar.tsx** — -     { label: "Integrations", icon: Puzzle, href: "/dashboard/ai/integrations" },
++     ...(isHost 
+- **trade-off in DashboardSidebar.tsx** — -     { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },
++     ...(isHost ? [
+-
+- **decision in AuthContext.tsx** — File updated (external): src/contexts/AuthContext.tsx
+
+Content summary (142 lines):
+"use client";
+
+i
 - **Optimized Auto — reduces excessive function call frequency** — -       // Only auto-collapse/expand when crossing the 1024px threshold
 +       // Auto-collapse log
 - **decision in DashboardSidebar.tsx** — -           ? "bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_rgba(66,133,244,
-- **Optimized Only — reduces excessive function call frequency** — -     const checkMobile = () => {
-+     const checkViewport = () => {
--       setIsMobile(window.inn
-- **decision in page.tsx** — -                     <option key={option} value={option}>
-+                     <option key={option
 
 ---
-*Auto-generated by BrainSync 🧠 | 29 patterns | 2026-04-02*
+*Auto-generated by BrainSync 🧠 | 58 patterns | 2026-04-02*

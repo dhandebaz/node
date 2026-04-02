@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 390 notes | Score threshold: >40
+> 468 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,31 +18,36 @@
 
 **Stack:** JavaScript/TypeScript · Express + Next.js + React + Tailwind · DB: MongoDB
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- Fixed null crash in Timezone — confirmed 3x
-- Extracted SubscriptionService class — confirmed 3x
-- Fixed null crash in Math — confirmed 4x
-- Updated the database schema — confirmed 3x
+- **⚠️ GOTCHA: Fixed null crash in Task — prevents null/undefined runtime crashes** — -       const res = await fetchWithAuth("/api/tasks", {
++       const 
+- **⚠️ GOTCHA: Fixed null crash in Task — prevents null/undefined runtime crashes** — -       const [tasksRes, listingsRes, bookingsRes] = await Promise.all
+
+## Project Standards
+
+- Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 3x
+- discovery in page.tsx — confirmed 4x
+- Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 5x
 - what-changed in page.tsx — confirmed 3x
-- Updated src database schema — evolves the database schema to support new requ... — confirmed 4x
-- Fixed null crash in ListingType — avoids unnecessary re-renders in React — confirmed 3x
-- Updated Sidebar database schema — confirmed 3x
+- Strengthened types Amenities
+- what-changed in route.ts — confirmed 3x
+- Replaced auth Update — confirmed 3x
+- what-changed in tsconfig.tsbuildinfo — confirmed 3x
 
 ## Known Fixes
 
 - ❌ const { data: { user }, error: authError } = await supabase.auth.getUser(); → ✅ problem-fix in route.ts
 - ❌ import { withErrorHandler } from "@/lib/api/withErrorHandler"; → ✅ problem-fix in route.ts
+- ❌ import { AppError, ErrorCode } from "@/lib/errors"; → ✅ problem-fix in walletService.ts
+- ❌ +     } catch (error) { → ✅ Fixed null crash in Review — prevents null/undefined runtime crashes
 - ❌ File updated (external): ts_errors.log → ✅ problem-fix in ts_errors.log
-- ❌ File updated (external): ts_errors.txt → ✅ problem-fix in ts_errors.txt
-- ❌ import { AppError, ErrorCode } from "@/lib/errors"; → ✅ problem-fix in paymentLinkService.ts
 
 ## Recent Decisions
 
+- decision in AuthContext.tsx
 - Optimized Create — caches expensive computation results
 - Optimized Auto — reduces excessive function call frequency
-- decision in DashboardSidebar.tsx
-- Optimized Only — reduces excessive function call frequency
 
 ## Learned Patterns
 

@@ -1,9 +1,10 @@
 import type { AITone } from "@/lib/ai/config";
+import { Json } from "./database";
 
 export interface Tenant {
   id: string;
   name: string;
-  ownerUserId: string;
+  ownerUserId: string | null;
   createdAt: string;
   businessType?: BusinessType | null;
   earlyAccess?: boolean | null;
@@ -222,8 +223,8 @@ export interface WalletTransaction {
   tenant_id: string | null;
   amount: number | null;
   type: string | null;
-  description: string | null;
-  metadata?: Record<string, unknown> | null;
+  description?: string | null;
+  metadata?: Json | null;
   created_at: string | null;
 }
 
@@ -235,7 +236,7 @@ export interface BillingPlan {
   currency: string | null;
   interval: string | null;
   product: string | null;
-  features: Record<string, unknown>[] | null;
+  features: Json;
   type: string | null;
   created_at: string | null;
 }
@@ -258,4 +259,101 @@ export interface Integration {
   errorCode?: string;
   metadata?: Record<string, unknown>;
   credentials?: Record<string, unknown>;
+}
+
+// ==========================================
+// Host AI Types
+// ==========================================
+
+export interface Review {
+  id: string;
+  tenant_id: string;
+  listing_id: string;
+  booking_id: string | null;
+  guest_id: string | null;
+  external_id: string | null;
+  platform: "airbnb" | "booking" | "mmt" | "google" | "direct";
+  rating: number;
+  title: string | null;
+  content: string | null;
+  response_text: string | null;
+  responded_at: string | null;
+  is_public: boolean;
+  received_at: string;
+  created_at?: string;
+}
+
+export interface Task {
+  id: string;
+  tenant_id: string;
+  listing_id: string;
+  booking_id: string | null;
+  title: string;
+  description: string | null;
+  type: "cleaning" | "maintenance" | "inspection" | "checkin" | "checkout" | "general";
+  status: "pending" | "in_progress" | "completed" | "cancelled";
+  priority: "low" | "normal" | "high" | "urgent";
+  assigned_to: string | null;
+  due_date: string;
+  completed_at: string | null;
+  created_at: string;
+}
+
+export interface BlockedDate {
+  id: string;
+  tenant_id: string;
+  listing_id: string;
+  start_date: string;
+  end_date: string;
+  reason: string | null;
+  created_at: string;
+}
+
+export interface GuestLoyalty {
+  id: string;
+  tenant_id: string;
+  guest_id: string;
+  guest_name?: string;
+  guest_phone?: string;
+  total_bookings: number;
+  total_spent: number;
+  loyalty_tier: "bronze" | "silver" | "gold" | "platinum";
+  points: number;
+  last_booking_at: string | null;
+}
+
+export interface ChannelCredential {
+  id: string;
+  tenant_id: string;
+  listing_id: string;
+  channel: "airbnb" | "booking" | "mmt" | "google" | "Vrbo" | "expedia";
+  credentials: Record<string, unknown> | null;
+  is_active: boolean;
+  last_sync_at: string | null;
+  sync_status: "idle" | "syncing" | "success" | "error";
+  error_message: string | null;
+}
+
+export interface ListingAmenity {
+  id: string;
+  listing_id: string;
+  amenity_category: string;
+  amenity_name: string;
+  is_available: boolean;
+  notes: string | null;
+}
+
+export interface TeamPermission {
+  id: string;
+  tenant_id: string;
+  user_id: string;
+  role: "owner" | "admin" | "manager" | "staff" | "viewer";
+  permissions: Record<string, unknown>;
+  can_manage_listings: boolean;
+  can_manage_bookings: boolean;
+  can_manage_payments: boolean;
+  can_manage_guests: boolean;
+  can_manage_integrations: boolean;
+  can_manage_team: boolean;
+  can_view_financials: boolean;
 }

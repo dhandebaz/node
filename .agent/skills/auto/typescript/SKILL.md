@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 1 gotchas, 25 conventions, 53 fixes."
+description: "Typescript for node. 1 gotchas, 30 conventions, 56 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **132 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **158 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -29,6 +29,69 @@ Auto-compiled from **132 real patterns** in **node**. This skill is auto-routed 
 
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Vrbo
+-     integrations: {
++     reviews: false,
+-       airbnb: false,
++     tasks: false,
+-       google: false,
++     loyalty: true,
+-       ical: false,
++     channels: false,
+-       whatsapp: true,
++     integrations: {
+-       instagram: false,
++       airbnb: false,
+-     },
++       google: false,
+-   },
++       ical: false,
+-   doctor_clinic: {
++       whatsapp: true,
+-     listings: true, // 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Vrbo
+3. identifier: Record
+4. identifier: BusinessType
+5. identifier: Host
+
+### problem-fix in walletService.ts
+File updated (external): src/lib/services/walletService.ts
+
+Content summary (194 lines):
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { log } from "@/lib/logger";
+import { AppError, ErrorCode } from "@/lib/errors";
+import { WalletTransaction } from "@/types";
+
+export class WalletService {
+  /**
+   * Get current wallet balance for a tenant
+   */
+  static async getBalance(tenant
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in useAuthStore.ts
+File updated (external): src/store/useAuthStore.ts
+
+Content summary (99 lines):
+import { create } from 'zustand';
+import { Host } from '@/types';
+import { authApi } from '@/lib/api/auth';
+import { getSupabaseBrowser } from '@/lib/supabase/client';
+
+/** Default phone country prefix. Externalize to an env var if multi-region support is needed. */
+const DEFAULT_PHONE_PREFIX = '+91';
+
+interface AuthSt
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Fixed null crash in User — parallelizes async operations for speed
 - import { getSupabaseAdmin } from "@/lib/supabase/server";
@@ -340,49 +403,8 @@ import { ge
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in route.ts
-File updated (external): src/app/api/integrations/webhook/meta/route.ts
-
-Content summary (182 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
-import { log } from "@/lib/logger";
-import { ControlService } from "@/lib/services/controlService";
-import { ChannelService } from "@/lib/services/channelService";
-import { FlowService } from "@/l
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
--           source: failed.platform,
-+           source: failed.platform || "unknown",
--             connected.platform,
-+             connected.platform || "unknown",
-
-📌 IDE AST Context: Modified symbols likely include [getBaseUrl, GET, POST]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in User — reduces initial bundle size with code splitting
--         "id, listing_id, tenant_id, guest_id, start_date, end_date, status, source, amount, created_at, guest_contact",
-+         "id, listing_id, tenant_id, guest_id, guest_name, start_date, end_date, status, source, amount, created_at, guest_contact",
--       const { platform, external_ical_url } = integration;
-+       try {
--       try {
-+         const icalRes = await fetch(external_ica
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: User
-3. identifier: Agent
-4. identifier: Nodebase
-5. identifier: CalendarSync
-
 ## 📐 Conventions & Best Practices
 
-### Project Conventions
-- 📐 **problem-fix in route.ts — confirmed 3x** — File updated (external): src/app/api/public/ical
+### Proj
 
 ... [Truncated — see individual observations for full content]

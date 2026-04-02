@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ICalSyncCard } from "@/components/listings/ICalSyncCard";
 import { DynamicPricingCard } from "@/components/listings/DynamicPricingCard";
+import { AmenitiesEditor } from "@/components/listings/AmenitiesEditor";
 import { fetchWithAuth } from "@/lib/api/fetcher";
 
 const platformLabels: Record<ListingPlatform, string> = {
@@ -21,7 +22,7 @@ export default function ListingDetailPage() {
   const params = useParams();
   const router = useRouter();
   const listingId = params?.id as string;
-  const [tab, setTab] = useState<"overview" | "calendar" | "messages" | "pricing">("overview");
+  const [tab, setTab] = useState<"overview" | "calendar" | "messages" | "pricing" | "amenities">("overview");
   const [listing, setListing] = useState<Listing | null>(null);
   const [integrations, setIntegrations] = useState<ListingIntegration[]>([]);
   const [calendar, setCalendar] = useState<ListingCalendar | null>(null);
@@ -151,6 +152,7 @@ export default function ListingDetailPage() {
           { id: "overview", label: "Overview" },
           { id: "calendar", label: "Calendar Sync" },
           { id: "pricing", label: "Dynamic Pricing" },
+          { id: "amenities", label: "Amenities" },
           { id: "messages", label: "Messages" }
         ].map((item) => (
           <button
@@ -353,6 +355,19 @@ export default function ListingDetailPage() {
         <div className="dashboard-surface p-12 text-center text-foreground/40">
           <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>Messages will appear here once connected.</p>
+        </div>
+      )}
+
+      {tab === "amenities" && (
+        <div className="space-y-6">
+          <div className="dashboard-surface p-6 space-y-4">
+            <div className="text-sm font-semibold text-foreground">Property Amenities</div>
+            <p className="text-sm text-foreground/60">
+              Add and manage amenities for your property. Guests can see these on your booking page.
+            </p>
+            
+            <AmenitiesEditor listingId={listingId} />
+          </div>
         </div>
       )}
     </div>

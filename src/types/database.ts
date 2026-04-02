@@ -90,7 +90,7 @@ export interface DBTenant {
   id: string;
   name: string;
   business_name?: string | null;
-  owner_user_id: string;
+  owner_user_id: string | null;
   business_type?: string | null;
   status?: string | null;
   early_access?: boolean | null;
@@ -369,6 +369,151 @@ export interface DBCameraSession {
   metadata: Json | null;
   processed_at: string | null;
   created_at: string;
+  updated_at: string | null;
+}
+
+// ==========================================
+// Host AI Features Types
+// ==========================================
+
+export interface DBReview {
+  id: string;
+  tenant_id: string | null;
+  listing_id: string | null;
+  booking_id: string | null;
+  guest_id: string | null;
+  external_id: string | null;
+  platform: string;
+  rating: number;
+  title: string | null;
+  content: string | null;
+  response_text: string | null;
+  responded_at: string | null;
+  is_public: boolean | null;
+  received_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface DBBlockedDate {
+  id: string;
+  tenant_id: string | null;
+  listing_id: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  reason: string | null;
+  created_at: string | null;
+  created_by: string | null;
+}
+
+export interface DBTask {
+  id: string;
+  tenant_id: string | null;
+  listing_id: string | null;
+  booking_id: string | null;
+  title: string;
+  description: string | null;
+  type: string;
+  status: string;
+  priority: string | null;
+  assigned_to: string | null;
+  due_date: string | null;
+  completed_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface DBGuestLoyalty {
+  id: string;
+  tenant_id: string | null;
+  guest_id: string | null;
+  total_bookings: number | null;
+  total_spent: number | null;
+  loyalty_tier: string | null;
+  points: number | null;
+  last_booking_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface DBChannelCredential {
+  id: string;
+  tenant_id: string | null;
+  listing_id: string | null;
+  channel: string;
+  credentials: Json | null;
+  is_active: boolean | null;
+  last_sync_at: string | null;
+  sync_status: string | null;
+  error_message: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface DBTeamPermission {
+  id: string;
+  tenant_id: string | null;
+  user_id: string | null;
+  role: string;
+  permissions: Json | null;
+  can_manage_listings: boolean | null;
+  can_manage_bookings: boolean | null;
+  can_manage_payments: boolean | null;
+  can_manage_guests: boolean | null;
+  can_manage_integrations: boolean | null;
+  can_manage_team: boolean | null;
+  can_view_financials: boolean | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface DBRevenueReport {
+  id: string;
+  tenant_id: string | null;
+  report_type: string;
+  date_from: string | null;
+  date_to: string | null;
+  listing_id: string | null;
+  data: Json | null;
+  file_path: string | null;
+  created_at: string | null;
+}
+
+export interface DBListingAmenity {
+  id: string;
+  listing_id: string | null;
+  amenity_category: string | null;
+  amenity_name: string;
+  is_available: boolean | null;
+  notes: string | null;
+  created_at: string | null;
+}
+
+export interface DBCalendarSyncLog {
+  id: string;
+  tenant_id: string | null;
+  listing_id: string | null;
+  sync_type: string;
+  source: string;
+  events_added: number | null;
+  events_updated: number | null;
+  events_removed: number | null;
+  status: string | null;
+  error_message: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+}
+
+export interface DBAutomatedMessage {
+  id: string;
+  tenant_id: string | null;
+  trigger_type: string;
+  subject: string | null;
+  body: string | null;
+  channel: string | null;
+  is_active: boolean | null;
+  delay_hours: number | null;
+  created_at: string | null;
   updated_at: string | null;
 }
 

@@ -1,5 +1,5 @@
 # node — Project Memory
-# Auto-synced | 402 observations
+# Auto-synced | 468 observations
 
 **Stack:** JavaScript/TypeScript · Express + Next.js + React + Tailwind · DB: MongoDB
 
@@ -38,11 +38,11 @@ Example:
 - Git Commit: u
 - Git Commit: u
 - Git Commit: u
+- Git Commit: u
 - Extract repeated class patterns into components
 - Use responsive prefixes consistently (sm:, md:, lg:, xl:)
 - Don't use arbitrary values when a utility class exists
 - Use .dockerignore to exclude unnecessary files
-- Use multi-stage builds to reduce image size
 
 # ⚡ Available Tools (ON-DEMAND only)
 - `save(title, content, category)` — Save a note + auto-detect conflicts
@@ -55,6 +55,3 @@ Example:
 
 ---
 *Auto-synced | 2026-04-02*
-
-# BrainSync Intelligence (Auto-Synced)
-[BrainSync Rules](.brainsync/agent-rules.md)

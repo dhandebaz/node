@@ -260,7 +260,7 @@ export default async function AIDashboardPage() {
                 </div>
               ) : (
                 <div className="divide-y divide-zinc-800/50">
-                  {recentActivity.map((activity) => {
+                  {recentActivity.map((activity: any) => {
                       const eventType = String(activity.event_type ?? "");
                       const actorType = String(activity.actor_type ?? "");
                       const createdAt = activity?.created_at

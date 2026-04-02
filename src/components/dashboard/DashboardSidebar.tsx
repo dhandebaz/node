@@ -21,9 +21,14 @@ import {
   Megaphone,
   Share2,
   ShoppingBag,
+  Star,
+  CheckSquare,
+  Award,
+  Link2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+import { useDashboardStore } from "@/store/useDashboardStore";
 
 interface SidebarItemProps {
   icon: LucideIcon;
@@ -75,6 +80,8 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { tenant } = useDashboardStore();
+  const isHost = tenant?.businessType === "airbnb_host";
 
   useEffect(() => {
     const checkViewport = () => {
@@ -114,7 +121,14 @@ export function DashboardSidebar() {
     { label: "Meta Catalog", icon: ShoppingBag, href: "/dashboard/ai/catalog" },
     { label: "Calendar", icon: CalendarDays, href: "/dashboard/ai/calendar" },
     { label: "Listings", icon: Briefcase, href: "/dashboard/ai/listings" },
+    ...(isHost ? [
+      { label: "Reviews", icon: Star, href: "/dashboard/ai/reviews" },
+      { label: "Tasks", icon: CheckSquare, href: "/dashboard/ai/tasks" },
+      { label: "Loyalty", icon: Award, href: "/dashboard/ai/loyalty" },
+      { label: "Channels", icon: Link2, href: "/dashboard/ai/channels" },
+    ] : []),
     { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },
+    ...(isHost ? [{ label: "Reports", icon: CreditCard, href: "/dashboard/ai/revenue/reports" }] : []),
     { label: "Integrations", icon: Puzzle, href: "/dashboard/ai/integrations" },
     { label: "Notifications", icon: Bell, href: "/dashboard/notifications" },
   ];

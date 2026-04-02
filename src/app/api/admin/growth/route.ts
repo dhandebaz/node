@@ -21,11 +21,11 @@ export async function GET() {
         .from("referrals")
         .select("status");
         
-    const referralsByStatus = referralStats?.reduce((acc: any, curr) => {
+    const referralsByStatus = referralStats?.reduce((acc: Record<string, number>, curr) => {
       const status = curr.status || 'unknown';
       acc[status] = (acc[status] || 0) + 1;
       return acc;
-    }, {}) || {};
+    }, {} as Record<string, number>) || {};
 
     return NextResponse.json({
       newTenantsToday: health.growth.newTenantsToday,

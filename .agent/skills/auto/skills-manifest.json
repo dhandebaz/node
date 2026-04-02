@@ -1,30 +1,30 @@
 {
   "typescript": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T02:16:43.030Z",
-    "observationCount": 132,
+    "lastGenerated": "2026-04-02T05:00:45.812Z",
+    "observationCount": 158,
     "skillCount": 0,
     "domain": "typescript",
     "triggerGlobs": [
       "**/*.ts",
       "**/*.tsx"
     ],
-    "description": "Typescript for node. 1 gotchas, 25 conventions, 53 fixes."
+    "description": "Typescript for node. 1 gotchas, 30 conventions, 56 fixes."
   },
   "project": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T02:16:43.029Z",
-    "observationCount": 221,
+    "lastGenerated": "2026-04-02T05:00:45.813Z",
+    "observationCount": 243,
     "skillCount": 0,
     "domain": "project",
     "triggerGlobs": [
       "**/*"
     ],
-    "description": "Project for node. 36 gotchas, 69 conventions, 13 fixes."
+    "description": "Project for node. 36 gotchas, 74 conventions, 17 fixes."
   },
   "decision": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T02:16:43.032Z",
+    "lastGenerated": "2026-04-02T05:00:45.815Z",
     "observationCount": 0,
     "skillCount": 4,
     "domain": "decision",
@@ -35,7 +35,7 @@
   },
   "javascript": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T02:16:43.031Z",
+    "lastGenerated": "2026-04-02T05:00:45.814Z",
     "observationCount": 8,
     "skillCount": 0,
     "domain": "javascript",
@@ -47,9 +47,9 @@
   },
   "convention": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T02:16:43.032Z",
+    "lastGenerated": "2026-04-02T05:00:45.814Z",
     "observationCount": 0,
-    "skillCount": 6,
+    "skillCount": 7,
     "domain": "convention",
     "triggerGlobs": [
       "**/*"
@@ -58,24 +58,24 @@
   },
   "typescript-react": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T02:16:43.031Z",
-    "observationCount": 29,
+    "lastGenerated": "2026-04-02T05:00:45.812Z",
+    "observationCount": 58,
     "skillCount": 0,
     "domain": "typescript-react",
     "triggerGlobs": [
       "**/*.tsx"
     ],
-    "description": "Typescript React for node. 10 conventions, 3 fixes."
+    "description": "Typescript React for node. 2 gotchas, 17 conventions, 8 fixes."
   },
   "problem-fix": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T02:16:43.033Z",
+    "lastGenerated": "2026-04-02T05:00:45.815Z",
     "observationCount": 0,
     "skillCount": 2,
     "domain": "problem-fix",
     "triggerGlobs": [
       "**/*"
     ],
-    "description": "Problem Fix for node. 11 error→fix pairs."
+    "description": "Problem Fix for node. 13 error→fix pairs."
   }
 }

@@ -94,7 +94,7 @@ export interface AppSettings {
 
 export interface SettingsAuditLog {
   id: string;
-  adminId: string;
+  adminId: string | null;
   section:
     | "auth"
     | "integrations"
@@ -103,6 +103,6 @@ export interface SettingsAuditLog {
     | "notifications"
     | "security";
   action: string;
-  details: string;
-  timestamp: string;
+  details: string | null;
+  timestamp: string | null;
 }

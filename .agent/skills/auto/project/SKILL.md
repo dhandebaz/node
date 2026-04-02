@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 36 gotchas, 69 conventions, 13 fixes."
+description: "Project for node. 36 gotchas, 74 conventions, 17 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **221 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **243 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -56,6 +56,36 @@ Auto-compiled from **221 real patterns** in **node**. This skill is auto-routed 
 | Never force push to main, master, or production br | Never force push to main, master, or production branches |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in tsc_errors_fresh.txt
+File updated (external): tsc_errors_fresh.txt
+
+Content summary (15 lines):
+��s
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in task.md.resolved
+- - [ ] Update `src/app/(customer)/dashboard/ai/page.tsx` (Fix activity map callback type)
++ - [x] Update `src/app/(customer)/dashboard/ai/page.tsx` (Fix activity map callback type)
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in task.md
+- - [ ] Verify fix by running a build or checking runtime logs
++ - [x] Verify fix by running a build or checking runtime logs
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in task.md.resolved
+- - [ ] Verify fix by running a build or checking runtime logs
++ - [x] Verify fix by running a build or checking runtime logs
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in task.md
 - - [/] Refactor `fetchCurrentUser` in `src/app/actions/customer.ts` to use `getSupabaseAdmin()`
@@ -226,6 +256,16 @@ yarn-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Replaced auth Update — confirmed 3x** — - - [ ] Update `src/types/index.ts` (Tenant.ownerUserId nullable)
++ - [x] Update `src/types/index.ts
+- 📐 **what-changed in tsconfig.tsbuildinfo — confirmed 3x** — File updated (external): tsconfig.tsbuildinfo
+
+Content summary (1 lines):
+{"fileNames":["./node_modu
+- 📐 **Updated API endpoint Update — confirmed 6x** — - - [ ] Update `src/app/api/bookings/guest/route.ts` (Cast booking/guest inserts)
++ - [x] Update `sr
+- 📐 **problem-fix in task.md — confirmed 3x** — - - [ ] Update `src/app/(customer)/dashboard/ai/page.tsx` (Fix activity map callback type)
++ - [x] U
 - 📐 **Extracted SubscriptionService class — confirmed 3x** — - - [ ] Fix `SubscriptionService` column mismatch (`user_id` -> `tenant_id`)
 + - [x] Fix `Subscripti
 - 📐 **Updated the database schema — confirmed 3x** — - # iCal Sync Fix & Listing Flow Simplification
@@ -239,6 +279,9 @@ yarn-
 - 📐 **Git Commit: u** — Captured via Git commit.
 Message: u
 Branch: master
+- 📐 **Git Commit: u** — Captured via Git commit.
+Message: u
+Branch: master
 - 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 3x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
 - 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 5x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
 - 📐 **Updated src database schema — formalizes the data contract with explicit types — confirmed 4x** — - - [ ] Fix 'last_sync' vs 'last_synced_at' in Integration Routes
@@ -249,41 +292,6 @@ Branch: master
 - 📐 **Updated API endpoint task — confirmed 3x** — - - [/] Fix `src/app/api/integrations/instagram/connect/route.ts`
 + - [x] Fix `src/app/api/integrati
 - 📐 **what-changed in build_log.txt — confirmed 3x**
-- 📐 **Strengthened types Alignment — prevents null/undefined runtime crashes** — - # Fixing TypeScript Build Errors (Billing & Wallet Transactions)
-+ # Alignment of TypeScript with 
-- 📐 **what-changed in build_output.txt — confirmed 6x**
-- 📐 **Strengthened types Program** — - 
-+ 
-- > node@0.1.0 prebuild
-- > npm run verify
-- 
-- 
-- > node@0.1.0 verify
-- > node scripts/
-- 📐 **Git Commit: u** — Captured via Git commit.
-Message: u
-Branch: master
-- 📐 **Strengthened types Prepare — evolves the database schema to support new requi...** — - # Tasks: Resolve TS Errors and Finalize Supabase Auth
-+ - [ ] Prepare SQL Migration Script
-- 
-+ - 
-- 📐 **problem-fix in ts_errors.txt — confirmed 3x** — File updated (external): ts_errors.txt
-
-Content summary (482 lines):
-��s
-- 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 4x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
-- 📐 **what-changed in ts_errors.log — confirmed 3x** — File updated (external): ts_errors.log
-
-Content summary (725 lines):
-﻿src/app/(admin)/admin/(dashboa
-- 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 3x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
-- 📐 **problem-fix in ts_errors.log — confirmed 3x** — File updated (external): ts_errors.log
-
-Content summary (736 lines):
-��s
-- 📐 **Added OAuth2 authentication — confirmed 3x** — - - [/] **11. Eliminate Firebase References**
-+ - [x] **11. Eliminate Firebase References**
--   - [/
-- 📐 **Extra
+- 📐 **Strengthened types Alignment — prevents null/undefined runti
 
 ... [Truncated — see individual observations for full content]

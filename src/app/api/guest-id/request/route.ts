@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
           status: "requested",
           requested_at: new Date().toISOString(),
           upload_token: uploadToken
-        });
+        } as any);
 
       if (insertError) {
         return NextResponse.json({ error: insertError.message }, { status: 500 });

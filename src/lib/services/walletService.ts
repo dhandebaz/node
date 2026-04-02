@@ -1,6 +1,7 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
 import { AppError, ErrorCode } from "@/lib/errors";
+import { WalletTransaction } from "@/types";
 
 export class WalletService {
   /**
@@ -156,7 +157,7 @@ export class WalletService {
   /**
    * Get transaction history
    */
-  static async getHistory(tenantId: string, limit: number = 20) {
+  static async getHistory(tenantId: string, limit: number = 20): Promise<WalletTransaction[]> {
     const supabase = await getSupabaseServer();
     const { data, error } = await supabase
       .from("wallet_transactions")
@@ -166,7 +167,7 @@ export class WalletService {
       .limit(limit);
 
     if (error) return [];
-    return data;
+    return (data ?? []) as WalletTransaction[];
   }
 
   /**

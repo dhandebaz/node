@@ -1,6 +1,6 @@
 ---
 name: problem-fix
-description: "Problem Fix for node. 11 error→fix pairs."
+description: "Problem Fix for node. 13 error→fix pairs."
 domain: problem-fix
 composesFrom:
   - fix
@@ -22,15 +22,17 @@ Auto-compiled from **2 real patterns** in **node**. This skill is auto-routed to
 |-------|-----|------|
 | `const { data: { user }, error: authError } = await` | problem-fix in route.ts | 5x |
 | `import { withErrorHandler } from "@/lib/api/withEr` | problem-fix in route.ts | 4x |
+| `import { AppError, ErrorCode } from "@/lib/errors"` | problem-fix in walletService.ts | 4x |
+| `+     } catch (error) {` | Fixed null crash in Review — prevents null/undefined runtime | 4x |
 | `File updated (external): ts_errors.log` | problem-fix in ts_errors.log | 3x |
 | `File updated (external): ts_errors.txt` | problem-fix in ts_errors.txt | 3x |
-| `import { AppError, ErrorCode } from "@/lib/errors"` | problem-fix in paymentLinkService.ts | 3x |
 | `+       const { data, error } = await supabase.fro` | problem-fix in inboxService.ts | 2x |
 | `return NextResponse.json({ error: "Unauthorized" }` | problem-fix in route.ts | 2x |
 | `return NextResponse.json({ error: "Missing require` | problem-fix in route.ts | 2x |
 | `error: authError,` | problem-fix in route.ts | 2x |
 | `-     const { error } = await supabase.from("syste` | problem-fix in controlService.ts | 2x |
 | `import { FailureService } from "@/lib/services/fai` | problem-fix in route.ts | 2x |
+| `-     } catch (error) {` | Fixed null crash in Review — prevents null/undefined runtime | 2x |
 
 ## 📐 Conventions & Best Practices
 
