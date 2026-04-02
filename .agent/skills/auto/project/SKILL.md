@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 36 gotchas, 67 conventions, 12 fixes."
+description: "Project for node. 36 gotchas, 69 conventions, 13 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **217 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **220 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -56,6 +56,15 @@ Auto-compiled from **217 real patterns** in **node**. This skill is auto-routed 
 | Never force push to main, master, or production br | Never force push to main, master, or production branches |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in task.md
+- - [/] Refactor `fetchCurrentUser` in `src/app/actions/customer.ts` to use `getSupabaseAdmin()`
++ - [x] Refactor `fetchCurrentUser` in `src/app/actions/customer.ts` to use `getSupabaseAdmin()`
+- - [ ] Verify fix by running a build or checking runtime logs
++ - [x] Verify fix by running a build or checking runtime logs
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in tsc_errors.txt
 File updated (external): tsc_errors.txt
@@ -227,10 +236,16 @@ yarn-
 - 📐 **Updated Sidebar database schema — confirmed 3x** — - - [/] Update Sidebar & Layout Responsiveness
 + - [x] Update Sidebar & Layout Responsiveness
 -     
+- 📐 **Git Commit: u** — Captured via Git commit.
+Message: u
+Branch: master
 - 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 3x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
 - 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 5x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
 - 📐 **Updated src database schema — formalizes the data contract with explicit types — confirmed 4x** — - - [ ] Fix 'last_sync' vs 'last_synced_at' in Integration Routes
 + - [x] Fix 'last_sync' vs 'last_s
+- 📐 **Git Commit: u** — Captured via Git commit.
+Message: u
+Branch: master
 - 📐 **Updated API endpoint task — confirmed 3x** — - - [/] Fix `src/app/api/integrations/instagram/connect/route.ts`
 + - [x] Fix `src/app/api/integrati
 - 📐 **what-changed in build_log.txt — confirmed 3x**
@@ -269,10 +284,6 @@ Content summary (736 lines):
 - 📐 **Added OAuth2 authentication — confirmed 3x** — - - [/] **11. Eliminate Firebase References**
 + - [x] **11. Eliminate Firebase References**
 -   - [/
-- 📐 **Extract repeated class patterns into components** — Extract repeated class patterns into components
-- 📐 **Use responsive prefixes consistently (sm:, md:, lg:, xl:)** — Use responsive prefixes consistently (sm:, md:, lg:, xl:)
-- 📐 **Don't use arbitrary values when a utility class exists** — Don't use arbitrary values when a utility class exists
-- 📐 **Use .dockerignore to exclude unnecessary files** — Use .dockerignore to exclude unnecessary files
-- 📐 **Use multi-stage builds to reduce image size** — Use multi-stage builds to reduce image s
+- 📐 **Extra
 
 ... [Truncated — see individual observations for full content]

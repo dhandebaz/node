@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 1 gotchas, 25 conventions, 51 fixes."
+description: "Typescript for node. 1 gotchas, 25 conventions, 53 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **130 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **132 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -29,6 +29,41 @@ Auto-compiled from **130 real patterns** in **node**. This skill is auto-routed 
 
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in User — parallelizes async operations for speed
+- import { getSupabaseAdmin } from "@/lib/supabase/server";
++ import { getSession } from "@/lib/auth/session";
+- import { User } from "@/types/user";
++ import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
+- import { DBTenant } from "@/types/database";
++ import { User } from "@/types/user";
+- import { BusinessType } from "@/types";
++ import { DBTenant } from "@/types/databas
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: User
+3. identifier: DBTenant
+4. identifier: BusinessType
+5. identifier: Raw
+
+### Fixed null crash in User — parallelizes async operations for speed
+- import { getSession } from "@/lib/auth/session";
++ import { getSupabaseAdmin } from "@/lib/supabase/server";
+- import { getSupabaseServer } from "@/lib/supabase/server";
++ import { User } from "@/types/user";
+- import { User } from "@/types/user";
++ import { DBTenant } from "@/types/database";
+- import { DBTenant } from "@/types/database";
++ import { BusinessType } from "@/types";
+- import { Bus
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: User
+3. identifier: DBTenant
+4. identifier: BusinessType
+5. identifier: Raw
 
 ### Fixed null crash in Listings — parallelizes async operations for speed
 - 
@@ -345,49 +380,9 @@ import { FlowService } from "@/l
 4. identifier: Nodebase
 5. identifier: CalendarSync
 
-### Fixed null crash in Guest — reduces initial bundle size with code splitting
--         guestId: b.guest_id,
-+         guestName: b.guest_name || "Guest",
--         tenant_id: tenantId,
-+         tenant_id: tenantId || "",
--         actor_type: "user",
-+         listing_id: listingId,
--         event_type: EVENT_TYPES.ACTION_BLOCKED,
-+         event_type: 'calendar_sync',
--         entity_type: "calendar",
-+         entity_type: 'listing',
--         metadata: {
-+
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Guest
-3. identifier: NextResponse
-4. identifier: Insufficient
-5. identifier: Fetch
-
-### problem-fix in route.ts
-File updated (external): src/app/api/listings/[id]/calendar/route.ts
-
-Content summary (391 lines):
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { getSession } from "@/lib/auth/session";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/ty
-
-**Actionable Steps:**
-1. Modified 1 files
-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
-- 📐 **problem-fix in route.ts — confirmed 3x** — File updated (external): src/app/api/public/ical/[id]/route.ts
-
-Content summary (79 lines):
-
-import 
-- 📐 **Fixed null crash in System — confirmed 6x** — -           
+- 📐 **problem-fix in route.ts — confirmed 3x** — File updated (external): src/app/api/public/ical
 
 ... [Truncated — see individual observations for full content]

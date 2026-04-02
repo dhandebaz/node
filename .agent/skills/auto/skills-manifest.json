@@ -1,30 +1,30 @@
 {
   "typescript": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T08:45:11.482Z",
-    "observationCount": 130,
+    "lastGenerated": "2026-04-02T02:06:42.927Z",
+    "observationCount": 132,
     "skillCount": 0,
     "domain": "typescript",
     "triggerGlobs": [
       "**/*.ts",
       "**/*.tsx"
     ],
-    "description": "Typescript for node. 1 gotchas, 25 conventions, 51 fixes."
+    "description": "Typescript for node. 1 gotchas, 25 conventions, 53 fixes."
   },
   "project": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T08:45:11.480Z",
-    "observationCount": 217,
+    "lastGenerated": "2026-04-02T02:06:42.926Z",
+    "observationCount": 220,
     "skillCount": 0,
     "domain": "project",
     "triggerGlobs": [
       "**/*"
     ],
-    "description": "Project for node. 36 gotchas, 67 conventions, 12 fixes."
+    "description": "Project for node. 36 gotchas, 69 conventions, 13 fixes."
   },
   "decision": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T08:45:11.483Z",
+    "lastGenerated": "2026-04-02T02:06:42.929Z",
     "observationCount": 0,
     "skillCount": 4,
     "domain": "decision",
@@ -35,7 +35,7 @@
   },
   "javascript": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T08:45:11.482Z",
+    "lastGenerated": "2026-04-02T02:06:42.928Z",
     "observationCount": 8,
     "skillCount": 0,
     "domain": "javascript",
@@ -47,9 +47,9 @@
   },
   "convention": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T08:45:11.483Z",
+    "lastGenerated": "2026-04-02T02:06:42.929Z",
     "observationCount": 0,
-    "skillCount": 4,
+    "skillCount": 6,
     "domain": "convention",
     "triggerGlobs": [
       "**/*"
@@ -58,7 +58,7 @@
   },
   "typescript-react": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T08:45:11.481Z",
+    "lastGenerated": "2026-04-02T02:06:42.928Z",
     "observationCount": 29,
     "skillCount": 0,
     "domain": "typescript-react",
@@ -69,7 +69,7 @@
   },
   "problem-fix": {
     "enabled": true,
-    "lastGenerated": "2026-03-30T08:45:11.484Z",
+    "lastGenerated": "2026-04-02T02:06:42.930Z",
     "observationCount": 0,
     "skillCount": 2,
     "domain": "problem-fix",

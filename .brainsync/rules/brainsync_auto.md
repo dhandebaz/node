@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 384 notes | Score threshold: >40
+> 389 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,12 +18,7 @@
 
 **Stack:** JavaScript/TypeScript · Express + Next.js + React + Tailwind · DB: MongoDB
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
-
-- **⚠️ GOTCHA: Updated schema Date** — -         const start = new Date(b.start_date);
-+         if (!b.star
-
-## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
 
 - Fixed null crash in Timezone — confirmed 3x
 - Extracted SubscriptionService class — confirmed 3x
@@ -44,10 +39,10 @@
 
 ## Recent Decisions
 
+- Optimized Create — caches expensive computation results
 - Optimized Auto — reduces excessive function call frequency
 - decision in DashboardSidebar.tsx
 - Optimized Only — reduces excessive function call frequency
-- decision in supabase.ts
 
 ## Learned Patterns
 

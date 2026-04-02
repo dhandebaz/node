@@ -4,9 +4,37 @@ import { Redis } from "@upstash/redis";
  * Global Redis client instance for Nodebase.
  * Uses Upstash Redis for edge-compatible, high-performance caching.
  */
-export const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || "",
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
+const isRedisConfigured = !!(
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+);
+
+let redisInstance: Redis | null = null;
+let hasLoggedWarning = false;
+
+if (isRedisConfigured) {
+  redisInstance = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL!,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  });
+}
+
+/**
+ * Proxy for the Redis client to handle missing configuration gracefully.
+ */
+export const redis = new Proxy({} as Redis, {
+  get: (target, prop) => {
+    if (!isRedisConfigured) {
+      if (!hasLoggedWarning) {
+        console.warn(
+          "[Redis] Warning: Redis is not configured. UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are required for caching features."
+        );
+        hasLoggedWarning = true;
+      }
+      // Return a no-op function for any method calls to prevent crashes
+      return async () => null;
+    }
+    return (redisInstance as any)[prop];
+  },
 });
 
 /**

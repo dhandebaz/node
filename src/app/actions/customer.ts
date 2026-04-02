@@ -4,7 +4,7 @@ import { kaisaService } from "@/lib/services/kaisaService";
 import { supportService } from "@/lib/services/supportService";
 import { OnboardingService } from "@/lib/services/onboardingService";
 import { getSession } from "@/lib/auth/session";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
 import { User } from "@/types/user";
 import { DBTenant } from "@/types/database";
 import { BusinessType } from "@/types";
@@ -12,15 +12,9 @@ import { revalidatePath, unstable_cache } from "next/cache";
 
 // Raw function for fetching from DB, to be wrapped in cache
 async function fetchCurrentUser(userId: string): Promise<User> {
-  // Bypassing userService.getUserById to use dashboard-specific complete queries
-  const supabase = await getSupabaseServer();
-  const {
-    data: { user: authUser },
-    error: authError,
-  } = await supabase.auth.getUser();
-  if (authError || !authUser || authUser.id !== userId) {
-    throw new Error("Unauthorized: User not found or mismatch");
-  }
+  // Must use admin client because unstable_cache cannot depend on cookies() via getSupabaseServer()
+  // The userId is already verified by the caller (getCurrentUser)
+  const supabase = await getSupabaseAdmin();
 
   // Define types for the joined query result
   type TenantUserResult = {
@@ -30,14 +24,19 @@ async function fetchCurrentUser(userId: string): Promise<User> {
   };
 
   const [
+    {
+      data: { user: authUser },
+      error: authError,
+    },
     { data: account },
     { data: tenantUserResult },
     { data: kaisaAccount },
   ] = await Promise.all([
+    supabase.auth.admin.getUserById(userId),
     supabase
       .from("accounts")
       .select("user_id, product_type")
-      .eq("user_id", authUser.id)
+      .eq("user_id", userId)
       .maybeSingle(),
     supabase
       .from("tenant_users")
@@ -61,16 +60,20 @@ async function fetchCurrentUser(userId: string): Promise<User> {
           is_branding_enabled,
           is_ai_enabled
         )
-      `,
+      `
       )
-      .eq("user_id", authUser.id)
+      .eq("user_id", userId)
       .maybeSingle(),
     supabase
       .from("kaisa_accounts")
       .select("user_id")
-      .eq("user_id", authUser.id)
+      .eq("user_id", userId)
       .maybeSingle(),
   ]);
+
+  if (authError || !authUser) {
+    throw new Error("User not found in auth system");
+  }
 
   // Safely cast the result to our type (Supabase types can be tricky with joins)
   const tenantUser = tenantUserResult as unknown as TenantUserResult | null;
