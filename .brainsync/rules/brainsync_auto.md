@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 498 notes | Score threshold: >40
+> 528 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,34 +20,35 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: Updated schema GOTCHA
++ - gotcha in shared-context.json
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "5e8ea7e46297acbf",
++       "id": "7fb0b2213993110b",
 +
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "0d057e9e6eaf84f0",
-+
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Updated schema GOTCHA
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Updated schema GOTCHA
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Updated schema GOTCHA
+- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in agent-rules.md
++ - gotcha in shared-context.json
+- - ⚠️ 
 
 ## Project Standards
 
+- convention in git_diff_utf8.txt
+- convention in agent-rules.md
 - convention in utf8_status.txt
 - what-changed in route.ts — confirmed 4x
 - problem-fix in route.ts — confirmed 3x
 - Fixed null crash in NextResponse — confirmed 3x
 - Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 3x
 - discovery in page.tsx — confirmed 4x
-- Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 5x
-- what-changed in page.tsx — confirmed 3x
 
 ## Known Fixes
 
@@ -56,6 +57,10 @@ Content summary (8
 - ❌ import { AppError, ErrorCode } from "@/lib/errors"; → ✅ problem-fix in walletService.ts
 - ❌ +     } catch (error) { → ✅ Fixed null crash in Review — prevents null/undefined runtime crashes
 - ❌ File updated (external): ts_errors.log → ✅ problem-fix in ts_errors.log
+
+## Recent Decisions
+
+- Optimized Finished — prevents brute-force and DoS attacks
 
 ## Learned Patterns
 

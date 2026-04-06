@@ -41,10 +41,8 @@ Our platform offers specialized AI agents:
 
     For production (Vercel), also configure:
     - `NEXT_PUBLIC_APP_URL` (e.g. `https://nodebase.space`)
-    - `WAHA_SERVER_URL` (WhatsApp API on your VPS)
+    - `WAHA_SERVER_URL` (WhatsApp API Service URL)
     - `WAHA_API_KEY` (optional, if WAHA is secured)
-    - `VPS_API_URL` (Vibecoding execution server on your VPS)
-    - `VPS_API_KEY` (required, must match the VPS `.env`)
 
 4.  **Run Development Server**:
     ```bash

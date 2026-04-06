@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 37 gotchas, 76 conventions, 18 fixes."
+description: "Project for node. 42 gotchas, 80 conventions, 20 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **254 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **270 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,11 @@ Auto-compiled from **254 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Updated schema GOTCHA | - - ⚠️ GOTCHA: Updated schema GOTCHA + - gotcha in shared-context.json - - gotcha in shared-context. |
+| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema GOTCHA - - gotcha in agent-rules.md  |
+| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema GOTCHA - - gotcha in agent-rules.md  |
+| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema GOTCHA - - gotcha in agent-rules.md  |
+| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in agent-rules.md + - gotcha in shared-context.json - - ⚠️ GOTCHA: Updated schema Promise |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (80 lines): # Project Intelligen |
 | ⚠️ GOTCHA: problem-fix in build_output.txt | -  +  - > node@0.1.0 prebuild - > npm run verify -  -  - > node@0.1.0 verify - > node scripts/ |
 | Don't mix Tailwind with inline styles | Don't mix Tailwind with inline styles |
@@ -57,6 +62,40 @@ Auto-compiled from **254 real patterns** in **node**. This skill is auto-routed 
 | Never force push to main, master, or production br | Never force push to main, master, or production branches |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Patched security issue PJbZ
++ - problem-fix in agent-rules.md
+- - Patched security issue ZwOgHzh
++ - Patched security issue PJbZ
+- - Patched security issue shared-context
++ - Patched security issue ZwOgHzh
+- - problem-fix in shared-context.json
++ - Patched security issue shared-context
+- - problem-fix in .gitignore
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols li
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue ZwOgHzh
++ - Patched security issue PJbZ
+- - Patched security issue shared-context
++ - Patched security issue ZwOgHzh
+- - problem-fix in shared-context.json
++ - Patched security issue shared-context
+- - problem-fix in .gitignore
++ - problem-fix in shared-context.json
+- - problem-fix in bookingAutomation.ts
++ - problem-fix in .gitignore
+
+📌 IDE AST Context: Modified symbol
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in .gitignore
 File updated (external): .gitignore
@@ -295,39 +334,7 @@ yarn-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
-- 📐 **convention in utf8_status.txt** — File updated (external): utf8_status.txt
-
-Content summary (32 lines):
-﻿ M .agent/skills/auto/convent
-- 📐 **Replaced auth Update — confirmed 3x** — - - [ ] Update `src/types/index.ts` (Tenant.ownerUserId nullable)
-+ - [x] Update `src/types/index.ts
-- 📐 **what-changed in tsconfig.tsbuildinfo — confirmed 3x** — File updated (external): tsconfig.tsbuildinfo
-
-Content summary (1 lines):
-{"fileNames":["./node_modu
-- 📐 **Updated API endpoint Update — confirmed 6x** — - - [ ] Update `src/app/api/bookings/guest/route.ts` (Cast booking/guest inserts)
-+ - [x] Update `sr
-- 📐 **problem-fix in task.md — confirmed 3x** — - - [ ] Update `src/app/(customer)/dashboard/ai/page.tsx` (Fix activity map callback type)
-+ - [x] U
-- 📐 **Extracted SubscriptionService class — confirmed 3x** — - - [ ] Fix `SubscriptionService` column mismatch (`user_id` -> `tenant_id`)
-+ - [x] Fix `Subscripti
-- 📐 **Updated the database schema — confirmed 3x** — - # iCal Sync Fix & Listing Flow Simplification
-+ # iCal Sync Fix & Listing Flow Simplification (v2)
-- 📐 **Updated src database schema — evolves the database schema to support new requ... — confirmed 4x** — - - [/] Database & Model Expansion
-+ - [x] Database & Model Expansion
--     - [ ] DB Migration: Add 
-- 📐 **Updated Sidebar database schema — confirmed 3x** — - - [/] Update Sidebar & Layout Responsiveness
-+ - [x] Update Sidebar & Layout Responsiveness
--     
-- 📐 **Git Commit: u** — Captured via Git commit.
-Message: u
-Branch: master
-- 📐 **Git Commit: u** — Captured via Git commit.
-Message: u
-Branch: master
-- 📐 **Git Commit: u** — Captured via Git commit.
-Message: u
-Branch: master
-- 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 3x** — - {"fileName
+- 📐 **Updated schema GOTCHA — confirmed 3x** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Updated 
 
 ... [Truncated — see individual observations for full content]

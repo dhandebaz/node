@@ -92,7 +92,7 @@ Notes / design decisions
 - Feature flags default to OFF. This is intentional so new functionality remains gated until infra and policies are ready.
 - The telephony session store is intentionally in-memory (to avoid schema debates). For production, migrate to a DB-backed sessions table with audit metadata and foreign keys to tenants/operators.
 - The Twilio adapter is a skeleton to demonstrate the registration pattern — it intentionally does not crash server startup if credentials are missing.
-- The WAHA debug endpoint assumes the external WAHA VPS exposes a compatible `POST /start-session` route. Adjust the endpoint path and payload to match your WAHA server implementation.
+- The WAHA debug endpoint assumes the external WAHA service exposes a compatible `POST /start-session` route. Adjust the endpoint path and payload to match your WAHA server implementation.
 
 Files you may want to add next (suggestions)
 - DB migration for `telephony_sessions` and `camera_sessions` tables (persist call metadata, start/end timestamps, recordings refs, operator ids).

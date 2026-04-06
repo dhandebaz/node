@@ -7,14 +7,11 @@ import {
   Send,
   Settings,
   Terminal,
-  Server,
   Key,
-  Cpu,
   Sparkles,
   Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { fetchWithAuth } from "@/lib/api/fetcher";
 import { getCsrfToken } from "@/lib/api/csrf";
 import {
   AI_PROVIDER_LABELS,
@@ -30,17 +27,7 @@ export default function VibecodingPage() {
     getAIModelOptions("google")[0].id,
   );
   const [apiKey, setApiKey] = useState("");
-  const [useVPS, setUseVPS] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [execLanguage, setExecLanguage] = useState<
-    "javascript" | "python" | "bash"
-  >("javascript");
-  const [execCode, setExecCode] = useState("");
-  const [execRunning, setExecRunning] = useState(false);
-  const [execStdout, setExecStdout] = useState<string | null>(null);
-  const [execStderr, setExecStderr] = useState<string | null>(null);
-  const [execExitCode, setExecExitCode] = useState<number | null>(null);
-  const [execError, setExecError] = useState<string | null>(null);
   const [chatInput, setChatInput] = useState("");
 
   const csrf = getCsrfToken();
@@ -51,7 +38,6 @@ export default function VibecodingPage() {
       provider,
       model,
       apiKey: apiKey || undefined,
-      useVPS,
     },
   });
 
@@ -60,45 +46,6 @@ export default function VibecodingPage() {
   });
 
   const isLoading = status === "submitted" || status === "streaming";
-
-  const runExecution = async () => {
-    setExecError(null);
-    setExecStdout(null);
-    setExecStderr(null);
-    setExecExitCode(null);
-    if (!useVPS) {
-      setExecError("Enable VPS Execution to run code.");
-      return;
-    }
-    if (!execCode.trim()) {
-      setExecError("Add some code to run.");
-      return;
-    }
-    setExecRunning(true);
-    try {
-      const json = await fetchWithAuth<
-        | {
-            success: true;
-            result: { stdout: string; stderr: string; exitCode: number };
-          }
-        | { error: string }
-      >("/api/admin/vibecoding/execute", {
-        method: "POST",
-        body: JSON.stringify({ code: execCode, language: execLanguage }),
-      });
-      if ("error" in json) {
-        setExecError("error" in json ? json.error : "Execution failed");
-        return;
-      }
-      setExecStdout(json.result.stdout || "");
-      setExecStderr(json.result.stderr || "");
-      setExecExitCode(json.result.exitCode);
-    } catch (e) {
-      setExecError(e instanceof Error ? e.message : "Execution failed");
-    } finally {
-      setExecRunning(false);
-    }
-  };
 
   return (
     <div className="space-y-12 pb-20">
@@ -113,7 +60,7 @@ export default function VibecodingPage() {
             </h1>
           </div>
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground/50 ml-1">
-            Neural code orchestration & hybrid vps execution
+            Neural code orchestration & hybrid execution
           </p>
         </div>
         <button 
@@ -186,132 +133,10 @@ export default function VibecodingPage() {
               </p>
             </div>
           </div>
-
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/40 flex items-center gap-2">
-                <Server className="w-3 h-3" />
-                Computational_Node_Environment
-              </label>
-              <div
-                onClick={() => setUseVPS(!useVPS)}
-                className={cn(
-                  "flex items-center justify-between p-6 rounded-2xl border-2 cursor-pointer transition-all active:scale-[0.98]",
-                  useVPS
-                    ? "bg-primary/5 border-primary shadow-[0_0_30px_rgba(214,0,28,0.05)]"
-                    : "bg-muted/20 border-border border-dashed opacity-60"
-                )}
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className={cn(
-                      "w-3 h-3 rounded-full",
-                      useVPS
-                        ? "bg-primary shadow-[0_0_15px_rgba(214,0,28,0.5)] animate-pulse"
-                        : "bg-muted-foreground/30",
-                    )}
-                  />
-                  <div>
-                    <div className="text-xs font-black uppercase tracking-widest text-foreground">
-                      Neural_Compute_VPS
-                    </div>
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mt-1">
-                      Offload logic to isolated cluster
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={cn(
-                    "text-[8px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-lg border",
-                    useVPS
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted text-muted-foreground border-border"
-                  )}
-                >
-                  {useVPS ? "ENGAGED" : "DORMANT"}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-        <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm flex flex-col min-h-[500px] border-dashed">
-          <div className="px-8 py-6 border-b border-border bg-muted/30 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-foreground/5 flex items-center justify-center border border-border/50">
-                <Cpu className="w-4 h-4 text-foreground/40" />
-              </div>
-              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-foreground">Exec_Subsystem</h3>
-            </div>
-            <div className={cn(
-              "text-[8px] font-black uppercase tracking-[0.3em] px-2 py-1 rounded-md border shadow-sm",
-              useVPS ? "bg-primary/10 text-primary border-primary/20" : "bg-muted text-muted-foreground/40 border-border"
-            )}>
-              {useVPS ? "HYBRID_VPS" : "SANDBOX_LOCK"}
-            </div>
-          </div>
-
-          <div className="p-8 flex-1 flex flex-col space-y-6">
-            <div className="flex items-center gap-4">
-              <select
-                value={execLanguage}
-                onChange={(e) => setExecLanguage(e.target.value as any)}
-                className="bg-muted/50 border border-border text-foreground text-[10px] font-black uppercase tracking-[0.2em] rounded-xl px-4 py-2.5 focus:ring-1 focus:ring-primary outline-none transition-all"
-              >
-                <option value="javascript">JS_NODE</option>
-                <option value="python">PY_NEURAL</option>
-                <option value="bash">SH_KERNEL</option>
-              </select>
-              <button
-                type="button"
-                onClick={runExecution}
-                disabled={execRunning}
-                className="ml-auto px-6 py-2.5 rounded-xl bg-foreground text-background text-[10px] font-black uppercase tracking-[0.2em] hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 shadow-lg shadow-foreground/10"
-              >
-                {execRunning ? "Executing..." : "Invoke_Chain"}
-              </button>
-            </div>
-
-            <div className="relative group flex-1">
-              <textarea
-                value={execCode}
-                onChange={(e) => setExecCode(e.target.value)}
-                placeholder="// Kernel sequence requested..."
-                className="w-full h-full min-h-[250px] bg-muted/20 border border-border rounded-2xl p-6 text-foreground placeholder:text-muted-foreground/10 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all font-mono text-[11px] leading-relaxed resize-none shadow-inner"
-              />
-            </div>
-
-            {(execError || execStdout || execStderr || execExitCode !== null) && (
-              <div className="bg-foreground text-background rounded-2xl p-6 space-y-4 font-mono overflow-auto max-h-[200px] shadow-2xl border-2 border-primary/20">
-                <div className="flex items-center justify-between border-b border-background/20 pb-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest opacity-40">Console_Pulse</span>
-                  {execExitCode !== null && (
-                    <span className={cn(
-                      "text-[9px] font-bold uppercase py-0.5 px-2 rounded",
-                      execExitCode === 0 
-                        ? "bg-green-500/20 text-green-400" 
-                        : "bg-red-500/20 text-red-400"
-                    )}>
-                      EXIT_{execExitCode}
-                    </span>
-                  )}
-                </div>
-                {execError && (
-                  <div className="text-xs text-red-400 font-black">ERR: {execError}</div>
-                )}
-                {execStdout && (
-                  <pre className="text-[11px] leading-relaxed opacity-90 whitespace-pre-wrap">{execStdout}</pre>
-                )}
-                {execStderr && (
-                  <pre className="text-[11px] leading-relaxed text-red-400 opacity-80 italic whitespace-pre-wrap underline decoration-red-400/20">{execStderr}</pre>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
+      <div className="grid grid-cols-1 gap-8 items-stretch">
         <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm flex flex-col min-h-[500px]">
           <div className="px-8 py-6 border-b border-border bg-muted/30 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -328,7 +153,7 @@ export default function VibecodingPage() {
 
           <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
             {messages.length === 0 && (
-              <div className="h-full flex flex-col items-center justify-center text-muted-foreground/20 space-y-6">
+              <div className="h-full flex flex-col items-center justify-center text-muted-foreground/20 space-y-6 min-h-[300px]">
                 <div className="w-20 h-20 rounded-[2.5rem] bg-muted/50 flex items-center justify-center border-2 border-dashed border-border group-hover:rotate-6 transition-transform">
                   <Bot className="w-10 h-10 opacity-20" />
                 </div>
@@ -375,7 +200,7 @@ export default function VibecodingPage() {
             ))}
 
             {isLoading && (
-              <div className="flex gap-6">
+              <div className="flex gap-6 min-h-[100px]">
                 <div className="w-10 h-10 rounded-2xl bg-background border border-border text-foreground flex items-center justify-center shrink-0 animate-pulse">
                   <Bot className="w-5 h-5" />
                 </div>
@@ -414,8 +239,7 @@ export default function VibecodingPage() {
             </form>
             <div className="flex justify-between items-center mt-4">
               <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground/20">
-                Kernel: <span className="text-muted-foreground/40">{model}</span> • 
-                {useVPS ? " VPS_HYPERVISOR_LINK" : " LOCAL_SUBSTRATE"}
+                Kernel: <span className="text-muted-foreground/40">{model}</span> • LOCAL_SUBSTRATE
               </p>
               <div className="flex gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 opacity-50" />
@@ -428,3 +252,4 @@ export default function VibecodingPage() {
     </div>
   );
 }
+
