@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 36 gotchas, 74 conventions, 17 fixes."
+description: "Project for node. 37 gotchas, 76 conventions, 18 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **243 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **254 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **243 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (80 lines): # Project Intelligen |
 | ⚠️ GOTCHA: problem-fix in build_output.txt | -  +  - > node@0.1.0 prebuild - > npm run verify -  -  - > node@0.1.0 verify - > node scripts/ |
 | Don't mix Tailwind with inline styles | Don't mix Tailwind with inline styles |
 | Don't store secrets in Docker images — use runtime | Don't store secrets in Docker images — use runtime injection |
@@ -56,6 +57,44 @@ Auto-compiled from **243 real patterns** in **node**. This skill is auto-routed 
 | Never force push to main, master, or production br | Never force push to main, master, or production branches |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in .gitignore
+File updated (external): .gitignore
+
+Content summary (57 lines):
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in tsc_errors_fresh.txt
 File updated (external): tsc_errors_fresh.txt
@@ -256,6 +295,10 @@ yarn-
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **convention in utf8_status.txt** — File updated (external): utf8_status.txt
+
+Content summary (32 lines):
+﻿ M .agent/skills/auto/convent
 - 📐 **Replaced auth Update — confirmed 3x** — - - [ ] Update `src/types/index.ts` (Tenant.ownerUserId nullable)
 + - [x] Update `src/types/index.ts
 - 📐 **what-changed in tsconfig.tsbuildinfo — confirmed 3x** — File updated (external): tsconfig.tsbuildinfo
@@ -282,16 +325,9 @@ Branch: master
 - 📐 **Git Commit: u** — Captured via Git commit.
 Message: u
 Branch: master
-- 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 3x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
-- 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 5x** — - {"fileNames":["./node_modules/typescript/lib/lib.es5.d.ts","./node_modules/typescript/lib/lib.es20
-- 📐 **Updated src database schema — formalizes the data contract with explicit types — confirmed 4x** — - - [ ] Fix 'last_sync' vs 'last_synced_at' in Integration Routes
-+ - [x] Fix 'last_sync' vs 'last_s
 - 📐 **Git Commit: u** — Captured via Git commit.
 Message: u
 Branch: master
-- 📐 **Updated API endpoint task — confirmed 3x** — - - [/] Fix `src/app/api/integrations/instagram/connect/route.ts`
-+ - [x] Fix `src/app/api/integrati
-- 📐 **what-changed in build_log.txt — confirmed 3x**
-- 📐 **Strengthened types Alignment — prevents null/undefined runti
+- 📐 **Optimized Conversion — hardens HTTP security headers — confirmed 3x** — - {"fileName
 
 ... [Truncated — see individual observations for full content]

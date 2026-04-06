@@ -83,8 +83,8 @@ export async function getTenantContext(tenantId: string): Promise<(Tenant & DBTe
   
   return {
     ...dbTenant,
-    ownerUserId: dbTenant.owner_user_id, // Map for Tenant interface compatibility
-    createdAt: dbTenant.created_at,       // Map for Tenant interface compatibility
+    ownerUserId: dbTenant.owner_user_id as string | null, // Map for Tenant interface compatibility
+    createdAt: dbTenant.created_at as string,           // Map for Tenant interface compatibility
     businessType: dbTenant.business_type as any // Alias for easier access
   };
 }

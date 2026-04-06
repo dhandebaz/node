@@ -1,30 +1,30 @@
 {
   "typescript": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T05:00:45.812Z",
-    "observationCount": 158,
+    "lastGenerated": "2026-04-06T21:04:14.429Z",
+    "observationCount": 173,
     "skillCount": 0,
     "domain": "typescript",
     "triggerGlobs": [
       "**/*.ts",
       "**/*.tsx"
     ],
-    "description": "Typescript for node. 1 gotchas, 30 conventions, 56 fixes."
+    "description": "Typescript for node. 2 gotchas, 33 conventions, 60 fixes."
   },
   "project": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T05:00:45.813Z",
-    "observationCount": 243,
+    "lastGenerated": "2026-04-06T21:04:14.428Z",
+    "observationCount": 254,
     "skillCount": 0,
     "domain": "project",
     "triggerGlobs": [
       "**/*"
     ],
-    "description": "Project for node. 36 gotchas, 74 conventions, 17 fixes."
+    "description": "Project for node. 37 gotchas, 76 conventions, 18 fixes."
   },
   "decision": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T05:00:45.815Z",
+    "lastGenerated": "2026-04-06T21:04:14.432Z",
     "observationCount": 0,
     "skillCount": 4,
     "domain": "decision",
@@ -35,7 +35,7 @@
   },
   "javascript": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T05:00:45.814Z",
+    "lastGenerated": "2026-04-06T21:04:14.430Z",
     "observationCount": 8,
     "skillCount": 0,
     "domain": "javascript",
@@ -47,9 +47,9 @@
   },
   "convention": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T05:00:45.814Z",
+    "lastGenerated": "2026-04-06T21:04:14.431Z",
     "observationCount": 0,
-    "skillCount": 7,
+    "skillCount": 8,
     "domain": "convention",
     "triggerGlobs": [
       "**/*"
@@ -58,7 +58,7 @@
   },
   "typescript-react": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T05:00:45.812Z",
+    "lastGenerated": "2026-04-06T21:04:14.430Z",
     "observationCount": 58,
     "skillCount": 0,
     "domain": "typescript-react",
@@ -69,13 +69,27 @@
   },
   "problem-fix": {
     "enabled": true,
-    "lastGenerated": "2026-04-02T05:00:45.815Z",
+    "lastGenerated": "2026-04-06T21:04:14.432Z",
     "observationCount": 0,
     "skillCount": 2,
     "domain": "problem-fix",
     "triggerGlobs": [
       "**/*"
     ],
-    "description": "Problem Fix for node. 13 error→fix pairs."
+    "description": "Problem Fix for node. 16 error→fix pairs."
+  },
+  "config": {
+    "enabled": true,
+    "lastGenerated": "2026-04-06T21:04:14.429Z",
+    "observationCount": 5,
+    "skillCount": 0,
+    "domain": "config",
+    "triggerGlobs": [
+      "**/*.yaml",
+      "**/*.yml",
+      "**/*.json",
+      "**/*.toml"
+    ],
+    "description": "Config for node. 2 gotchas, 1 fixes."
   }
 }

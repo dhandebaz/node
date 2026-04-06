@@ -8,10 +8,10 @@ const supabase = createClient(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id: listingId } = await params;
   try {
-    const listingId = params.id;
 
     const { data: amenities, error } = await supabase
       .from("listing_amenities")
@@ -30,12 +30,12 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id: listingId } = await params;
   try {
     const body = await request.json();
     const { amenity_category, amenity_name, is_available, notes } = body;
-    const listingId = params.id;
 
     if (!amenity_name) {
       return NextResponse.json({ error: "Amenity name required" }, { status: 400 });

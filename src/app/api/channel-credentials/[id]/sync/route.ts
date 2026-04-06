@@ -8,15 +8,16 @@ const supabase = createClient(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id: credentialId } = await params;
   try {
     const startedAt = new Date().toISOString();
 
     const { data: credential, error: fetchError } = await supabase
       .from("channel_credentials")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", credentialId)
       .single();
 
     if (fetchError) throw fetchError;
@@ -24,7 +25,7 @@ export async function POST(
     await supabase
       .from("channel_credentials")
       .update({ sync_status: "syncing" })
-      .eq("id", params.id);
+      .eq("id", credentialId);
 
     let syncResult = { events_added: 0, events_updated: 0, events_removed: 0 };
     let status = "success";
@@ -63,7 +64,7 @@ export async function POST(
         last_sync_at: completedAt,
         error_message: errorMessage
       })
-      .eq("id", params.id);
+      .eq("id", credentialId);
 
     await supabase
       .from("calendar_sync_logs")
@@ -84,7 +85,7 @@ export async function POST(
     const { data: updatedCredential } = await supabase
       .from("channel_credentials")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", credentialId)
       .single();
 
     return NextResponse.json({ credential: updatedCredential });

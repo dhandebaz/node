@@ -56,7 +56,7 @@ export function SettingsAuditLogView({ logs }: { logs: SettingsAuditLog[] }) {
                             </span>
                             <span className="text-muted-foreground/30 text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 whitespace-nowrap">
                                 <Clock className="w-3 h-3" />
-                                {log.timestamp ? new Date(log.timestamp).toLocaleString() : "N/A"}
+                                {log.timestamp ? new Date(log.timestamp as string).toLocaleString() : "N/A"}
                             </span>
                         </div>
                         <p className="text-muted-foreground/60 text-[10px] font-bold uppercase tracking-tight truncate mb-1">

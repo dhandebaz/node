@@ -8,8 +8,9 @@ const supabase = createClient(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string; amenityId: string } }
+  { params }: { params: Promise<{ id: string; amenityId: string }> }
 ) {
+  const { amenityId } = await params;
   try {
     const body = await request.json();
     const { amenity_category, amenity_name, is_available, notes } = body;
@@ -23,7 +24,7 @@ export async function PATCH(
     const { data: amenity, error } = await supabase
       .from("listing_amenities")
       .update(updateData)
-      .eq("id", params.amenityId)
+      .eq("id", amenityId)
       .select()
       .single();
 
@@ -38,13 +39,14 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; amenityId: string } }
+  { params }: { params: Promise<{ id: string; amenityId: string }> }
 ) {
+  const { amenityId } = await params;
   try {
     const { error } = await supabase
       .from("listing_amenities")
       .delete()
-      .eq("id", params.amenityId);
+      .eq("id", amenityId);
 
     if (error) throw error;
 

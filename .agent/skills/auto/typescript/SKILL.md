@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 1 gotchas, 30 conventions, 56 fixes."
+description: "Typescript for node. 2 gotchas, 33 conventions, 60 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,11 +11,24 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **158 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **173 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
 > **CRITICAL:** These are real gotchas from this project. Ignoring them WILL cause bugs.
+
+### ❌ ⚠️ GOTCHA: Updated schema Promise
+-   { params }: { params: { id: string } }
++   { params }: { params: Promise<{ id: string }> }
+-   try {
++   const { id } = await params;
+-     const { error } = await supabase
++   try {
+-       .from("blocked_dates")
++     const { error } = await su
+- Modified 1 files
+- identifier: Promise
+- identifier: NextResponse
 
 ### ❌ ⚠️ GOTCHA: Updated schema Date
 -         const start = new Date(b.start_date);
@@ -29,6 +42,71 @@ Auto-compiled from **158 real patterns** in **node**. This skill is auto-routed 
 
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Dispatch
+-             // Dispatch to external channel
++           // Dispatch to external channel
+-             try {
++           try {
+-               await ChannelService.sendMessage({
++             await ChannelService.sendMessage({
+-                 tenantId: tenantId as string,
++               tenantId: tenantId as string,
+-                 recipientId: recipientId as string,
++               recipien
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Dispatch
+3. identifier: ChannelService
+4. identifier: Log
+5. identifier: Reply
+
+### Fixed null crash in Booking
+- 
++           }
+-             // Dispatch to external channel
++ 
+-             try {
++           // Run booking automation (auto tasks, calendar block, loyalty)
+-               await ChannelService.sendMessage({
++           runBookingAutomation({
+-                 tenantId: tenantId as string,
++             bookingId: payment.booking_id as string,
+-                 recipientId: recipientId as str
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Run
+3. identifier: Booking
+4. identifier: Dispatch
+5. identifier: ChannelService
+
+### problem-fix in route.ts
+File updated (external): src/app/api/payments/webhook/route.ts
+
+Content summary (211 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { logEvent } from "@/lib/events";
+import { log } from "@/lib/logger";
+import { EVENT_TYPES } from "@/types/events";
+import { ChannelService } from "@/lib/services/channelService";
+import { FlowServi
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in bookingAutomation.ts
+-   const { bookingId, tenantId, listingId, startDate, endDate } = options;
++   const { bookingId, tenantId, listingId, guestId, startDate, endDate } = options;
+-       updateGuestLoyalty(tenantId, guestId),
++       guestId ? updateGuestLoyalty(tenantId, guestId) : Promise.resolve(),
+
+📌 IDE AST Context: Modified symbols likely include [supabase, BookingAutomationOptions, runBookingAutomation, cre
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### Fixed null crash in Vrbo
 -     integrations: {
@@ -316,95 +394,6 @@ type Payload = {
 -     const aiDefaults = getPersonaAIDefaults(tenant?.business_type);
 +     const aiDefaults = getPersonaAIDefaults(tenant?.business_type as any);
 -     const systemPrompt = [
-+     const aiConfig = (tenant?.ai_settings || {}) as any;
--       aiDefaults.instructions,
-+     const systemPrompt = [
--       getToneInstruction(tenant?.ai_settings?.tone),
-+       aiDefaults.instructions,
--       tenant?
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Boolean
-3. identifier: Guest
-4. identifier: Name
-5. identifier: Message
-
-### problem-fix in route.ts
-File updated (external): src/app/api/messages/ai-reply/route.ts
-
-Content summary (318 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { logEvent } from "@/lib/events";
-import { EVENT_TYPES } from "@/types/events";
-import { FailureService } from "@/lib/services/failureServi
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Fetch
--       const { platform, external_ical_url } = integration;
-+       const platform = integration.platform as string;
-- 
-+       const external_ical_url = integration.external_ical_url as string;
--       if (!external_ical_url) {
-+ 
--         results.push({ platform, imported: 0, error: "Missing iCal URL" });
-+       try {
--         continue;
-+         // Fetch the iCal feed
--       }
-+
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Fetch
-3. identifier: User
-4. identifier: Agent
-5. identifier: Nodebase
-
-### Fixed null crash in Process — prevents null/undefined runtime crashes
--     const today = new Date().toISOString().split("T")[0];
-+     // 3. Process integrations
--     const results: {
-+     const today = new Date().toISOString().split("T")[0];
--       platform: string;
-+     const results: {
--       imported: number;
-+       platform: string;
--       error?: string;
-+       imported: number;
--     }[] = [];
-+       error?: string;
-- 
-+     }[] = [];
-
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Process
-3. identifier: Date
-4. identifier: Missing
-5. identifier: URL
-
-### problem-fix in route.ts
-File updated (external): src/app/api/integrations/webhook/whatsapp/route.ts
-
-Content summary (213 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { ControlService } from "@/lib/services/controlService";
-import { wahaService } from "@/lib/services/wahaService";
-import { FlowService } from "@/lib/services/flowService";
-import { ge
-
-**Actionable Steps:**
-1. Modified 1 files
-
-## 📐 Conventions & Best Practices
-
-### Proj
++     const aiConfig = (tenant?.ai_settings || {
 
 ... [Truncated — see individual observations for full content]

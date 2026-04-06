@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 468 notes | Score threshold: >40
+> 498 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,20 +20,34 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in Task — prevents null/undefined runtime crashes** — -       const res = await fetchWithAuth("/api/tasks", {
-+       const 
-- **⚠️ GOTCHA: Fixed null crash in Task — prevents null/undefined runtime crashes** — -       const [tasksRes, listingsRes, bookingsRes] = await Promise.all
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "5e8ea7e46297acbf",
++
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "0d057e9e6eaf84f0",
++
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (8
 
 ## Project Standards
 
+- convention in utf8_status.txt
+- what-changed in route.ts — confirmed 4x
+- problem-fix in route.ts — confirmed 3x
+- Fixed null crash in NextResponse — confirmed 3x
 - Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 3x
 - discovery in page.tsx — confirmed 4x
 - Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 5x
 - what-changed in page.tsx — confirmed 3x
-- Strengthened types Amenities
-- what-changed in route.ts — confirmed 3x
-- Replaced auth Update — confirmed 3x
-- what-changed in tsconfig.tsbuildinfo — confirmed 3x
 
 ## Known Fixes
 
@@ -42,12 +56,6 @@
 - ❌ import { AppError, ErrorCode } from "@/lib/errors"; → ✅ problem-fix in walletService.ts
 - ❌ +     } catch (error) { → ✅ Fixed null crash in Review — prevents null/undefined runtime crashes
 - ❌ File updated (external): ts_errors.log → ✅ problem-fix in ts_errors.log
-
-## Recent Decisions
-
-- decision in AuthContext.tsx
-- Optimized Create — caches expensive computation results
-- Optimized Auto — reduces excessive function call frequency
 
 ## Learned Patterns
 

@@ -1,5 +1,5 @@
 # node — Project Memory
-# Auto-synced | 468 observations
+# Auto-synced | 528 observations
 
 **Stack:** JavaScript/TypeScript · Express + Next.js + React + Tailwind · DB: MongoDB
 
@@ -39,10 +39,10 @@ Example:
 - Git Commit: u
 - Git Commit: u
 - Git Commit: u
+- Git Commit: u
 - Extract repeated class patterns into components
 - Use responsive prefixes consistently (sm:, md:, lg:, xl:)
 - Don't use arbitrary values when a utility class exists
-- Use .dockerignore to exclude unnecessary files
 
 # ⚡ Available Tools (ON-DEMAND only)
 - `save(title, content, category)` — Save a note + auto-detect conflicts
@@ -54,4 +54,4 @@ Example:
 > ℹ️ DO NOT call get_context() or get_gotchas() at startup — context above IS your context.
 
 ---
-*Auto-synced | 2026-04-02*
+*Auto-synced | 2026-04-06*

@@ -5,6 +5,7 @@ import { log } from "@/lib/logger";
 import { EVENT_TYPES } from "@/types/events";
 import { ChannelService } from "@/lib/services/channelService";
 import { FlowService } from "@/lib/services/flowService";
+import { runBookingAutomation } from "@/lib/services/bookingAutomation";
 
 type Payload = {
   paymentId?: string;
@@ -155,33 +156,43 @@ export async function POST(request: Request) {
               metadata: { read: false, trigger: "booking_confirmed" },
               created_at: new Date().toISOString(),
             });
-
-            // Dispatch to external channel
-            try {
-              await ChannelService.sendMessage({
-                tenantId: tenantId as string,
-                recipientId: recipientId as string,
-                content,
-                channel: channel as any,
-              });
-            } catch (dispatchError) {
-              log.error("Dispatch confirmed message error", dispatchError, {
-                tenantId,
-                recipientId,
-                channel,
-              });
-            }
           }
 
-          // Log AI Reply Sent
-          await logEvent({
-            tenant_id: tenantId as string,
-            actor_type: "system",
-            event_type: EVENT_TYPES.AI_REPLY_SENT,
-            entity_type: "message",
-            metadata: { channel, trigger: "booking_confirmed" },
-          });
+          // Run booking automation (auto tasks, calendar block, loyalty)
+          runBookingAutomation({
+            bookingId: payment.booking_id as string,
+            tenantId: tenantId as string,
+            listingId: booking.listing_id,
+            guestId: booking.guest_id,
+            startDate: booking.start_date as string,
+            endDate: booking.end_date as string,
+          }).catch(err => console.error("Booking automation error:", err));
+
+          // Dispatch to external channel
+          try {
+            await ChannelService.sendMessage({
+              tenantId: tenantId as string,
+              recipientId: recipientId as string,
+              content,
+              channel: channel as any,
+            });
+          } catch (dispatchError) {
+            log.error("Dispatch confirmed message error", dispatchError, {
+              tenantId,
+              recipientId,
+              channel,
+            });
+          }
         }
+
+        // Log AI Reply Sent
+        await logEvent({
+          tenant_id: tenantId as string,
+          actor_type: "system",
+          event_type: EVENT_TYPES.AI_REPLY_SENT,
+          entity_type: "message",
+          metadata: { channel, trigger: "booking_confirmed" },
+        });
       }
     }
 

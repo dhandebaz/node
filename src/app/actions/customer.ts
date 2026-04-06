@@ -7,7 +7,7 @@ import { getSession } from "@/lib/auth/session";
 import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
 import { User } from "@/types/user";
 import { DBTenant } from "@/types/database";
-import { BusinessType } from "@/types";
+import { BusinessType, Tenant } from "@/types";
 import { revalidatePath, unstable_cache } from "next/cache";
 
 // Raw function for fetching from DB, to be wrapped in cache
@@ -79,7 +79,7 @@ async function fetchCurrentUser(userId: string): Promise<User> {
   const tenantUser = tenantUserResult as unknown as TenantUserResult | null;
   const tenantData = tenantUser?.tenants;
 
-  const tenant = tenantData
+  const tenant: Tenant | undefined = tenantData
     ? {
         id: tenantData.id,
         name: tenantData.name,
