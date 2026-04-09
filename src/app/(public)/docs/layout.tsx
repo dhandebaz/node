@@ -19,7 +19,7 @@ export default function DocsLayout({
 
         <main className="min-w-0 space-y-8">
           {/* Mobile doc nav */}
-          <div className="glass-panel p-4 rounded-2xl lg:hidden">
+          <div className="bg-zinc-50 border border-zinc-200 p-4 rounded-2xl lg:hidden shadow-sm">
             <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
               Jump to docs section
             </div>
@@ -28,7 +28,7 @@ export default function DocsLayout({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="whitespace-nowrap rounded-full bg-white/5 border border-white/10 px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:bg-white/10 hover:text-white transition-all"
+                  className="whitespace-nowrap rounded-full bg-white border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-all shadow-sm"
                 >
                   {item.label}
                 </Link>
@@ -37,17 +37,17 @@ export default function DocsLayout({
           </div>
 
           {/* Docs header */}
-          <section className="glass-panel p-6 sm:p-8 rounded-[2rem]">
+          <section className="bg-white border border-zinc-200 p-6 sm:p-8 rounded-[2rem] shadow-sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 border border-blue-100 text-blue-600 shadow-sm shadow-blue-600/5">
                   <BookMarked className="h-5 w-5" />
                 </div>
                 <div>
                   <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
                     Documentation
                   </div>
-                  <h1 className="font-display mt-2 text-2xl text-white tracking-tighter">
+                  <h1 className="font-display mt-2 text-2xl text-zinc-950 tracking-tighter">
                     Deployment notes, control surfaces, and implementation
                     detail
                   </h1>
@@ -55,7 +55,7 @@ export default function DocsLayout({
               </div>
               <Link
                 href="/company/contact"
-                className="public-button-secondary px-5 py-3 text-sm font-semibold"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-zinc-950 text-white text-sm font-bold rounded-full hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-950/20"
               >
                 Need deployment help
                 <ArrowRight className="h-4 w-4" />

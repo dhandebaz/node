@@ -118,36 +118,36 @@ function LoginContent() {
   const isLoading = authLoading || localLoading;
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-background bg-dot-pattern">
-      {/* Subtle ambient glow */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-20%] right-[-10%] h-[40vw] w-[40vw] rounded-full bg-primary/8 blur-[100px]" />
-        <div className="absolute bottom-[-15%] left-[-10%] h-[35vw] w-[35vw] rounded-full bg-sky-500/6 blur-[120px]" />
+    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-white">
+      {/* Subtle ambient glow - Optimized for Premium Light */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[-20%] right-[-10%] h-[40vw] w-[40vw] rounded-full bg-blue-600/5 blur-[100px]" />
+        <div className="absolute bottom-[-15%] left-[-10%] h-[35vw] w-[35vw] rounded-full bg-blue-500/5 blur-[120px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/20">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-950 shadow-xl shadow-zinc-950/20">
               <Logo className="h-6 w-6 text-white" />
             </div>
-            <div className="font-display text-xl text-foreground uppercase tracking-tighter leading-none">
+            <div className="font-display text-xl text-zinc-950 uppercase tracking-tighter leading-none">
               nodebase
             </div>
           </Link>
         </div>
 
         {/* Login Card */}
-        <div className="glass-panel rounded-2xl p-8 space-y-6">
+        <div className="bg-white border border-zinc-200 shadow-2xl rounded-3xl p-8 space-y-6">
           {showSuccess ? (
             <div className="space-y-4 py-8 text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10 border border-green-500/20">
                 <CheckCircle2 className="h-8 w-8 text-green-500" />
               </div>
-              <h2 className="text-2xl font-semibold text-foreground">Access granted</h2>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Redirecting you to the dashboard.
+              <h2 className="text-2xl font-black text-zinc-950 tracking-tighter uppercase">Access granted</h2>
+              <p className="text-sm leading-6 text-zinc-500 font-medium">
+                Redirecting you to the operator console.
               </p>
             </div>
           ) : step === "magic-link-sent" ? (
@@ -170,11 +170,11 @@ function LoginContent() {
           ) : (
             <>
               <div className="text-center">
-                <h1 className="text-2xl font-semibold text-foreground">
+                <h1 className="text-2xl font-black text-zinc-950 tracking-tighter uppercase">
                   Sign in to Nodebase
                 </h1>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Access the operator console for your AI employees.
+                <p className="mt-2 text-sm text-zinc-500 font-medium leading-relaxed">
+                  Access the operator console for your business AI ecosystem.
                 </p>
               </div>
 
@@ -235,10 +235,10 @@ function LoginContent() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="flex items-center justify-center gap-2 rounded-xl bg-zinc-950 px-6 py-4 text-sm font-black text-white shadow-xl shadow-zinc-950/20 transition-all hover:bg-zinc-800 disabled:opacity-60 uppercase tracking-widest"
                   >
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
-                    Request access
+                    Request Access
                   </button>
                 </form>
               ) : (
@@ -274,10 +274,10 @@ function LoginContent() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="flex items-center justify-center gap-2 rounded-xl bg-zinc-950 px-6 py-4 text-sm font-black text-white shadow-xl shadow-zinc-950/20 transition-all hover:bg-zinc-800 disabled:opacity-60 uppercase tracking-widest"
                   >
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                    Verify and continue
+                    Verify and Continue
                   </button>
                 </form>
               )}

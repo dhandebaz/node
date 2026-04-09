@@ -132,7 +132,7 @@ function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
     <div className="relative">
       <canvas
         ref={canvasRef}
-        className="h-40 w-full touch-none rounded-lg border border-border bg-card cursor-crosshair text-foreground"
+        className="h-40 w-full touch-none rounded-2xl border border-zinc-200 bg-zinc-50 cursor-crosshair text-zinc-950"
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={stopDrawing}
@@ -144,7 +144,7 @@ function SignaturePad({ onEnd }: { onEnd: (data: string) => void }) {
       <button
         type="button"
         onClick={clearPad}
-        className="absolute bottom-2 right-2 rounded-md bg-muted px-3 py-1 text-xs text-muted-foreground hover:bg-muted-foreground hover:text-muted"
+        className="absolute bottom-3 right-3 rounded-lg bg-zinc-200 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-zinc-600 hover:bg-zinc-300 hover:text-zinc-900 transition-colors"
       >
         Clear
       </button>
@@ -394,22 +394,22 @@ export default function VerificationPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-8 py-10">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-12 flex items-center justify-between">
         {[1, 2, 3, 4].map((currentStep) => (
           <div key={currentStep} className="flex items-center">
             <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
+              className={`flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black transition-all ${
                 step >= currentStep
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground"
+                  ? "bg-zinc-950 text-white shadow-xl shadow-zinc-950/20"
+                  : "bg-zinc-100 text-zinc-400 border border-zinc-200"
               }`}
             >
-              {step > currentStep ? <CheckCircle2 size={16} /> : currentStep}
+              {step > currentStep ? <CheckCircle2 size={18} strokeWidth={3} /> : currentStep}
             </div>
             {currentStep < 4 && (
               <div
-                className={`mx-2 h-1 w-12 ${
-                  step > currentStep ? "bg-primary" : "bg-muted"
+                className={`mx-3 h-1 w-12 rounded-full transition-colors ${
+                  step > currentStep ? "bg-zinc-950" : "bg-zinc-100"
                 }`}
               />
             )}
@@ -418,18 +418,21 @@ export default function VerificationPage() {
       </div>
 
       {step === 1 && (
-        <div className="space-y-6 rounded-xl bg-card border border-border p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-foreground">Business Details</h2>
+        <div className="space-y-6 rounded-[2.5rem] bg-white border border-zinc-200 p-8 shadow-sm">
+          <div className="space-y-1">
+            <div className="text-[10px] font-black uppercase tracking-widest text-blue-600">Verification Step 1</div>
+            <h2 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter">Business Details</h2>
+          </div>
           <form onSubmit={handleDetailsSubmit} className="space-y-4">
             <div className="grid gap-2">
-              <Label>Business Name</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Legal Business Name</Label>
               <Input
                 value={details.name}
                 onChange={(event) =>
                   setDetails({ ...details, name: event.target.value })
                 }
                 required
-                className="border-border bg-muted/50 text-foreground placeholder:text-muted-foreground/50"
+                className="bg-zinc-50 border-zinc-200 rounded-xl px-4 py-3 font-black text-zinc-950 focus:bg-white transition-all h-auto"
               />
             </div>
             <div className="grid gap-2">
@@ -476,11 +479,11 @@ export default function VerificationPage() {
                 className="border-border bg-muted/50 text-foreground placeholder:text-muted-foreground/50"
               />
             </div>
-            <Button type="submit" disabled={loading} className="w-full public-button">
+            <Button type="submit" disabled={loading} className="w-full h-auto py-4 bg-zinc-950 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all active:scale-95">
               {loading ? (
                 <Loader2 className="animate-spin" />
               ) : (
-                "Save & Continue"
+                "Save & Authorize"
               )}
             </Button>
           </form>
@@ -488,15 +491,16 @@ export default function VerificationPage() {
       )}
 
       {step === 2 && (
-        <div className="space-y-6 rounded-xl bg-card border border-border p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-foreground">
-            Identity Verification
-          </h2>
+        <div className="space-y-6 rounded-[2.5rem] bg-white border border-zinc-200 p-8 shadow-sm">
+          <div className="space-y-1">
+            <div className="text-[10px] font-black uppercase tracking-widest text-blue-600">Verification Step 2</div>
+            <h2 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter">Identity Validation</h2>
+          </div>
           {!extractedData ? (
-            <div className="rounded-xl border-2 border-dashed border-border p-8 text-center transition-colors hover:border-brand-red">
-              <Upload className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-              <p className="mb-4 text-muted-foreground">
-                Upload Aadhaar, PAN, passport, or another government ID.
+            <div className="rounded-[2rem] border-2 border-dashed border-zinc-200 p-8 text-center transition-all bg-zinc-50">
+              <Upload className="mx-auto mb-4 h-12 w-12 text-zinc-300" />
+              <p className="mb-6 text-sm font-medium text-zinc-500 leading-relaxed max-w-xs mx-auto">
+                Securely upload an official government-issued ID (PAN, Aadhaar, or Passport).
               </p>
               <Input
                 type="file"
@@ -552,12 +556,12 @@ export default function VerificationPage() {
               <Button
                 onClick={handleKycConfirm}
                 disabled={loading}
-                className="w-full public-button"
+                className="w-full h-auto py-4 bg-zinc-950 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all active:scale-95"
               >
                 {loading ? (
                   <Loader2 className="animate-spin" />
                 ) : (
-                  "Confirm Details"
+                  "Confirm Identity Details"
                 )}
               </Button>
             </div>
@@ -566,98 +570,107 @@ export default function VerificationPage() {
       )}
 
       {step === 3 && (
-        <div className="space-y-6 rounded-xl bg-card border border-border p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-foreground">Legal Agreement</h2>
-          <div className="h-64 overflow-y-auto rounded-lg bg-white p-6 text-sm font-serif text-black">
-            <h3 className="mb-4 text-lg font-bold">
-              Zero-Liability & Platform Terms Acknowledgement
+        <div className="space-y-6 rounded-[2.5rem] bg-white border border-zinc-200 p-8 shadow-sm">
+          <div className="space-y-1">
+            <div className="text-[10px] font-black uppercase tracking-widest text-blue-600">Verification Step 3</div>
+            <h2 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter">Legal Agreement</h2>
+          </div>
+          <div className="h-64 overflow-y-auto rounded-2xl bg-zinc-50 border border-zinc-100 p-8 text-sm font-serif text-zinc-950 leading-relaxed">
+            <h3 className="mb-6 text-xl font-black uppercase tracking-tighter font-sans">
+              Operational Terms & Acknowledgement
             </h3>
-            <p className="mb-3">
-              This document will be generated specifically for:
+            <p className="mb-4">
+              This institutional record is generated for:
             </p>
-            <p className="mb-3">
-              <strong>Business:</strong> {details.name || " - "}
+            <div className="mb-6 space-y-1 bg-white p-4 rounded-xl border border-zinc-100 font-sans">
+              <p className="text-[10px] uppercase font-black text-zinc-400">Authorized Entity</p>
+              <p className="text-sm font-black">{details.name || " - "}</p>
+              <p className="text-[10px] uppercase font-black text-zinc-400 mt-2">Registration ID</p>
+              <p className="text-sm font-black">{details.taxId ? details.taxId.toUpperCase() : "Electronic Verification Pending"}</p>
+            </div>
+            <p className="mb-4">
+              By applying your electronic signature, you authorize Nodebase to provision the requested business ecosystem and verify the submitted credentials for regulatory compliance.
             </p>
-            <p className="mb-3">
-              <strong>Address:</strong> {details.address || " - "}
-            </p>
-            <p className="mb-3">
-              <strong>PAN/GSTIN:</strong>{" "}
-              {details.taxId ? details.taxId.toUpperCase() : "Not provided"}
-            </p>
-            <p className="mb-3">
-              By signing, you authorize Nodebase to generate a signed PDF record
-              and store it securely for compliance.
-            </p>
-            <p>
-              <strong>Governing law:</strong> India.
+            <p className="text-xs text-zinc-500 italic">
+              Execution date: {new Date().toLocaleDateString()}
             </p>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-foreground">Sign Below</Label>
+          <div className="space-y-3">
+            <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Authorized Signature</Label>
             <SignaturePad onEnd={setSignature} />
-            <p className="text-xs text-muted-foreground">
-              Draw your signature using mouse or touch.
+            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-300 text-center">
+              Apply digital stroke for authentication
             </p>
           </div>
 
           <Button
             onClick={handleAgreementSign}
             disabled={loading}
-            className="w-full public-button"
+            className="w-full h-auto py-4 bg-zinc-950 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all active:scale-95"
           >
             {loading ? (
               <Loader2 className="animate-spin" />
             ) : (
-              "Sign & Complete Verification"
+              "Finalize Execution"
             )}
           </Button>
         </div>
       )}
 
       {step === 4 && (
-        <div className="space-y-6 rounded-xl bg-card border border-border p-6 text-center shadow-sm">
-          <h2 className="text-xl font-bold text-foreground">Claim your Handle</h2>
-          <p className="text-muted-foreground">
-            Choose a unique username for your public profile.
-          </p>
-
-          <div className="mx-auto flex max-w-sm items-center justify-center gap-2">
-            <span className="text-muted-foreground">{publicProfilePrefix}</span>
-            <Input
-              value={handle}
-              onChange={(event) =>
-                checkHandle(
-                  event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""),
-                )
-              }
-              placeholder="my-business"
-              className="bg-muted/50 text-foreground border-border"
-            />
+        <div className="space-y-6 rounded-[2.5rem] bg-white border border-zinc-200 p-10 text-center shadow-2xl shadow-zinc-950/5">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] bg-zinc-950 text-white shadow-xl shadow-zinc-950/20 mb-4">
+             <CheckCircle2 size={32} />
+          </div>
+          <div className="space-y-2">
+            <div className="text-[10px] font-black uppercase tracking-widest text-blue-600">Verification Complete</div>
+            <h2 className="text-4xl font-black text-zinc-950 uppercase tracking-tighter">Claim Handle</h2>
+            <p className="text-zinc-500 font-medium max-w-sm mx-auto leading-relaxed">
+              Define your high-fidelity public profile URL to complete the deployment.
+            </p>
           </div>
 
-          {handleChecking ? (
-            <p className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-              <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-zinc-400 border-t-transparent" />
-              Checking…
-            </p>
-          ) : null}
-          {!handleChecking && handleAvailable === true ? (
-            <p className="text-sm text-green-500">Handle available</p>
-          ) : null}
-          {!handleChecking &&
-          handleAvailable === false &&
-          handle.length >= 3 ? (
-            <p className="text-sm text-red-400">Handle taken or invalid</p>
-          ) : null}
+          <div className="mx-auto flex max-w-sm flex-col items-center justify-center gap-4 bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
+            <div className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Your Base URL</div>
+            <div className="flex items-center gap-1 w-full">
+              <span className="text-xs font-black text-zinc-300">@</span>
+              <Input
+                value={handle}
+                onChange={(event) =>
+                  checkHandle(
+                    event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""),
+                  )
+                }
+                placeholder="my-business"
+                className="bg-white border-zinc-200 text-zinc-950 font-black h-12 rounded-xl text-center placeholder:text-zinc-200"
+              />
+            </div>
+            
+            <div className="h-6">
+              {handleChecking ? (
+                <p className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Authenticating Handle
+                </p>
+              ) : null}
+              {!handleChecking && handleAvailable === true ? (
+                <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">Handle Secured</p>
+              ) : null}
+              {!handleChecking &&
+              handleAvailable === false &&
+              handle.length >= 3 ? (
+                <p className="text-[10px] font-black uppercase tracking-widest text-red-500">Handle Already Provisioned</p>
+              ) : null}
+            </div>
+          </div>
 
           <Button
             onClick={handleUsernameSubmit}
             disabled={!handleAvailable || loading}
-            className="mx-auto w-full max-w-sm public-button"
+            className="mx-auto w-full max-w-sm h-auto py-5 bg-zinc-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-zinc-950/30 hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
           >
-            {loading ? <Loader2 className="animate-spin" /> : "Launch Site"}
+            {loading ? <Loader2 className="animate-spin" /> : "Deploy Ecosystem"}
           </Button>
         </div>
       )}

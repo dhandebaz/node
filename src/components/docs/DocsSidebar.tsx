@@ -13,17 +13,17 @@ export function DocsSidebar() {
   return (
     <div className="space-y-6">
       {/* Sidebar header */}
-      <div className="glass-panel p-6 rounded-[2rem]">
+      <div className="bg-white border border-zinc-200 p-6 rounded-[2rem] shadow-sm">
         <div className="relative z-10">
           <div className="flex items-start gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 border border-blue-100 text-blue-600 shadow-sm shadow-blue-600/5">
               <BookOpenText className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="font-display text-xl text-white tracking-tighter">
+              <h2 className="font-display text-xl text-zinc-950 tracking-tighter">
                 Build with control
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+              <p className="mt-2 text-sm leading-relaxed text-zinc-600 font-medium">
                 Start with the operating model, then move into APIs and
                 integration rails.
               </p>
@@ -33,7 +33,7 @@ export function DocsSidebar() {
       </div>
 
       {/* Navigation */}
-      <div className="glass-panel p-5 rounded-[2rem]">
+      <div className="bg-white border border-zinc-200 p-5 rounded-[2rem] shadow-sm">
         <div className="space-y-5">
           {docsNavigation.map((section, sectionIndex) => (
             <motion.div
@@ -42,7 +42,7 @@ export function DocsSidebar() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: sectionIndex * 0.08 }}
             >
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 px-2">
+              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 px-2">
                 {section.title}
               </div>
               <ul className="mt-3 space-y-1">
@@ -56,10 +56,10 @@ export function DocsSidebar() {
                       <Link
                         href={item.href}
                         className={cn(
-                          "flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
+                          "flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-black transition-all",
                           isActive
-                            ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                            : "text-zinc-400 hover:text-white hover:bg-white/5"
+                            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+                            : "text-zinc-500 hover:text-zinc-950 hover:bg-zinc-50"
                         )}
                       >
                         <span>{item.label}</span>
@@ -73,18 +73,18 @@ export function DocsSidebar() {
           ))}
 
           {/* Help callout */}
-          <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
-            <div className="flex items-center gap-2 text-sm font-semibold text-white">
-              <LifeBuoy className="h-4 w-4 text-blue-400" />
+          <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+            <div className="flex items-center gap-2 text-sm font-bold text-blue-700">
+              <LifeBuoy className="h-4 w-4 text-blue-600" />
               Need rollout help?
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+            <p className="mt-2 text-sm leading-relaxed text-blue-900/60 font-medium">
               If the docs do not answer a deployment question, route it to the
               team directly.
             </p>
             <Link
               href="/company/contact"
-              className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-black text-blue-600 hover:text-blue-700 transition-colors"
             >
               Contact Nodebase
               <ArrowRight className="h-4 w-4" />

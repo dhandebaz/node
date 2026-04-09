@@ -106,12 +106,12 @@ const comparisonData = {
 
 function CheckIcon({ value }: { value: boolean | string }) {
   if (value === true) {
-    return <CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto" />;
+    return <CheckCircle2 className="w-5 h-5 text-emerald-600 mx-auto" />;
   }
   if (value === false) {
-    return <XCircle className="w-5 h-5 text-zinc-300 mx-auto" />;
+    return <XCircle className="w-5 h-5 text-zinc-400 mx-auto" />;
   }
-  return <span className="text-xs text-zinc-500 mx-auto">{value}</span>;
+  return <span className="text-sm text-zinc-600 font-bold mx-auto">{value}</span>;
 }
 
 export function ComparePage() {
@@ -209,25 +209,25 @@ export function ComparePage() {
               <div className="text-center">
                 <h3 className="text-xl font-black text-zinc-950 mb-2">Kommo</h3>
                 <div className="flex items-baseline justify-center gap-1 mb-2">
-                  <span className="text-5xl font-black text-zinc-400">{comparisonData.pricing.kommo.price}</span>
-                  <span className="text-zinc-400">{comparisonData.pricing.kommo.period}</span>
+                  <span className="text-5xl font-black text-zinc-500">{comparisonData.pricing.kommo.price}</span>
+                  <span className="text-zinc-500 font-medium">{comparisonData.pricing.kommo.period}</span>
                 </div>
-                <p className="text-sm text-zinc-400 mb-6">{comparisonData.pricing.kommo.note}</p>
+                <p className="text-sm text-zinc-500 font-medium mb-6">{comparisonData.pricing.kommo.note}</p>
                 <ul className="space-y-3 text-left">
-                  <li className="flex items-center gap-2 text-sm text-zinc-500">
-                    <XCircle className="w-4 h-4 text-zinc-300 shrink-0" />
+                  <li className="flex items-center gap-2 text-sm text-zinc-600 font-medium">
+                    <XCircle className="w-4 h-4 text-zinc-400 shrink-0" />
                     Per-user pricing
                   </li>
-                  <li className="flex items-center gap-2 text-sm text-zinc-500">
-                    <XCircle className="w-4 h-4 text-zinc-300 shrink-0" />
+                  <li className="flex items-center gap-2 text-sm text-zinc-600 font-medium">
+                    <XCircle className="w-4 h-4 text-zinc-400 shrink-0" />
                     Basic AI only
                   </li>
-                  <li className="flex items-center gap-2 text-sm text-zinc-500">
-                    <XCircle className="w-4 h-4 text-zinc-300 shrink-0" />
+                  <li className="flex items-center gap-2 text-sm text-zinc-600 font-medium">
+                    <XCircle className="w-4 h-4 text-zinc-400 shrink-0" />
                     No voice/vision
                   </li>
-                  <li className="flex items-center gap-2 text-sm text-zinc-500">
-                    <XCircle className="w-4 h-4 text-zinc-300 shrink-0" />
+                  <li className="flex items-center gap-2 text-sm text-zinc-600 font-medium">
+                    <XCircle className="w-4 h-4 text-zinc-400 shrink-0" />
                     No KYC built-in
                   </li>
                 </ul>
@@ -245,25 +245,25 @@ export function ComparePage() {
               <div className="text-center">
                 <h3 className="text-xl font-black text-zinc-950 mb-2">Respond.io</h3>
                 <div className="flex items-baseline justify-center gap-1 mb-2">
-                  <span className="text-5xl font-black text-zinc-400">{comparisonData.pricing.respondio.price}</span>
-                  <span className="text-zinc-400">{comparisonData.pricing.respondio.period}</span>
+                  <span className="text-5xl font-black text-zinc-500">{comparisonData.pricing.respondio.price}</span>
+                  <span className="text-zinc-500 font-medium">{comparisonData.pricing.respondio.period}</span>
                 </div>
-                <p className="text-sm text-zinc-400 mb-6">{comparisonData.pricing.respondio.note}</p>
+                <p className="text-sm text-zinc-500 font-medium mb-6">{comparisonData.pricing.respondio.note}</p>
                 <ul className="space-y-3 text-left">
-                  <li className="flex items-center gap-2 text-sm text-zinc-500">
-                    <XCircle className="w-4 h-4 text-zinc-300 shrink-0" />
+                  <li className="flex items-center gap-2 text-sm text-zinc-600 font-medium">
+                    <XCircle className="w-4 h-4 text-zinc-400 shrink-0" />
                     Extra user fees
                   </li>
-                  <li className="flex items-center gap-2 text-sm text-zinc-500">
-                    <XCircle className="w-4 h-4 text-zinc-300 shrink-0" />
+                  <li className="flex items-center gap-2 text-sm text-zinc-600 font-medium">
+                    <XCircle className="w-4 h-4 text-zinc-400 shrink-0" />
                     Generic AI agents
                   </li>
-                  <li className="flex items-center gap-2 text-sm text-zinc-500">
-                    <XCircle className="w-4 h-4 text-zinc-300 shrink-0" />
+                  <li className="flex items-center gap-2 text-sm text-zinc-600 font-medium">
+                    <XCircle className="w-4 h-4 text-zinc-400 shrink-0" />
                     Voice costs extra ($279+)
                   </li>
-                  <li className="flex items-center gap-2 text-sm text-zinc-500">
-                    <XCircle className="w-4 h-4 text-zinc-300 shrink-0" />
+                  <li className="flex items-center gap-2 text-sm text-zinc-600 font-medium">
+                    <XCircle className="w-4 h-4 text-zinc-400 shrink-0" />
                     No vision/OCR
                   </li>
                 </ul>
@@ -303,8 +303,8 @@ export function ComparePage() {
                       <tr className="bg-zinc-50 border-b border-zinc-200">
                         <th className="text-left p-4 font-bold text-zinc-600">Feature</th>
                         <th className="w-32 p-4 font-bold text-center text-blue-600">NodeBase</th>
-                        <th className="w-32 p-4 font-bold text-center text-zinc-400">Kommo</th>
-                        <th className="w-32 p-4 font-bold text-center text-zinc-400">Respond.io</th>
+                        <th className="w-32 p-4 font-bold text-center text-zinc-500">Kommo</th>
+                        <th className="w-32 p-4 font-bold text-center text-zinc-500">Respond.io</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -359,21 +359,21 @@ export function ComparePage() {
               </div>
             </div>
 
-            <div className="p-8 rounded-3xl bg-white border border-zinc-200 text-center">
+            <div className="p-8 rounded-3xl bg-white border border-zinc-200 text-center shadow-sm">
               <h3 className="text-lg font-black mb-4">Kommo</h3>
-              <div className="text-4xl font-black text-zinc-400 mb-2">$150+</div>
-              <p className="text-sm text-zinc-500">per month (10 users)</p>
-              <div className="mt-6 p-4 rounded-xl bg-zinc-100">
-                <span className="text-sm text-zinc-500">$15/user minimum</span>
+              <div className="text-4xl font-black text-zinc-500 mb-2">$150+</div>
+              <p className="text-sm text-zinc-600 font-medium">per month (10 users)</p>
+              <div className="mt-6 p-4 rounded-xl bg-zinc-50">
+                <span className="text-sm text-zinc-600 font-bold">$15/user minimum</span>
               </div>
             </div>
 
-            <div className="p-8 rounded-3xl bg-white border border-zinc-200 text-center">
+            <div className="p-8 rounded-3xl bg-white border border-zinc-200 text-center shadow-sm">
               <h3 className="text-lg font-black mb-4">Respond.io</h3>
-              <div className="text-4xl font-black text-zinc-400 mb-2">$279+</div>
-              <p className="text-sm text-zinc-500">per month (Growth plan)</p>
-              <div className="mt-6 p-4 rounded-xl bg-zinc-100">
-                <span className="text-sm text-zinc-500">+ AI add-ons, user fees</span>
+              <div className="text-4xl font-black text-zinc-500 mb-2">$279+</div>
+              <p className="text-sm text-zinc-600 font-medium">per month (Growth plan)</p>
+              <div className="mt-6 p-4 rounded-xl bg-zinc-50">
+                <span className="text-sm text-zinc-600 font-bold">+ AI add-ons, user fees</span>
               </div>
             </div>
           </div>

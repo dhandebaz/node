@@ -33,26 +33,26 @@ const SETUP_STEPS = [
 const businessTypeOptions = [
   {
     id: "service_business" as BusinessType,
-    title: "Service Business",
-    description: "Agencies, consultants, and teams selling time or skills",
+    title: "Agencies & Consulting",
+    description: "Professional services, agencies, and firms selling high-value expertise",
     icon: Building2,
   },
   {
     id: "airbnb_host" as BusinessType,
-    title: "Hospitality & Stays",
-    description: "Rentals, homestays, and boutique hotel operators",
+    title: "Hospitality & Multi-Unit",
+    description: "Property managers, rentals, and hospitality network operators",
     icon: Sparkles,
   },
   {
     id: "kirana_store" as BusinessType,
-    title: "Retail & Commerce",
-    description: "Stores handling WhatsApp orders and repeat customers",
+    title: "Retail & E-commerce",
+    description: "Modern retail stores handling large message-to-sale volumes",
     icon: Store,
   },
   {
     id: "doctor_clinic" as BusinessType,
-    title: "Health & Wellness",
-    description: "Clinics, therapists, and front-desk coordination",
+    title: "Health & Clinical Ops",
+    description: "Medical clinics, dental hubs, and diagnostic service networks",
     icon: Stethoscope,
   },
 ];
@@ -201,19 +201,19 @@ function OnboardingContent() {
       <div className="public-container py-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-950 text-white shadow-xl shadow-zinc-950/20">
               <Logo className="h-8 w-8" />
             </div>
             <div>
-              <div className="font-display text-2xl tracking-tighter text-foreground uppercase">
+              <div className="font-display text-2xl tracking-tighter text-zinc-950 uppercase">
                 nodebase
               </div>
-              <div className="font-sans text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                Onboarding
+              <div className="font-sans text-[10px] font-black uppercase tracking-[0.2em] text-blue-600">
+                Onboarding Portal
               </div>
             </div>
           </Link>
-          <div className="public-pill text-[10px] font-black uppercase tracking-widest text-muted-foreground ring-1 ring-border">
+          <div className="bg-white px-3 py-1 rounded-full border border-zinc-200 text-[10px] font-black uppercase tracking-widest text-zinc-500 shadow-sm">
             {currentStepLabel}
           </div>
         </div>
@@ -228,18 +228,18 @@ function OnboardingContent() {
                 exit={{ opacity: 0, y: -18 }}
                 className="w-full space-y-6"
               >
-                <section className="public-panel px-6 py-12 sm:px-8 sm:py-16 lg:px-10 border-b-4 border-primary">
+                <section className="bg-white border border-zinc-200 p-6 py-12 sm:px-8 sm:py-16 lg:px-10 rounded-[2.5rem] shadow-sm">
                   <div className="relative z-10 space-y-6 text-center">
-                    <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
-                      Welcome to Nodebase
+                    <div className="inline-flex py-1 px-3 rounded-full bg-blue-50 border border-blue-100 text-blue-600 font-sans text-[10px] font-black uppercase tracking-[0.2em]">
+                      Welcome to Nodebase Workforce
                     </div>
-                    <h1 className="font-display text-5xl leading-[0.9] text-foreground sm:text-6xl lg:text-7xl uppercase tracking-tighter">
-                      Which workflow are you hiring for first?
+                    <h1 className="font-display text-5xl leading-[0.9] text-zinc-950 sm:text-6xl lg:text-7xl uppercase tracking-tighter">
+                      Which operations are you automating first?
                     </h1>
-                    <p className="mx-auto max-w-2xl text-lg font-sans text-muted-foreground">
-                      Pick the business lane so Nodebase can shape the initial
-                      employee, control surfaces, and launch checklist around
-                      real operations.
+                    <p className="mx-auto max-w-2xl text-lg font-medium text-zinc-500 leading-relaxed">
+                      Select your operational environment so Nodebase can shape the initial
+                      AI deployment, control surfaces, and audit logs around
+                      real-world business logic.
                     </p>
                   </div>
                 </section>
@@ -267,22 +267,22 @@ function OnboardingContent() {
                 exit={{ opacity: 0, x: -18 }}
                 className="mx-auto w-full max-w-3xl space-y-6"
               >
-                <section className="public-panel px-6 py-8 sm:px-8 border-b-2 border-primary/20">
+                <section className="bg-white border border-zinc-200 p-6 py-8 sm:px-8 rounded-[2.5rem] shadow-sm">
                   <div className="relative z-10 space-y-4">
-                    <div className="inline-flex py-1 px-3 rounded-full bg-primary/10 text-primary font-sans text-[10px] font-black uppercase tracking-[0.2em]">
-                      Setup details
+                    <div className="inline-flex py-1 px-3 rounded-full bg-blue-50 border border-blue-100 text-blue-600 font-sans text-[10px] font-black uppercase tracking-[0.2em]">
+                      Institutional Setup
                     </div>
-                    <h1 className="font-display text-4xl text-foreground sm:text-5xl uppercase tracking-tighter leading-none">
-                      Tell us how the workflow runs today.
+                    <h1 className="font-display text-4xl text-zinc-950 sm:text-5xl uppercase tracking-tighter leading-none">
+                      Define your operational scope.
                     </h1>
-                    <p className="max-w-xl text-lg text-muted-foreground">
-                      This gives the system enough signal to prepare the first
-                      employee and tailor the onboarding path.
+                    <p className="max-w-xl text-lg font-medium text-zinc-500 leading-relaxed">
+                      This provides the high-fidelity signal needed to configure your first
+                      autonomous agent and tailor the integration roadmap.
                     </p>
                   </div>
                 </section>
 
-                <section className="public-panel-soft p-6 sm:p-8">
+                <section className="bg-zinc-50 border border-zinc-200 p-6 sm:p-8 rounded-[2.5rem]">
                   <BusinessDetailsForm
                     businessType={selectedBusinessType}
                     onSubmit={handleDetailsSubmit}
@@ -293,9 +293,9 @@ function OnboardingContent() {
                 <button
                   type="button"
                   onClick={() => setStep("business_type")}
-                  className="public-button-secondary px-5 py-3 text-sm font-semibold"
+                  className="inline-flex items-center gap-3 px-5 py-3 rounded-full border border-zinc-200 bg-white text-zinc-500 font-black text-[10px] uppercase tracking-widest hover:text-zinc-950 transition-all shadow-sm"
                 >
-                  Back to business selection
+                  ← Back to business selection
                 </button>
               </motion.div>
             ) : null}
@@ -308,18 +308,17 @@ function OnboardingContent() {
                 exit={{ opacity: 0, y: -18 }}
                 className="mx-auto w-full max-w-3xl space-y-6"
               >
-                <section className="public-panel px-6 py-12 text-center sm:px-8 border-b-4 border-primary">
+                <section className="bg-white border border-zinc-200 p-6 py-12 text-center sm:px-8 rounded-[2.5rem] shadow-sm">
                   <div className="relative z-10 space-y-6">
-                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/5 text-primary ring-1 ring-primary/20">
+                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-50 border border-blue-100 text-blue-600 shadow-xl shadow-blue-600/5">
                       <Sparkles className="h-10 w-10 animate-pulse" />
                     </div>
                     <div>
-                      <h1 className="font-display text-5xl text-foreground sm:text-6xl uppercase tracking-tighter leading-none">
-                        Provisioning workspace
+                      <h1 className="font-display text-5xl text-zinc-950 sm:text-6xl uppercase tracking-tighter leading-none">
+                        Provisioning Network
                       </h1>
-                      <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
-                        Hold for a moment while the employee role, initial
-                        settings, and workspace structure are prepared.
+                      <p className="mx-auto mt-4 max-w-xl text-lg font-medium text-zinc-500 leading-relaxed">
+                        Establishing your secure workspace, agent permissions, and orchestrating the initial operational memory.
                       </p>
                     </div>
                   </div>
@@ -426,13 +425,13 @@ function OnboardingContent() {
           </AnimatePresence>
         </div>
 
-        <div className="pb-6 text-center text-sm text-muted-foreground">
-          Need help?{" "}
+        <div className="pb-6 text-center text-sm font-medium text-zinc-500">
+          Require assistance?{" "}
           <a
             href="mailto:support@nodebase.space"
-            className="font-semibold text-primary"
+            className="font-black text-blue-600 uppercase tracking-widest text-[10px]"
           >
-            Contact support
+            Contact Institutional Support
           </a>
         </div>
       </div>

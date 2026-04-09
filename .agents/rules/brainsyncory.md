@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 1025 notes | Score threshold: >40
+> 1070 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,17 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "40b95f4d598b1aae",
++
+- **gotcha in public-content.tsx** — -       title: "Host AI",
++       title: "Omni AI",
+-       href: "/em
+- **gotcha in PricingSurface.tsx** — -   "You keep 100% of your revenue. We never take a cut of your bookin
 - **⚠️ GOTCHA: Fixed null crash in AlertTriangle — avoids unnecessary re-renders in React** — - import {
 + import { motion } from "framer-motion";
 -   AlertTriangle
@@ -27,23 +38,17 @@
 + > 961 notes | Score threshold: 
 - **⚠️ GOTCHA: Optimized Score** — - > 954 notes | Score threshold: >40
 + > 956 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 949 notes | Score threshold: >40
-+ > 954 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 945 notes | Score threshold: >40
-+ > 949 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score** — - > 931 notes | Score threshold: >40
-+ > 945 notes | Score threshold: 
 
 ## Project Standards
 
+- what-changed in page.tsx — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
-- what-changed in shared-context.json — confirmed 14x
-- Strengthened types NodeBase — formalizes the data contract with explicit types
-- Strengthened types NODEBASE
-- Patched security issue YYJORwaH — confirmed 3x
-- Strengthened types XCircle — ensures atomic multi-step database operations
-- what-changed in page.tsx — confirmed 4x
-- Optimized GOTCHA — confirmed 3x
+- decision in page.tsx — confirmed 3x
+- what-changed in layout.tsx — confirmed 4x
+- what-changed in shared-context.json — confirmed 6x
+- problem-fix in shared-context.json — confirmed 3x
+- Optimized Score — confirmed 3x
+- what-changed in shared-context.json — confirmed 5x
 
 ## Known Fixes
 
@@ -55,10 +60,10 @@
 
 ## Recent Decisions
 
-- decision in page.tsx
-- Optimized Industries — hardens HTTP security headers
-- Optimized Industries — hardens HTTP security headers
 - Optimized Score — parallelizes async operations for speed
+- Optimized Score — parallelizes async operations for speed
+- decision in IndustryDetail.tsx
+- decision in page.tsx
 
 ## Learned Patterns
 

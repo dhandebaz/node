@@ -10,6 +10,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { getCsrfToken } from "@/lib/api/csrf";
+import { cn } from "@/lib/utils";
 
 type UploadInfo = {
   id: string;
@@ -51,13 +52,13 @@ export default function GuestIdUploadPage() {
         const response = await fetch(`/api/guest-id/upload?token=${token}`);
         if (!response.ok) {
           const payload = await response.json().catch(() => ({}));
-          throw new Error(payload?.error || "Unable to load upload link.");
+          throw new Error(payload?.error || "Unable to load authorization details.");
         }
 
         const data = await response.json();
         setInfo(data);
       } catch (err: any) {
-        setError(err?.message || "This upload link has expired.");
+        setError(err?.message || "This authorization link has expired.");
       } finally {
         setLoading(false);
       }
@@ -68,7 +69,7 @@ export default function GuestIdUploadPage() {
     }
   }, [token]);
 
-  const stayDates = useMemo(() => {
+  const timelineDates = useMemo(() => {
     if (!info?.checkIn || !info?.checkOut) return "";
 
     const formatter = new Intl.DateTimeFormat("en-IN", {
@@ -77,7 +78,7 @@ export default function GuestIdUploadPage() {
       year: "numeric",
     });
 
-    return `${formatter.format(new Date(info.checkIn))} to ${formatter.format(new Date(info.checkOut))}`;
+    return `${formatter.format(new Date(info.checkIn))} — ${formatter.format(new Date(info.checkOut))}`;
   }, [info]);
 
   const handleSubmit = async () => {
@@ -111,7 +112,7 @@ export default function GuestIdUploadPage() {
 
       setSubmitted(true);
     } catch (err: any) {
-      setError(err?.message || "Upload failed.");
+      setError(err?.message || "Verification failed.");
     } finally {
       setSubmitting(false);
     }
@@ -119,31 +120,34 @@ export default function GuestIdUploadPage() {
 
   if (loading) {
     return (
-      <div className="public-site min-h-screen">
-        <div className="public-container flex min-h-screen items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
+      <div className="bg-zinc-50 min-h-screen flex items-center justify-center">
+        <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
       </div>
     );
   }
 
   if (submitted) {
     return (
-      <div className="public-site min-h-screen">
-        <div className="public-container flex min-h-screen items-center justify-center py-10">
-          <div className="public-panel max-w-xl px-6 py-8 text-center sm:px-8 sm:py-10">
-            <div className="relative z-10 space-y-4">
-              <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[rgba(130,185,112,0.14)] text-[var(--public-success)]">
-                <CheckCircle2 className="h-8 w-8" />
-              </div>
-              <h1 className="public-display text-4xl text-foreground">
-                ID received
+      <div className="bg-white min-h-screen flex items-center justify-center p-6">
+        <div className="max-w-xl w-full bg-zinc-50 border border-zinc-200 rounded-[3rem] p-12 text-center shadow-2xl shadow-zinc-950/5">
+          <div className="space-y-6">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] bg-zinc-950 text-white shadow-xl shadow-zinc-950/20">
+              <CheckCircle2 className="h-10 w-10" strokeWidth={3} />
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-4xl font-black text-zinc-950 uppercase tracking-tighter">
+                ID Received
               </h1>
-              <p className="text-base leading-7 text-muted-foreground">
-                Your host will review it shortly. Thank you for helping complete the
-                check-in compliance step.
+              <p className="text-lg font-medium text-zinc-500 leading-relaxed">
+                Your credentials have been securely provisioned. The business operator will review them shortly for compliance.
               </p>
             </div>
+            <button 
+              onClick={() => window.close()}
+              className="mt-4 px-10 py-4 bg-zinc-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all active:scale-95"
+            >
+              Close Authorization Portal
+            </button>
           </div>
         </div>
       </div>
@@ -151,125 +155,143 @@ export default function GuestIdUploadPage() {
   }
 
   return (
-    <div className="public-site min-h-screen">
-      <div className="public-container py-8">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="public-pill text-sm font-semibold text-foreground">
-            Nodebase Guest ID
+    <div className="bg-zinc-50 min-h-screen font-sans">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <header className="flex items-center justify-between mb-16">
+          <Link href="/" className="bg-white border border-zinc-200 rounded-full px-6 py-2 shadow-sm">
+             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-950">Identity Portal</span>
           </Link>
-          <div className="public-pill text-xs font-semibold text-muted-foreground">
-            No login required
+          <div className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+            Secure Institutional Verification
           </div>
-        </div>
+        </header>
 
-        <div className="grid min-h-[calc(100vh-8rem)] gap-6 py-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(20rem,1.1fr)] lg:items-center">
-          <section className="public-panel px-6 py-8 sm:px-8 sm:py-10">
-            <div className="relative z-10 space-y-5">
-              <div className="public-pill public-eyebrow">Guest verification</div>
-              <h1 className="public-display text-4xl leading-[0.94] text-foreground sm:text-5xl">
-                Upload your {idLabel(info?.idType)} for secure check-in.
+        <main className="grid gap-12 lg:grid-cols-[1.2fr,0.8fr] items-start">
+          <section className="bg-white border border-zinc-200 rounded-[3rem] p-10 lg:p-16 shadow-sm">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-1">
+                <ShieldCheck className="h-3 w-3 text-blue-600" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">Client Compliance</span>
+              </div>
+              
+              <h1 className="text-5xl lg:text-7xl font-black text-zinc-950 uppercase tracking-tighter leading-[0.9]">
+                Verify your <span className="text-zinc-400">{idLabel(info?.idType)}</span> for secure deployment.
               </h1>
-              <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-                Indian hospitality workflows often require a government-issued ID before
-                arrival. This portal keeps the upload bounded to that specific purpose.
+              
+              <p className="text-xl font-medium text-zinc-500 leading-relaxed max-w-2xl">
+                Modern business workflows require deep identity authentication to ensure compliance and security. This portal ensures your data stays bounded to this specific authorization.
               </p>
-              <div className="grid gap-3">
-                <div className="public-inset rounded-[1.3rem] px-4 py-4">
-                  <div className="public-eyebrow">Listing</div>
-                  <div className="mt-2 text-sm font-semibold text-foreground">
-                    {info?.listingName || "Your stay"}
+
+              <div className="grid gap-4 sm:grid-cols-2 pt-4">
+                <div className="bg-zinc-50 border border-zinc-200 rounded-2xl px-6 py-6 transition-all hover:bg-zinc-100">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2">Solution Context</div>
+                  <div className="text-sm font-black text-zinc-950 uppercase tracking-tighter">
+                    {info?.listingName || "Your Service"}
                   </div>
                 </div>
-                <div className="public-inset rounded-[1.3rem] px-4 py-4">
-                  <div className="public-eyebrow">Stay window</div>
-                  <div className="mt-2 text-sm font-semibold text-foreground">
-                    {stayDates || "Shared by the host"}
+                <div className="bg-zinc-50 border border-zinc-200 rounded-2xl px-6 py-6 transition-all hover:bg-zinc-100">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2">Operational Timeline</div>
+                  <div className="text-sm font-black text-zinc-950 uppercase tracking-tighter">
+                    {timelineDates || "Shared during onboarding"}
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="public-panel-soft p-6 sm:p-8">
-            <div className="space-y-6">
-              <div>
-                <div className="public-eyebrow">Upload portal</div>
-                <h2 className="mt-3 text-2xl font-semibold text-foreground">
-                  Submit clear front and back images.
-                </h2>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="rounded-[1.4rem] border border-border bg-background/90 p-5 text-center transition hover:-translate-y-0.5">
-                  <div className="public-inset mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10/75 text-primary">
-                    <UploadCloud className="h-5 w-5" />
-                  </div>
-                  <div className="mt-4 text-sm font-semibold text-foreground">
-                    Front image
-                  </div>
-                  <div className="mt-2 text-xs leading-5 text-muted-foreground">
-                    Capture the full front side with readable text.
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    className="hidden"
-                    onChange={(event) => setFrontFile(event.target.files?.[0] || null)}
-                  />
-                  {frontFile ? (
-                    <div className="mt-4 text-xs font-semibold text-primary">
-                      {frontFile.name}
-                    </div>
-                  ) : null}
-                </label>
-
-                <label className="rounded-[1.4rem] border border-border bg-background/90 p-5 text-center transition hover:-translate-y-0.5">
-                  <div className="public-inset mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10/75 text-primary">
-                    <UploadCloud className="h-5 w-5" />
-                  </div>
-                  <div className="mt-4 text-sm font-semibold text-foreground">
-                    Back image (optional)
-                  </div>
-                  <div className="mt-2 text-xs leading-5 text-muted-foreground">
-                    Use this if the document has important information on the reverse.
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    className="hidden"
-                    onChange={(event) => setBackFile(event.target.files?.[0] || null)}
-                  />
-                  {backFile ? (
-                    <div className="mt-4 text-xs font-semibold text-primary">
-                      {backFile.name}
-                    </div>
-                  ) : null}
-                </label>
-              </div>
-
-              {error ? (
-                <div className="rounded-[1.3rem] border border-[rgba(146,43,34,0.16)] bg-[rgba(214,88,74,0.08)] px-4 py-3 text-sm leading-6 text-primary">
-                  {error}
+          <section className="space-y-6">
+            <div className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 lg:p-10 shadow-xl shadow-zinc-950/5">
+              <div className="space-y-8">
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-2">Step 1 — Extraction</div>
+                  <h2 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter">
+                    Document Upload
+                  </h2>
                 </div>
-              ) : null}
 
-              <button
-                onClick={handleSubmit}
-                disabled={submitting}
-                className="public-button w-full px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
-                Submit ID
-              </button>
+                <div className="grid gap-4">
+                  <label className={cn(
+                    "flex flex-col items-center gap-4 rounded-3xl border-2 border-dashed border-zinc-100 bg-zinc-50/50 p-8 text-center transition-all hover:border-blue-300 group cursor-pointer",
+                    frontFile && "bg-blue-50 border-blue-200"
+                  )}>
+                    <div className={cn(
+                      "h-16 w-16 rounded-[1.5rem] flex items-center justify-center transition-all shadow-sm",
+                      frontFile ? "bg-blue-600 text-white" : "bg-white text-zinc-400"
+                    )}>
+                      <UploadCloud className="h-8 w-8" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-black text-zinc-950 uppercase tracking-widest">
+                        {frontFile ? "Awaiting Back Page" : "Front Side Image"}
+                      </div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mt-1">
+                        High-fidelity JPG or PNG
+                      </p>
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      className="hidden"
+                      onChange={(event) => setFrontFile(event.target.files?.[0] || null)}
+                    />
+                    {frontFile && (
+                      <div className="text-[10px] font-black uppercase tracking-widest text-blue-600 mt-2 bg-white px-3 py-1 rounded-full border border-blue-100">
+                        {frontFile.name}
+                      </div>
+                    )}
+                  </label>
 
-              <p className="text-center text-sm leading-6 text-muted-foreground">
-                Your ID is used only for check-in compliance and host review for this stay.
-              </p>
+                  <label className={cn(
+                    "flex flex-col items-center gap-4 rounded-3xl border-2 border-dashed border-zinc-100 bg-zinc-50/50 p-8 text-center transition-all hover:border-blue-300 group cursor-pointer",
+                    backFile && "bg-blue-50 border-blue-200"
+                  )}>
+                    <div className={cn(
+                      "h-12 w-12 rounded-2xl flex items-center justify-center transition-all",
+                      backFile ? "bg-blue-600 text-white shadow-lg" : "bg-white text-zinc-400 shadow-sm"
+                    )}>
+                      <UploadCloud className="h-5 w-5" />
+                    </div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-zinc-950">
+                      Back Side (Optional)
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      className="hidden"
+                      onChange={(event) => setBackFile(event.target.files?.[0] || null)}
+                    />
+                    {backFile && (
+                      <div className="text-[10px] font-black uppercase tracking-widest text-blue-600 mt-2">
+                        {backFile.name}
+                      </div>
+                    )}
+                  </label>
+                </div>
+
+                {error ? (
+                  <div className="rounded-2xl bg-red-50 border border-red-100 px-5 py-4 text-xs font-black uppercase tracking-widest text-red-600">
+                    {error}
+                  </div>
+                ) : null}
+
+                <button
+                  onClick={handleSubmit}
+                  disabled={submitting || !frontFile}
+                  className="w-full h-auto py-5 bg-zinc-950 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-zinc-950/30 hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                >
+                  {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <ShieldCheck className="h-5 w-5" />}
+                  Authorize Solution Initiation
+                </button>
+
+                <p className="text-center text-[10px] font-black uppercase tracking-widest text-zinc-400 leading-relaxed">
+                  Your identity documents are stored in institutional bunkers and used only for authorization matching.
+                </p>
+              </div>
             </div>
           </section>
-        </div>
+        </main>
       </div>
     </div>
   );

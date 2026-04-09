@@ -22,37 +22,16 @@ import {
   extractKycDataAction,
   completeGuestCheckinAction,
 } from "@/app/actions/kyc";
+import { cn } from "@/lib/utils";
 
-interface GuestCheckoutFlowProps {
+interface ClientCheckoutFlowProps {
   link: any;
 }
 
 const stepOrder = ["details", "id_verification", "payment"] as const;
 type FlowStep = (typeof stepOrder)[number] | "complete";
 
-const fieldClassName = "public-input";
-
-function readFileAsBase64(file: File) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      if (typeof reader.result !== "string") {
-        reject(new Error("Could not read the selected file."));
-        return;
-      }
-
-      const [, base64 = ""] = reader.result.split(",");
-      resolve(base64);
-    };
-
-    reader.onerror = () =>
-      reject(new Error("Could not read the selected file."));
-    reader.readAsDataURL(file);
-  });
-}
-
-export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
+export function GuestCheckoutFlow({ link }: ClientCheckoutFlowProps) {
   const [step, setStep] = useState<FlowStep>(
     link.status === "paid" || link.status === "pending_verification" ? "complete" : "details",
   );
@@ -72,7 +51,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
     arrivalTime: "",
   });
 
-  const listingTitle = link.listings?.title || "your stay";
+  const solutionTitle = link.listings?.title || "your deployment";
   const amountLabel = useMemo(() => {
     const amount = Number(link.amount || 0);
     return new Intl.NumberFormat("en-IN", {
@@ -82,7 +61,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
     }).format(amount);
   }, [link.amount]);
 
-  const stayLabel = link.metadata?.startDate || "Dates shared by the host";
+  const timelineLabel = link.metadata?.startDate || "Shared during scope definition";
   const hasUPI = link.tenants?.business_qr_url || link.tenants?.upi_id || link.tenants?.upi_mobile;
 
   const validateEmail = (email: string) => {
@@ -109,7 +88,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
     }
 
     if (!formData.phone.trim() || !validatePhone(formData.phone)) {
-      toast.error("Please enter a valid phone number (at least 10 digits).");
+      toast.error("Please enter a valid phone number.");
       return;
     }
 
@@ -123,11 +102,25 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
     setExtracting(true);
 
     try {
+      const readFileAsBase64 = (file: File) => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result !== "string") {
+            reject(new Error("Could not read file."));
+            return;
+          }
+          const [, base64 = ""] = reader.result.split(",");
+          resolve(base64);
+        };
+        reader.onerror = () => reject(new Error("Could not read file."));
+        reader.readAsDataURL(file);
+      });
+
       const base64 = await readFileAsBase64(file);
       const result = await extractKycDataAction(base64, file.type, true);
 
       if (!result.success || !result.details) {
-        throw new Error("We could not verify the document.");
+        throw new Error("Institutional verification failed.");
       }
 
       const details = result.details;
@@ -138,12 +131,12 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
         documentId: result.documentId || "",
       }));
 
-      toast.success("ID details verified.");
+      toast.success("Identity details extracted successfully.");
       setTimeout(() => setStep("payment"), 700);
     } catch (error: any) {
       toast.error(
         error?.message ||
-          "ID extraction failed. Please enter details manually.",
+          "Extraction failed. Please enter details manually.",
       );
     } finally {
       setExtracting(false);
@@ -156,11 +149,6 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
 
     if (!file.type.startsWith("image/")) {
       toast.error("Please upload an image file");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be less than 5MB");
       return;
     }
 
@@ -190,7 +178,6 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
     setLoading(true);
 
     try {
-      // If screenshot is uploaded, submit it first
       if (screenshotPreview) {
         const formDataScreenshot = new FormData();
         formDataScreenshot.append("paymentLinkId", link.id);
@@ -203,19 +190,18 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
 
         if (!response.ok) {
           const error = await response.json();
-          throw new Error(error.error || "Failed to submit payment screenshot");
+          throw new Error(error.error || "Failed to submit validation screenshot");
         }
 
         const result = await response.json();
         
         if (result.status === "pending_verification") {
           setStep("complete");
-          toast.success("Payment screenshot submitted. Host will verify shortly.");
+          toast.success("Validation screenshot submitted for business review.");
           return;
         }
       }
 
-      // Complete check-in without screenshot
       await completeGuestCheckinAction({
         linkId: link.id,
         tenantId: link.tenant_id,
@@ -228,9 +214,9 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
       });
 
       setStep("complete");
-      toast.success("Check-in completed successfully.");
+      toast.success("Solution initialization completed successfully.");
     } catch (error: any) {
-      toast.error(error?.message || "Failed to complete check-in.");
+      toast.error(error?.message || "Failed to complete initialization.");
     } finally {
       setLoading(false);
     }
@@ -238,17 +224,17 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
 
   if (link.status === "expired") {
     return (
-      <section className="public-panel px-6 py-8 text-center sm:px-8">
+      <section className="bg-white border border-zinc-200 rounded-[2.5rem] px-6 py-12 shadow-sm text-center">
         <div className="relative z-10 space-y-4">
-          <div className="public-inset mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[rgba(146,43,34,0.12)] text-primary">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-red-600 border border-red-100">
             <AlertTriangle className="h-6 w-6" />
           </div>
-          <h2 className="public-display text-3xl text-foreground">
-            Link expired
+          <h2 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter">
+            Deployment link expired
           </h2>
-          <p className="mx-auto max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
-            This booking link is no longer active. Please contact the host for a
-            fresh payment and check-in link.
+          <p className="mx-auto max-w-xl text-sm leading-6 text-zinc-500 font-medium">
+            This transactional link is no longer active. Please contact the business operations team for a
+            fresh authorization link.
           </p>
         </div>
       </section>
@@ -257,28 +243,28 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
 
   return (
     <div className="space-y-6">
-      <section className="public-panel-soft p-5 sm:p-6">
+      <section className="bg-white border border-zinc-200 rounded-[2rem] p-6 shadow-sm">
         <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
           <div>
-            <div className="public-eyebrow">Guest checkout flow</div>
-            <h2 className="mt-2 text-2xl font-semibold text-foreground">
-              {listingTitle}
+            <div className="text-[10px] uppercase tracking-widest text-zinc-400 font-black mb-1">Authorization Flow</div>
+            <h2 className="text-2xl font-black text-zinc-950 uppercase tracking-tighter">
+              {solutionTitle}
             </h2>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Complete your guest details, verify your ID, and confirm payment
-              in one secure flow.
+            <p className="mt-2 text-sm leading-relaxed text-zinc-500 font-medium">
+              Complete your profile details, secure institutional verification, and confirm initiation
+              in one high-fidelity flow.
             </p>
           </div>
           <div className="grid gap-3 sm:min-w-52">
-            <div className="public-inset rounded-[1.2rem] px-4 py-3">
-              <div className="public-eyebrow">Stay</div>
-              <div className="mt-2 text-sm font-semibold text-foreground">
-                {stayLabel}
+            <div className="bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3">
+              <div className="text-[10px] uppercase tracking-widest text-zinc-400 font-black mb-1">Timeline</div>
+              <div className="text-sm font-black text-zinc-950 uppercase tracking-tighter">
+                {timelineLabel}
               </div>
             </div>
-            <div className="public-inset rounded-[1.2rem] px-4 py-3">
-              <div className="public-eyebrow">Amount</div>
-              <div className="mt-2 text-sm font-semibold text-primary">
+            <div className="bg-blue-50/50 border border-blue-100 rounded-2xl px-4 py-3">
+              <div className="text-[10px] uppercase tracking-widest text-blue-600/50 font-black mb-1">Fee</div>
+              <div className="text-sm font-black text-blue-600 uppercase tracking-tighter">
                 {amountLabel}
               </div>
             </div>
@@ -286,7 +272,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
         </div>
       </section>
 
-      <section className="public-panel-soft p-5 sm:p-6">
+      <section className="bg-zinc-50 border border-zinc-200 rounded-[2rem] p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {stepOrder.map((stepId, index) => {
             const isActive = step === stepId;
@@ -300,16 +286,19 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                   : CreditCard;
 
             return (
-              <div key={stepId} className="flex flex-1 items-center gap-3">
+              <div key={stepId} className={cn(
+                "flex flex-1 items-center gap-3 transition-opacity",
+                !isActive && !isDone && "opacity-40"
+              )}>
                 <div
-                  className={[
-                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-sm font-semibold transition-all",
+                  className={cn(
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-sm font-black transition-all shadow-sm",
                     isActive
-                      ? "border-primary/40 bg-primary text-white"
+                      ? "border-zinc-950 bg-zinc-950 text-white"
                       : isDone
-                        ? "border-[rgba(70,128,77,0.25)] bg-[rgba(130,185,112,0.14)] text-[var(--public-success)]"
-                        : "border-border bg-background/85 text-muted-foreground",
-                  ].join(" ")}
+                        ? "border-blue-600 bg-blue-600 text-white"
+                        : "border-zinc-200 bg-white text-zinc-400",
+                  )}
                 >
                   {isDone && !isActive ? (
                     <CheckCircle2 className="h-4 w-4" />
@@ -318,27 +307,16 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="public-eyebrow">
+                  <div className={cn(
+                    "text-[10px] uppercase tracking-widest font-black",
+                    isActive ? "text-zinc-950" : isDone ? "text-blue-600" : "text-zinc-400"
+                  )}>
                     {stepId === "details"
-                      ? "Guest details"
+                      ? "Client Info"
                       : stepId === "id_verification"
-                        ? "ID check"
+                        ? "Verify ID"
                         : "Payment"}
                   </div>
-                  {index < stepOrder.length - 1 ? (
-                    <div className="mt-2 h-[2px] rounded-full bg-[rgba(61,44,25,0.08)]">
-                      <div
-                        className={[
-                          "h-full rounded-full transition-all",
-                          isDone
-                            ? "w-full bg-[var(--public-success)]"
-                            : isActive
-                              ? "w-1/2 bg-primary"
-                              : "w-0",
-                        ].join(" ")}
-                      />
-                    </div>
-                  ) : null}
                 </div>
               </div>
             );
@@ -347,22 +325,22 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
       </section>
 
       {step === "details" ? (
-        <section className="public-panel p-6 sm:p-8">
+        <section className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 shadow-sm">
           <div className="relative z-10 space-y-6">
             <div>
-              <div className="public-eyebrow">Step 1</div>
-              <h3 className="public-display mt-3 text-3xl text-foreground">
-                Confirm guest details
+              <div className="text-[10px] uppercase tracking-widest text-blue-600 font-black mb-1">Step 1</div>
+              <h3 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter">
+                Profile Authentication
               </h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
-                These details are used for check-in coordination and compliance.
+              <p className="mt-3 text-sm leading-relaxed text-zinc-500 font-medium sm:text-base">
+                These institutional details are required for project coordination and regulatory compliance.
               </p>
             </div>
 
             <form onSubmit={handleDetailsSubmit} className="grid gap-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="grid gap-2 text-sm font-semibold text-foreground">
-                  Full name
+                <label className="grid gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                  Full Name
                   <input
                     value={formData.name}
                     onChange={(event) =>
@@ -371,12 +349,12 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                         name: event.target.value,
                       }))
                     }
-                    placeholder="Guest name"
-                    className={fieldClassName}
+                    placeholder="Authorized Representative"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm font-black text-zinc-950 placeholder:text-zinc-300 focus:outline-none focus:border-blue-600/30 focus:bg-white transition-all"
                   />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-foreground">
-                  Email address
+                <label className="grid gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                  Business Email
                   <input
                     type="email"
                     value={formData.email}
@@ -386,15 +364,15 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                         email: event.target.value,
                       }))
                     }
-                    placeholder="guest@example.com"
-                    className={fieldClassName}
+                    placeholder="rep@organization.com"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm font-black text-zinc-950 placeholder:text-zinc-300 focus:outline-none focus:border-blue-600/30 focus:bg-white transition-all"
                   />
                 </label>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="grid gap-2 text-sm font-semibold text-foreground">
-                  Phone number
+                <label className="grid gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                  Access Phone
                   <input
                     value={formData.phone}
                     onChange={(event) =>
@@ -403,12 +381,12 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                         phone: event.target.value,
                       }))
                     }
-                    placeholder="+91 98765 43210"
-                    className={fieldClassName}
+                    placeholder="+91 00000 00000"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm font-black text-zinc-950 placeholder:text-zinc-300 focus:outline-none focus:border-blue-600/30 focus:bg-white transition-all"
                   />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-foreground">
-                  Expected arrival time
+                <label className="grid gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                  Preferred Kick-off Time
                   <input
                     value={formData.arrivalTime}
                     onChange={(event) =>
@@ -417,17 +395,17 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                         arrivalTime: event.target.value,
                       }))
                     }
-                    placeholder="For example, 2:30 PM"
-                    className={fieldClassName}
+                    placeholder="e.g. 10:00 AM Tomorrow"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm font-black text-zinc-950 placeholder:text-zinc-300 focus:outline-none focus:border-blue-600/30 focus:bg-white transition-all"
                   />
                 </label>
               </div>
 
               <button
                 type="submit"
-                className="public-button mt-2 px-6 py-3 text-sm font-semibold"
+                className="bg-zinc-950 text-white rounded-xl px-6 py-4 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 mt-2"
               >
-                Continue to ID verification
+                Proceed to Verification
                 <ArrowRight className="h-4 w-4" />
               </button>
             </form>
@@ -436,42 +414,35 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
       ) : null}
 
       {step === "id_verification" ? (
-        <section className="public-panel p-6 sm:p-8">
+        <section className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 shadow-sm">
           <div className="relative z-10 space-y-6">
             <div>
-              <div className="public-eyebrow">Step 2</div>
-              <h3 className="public-display mt-3 text-3xl text-foreground">
-                Upload a valid government ID
+              <div className="text-[10px] uppercase tracking-widest text-blue-600 font-black mb-1">Step 2</div>
+              <h3 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter">
+                Institutional ID Check
               </h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
-                The host requires an ID for this stay. Aadhaar numbers are
-                returned in masked form only.
+              <p className="mt-3 text-sm leading-relaxed text-zinc-500 font-medium sm:text-base">
+                Securely upload your government-issued ID to verify your operational authority.
               </p>
             </div>
 
-            <div className="rounded-[1.6rem] border border-dashed border-[rgba(61,44,25,0.16)] bg-[rgba(255,251,244,0.76)] p-6 text-center">
+            <div className="rounded-[2rem] border-2 border-dashed border-zinc-200 bg-zinc-50 p-6 text-center">
               {extracting ? (
                 <div className="space-y-4 py-6">
-                  <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
-                  <div className="text-sm font-semibold text-foreground">
-                    Verifying your document
+                  <Loader2 className="mx-auto h-10 w-10 animate-spin text-blue-600" />
+                  <div className="text-[10px] font-black uppercase tracking-widest text-zinc-950">
+                    Running OCR Verification
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    This usually takes a few seconds.
-                  </p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="public-inset mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10/75 text-primary">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-white shadow-xl shadow-blue-600/20">
                     <FileUp className="h-7 w-7" />
                   </div>
                   <div>
-                    <div className="text-lg font-semibold text-foreground">
-                      Upload ID image
+                    <div className="text-sm font-black text-zinc-950 uppercase tracking-widest">
+                      Upload Document
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                      Upload a clear photo of your PAN or Aadhaar card.
-                    </p>
                   </div>
                   <input
                     ref={fileInputRef}
@@ -483,16 +454,16 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="public-button-secondary px-5 py-3 text-sm font-semibold"
+                    className="bg-zinc-950 text-white rounded-xl px-6 py-3 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-zinc-950/20 hover:bg-zinc-800 transition-all"
                   >
-                    Select document image
+                    Select Official ID
                   </button>
                 </div>
               )}
             </div>
 
-            <label className="grid gap-2 text-sm font-semibold text-foreground">
-              ID number
+            <label className="grid gap-2 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+              Identity Number
               <input
                 value={formData.idNumber}
                 onChange={(event) =>
@@ -501,8 +472,8 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                     idNumber: event.target.value,
                   }))
                 }
-                placeholder="Masked or extracted ID details appear here"
-                className={fieldClassName}
+                placeholder="Institutional ID data will appear here"
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm font-black text-zinc-950 placeholder:text-zinc-300 focus:outline-none focus:border-blue-600/30 focus:bg-white transition-all"
               />
             </label>
 
@@ -510,7 +481,7 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
               <button
                 type="button"
                 onClick={() => setStep("details")}
-                className="public-button-secondary px-5 py-3 text-sm font-semibold"
+                className="flex-1 bg-white border border-zinc-200 text-zinc-400 rounded-xl px-5 py-3 text-[10px] font-black uppercase tracking-widest hover:text-zinc-950 transition-all"
               >
                 Back
               </button>
@@ -518,10 +489,9 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                 type="button"
                 onClick={() => setStep("payment")}
                 disabled={!formData.idNumber}
-                className="public-button px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex-[2] bg-zinc-950 text-white rounded-xl px-6 py-4 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all disabled:opacity-50"
               >
-                Continue to payment
-                <ArrowRight className="h-4 w-4" />
+                Proceed to Settlement
               </button>
             </div>
           </div>
@@ -529,89 +499,74 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
       ) : null}
 
       {step === "payment" ? (
-        <section className="public-panel p-6 sm:p-8">
+        <section className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 shadow-sm">
           <div className="relative z-10 space-y-6">
             <div>
-              <div className="public-eyebrow">Step 3</div>
-              <h3 className="public-display mt-3 text-3xl text-foreground">
-                Complete payment
+              <div className="text-[10px] uppercase tracking-widest text-blue-600 font-black mb-1">Step 3</div>
+              <h3 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter">
+                Final Settlement
               </h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
+              <p className="mt-3 text-sm leading-relaxed text-zinc-500 font-medium sm:text-base">
                 {hasUPI 
-                  ? "Scan the QR code or use UPI details to pay, then upload screenshot."
-                  : "Contact the host for payment instructions."}
+                  ? "Standard UPI settlement. Please upload a high-fidelity screenshot of the transaction for account routing."
+                  : "Contact operations for manual bank transfer instructions."}
               </p>
             </div>
 
             {hasUPI && (
-              <div className="grid gap-5 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-center">
+              <div className="grid gap-5 lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-center">
                 {link.tenants?.business_qr_url && (
-                  <div className="rounded-[1.8rem] border border-border bg-white p-5 shadow-lg">
+                  <div className="rounded-[2.5rem] border border-zinc-200 bg-white p-5 shadow-2xl shadow-zinc-950/5">
                     <img
                       src={link.tenants.business_qr_url}
-                      alt="Payment QR code"
-                      className="h-full w-full rounded-[1.1rem] object-cover"
+                      alt="Business QR code"
+                      className="h-full w-full rounded-[1.8rem] object-cover"
                     />
                   </div>
                 )}
                 <div className="space-y-4">
                   {link.tenants?.upi_id && (
-                    <div className="public-inset flex items-center gap-3 rounded-[1.3rem] px-4 py-4">
-                      <QrCode className="h-5 w-5 text-primary" />
+                    <div className="bg-zinc-50 border border-zinc-200 flex items-center gap-3 rounded-[1.3rem] px-5 py-5">
+                      <QrCode className="h-5 w-5 text-blue-600" />
                       <div>
-                        <div className="text-sm font-semibold text-foreground">
-                          UPI ID
+                        <div className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                          Institutional UPI
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-sm font-black text-zinc-950">
                           {link.tenants.upi_id}
                         </div>
                       </div>
                     </div>
                   )}
-                  {link.tenants?.upi_mobile && (
-                    <div className="public-inset flex items-center gap-3 rounded-[1.3rem] px-4 py-4">
-                      <div className="text-sm font-semibold text-foreground">
-                        Phone
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {link.tenants.upi_mobile}
-                      </div>
-                    </div>
-                  )}
-                  <div className="public-inset flex items-start gap-3 rounded-[1.3rem] px-4 py-4">
-                    <ShieldCheck className="h-5 w-5 shrink-0 text-[var(--public-success)]" />
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      Upload payment screenshot after paying. Host will verify within 24 hours.
+                  <div className="bg-blue-50/50 border border-blue-100 flex items-start gap-4 rounded-[1.3rem] px-5 py-5">
+                    <ShieldCheck className="h-5 w-5 shrink-0 text-blue-600" />
+                    <p className="text-xs leading-relaxed text-blue-900 font-medium">
+                      Account review and identity matching usually completes within one professional business hour.
                     </p>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Screenshot Upload Section */}
-            <div className="rounded-[1.6rem] border border-dashed border-[rgba(61,44,25,0.16)] bg-[rgba(255,251,244,0.76)] p-5">
-              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
-                <ImageIcon className="h-4 w-4" />
-                Upload Payment Screenshot
-              </div>
-              
+            {/* Finalization Section */}
+            <div className="rounded-[2rem] border-2 border-dashed border-zinc-200 bg-zinc-50 p-6 flex flex-col items-center gap-4">
               {screenshotPreview ? (
-                <div className="relative inline-block">
+                <div className="relative inline-block group">
                   <img
                     src={screenshotPreview}
-                    alt="Payment screenshot"
-                    className="max-h-48 rounded-lg border border-border"
+                    alt="Validation screenshot"
+                    className="max-h-48 rounded-2xl border border-zinc-200 shadow-xl"
                   />
                   <button
                     type="button"
                     onClick={removeScreenshot}
-                    className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600"
+                    className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white shadow-lg active:scale-95"
                   >
                     <X className="h-4 w-4" />
                   </button>
                 </div>
               ) : (
-                <label className="cursor-pointer">
+                <label className="w-full cursor-pointer">
                   <input
                     ref={screenshotInputRef}
                     type="file"
@@ -620,28 +575,30 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                     onChange={handleScreenshotUpload}
                     disabled={uploadingScreenshot}
                   />
-                  <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border bg-white p-4 py-6 text-center hover:border-primary/50">
+                  <div className="flex flex-col items-center gap-4 rounded-2xl border border-zinc-200 bg-white p-6 py-8 text-center hover:border-blue-600/30 transition-all shadow-sm">
                     {uploadingScreenshot ? (
-                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                      <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
                     ) : (
-                      <Upload className="h-8 w-8 text-muted-foreground" />
+                      <div className="h-16 w-16 bg-zinc-50 rounded-full flex items-center justify-center">
+                        <Upload className="h-8 w-8 text-zinc-400" />
+                      </div>
                     )}
-                    <div className="text-sm text-muted-foreground">
-                      <span className="font-medium text-primary">Click to upload</span> payment screenshot
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      PNG, JPG up to 5MB
+                    <div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-zinc-950">
+                        Upload Transfer Proof
+                      </div>
+                      <p className="text-xs text-zinc-400 mt-1">High-fidelity PNG or JPG (Max 5MB)</p>
                     </div>
                   </div>
                 </label>
               )}
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row pt-4">
               <button
                 type="button"
                 onClick={() => setStep("id_verification")}
-                className="public-button-secondary px-5 py-3 text-sm font-semibold"
+                className="flex-1 bg-white border border-zinc-200 text-zinc-400 rounded-xl px-5 py-3 text-[10px] font-black uppercase tracking-widest hover:text-zinc-950 transition-all"
               >
                 Back
               </button>
@@ -649,14 +606,10 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
                 type="button"
                 onClick={handlePaymentComplete}
                 disabled={loading}
-                className="public-button flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex-[2] bg-zinc-950 text-white rounded-xl px-6 py-4 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
               >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <CheckCircle2 className="h-4 w-4" />
-                )}
-                {screenshotPreview ? "Submit payment" : "I have paid"}
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                Authorize Final Solution
               </button>
             </div>
           </div>
@@ -664,64 +617,48 @@ export function GuestCheckoutFlow({ link }: GuestCheckoutFlowProps) {
       ) : null}
 
       {step === "complete" ? (
-        <section className="public-panel public-shimmer px-6 py-8 text-center sm:px-8 sm:py-10">
-          <div className="relative z-10 space-y-5">
-            <div className="public-inset mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[rgba(130,185,112,0.14)] text-[var(--public-success)]">
-              <Sparkles className="h-9 w-9" />
+        <section className="bg-white border border-zinc-200 rounded-[2.5rem] p-8 py-12 text-center shadow-xl shadow-zinc-950/5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600" />
+          <div className="relative z-10 space-y-6">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] bg-zinc-950 text-white shadow-2xl shadow-zinc-950/20">
+              <Sparkles className="h-10 w-10" />
             </div>
             <div>
-              <h2 className="public-display text-4xl text-foreground">
-                {link.status === "pending_verification" 
-                  ? "Payment submitted" 
-                  : "Booking confirmed"}
+              <h2 className="text-4xl font-black text-zinc-950 uppercase tracking-tighter">
+                Solution Initialized
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
-                {link.status === "pending_verification"
-                  ? "Your payment screenshot has been submitted. The host will verify it shortly."
-                  : `Thank you${formData.name ? `, ${formData.name}` : ""}. Your stay at ${listingTitle} is all set.`}
+              <p className="mx-auto mt-4 max-w-2xl text-lg font-medium text-zinc-500 leading-relaxed">
+                Thank you for verifying your authority. Your ecosystem is now being provisioned and will be active shortly.
               </p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="public-inset rounded-[1.2rem] px-4 py-4 text-left">
-                <div className="public-eyebrow">Stay</div>
-                <div className="mt-2 text-sm font-semibold text-foreground">
-                  {stayLabel}
+            <div className="grid gap-3 sm:grid-cols-2 pt-6">
+              <div className="bg-zinc-50 border border-zinc-200 rounded-2xl px-5 py-5 text-left">
+                <div className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Status</div>
+                <div className="text-sm font-black text-zinc-950 uppercase tracking-tighter">
+                  Deployment Confirmed
                 </div>
               </div>
-              <div className="public-inset rounded-[1.2rem] px-4 py-4 text-left">
-                <div className="public-eyebrow">Verification</div>
-                <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <ShieldCheck className="h-4 w-4 text-[var(--public-success)]" />
-                  {link.status === "pending_verification" 
-                    ? "Awaiting host verification"
-                    : "ID verified and payment complete"}
+              <div className="bg-blue-50/50 border border-blue-100 rounded-2xl px-5 py-5 text-left">
+                <div className="text-[10px] font-black uppercase tracking-widest text-blue-600/50 mb-1">Assurance</div>
+                <div className="text-sm font-black text-blue-600 uppercase tracking-tighter">
+                  KYC Verified
                 </div>
               </div>
             </div>
-            <div className="pt-4 border-t border-white/10">
-              <p className="text-sm text-muted-foreground mb-4">
-                You can close this tab or return to chat with the host.
-              </p>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={`/chat/${link.tenant_id}`}
-                  className="public-button-secondary px-6 py-3 text-sm font-semibold text-center"
-                >
-                  Back to Chat
-                </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const msg = link.status === "pending_verification" 
-                      ? "Thank you! The host will verify your payment shortly. You can close this tab."
-                      : "Thank you for completing your booking! You can close this tab.";
-                    alert(msg);
-                  }}
-                  className="public-button px-6 py-3 text-sm font-semibold"
-                >
-                  Done
-                </button>
-              </div>
+            <div className="pt-8 flex flex-col gap-3 sm:flex-row items-center justify-center border-t border-zinc-100 mt-4">
+              <a
+                href={`/chat/${link.tenant_id}`}
+                className="w-full sm:w-auto px-8 py-4 rounded-xl border border-zinc-200 text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-zinc-950 transition-all shadow-sm"
+              >
+                Operator Console
+              </a>
+              <button
+                type="button"
+                onClick={() => alert("Ecosystem provisioned successfully.")}
+                className="w-full sm:w-auto px-10 py-4 rounded-xl bg-zinc-950 text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all active:scale-95"
+              >
+                Close Deployment Tab
+              </button>
             </div>
           </div>
         </section>

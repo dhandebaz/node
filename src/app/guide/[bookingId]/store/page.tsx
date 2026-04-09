@@ -5,30 +5,30 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
-export default function UpsellStore() {
+export default function ClientStore() {
   const params = useParams<{ bookingId: string }>();
 
   const extras = [
     {
-      id: "early-checkin",
-      title: "Early Check-in (11:00 AM)",
-      amount: "₹1,500",
-      description: "Arriving early? Secure early access to your villa.",
-      img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&auto=format&fit=crop&q=60"
+      id: "premium-onboarding",
+      title: "Premium Onboarding",
+      amount: "₹4,999",
+      description: "Dedicated success manager to project manage your rollout.",
+      img: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&auto=format&fit=crop&q=60"
     },
     {
-      id: "late-checkout",
-      title: "Late Check-out (2:00 PM)",
-      amount: "₹1,500",
-      description: "Sleep in and take your time before you depart.",
-      img: "https://images.unsplash.com/photo-1541123356219-284ebe98ae3b?w=800&auto=format&fit=crop&q=60"
+      id: "priority-sla",
+      title: "24/7 Priority SLA",
+      amount: "₹9,999",
+      description: "Guaranteed 15-minute response time for critical issues.",
+      img: "https://images.unsplash.com/photo-1454165833762-02651d58d92c?w=800&auto=format&fit=crop&q=60"
     },
     {
-      id: "airport-pickup",
-      title: "Airport Private Transfer",
-      amount: "₹2,500",
-      description: "Hassle-free AC cab pickup from GOX airport.",
-      img: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&auto=format&fit=crop&q=60"
+      id: "compliance-audit",
+      title: "Compliance Audit",
+      amount: "₹14,999",
+      description: "Full regulatory review of your automated AI workflows.",
+      img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&auto=format&fit=crop&q=60"
     }
   ];
 
@@ -70,7 +70,7 @@ export default function UpsellStore() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_missing",
         amount: data.order.amount,
         currency: data.order.currency,
-        name: "Nodebase Upsell Store",
+        name: "Nodebase Client Store",
         description: item.title,
         order_id: data.order.id,
         handler: async function (response: any) {
@@ -91,12 +91,12 @@ export default function UpsellStore() {
           }
         },
         prefill: {
-          name: "Guest",
-          email: "guest@example.com",
+          name: "Client",
+          email: "client@example.com",
           contact: "9999999999"
         },
         theme: {
-          color: "#3399cc"
+          color: "#09090b"
         }
       };
 
@@ -117,44 +117,44 @@ export default function UpsellStore() {
   return (
     <div className="flex-1 w-full max-w-2xl mx-auto min-h-screen">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-black/50 backdrop-blur-3xl border-b border-white/5 py-4 px-6 flex items-center gap-4">
-        <Link href={`/guide/${params?.bookingId}`} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:text-white transition-colors">
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-3xl border-b border-zinc-200 py-4 px-6 flex items-center gap-4 shadow-sm">
+        <Link href={`/guide/${params?.bookingId}`} className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500 hover:text-zinc-950 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-sm font-semibold text-white">Host Store</h1>
-          <p className="text-[10px] uppercase tracking-widest text-zinc-500">Upgrade your stay</p>
+          <h1 className="text-sm font-black text-zinc-950 uppercase tracking-tighter">Client Solutions</h1>
+          <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Upgrade your project</p>
         </div>
-        <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center relative">
-          <ShoppingBag className="w-4 h-4 text-primary" />
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-black" />
+        <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center relative shadow-sm shadow-blue-600/5">
+          <ShoppingBag className="w-4 h-4 text-blue-600" />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm" />
         </div>
       </div>
 
       <div className="p-6 space-y-6">
-        <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-          Enhance your experience at Villa Serenity. Just tap an extra to seamlessly add it to your booking tab.
+        <p className="text-zinc-500 text-sm leading-relaxed mb-6 font-medium">
+          Enhance your project outcome with our specialized add-ons. Tap any solution to secure institutional-grade service.
         </p>
 
         <div className="grid gap-6">
           {extras.map((item) => (
-            <div key={item.id} className="group relative bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden hover:border-primary/50 transition-colors shadow-lg flex flex-col md:flex-row">
-              <div className="w-full md:w-48 h-48 md:h-auto overflow-hidden shrink-0">
-                <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <div key={item.id} className="group relative bg-white border border-zinc-200 rounded-3xl overflow-hidden hover:border-blue-500/50 transition-all shadow-sm hover:shadow-xl flex flex-col md:flex-row">
+              <div className="w-full md:w-48 h-48 md:h-auto overflow-hidden shrink-0 bg-zinc-50">
+                <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100" />
               </div>
               <div className="p-6 flex flex-col flex-1 justify-between gap-4">
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                  <p className="text-sm text-zinc-400 leading-relaxed">{item.description}</p>
+                  <h3 className="text-lg font-black text-zinc-950 mb-2 uppercase tracking-tighter">{item.title}</h3>
+                  <p className="text-sm text-zinc-500 leading-relaxed font-medium">{item.description}</p>
                 </div>
                 <div className="flex items-center justify-between mt-auto">
-                  <div className="text-xl font-mono text-white tracking-widest">{item.amount}</div>
+                  <div className="text-xl font-mono text-zinc-950 tracking-widest font-black">{item.amount}</div>
                   <button 
                     onClick={() => handlePurchase(item)}
                     disabled={isProcessing}
-                    className="flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-zinc-200 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 bg-zinc-950 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all disabled:opacity-50 shadow-lg shadow-zinc-950/20 active:scale-95"
                   >
-                    <Plus className="w-3 h-3" /> Add
+                    <Plus className="w-3 h-3" /> Add Solution
                   </button>
                 </div>
               </div>

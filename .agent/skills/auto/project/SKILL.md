@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 69 gotchas, 127 conventions, 71 fixes."
+description: "Project for node. 69 gotchas, 128 conventions, 71 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **491 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **503 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 

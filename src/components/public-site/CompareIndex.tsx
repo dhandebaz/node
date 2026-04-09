@@ -31,50 +31,50 @@ function ToolCard({ tool, index }: { tool: ComparisonTool; index: number }) {
         href={`/compare/${tool.slug}`}
         className="block group h-full"
       >
-        <div className="glass-panel p-8 rounded-[2.5rem] hover:border-blue-500/30 transition-all duration-500 h-full flex flex-col">
+        <div className="bg-white border border-zinc-100 p-8 rounded-[2.5rem] shadow-sm hover:border-blue-200 hover:-translate-y-1 transition-all duration-500 h-full flex flex-col">
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center">
-                <span className="text-2xl font-black text-white">
+              <div className="w-14 h-14 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center shadow-sm">
+                <span className="text-2xl font-black text-blue-600">
                   {tool.name.charAt(0)}
                 </span>
               </div>
               <div>
-                <h3 className="text-xl font-black text-white group-hover:text-blue-400 transition-colors">
+                <h3 className="text-xl font-black text-zinc-950 group-hover:text-blue-600 transition-colors">
                   {tool.name}
                 </h3>
-                <p className="text-sm text-zinc-500">{tool.tagline}</p>
+                <p className="text-sm text-zinc-600 font-medium">{tool.tagline}</p>
               </div>
             </div>
-            <ArrowRight className="w-5 h-5 text-zinc-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
+            <ArrowRight className="w-5 h-5 text-zinc-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
           </div>
 
-          <p className="text-sm text-zinc-400 mb-6 flex-grow">
+          <p className="text-sm text-zinc-600 mb-6 flex-grow font-medium leading-relaxed">
             {tool.description}
           </p>
 
-          <div className="space-y-4 pt-4 border-t border-white/10">
+          <div className="space-y-4 pt-4 border-t border-zinc-100">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-zinc-500">Starting Price</span>
-              <span className="text-lg font-black text-white">{tool.pricing.starting}</span>
+              <span className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Starting Price</span>
+              <span className="text-lg font-black text-zinc-950">{tool.pricing.starting}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-zinc-500">Pricing Model</span>
-              <span className="text-sm font-medium text-zinc-400">{tool.pricing.model}</span>
+              <span className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Pricing Model</span>
+              <span className="text-sm font-bold text-zinc-700">{tool.pricing.model}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-zinc-500">Per-User Fees</span>
+              <span className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Per-User Fees</span>
               {tool.pricing.perUser ? (
-                <span className="text-sm font-medium text-rose-400">Yes (Costs more)</span>
+                <span className="text-sm font-black text-rose-600">Yes (Costs more)</span>
               ) : (
-                <span className="text-sm font-medium text-emerald-400">No</span>
+                <span className="text-sm font-black text-emerald-600">No</span>
               )}
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-zinc-500">Rating</span>
+              <span className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Rating</span>
               <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                <span className="text-sm font-medium text-white">{tool.rating}</span>
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span className="text-sm font-black text-zinc-950">{tool.rating}</span>
                 <span className="text-xs text-zinc-500">({tool.reviewCount})</span>
               </div>
             </div>
@@ -87,7 +87,7 @@ function ToolCard({ tool, index }: { tool: ComparisonTool; index: number }) {
 
 export function CompareIndex() {
   return (
-    <div className="relative pb-32 pt-36 sm:pt-48 lg:pt-56 overflow-hidden">
+    <div className="relative pb-32 pt-36 sm:pt-48 lg:pt-56 overflow-hidden bg-white">
       <div className="public-container relative z-10 space-y-32">
         {/* HERO */}
         <section className="text-center max-w-4xl mx-auto">
@@ -95,14 +95,14 @@ export function CompareIndex() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[120px] -z-10"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/5 rounded-full blur-[120px] -z-10"
           />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border-blue-500/30 text-sm font-bold text-blue-400 mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-sm font-bold text-blue-600 mb-6 shadow-sm"
           >
             <Zap className="w-4 h-4" />
             <span>Complete Analysis</span>
@@ -112,17 +112,17 @@ export function CompareIndex() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-display text-5xl md:text-6xl lg:text-7xl text-white tracking-tight mb-6"
+            className="font-display text-5xl md:text-6xl lg:text-7xl text-zinc-950 tracking-tight mb-6"
           >
             NodeBase vs{" "}
-            <span className="text-gradient-primary">Every Competitor</span>
+            <span className="text-blue-600">Every Competitor</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl text-zinc-400 max-w-2xl mx-auto"
+            className="text-xl text-zinc-600 max-w-2xl mx-auto font-medium"
           >
             Comprehensive comparisons with every major messaging, CRM, and AI platform. 
             See why NodeBase's domain-specific AI, Voice + Vision, and flat pricing wins.
@@ -136,13 +136,13 @@ export function CompareIndex() {
           >
             <Link
               href="/compare/kommo"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 hover:-translate-y-1 transition-all shadow-lg"
             >
               Start with Kommo <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/compare/respondio"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 glass-panel text-white font-bold rounded-xl hover:bg-white/10 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white border border-zinc-200 text-zinc-950 font-bold rounded-xl hover:bg-zinc-50 transition-all shadow-sm"
             >
               Or Respond.io
             </Link>
@@ -150,12 +150,12 @@ export function CompareIndex() {
         </section>
 
         {/* WHY NODEBASE WINS - Quick Summary */}
-        <section className="glass-panel-glow p-8 sm:p-12 rounded-[2.5rem] border border-blue-500/30">
+        <section className="bg-zinc-50 border border-zinc-100 p-8 sm:p-12 rounded-[2.5rem] shadow-sm">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-black text-white mb-4">
+            <h2 className="text-3xl font-black text-zinc-950 mb-4">
               Why Businesses Switch to NodeBase
             </h2>
-            <p className="text-zinc-400 max-w-2xl mx-auto">
+            <p className="text-zinc-600 max-w-2xl mx-auto font-medium">
               We compared NodeBase against every major platform. Here's why businesses are making the switch.
             </p>
           </div>
@@ -193,13 +193,13 @@ export function CompareIndex() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="p-6 rounded-2xl bg-white/5 border border-white/10"
+                className="p-6 rounded-2xl bg-white border border-zinc-100 shadow-sm"
               >
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
-                  <item.icon className="w-6 h-6 text-emerald-400" />
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4">
+                  <item.icon className="w-6 h-6 text-emerald-600" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">{item.title}</h3>
-                <p className="text-sm text-zinc-400">{item.description}</p>
+                <h3 className="text-lg font-bold text-zinc-950 mb-2">{item.title}</h3>
+                <p className="text-sm text-zinc-600 font-medium leading-relaxed">{item.description}</p>
               </motion.div>
             ))}
           </div>
@@ -208,10 +208,10 @@ export function CompareIndex() {
         {/* COMPARISON TOOLS GRID */}
         <section>
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-black text-white mb-4">
+            <h2 className="text-3xl font-black text-zinc-950 mb-4">
               Detailed Comparisons
             </h2>
-            <p className="text-zinc-400 max-w-2xl mx-auto">
+            <p className="text-zinc-600 max-w-2xl mx-auto font-medium">
               Click any platform below for a full feature-by-feature breakdown, 
               pricing analysis, and why NodeBase wins.
             </p>
@@ -225,12 +225,12 @@ export function CompareIndex() {
         </section>
 
         {/* FEATURE COMPARISON TABLE */}
-        <section className="glass-panel-glow p-8 sm:p-12 rounded-[2.5rem] border border-blue-500/30">
+        <section className="bg-zinc-50 border border-zinc-100 p-8 sm:p-12 rounded-[2.5rem] shadow-sm">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-black text-white mb-4">
+            <h2 className="text-3xl font-black text-zinc-950 mb-4">
               Feature-by-Feature
             </h2>
-            <p className="text-zinc-400">
+            <p className="text-zinc-600 font-medium leading-relaxed">
               The key differences that matter for your business
             </p>
           </div>
@@ -238,10 +238,10 @@ export function CompareIndex() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left p-4 font-bold text-zinc-400">Feature</th>
-                  <th className="w-40 p-4 font-bold text-center text-emerald-400">NodeBase</th>
-                  <th className="w-40 p-4 font-bold text-center text-zinc-500">Others</th>
+                <tr className="border-b border-zinc-200">
+                  <th className="text-left p-4 font-bold text-zinc-500 uppercase tracking-widest text-[10px]">Feature</th>
+                  <th className="w-40 p-4 font-bold text-center text-emerald-600 uppercase tracking-widest text-[10px]">NodeBase</th>
+                  <th className="w-40 p-4 font-bold text-center text-zinc-500 uppercase tracking-widest text-[10px]">Others</th>
                 </tr>
               </thead>
               <tbody>
@@ -259,21 +259,21 @@ export function CompareIndex() {
                 ].map((row, i) => (
                   <tr
                     key={row.name}
-                    className={i % 2 === 0 ? "bg-white/5" : "bg-transparent"}
+                    className={i % 2 === 0 ? "bg-white" : "bg-transparent"}
                   >
-                    <td className="p-4 text-white">{row.name}</td>
+                    <td className="p-4 text-zinc-950 font-bold">{row.name}</td>
                     <td className="p-4 text-center">
                       {row.nodebase ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400 mx-auto" />
+                        <CheckCircle2 className="w-5 h-5 text-emerald-600 mx-auto" />
                       ) : (
-                        <XCircle className="w-5 h-5 text-zinc-600 mx-auto" />
+                        <XCircle className="w-5 h-5 text-zinc-400 mx-auto" />
                       )}
                     </td>
-                    <td className="p-4 text-center">
+                    <td className="p-4 text-center bg-zinc-50/30">
                       {row.others ? (
                         <CheckCircle2 className="w-5 h-5 text-zinc-400 mx-auto" />
                       ) : (
-                        <XCircle className="w-5 h-5 text-zinc-600 mx-auto" />
+                        <XCircle className="w-5 h-5 text-zinc-400 mx-auto" />
                       )}
                     </td>
                   </tr>
@@ -299,15 +299,15 @@ export function CompareIndex() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
               className={`p-6 rounded-2xl border ${
                 plan.color === "emerald"
-                  ? "bg-emerald-500/10 border-emerald-500/30"
-                  : "bg-white/5 border-white/10"
+                  ? "bg-emerald-50 border-emerald-200 shadow-sm"
+                  : "bg-white border-zinc-100 shadow-sm"
               }`}
             >
               <div className="text-center mb-6">
-                <h3 className={`text-lg font-bold mb-2 ${plan.color === "emerald" ? "text-emerald-400" : "text-zinc-400"}`}>
+                <h3 className={`text-lg font-black mb-2 ${plan.color === "emerald" ? "text-emerald-700" : "text-zinc-500"}`}>
                   {plan.name}
                 </h3>
-                <div className={`text-3xl font-black ${plan.color === "emerald" ? "text-white" : "text-zinc-400"}`}>
+                <div className={`text-3xl font-black ${plan.color === "emerald" ? "text-zinc-950" : "text-zinc-400"}`}>
                   {plan.price}
                   <span className="text-sm font-normal text-zinc-500">{plan.period}</span>
                 </div>
@@ -316,11 +316,11 @@ export function CompareIndex() {
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-2 text-sm">
                     {plan.color === "emerald" ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                     ) : (
-                      <XCircle className="w-4 h-4 text-zinc-600 shrink-0" />
+                      <XCircle className="w-4 h-4 text-zinc-400 shrink-0" />
                     )}
-                    <span className={plan.color === "emerald" ? "text-white" : "text-zinc-500"}>
+                    <span className={plan.color === "emerald" ? "text-zinc-950 font-bold" : "text-zinc-500 font-medium"}>
                       {feature}
                     </span>
                   </li>
@@ -331,24 +331,24 @@ export function CompareIndex() {
         </section>
 
         {/* CTA */}
-        <section className="text-center glass-panel-glow p-12 sm:p-20 rounded-[2.5rem] border border-blue-500/30">
-          <h2 className="text-4xl font-black text-white mb-4">
+        <section className="text-center bg-blue-50 p-12 sm:p-20 rounded-[2.5rem] border border-blue-100 shadow-sm">
+          <h2 className="text-4xl font-black text-zinc-950 mb-4">
             Ready to Switch?
           </h2>
-          <p className="text-xl text-zinc-400 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-zinc-600 mb-8 max-w-2xl mx-auto font-medium">
             Join thousands of businesses who chose NodeBase over generic chatbot platforms. 
             Get started in minutes, not days.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/signup"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 hover:-translate-y-1 transition-all shadow-lg shadow-blue-600/20"
             >
               Start Free Trial <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/pricing"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 glass-panel text-white font-bold rounded-xl hover:bg-white/10 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white border border-zinc-200 text-zinc-950 font-bold rounded-xl hover:bg-zinc-50 transition-all shadow-sm"
             >
               View Pricing
             </Link>

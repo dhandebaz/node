@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "../../node_modules/tw-animate-css/dist/tw-animate.css";
 
-@custom-variant dark (&:is(.dark *));
+/* No dark mode variants - strict Premium Light aesthetic */
 
 @theme {
     /* Glowing Brand Palette adapted for Light */
@@ -126,15 +126,15 @@
     
     /* ─── Mesh Gradients (High Key) ─── */
     .mesh-bg-orb-1 {
-        background: radial-gradient(circle at center, rgba(37, 99, 235, 0.05) 0%, transparent 60%);
+        background: radial-gradient(circle at center, rgba(37, 99, 235, 0.03) 0%, transparent 60%);
     }
     
     .mesh-bg-orb-2 {
-        background: radial-gradient(circle at center, rgba(124, 58, 237, 0.05) 0%, transparent 60%);
+        background: radial-gradient(circle at center, rgba(124, 58, 237, 0.03) 0%, transparent 60%);
     }
 
     .mesh-bg-orb-solid {
-        background: radial-gradient(circle at center, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
+        background: radial-gradient(circle at center, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
         filter: blur(60px);
     }
 

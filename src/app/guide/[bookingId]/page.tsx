@@ -79,14 +79,14 @@ export default function ClientPortal() {
                   </div>
                 ) : (
                   <div className="space-y-3 mt-4">
-                     <div className="flex items-center gap-2 text-xs text-orange-600 font-bold uppercase">
-                      <ShieldAlert className="w-4 h-4" />
-                      Action Required
-                    </div>
-                    <p className="text-sm text-zinc-600 font-medium leading-relaxed">Please complete your identity verification to reveal sensitive access details.</p>
-                    <Link href={`/guest-id/${params?.bookingId}`} className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-blue-700 transition-colors mt-2">
-                      Complete Setup <ArrowRight className="w-4 h-4" />
-                    </Link>
+                      <div className="flex items-center gap-2 text-xs text-orange-600 font-bold uppercase">
+                        <ShieldAlert className="w-4 h-4" />
+                        Action Required
+                      </div>
+                      <p className="text-sm text-zinc-600 font-medium leading-relaxed">Please complete your identity verification to reveal sensitive access details.</p>
+                      <Link href={`/guest-id/${params?.bookingId}`} className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-zinc-950 transition-colors mt-2 shadow-lg shadow-blue-600/20">
+                        Complete Setup <ArrowRight className="w-4 h-4" />
+                      </Link>
                   </div>
                 )}
               </div>
@@ -103,8 +103,8 @@ export default function ClientPortal() {
                 <p className="text-xs text-blue-600 font-mono mt-1 font-bold italic">nodebase_vip</p>
               </div>
             </div>
-            <Link href={`/guide/${params?.bookingId}/store`} className="bg-zinc-50 border border-zinc-200 rounded-3xl p-5 flex flex-col justify-between aspect-square hover:bg-blue-50 transition-all hover:border-blue-200 group">
-              <div className="w-8 h-8 rounded-xl bg-blue-600/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <Link href={`/guide/${params?.bookingId}/store`} className="bg-white border border-zinc-200 rounded-3xl p-5 flex flex-col justify-between aspect-square hover:bg-zinc-50 transition-all shadow-sm group">
+              <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Coffee className="w-4 h-4 text-blue-600" />
               </div>
               <div>
@@ -142,7 +142,7 @@ export default function ClientPortal() {
         </div>
       </div>
 
-      <AiConciergeChat bookingId={params?.bookingId} propertyName="Project Dashboard" />
+      <AiConciergeChat bookingId={params?.bookingId} propertyName="Client Portal" />
     </>
   );
 }

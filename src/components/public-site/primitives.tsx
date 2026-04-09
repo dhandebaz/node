@@ -68,10 +68,10 @@ function MetricStrip({
             key={`${metric.label}-${metric.value}`}
             className="glass-panel p-6 rounded-2xl border-l-2 border-l-blue-500 group hover:bg-white/5 transition-colors"
           >
-            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600">
               {metric.label}
             </div>
-            <div className="mt-3 text-xl font-bold text-white">
+            <div className="mt-3 text-xl font-bold text-zinc-900">
               {metric.value}
             </div>
           </div>
@@ -107,13 +107,13 @@ function Hero({
           </div>
           <h1
             className={cn(
-              "font-display mt-6 text-4xl leading-[1.1] text-white sm:text-5xl lg:text-7xl tracking-tighter",
+              "font-display mt-6 text-4xl leading-[1.1] text-zinc-950 sm:text-5xl lg:text-7xl tracking-tighter",
               compact && "text-3xl sm:text-4xl lg:text-5xl"
             )}
           >
             {title}
           </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-zinc-400 font-sans">
+          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-zinc-600 font-sans">
             {summary}
           </p>
         </div>
@@ -130,7 +130,7 @@ function IconTile({ icon: Icon }: { icon?: LucideIcon }) {
   }
 
   return (
-    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group-hover:bg-blue-500/10 group-hover:text-blue-400 group-hover:border-blue-500/30 transition-colors">
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-900 shadow-sm group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-200 transition-colors">
       <Icon className="h-6 w-6" />
     </div>
   );
@@ -158,14 +158,14 @@ function LinkCard({
           {item.eyebrow}
         </div>
       ) : null}
-      <h3 className="mt-2 text-xl font-bold text-white tracking-tight">
+      <h3 className="mt-2 text-xl font-bold text-zinc-950 tracking-tight">
         {item.title}
       </h3>
-      <p className="mt-3 text-sm leading-relaxed text-zinc-400 font-sans">
+      <p className="mt-3 text-sm leading-relaxed text-zinc-600 font-sans">
         {item.description}
       </p>
       {item.href ? (
-        <div className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-blue-400 group-hover:text-blue-300 transition-colors">
+        <div className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-blue-600 group-hover:text-blue-700 transition-colors">
           {item.ctaLabel || "Open page"}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </div>
@@ -189,11 +189,11 @@ function SectionBlock({ section }: { section: PublicSection }) {
       <section className="glass-panel p-8 sm:p-12 rounded-[2rem] border-l-2 border-l-blue-500/30">
         <div className="space-y-6">
           <div>
-            <h2 className="font-display text-3xl text-white sm:text-4xl tracking-tighter leading-tight">
+            <h2 className="font-display text-3xl text-zinc-950 sm:text-4xl tracking-tighter leading-tight">
               {section.title}
             </h2>
             {section.intro ? (
-              <p className="mt-4 max-w-3xl text-base leading-relaxed text-zinc-400 font-sans">
+              <p className="mt-4 max-w-3xl text-base leading-relaxed text-zinc-600 font-sans">
                 {section.intro}
               </p>
             ) : null}
@@ -204,7 +204,7 @@ function SectionBlock({ section }: { section: PublicSection }) {
               {section.paragraphs.map((paragraph) => (
                 <p
                   key={paragraph}
-                  className="text-base leading-relaxed text-zinc-400 font-sans"
+                  className="text-base leading-relaxed text-zinc-600 font-sans"
                 >
                   {paragraph}
                 </p>
@@ -217,9 +217,9 @@ function SectionBlock({ section }: { section: PublicSection }) {
               {section.bullets.map((bullet) => (
                 <li
                   key={bullet}
-                  className="flex gap-4 px-5 py-4 text-sm font-medium text-zinc-300 glass-panel rounded-xl border-l-2 border-l-white/10 hover:bg-white/5 transition-colors"
+                  className="flex gap-4 px-5 py-4 text-sm font-medium text-zinc-700 bg-white border border-zinc-100 rounded-xl hover:bg-zinc-50 transition-colors shadow-sm"
                 >
-                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-600" />
                   <span>{bullet}</span>
                 </li>
               ))}
@@ -239,11 +239,11 @@ function SectionBlock({ section }: { section: PublicSection }) {
           ) : null}
 
           {section.code ? (
-            <div className="overflow-hidden rounded-2xl border border-white/10 mt-4">
-              <div className="border-b border-white/10 bg-white/5 px-5 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">
+            <div className="overflow-hidden rounded-2xl border border-zinc-200 mt-4">
+              <div className="border-b border-zinc-200 bg-zinc-50 px-5 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-blue-600">
                 {section.code.label}
               </div>
-              <pre className="public-mono overflow-x-auto p-5 text-sm leading-relaxed text-zinc-300 bg-black/50">
+              <pre className="public-mono overflow-x-auto p-5 text-sm leading-relaxed text-zinc-700 bg-zinc-100/50">
                 {section.code.value}
               </pre>
             </div>
@@ -268,10 +268,10 @@ function CtaPanel({ cta }: { cta?: PublicArticlePageData["cta"] }) {
       <section className="glass-panel-glow p-12 sm:p-20 rounded-[3rem] text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none" />
         <div className="relative z-10 flex flex-col items-center">
-          <h2 className="font-display text-4xl text-white sm:text-5xl tracking-tighter leading-tight max-w-3xl">
+          <h2 className="font-display text-4xl text-zinc-950 sm:text-5xl tracking-tighter leading-tight max-w-3xl">
             {cta.title}
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-zinc-400 font-sans max-w-2xl">
+          <p className="mt-6 text-lg leading-relaxed text-zinc-600 font-sans max-w-2xl">
             {cta.description}
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">

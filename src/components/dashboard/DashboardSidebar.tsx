@@ -52,8 +52,8 @@ function SidebarItem({
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group relative",
         active
-          ? "bg-blue-600 text-white shadow-[0_4px_12px_rgba(37,99,235,0.2)]"
-          : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100",
+          ? "bg-zinc-950 text-white shadow-xl shadow-zinc-950/20"
+          : "text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100",
       )}
     >
       <Icon
@@ -81,7 +81,6 @@ export function DashboardSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { tenant } = useDashboardStore();
-  const isHost = tenant?.businessType === "airbnb_host";
 
   useEffect(() => {
     const checkViewport = () => {
@@ -114,16 +113,16 @@ export function DashboardSidebar() {
   const menuItems = [
     { label: "Overview", icon: LayoutDashboard, href: "/dashboard/ai" },
     { label: "Inbox", icon: MessageSquare, href: "/dashboard/ai/inbox" },
-    { label: "Customers", icon: Users, href: "/dashboard/ai/customers" },
-    { label: "Appointments", icon: Calendar, href: "/dashboard/ai/bookings" },
+    { label: "Clients", icon: Users, href: "/dashboard/ai/customers" },
+    { label: "Sales & Plans", icon: Calendar, href: "/dashboard/ai/bookings" },
     { label: "Marketing", icon: Megaphone, href: "/dashboard/ai/marketing" },
     { label: "Content Hub", icon: Share2, href: "/dashboard/ai/content" },
-    { label: "Meta Catalog", icon: ShoppingBag, href: "/dashboard/ai/catalog" },
+    { label: "Catalogs", icon: ShoppingBag, href: "/dashboard/ai/catalog" },
     { label: "Calendar", icon: CalendarDays, href: "/dashboard/ai/calendar" },
     { label: "Services", icon: Briefcase, href: "/dashboard/ai/listings" },
-    { label: "Tasks", icon: CheckSquare, href: "/dashboard/ai/tasks" },
+    { label: "Operations", icon: CheckSquare, href: "/dashboard/ai/tasks" },
     { label: "Integrations", icon: Puzzle, href: "/dashboard/ai/integrations" },
-    { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },
+    { label: "Analytics", icon: BarChart3, href: "/dashboard/ai/insights" },
     { label: "Notifications", icon: Bell, href: "/dashboard/notifications" },
   ];
 

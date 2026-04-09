@@ -26,20 +26,26 @@ export function BusinessTypeCard({
       aria-pressed={selected}
       aria-label={`Select ${title} business type`}
       className={cn(
-        "public-panel-soft group h-full p-6 text-left transition-all duration-200 hover:-translate-y-1",
-        selected && "ring-2 ring-primary/20 bg-primary/5",
+        "bg-white border border-zinc-200 group h-full p-6 text-left transition-all duration-300 hover:shadow-xl hover:shadow-zinc-950/5 hover:-translate-y-1 rounded-[2rem]",
+        selected && "ring-2 ring-blue-600/20 bg-blue-50/50 border-blue-600/30",
       )}
     >
       <div className="flex h-full flex-col gap-4">
-        <div className="public-inset flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <div className={cn(
+          "flex h-12 w-12 items-center justify-center rounded-2xl transition-colors shadow-sm",
+          selected ? "bg-blue-600 text-white" : "bg-zinc-50 border border-zinc-200 text-zinc-500"
+        )}>
           <Icon className="h-5 w-5" />
         </div>
         <div>
-          <h3 className="text-xl font-bold tracking-tight text-foreground font-sans uppercase">{title}</h3>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
+          <h3 className="text-xl font-black tracking-tighter text-zinc-950 font-sans uppercase">{title}</h3>
+          <p className="mt-2 text-sm leading-6 text-zinc-500 font-medium">{description}</p>
         </div>
-        <div className="mt-auto inline-flex items-center gap-2 text-sm font-black uppercase tracking-wider text-primary">
-          Select role
+        <div className={cn(
+          "mt-auto inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-colors",
+          selected ? "text-blue-600" : "text-zinc-400 group-hover:text-zinc-950"
+        )}>
+          Select Ecosystem
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </div>
       </div>

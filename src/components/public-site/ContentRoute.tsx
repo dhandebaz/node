@@ -35,7 +35,7 @@ const articlePageMap = {
   "nodebase-voice": docsPages["nodebase-voice"],
   "nodebase-eyes": docsPages["nodebase-eyes"],
   "employee-dukan-ai": employeePages["dukan-ai"],
-  "employee-host-ai": employeePages["host-ai"],
+  "employee-omni-ai": employeePages["omni-ai"],
   "employee-nurse-ai": employeePages["nurse-ai"],
   "employee-thrift-ai": employeePages["thrift-ai"],
   "legal-aup": legalPages.aup,

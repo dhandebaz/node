@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 3 gotchas, 29 conventions, 14 fixes, 3 error→fix pairs."
+description: "Typescript React for node. 5 gotchas, 32 conventions, 14 fixes, 3 error→fix pairs."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,7 +12,7 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **106 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **127 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -20,6 +20,8 @@ Auto-compiled from **106 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| gotcha in public-content.tsx | -       title: "Host AI", +       title: "Omni AI", -       href: "/employees/host-ai", +       href |
+| gotcha in PricingSurface.tsx | -   "You keep 100% of your revenue. We never take a cut of your bookings or sales.", +   "You keep 1 |
 | ⚠️ GOTCHA: Fixed null crash in AlertTriangle — avo | - import { + import { motion } from "framer-motion"; -   AlertTriangle, + import { -   ArrowDownLeft |
 | ⚠️ GOTCHA: Fixed null crash in Task — prevents nul | -       const res = await fetchWithAuth("/api/tasks", { +       const newTask = await fetchWithAuth< |
 | ⚠️ GOTCHA: Fixed null crash in Task — prevents nul | -       const [tasksRes, listingsRes, bookingsRes] = await Promise.all([ +       const tasksData = a |
@@ -331,6 +333,19 @@ Auto-compiled from **106 real patterns** in **node**. This skill is auto-routed 
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **what-changed in page.tsx — confirmed 3x** — File updated (external): src/app/login/page.tsx
+
+Content summary (312 lines):
+"use client";
+
+import 
+- 📐 **decision in page.tsx — confirmed 3x** — - export default function UpsellStore() {
++ export default function ClientStore() {
+-         name: 
+- 📐 **what-changed in layout.tsx — confirmed 4x** — File updated (external): src/app/guide/[bookingId]/layout.tsx
+
+Content summary (33 lines):
+import { 
 - 📐 **Strengthened types NodeBase — formalizes the data contract with explicit types** — -     question: "Can I jump in and reply to customers myself?",
 +     question: "How does NodeBase c
 - 📐 **Strengthened types NODEBASE** — -         {/* BOTTOM CTA */}
@@ -356,26 +371,6 @@ Auto-compiled from **106 real patterns** in **node**. This skill is auto-routed 
 + import {
 -   CardHeader,
 +  
-- 📐 **what-changed in page.tsx — confirmed 3x** — File updated (external): src/app/(customer)/dashboard/ai/integrations/page.tsx
-
-Content summary (599
-- 📐 **Strengthened types Plus — filters out falsy/null values explicitly** — -   Building,
-+   Plus,
--   LayoutDashboard,
-+   TrendingUp,
--   Layers,
-+   History,
--   Plus,
-+   
-- 📐 **Strengthened types ReactMarkdown** — -                     <ReactMarkdown className="prose prose-invert prose-sm max-w-none prose-p:leadi
-- 📐 **Strengthened types Concierge** — -   const isLoading = status === "submitted" || status === "streaming" || status === "waiting";
-+   
-- 📐 **Strengthened types React** — -     initialMessages: [
-+   });
--       {
-+ 
--         id: "welcome",
-+   const isLoading = status 
-- 📐 **Fixed 
+- 📐 **what-changed in page.tsx — confirm
 
 ... [Truncated — see individual observations for full content]

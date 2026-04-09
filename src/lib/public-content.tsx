@@ -205,26 +205,6 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
   ],
   cards: [
     {
-      title: "Host AI",
-      description:
-        "Premium hospitality agent. Answers guest questions, orchestrates check-ins, and collects secure deposits autonomously.",
-      href: "/employees/host-ai",
-      icon: Building2,
-      eyebrow: "Hospitality",
-      stat: "Stays & bookings",
-      ctaLabel: "View Host AI",
-    },
-    {
-      title: "Nurse AI",
-      description:
-        "Medical intake specialist. Fields live Twilio calls, ingests prescriptions via Nodebase Eyes, and books appointments.",
-      href: "/employees/nurse-ai",
-      icon: Stethoscope,
-      eyebrow: "Healthcare",
-      stat: "Appointments",
-      ctaLabel: "View Nurse AI",
-    },
-    {
       title: "Dukan AI",
       description:
         "Omnichannel retail manager. Takes WhatsApp orders, handles live inventory calls, and confirms secure deliveries.",
@@ -243,6 +223,26 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
       eyebrow: "Social commerce",
       stat: "DM selling",
       ctaLabel: "View Thrift AI",
+    },
+    {
+      title: "Nurse AI",
+      description:
+        "Medical intake specialist. Fields live Twilio calls, ingests prescriptions via Nodebase Eyes, and books appointments.",
+      href: "/employees/nurse-ai",
+      icon: Stethoscope,
+      eyebrow: "Healthcare",
+      stat: "Appointments",
+      ctaLabel: "View Nurse AI",
+    },
+    {
+      title: "Omni AI",
+      description:
+        "Premium operations agent. Answers client questions, orchestrates project starts, and collects secure payments autonomously.",
+      href: "/employees/omni-ai",
+      icon: Building2,
+      eyebrow: "Operations",
+      stat: "Services & projects",
+      ctaLabel: "View Omni AI",
     },
   ],
   sections: [
@@ -281,37 +281,37 @@ export const employeeDirectoryPage: PublicDirectoryPageData = {
 };
 
 export const employeePages: Record<string, PublicArticlePageData> = {
-  "host-ai": {
-    eyebrow: "Hospitality Operations Agent",
+  "omni-ai": {
+    eyebrow: "Business Operations Agent",
     title:
-      "Host AI runs your property operations autonomously. Zero latency, full compliance.",
+      "Omni AI runs your high-volume operations autonomously. Zero latency, full compliance.",
     summary:
-      "Engineered for premium homestays and vacation networks. Host AI orchestrates omnichannel bookings, manages live guest phone calls via Twilio, and enforces secure KYC verifications.",
+      "Engineered for premium service firms and operation networks. Omni AI orchestrates omnichannel workflows, manages live client phone calls via Twilio, and enforces secure KYC verifications.",
     metrics: [
-      { label: "Target", value: "Premium Hospitality" },
+      { label: "Target", value: "Premium Services" },
       { label: "Capability", value: "Voice & Vision AI" },
       { label: "Compliance", value: "Automated KYC OCR" },
     ],
     sections: [
       {
-        title: "What Host AI can do for you",
+        title: "What Omni AI can do for you",
         cards: [
           {
             title: "Answers questions & calls",
             description:
-              "Guests hate waiting. Host AI replies instantly on WhatsApp and fields live phone calls via Twilio Voice with accurate check-in details.",
+              "Clients hate waiting. Omni AI replies instantly on WhatsApp and fields live phone calls via Twilio Voice with accurate project details.",
             icon: CalendarClock,
           },
           {
             title: "Collects payments",
             description:
-              "Generates secure Stripe/Razorpay payment links and politely follows up if a guest forgets to pay their deposit.",
+              "Generates secure Stripe/Razorpay payment links and politely follows up if a client forgets to pay their deposit.",
             icon: CreditCard,
           },
           {
             title: "Automated KYC Verification",
             description:
-              "Uses Nodebase Eyes OCR to instantly verify government IDs before check-in, keeping your property secure without manual review.",
+              "Uses Nodebase Eyes OCR to instantly verify government IDs before service starts, keeping your business secure without manual review.",
             icon: FileCheck2,
           },
         ],
@@ -321,8 +321,8 @@ export const employeePages: Record<string, PublicArticlePageData> = {
         title: "How it executes in production",
         bullets: [
           "Ingests your complex operating policies, dynamic pricing matrices, and real-time availability via APIs.",
-          "Resolves common and complex guest queries with enterprise-grade accuracy, elevating brand perception.",
-          "Instantly escalates bespoke requests or multi-property booking exceptions for human override.",
+          "Resolves common and complex client queries with enterprise-grade accuracy, elevating brand perception.",
+          "Instantly escalates bespoke requests or multi-project exceptions for human override.",
           "Aggregates all omnichannel interactions logically within the centralized operator portal.",
         ],
       },
@@ -332,13 +332,13 @@ export const employeePages: Record<string, PublicArticlePageData> = {
           {
             title: "WhatsApp & Instagram",
             description:
-              "Host AI talks to your guests on the apps they already use every day.",
+              "Omni AI talks to your clients on the apps they already use every day.",
             icon: MessagesSquare,
           },
           {
             title: "Calendar Sync",
             description:
-              "Syncs with Airbnb and Booking.com so you never get double-booked.",
+              "Syncs with your calendars so you never get double-booked.",
             icon: Layers3,
           },
           {
@@ -352,9 +352,9 @@ export const employeePages: Record<string, PublicArticlePageData> = {
       },
     ],
     cta: {
-      title: "Ready to scale your hospitality operations?",
+      title: "Ready to scale your business operations?",
       description:
-        "Deploy Host AI in minutes and secure your transactional workflow with enterprise capabilities.",
+        "Deploy Omni AI in minutes and secure your transactional workflow with enterprise capabilities.",
       primary: { label: "Scope a deployment", href: "/signup" },
       secondary: { label: "Review pricing architecture", href: "/pricing" },
     },
@@ -647,7 +647,7 @@ export const companyDirectoryPage: PublicDirectoryPageData = {
         {
           title: "Built for real people",
           description:
-            "We design our software for store owners, clinic managers, and hosts - not for IT departments.",
+            "We design our software for store owners, clinic managers, and service professionals - not for IT departments.",
           icon: Bot,
         },
         {
@@ -679,7 +679,7 @@ export const careersPage: PublicArticlePageData = {
   eyebrow: "Careers",
   title: "Join us in building AI that actually helps small businesses grow.",
   summary:
-    "Nodebase is a small, focused team. We care about making products that are incredibly easy to use for shop owners, homestay hosts, and clinic managers.",
+    "Nodebase is a small, focused team. We care about making products that are incredibly easy to use for shop owners, service providers, and clinic managers.",
   metrics: [
     { label: "Team model", value: "Small & fast" },
     { label: "Focus", value: "Real-world impact" },

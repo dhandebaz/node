@@ -85,7 +85,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
         </div>
 
         {/* Center Zone: Tabs (Desktop) */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-1 glass-panel rounded-full p-1 border border-white/10">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-md rounded-full p-1 border border-zinc-200 shadow-sm">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
             return (
@@ -93,13 +93,13 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2",
+                  "px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-200 flex items-center gap-2",
                   isActive
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    ? "bg-zinc-950 text-white shadow-md"
+                    : "text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100"
                 )}
               >
-                <item.icon size={14} className={isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"} />
+                <item.icon size={14} className={isActive ? "text-white" : "text-zinc-400 group-hover:text-zinc-950"} />
                 {item.label}
               </Link>
             );
@@ -138,7 +138,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="absolute right-0 top-full mt-2 w-56 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl border border-border/50 shadow-2xl rounded-2xl overflow-hidden py-1 z-[60]"
+                className="absolute right-0 top-full mt-2 w-56 bg-white border border-zinc-200 shadow-xl rounded-2xl overflow-hidden py-1 z-[60]"
               >
                 <div className="px-3 py-2 border-b border-border mb-1 sm:hidden">
                   <p className="text-xs font-medium text-foreground truncate">{tenantName || "My Business"}</p>
@@ -192,7 +192,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed top-16 left-0 right-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-3xl border-b border-border/50 z-40 md:hidden overflow-hidden shadow-md"
+            className="fixed top-16 left-0 right-0 bg-white/95 backdrop-blur-3xl border-b border-zinc-200 z-40 md:hidden overflow-hidden shadow-xl"
           >
             <div className="flex flex-col p-4 gap-3">
               <div className="mb-1 px-2 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Navigation</div>
@@ -204,13 +204,13 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={cn(
-                      "flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-bold transition-all",
+                      "flex items-center gap-4 px-4 py-3.5 rounded-xl text-sm font-black transition-all",
                       isActive
-                        ? "bg-primary text-primary-foreground rounded-xl shadow-md"
-                        : "text-muted-foreground hover:text-foreground hover:bg-white/5 rounded-xl"
+                        ? "bg-zinc-950 text-white shadow-lg"
+                        : "text-zinc-500 hover:text-zinc-950 hover:bg-zinc-50"
                     )}
                   >
-                    <item.icon size={20} className={isActive ? "text-primary-foreground" : "text-muted-foreground"} />
+                    <item.icon size={20} className={isActive ? "text-white" : "text-zinc-400"} />
                     {item.label}
                   </Link>
                 );

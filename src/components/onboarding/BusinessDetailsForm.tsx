@@ -144,7 +144,7 @@ export function BusinessDetailsForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="space-y-4">
-        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-zinc-950">
           {config.countLabel}
         </label>
         <input
@@ -154,18 +154,18 @@ export function BusinessDetailsForm({
           onChange={(event) =>
             setPropertyCount(Number.parseInt(event.target.value || "0", 10))
           }
-          className="public-input focus:ring-2 focus:ring-primary/20 font-bold text-lg px-6 py-4"
+          className="w-full bg-white border border-zinc-200 rounded-2xl px-6 py-4 text-lg font-black text-zinc-950 placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600/30 transition-all"
           required
         />
       </div>
 
       <div className="space-y-6">
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-zinc-950">
             {config.platformLabel}
           </label>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground font-sans">
-            Select every channel that actually shapes the workflow today.
+          <p className="mt-2 text-sm leading-6 text-zinc-500 font-medium font-sans">
+            Select the primary channels that drive your operational traffic today.
           </p>
         </div>
         <div className="grid gap-3 md:grid-cols-2">
@@ -178,23 +178,23 @@ export function BusinessDetailsForm({
                 type="button"
                 onClick={() => togglePlatform(platform.id)}
                 className={cn(
-                  "public-inset flex items-center gap-4 rounded-2xl px-5 py-5 text-left transition-all hover:border-primary/30",
-                  selected && "border-primary bg-primary/5 shadow-sm shadow-primary/5",
+                  "flex items-center gap-4 rounded-2xl px-5 py-5 text-left transition-all border border-zinc-200 bg-white hover:border-blue-600/30",
+                  selected && "border-blue-600 bg-blue-50/50 shadow-sm shadow-blue-600/5",
                 )}
               >
                 <div
                   className={cn(
                     "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all",
                     selected
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-background text-transparent",
+                      ? "border-blue-600 bg-blue-600 text-white"
+                      : "border-zinc-200 bg-zinc-50 text-transparent",
                   )}
                 >
-                  <Check className="h-4 w-4" />
+                  <Check className="h-4 w-4" strokeWidth={3} />
                 </div>
                 <span className={cn(
-                  "text-sm font-bold uppercase tracking-tight transition-colors",
-                  selected ? "text-foreground" : "text-muted-foreground"
+                  "text-sm font-black uppercase tracking-tight transition-colors",
+                  selected ? "text-zinc-950" : "text-zinc-400"
                 )}>
                   {platform.label}
                 </span>
@@ -207,15 +207,15 @@ export function BusinessDetailsForm({
       <button
         type="submit"
         disabled={loading}
-        className="public-button w-full px-8 py-5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full bg-zinc-950 text-white rounded-2xl px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all items-center justify-center flex gap-3 active:scale-95 disabled:opacity-50"
       >
         {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
-        Configure my AI employee
+        Authorize Deployment
       </button>
 
-      <p className="text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 leading-relaxed max-w-sm mx-auto">
-        Setup usually takes a couple of minutes. No card or platform passwords are
-        needed at this step.
+      <p className="text-center text-[10px] font-black uppercase tracking-widest text-zinc-400 leading-relaxed max-w-sm mx-auto">
+        Authentication usually takes a professional moment. No immediate billing or
+        account access tokens are required during this phase.
       </p>
     </form>
   );
