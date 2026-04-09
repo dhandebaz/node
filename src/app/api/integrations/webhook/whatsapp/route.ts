@@ -314,17 +314,41 @@ async function processIncomingMessage(
 
   const aiSettings = tenant?.ai_settings as any;
 
-  const prompt = [
-    `You are an AI assistant for a ${tenant?.business_type || "business"}.`,
-    getToneInstruction(aiSettings?.tone),
-    aiSettings?.customInstructions?.trim(),
-    `Reply to this customer message: ${text}`,
-  ].filter(Boolean).join(" ");
+  let aiReply = "";
+  let usage: any = { totalTokens: 0 };
 
-  const { text: aiReply, usage } = await generateText({
-    model: kaisaRuntime.model,
-    prompt,
-  });
+  // If hospitality, use the specialized Host AI Engine
+  if (tenant?.business_type === "hospitality" || tenant?.business_type === "hotel") {
+    const { AICoHostEngine } = await import("@/lib/services/aiCoHost");
+    
+    // Simulate getting booking window/guests context
+    const context = {
+      guestName: contact?.name || sender,
+      listingId: "Unknown",
+      checkIn: "2026-10-12",
+      checkOut: "2026-10-15",
+      channel: "WHATSAPP" as const
+    };
+    
+    const engineResult = await AICoHostEngine.processIncomingMessage(text, context);
+    aiReply = engineResult.responseText;
+    log.info(`[WhatsApp] Host AI Intent classified as: ${engineResult.intent}`);
+  } else {
+    // Standard AI generic fallback
+    const prompt = [
+      `You are an AI assistant for a ${tenant?.business_type || "business"}.`,
+      getToneInstruction(aiSettings?.tone),
+      aiSettings?.customInstructions?.trim(),
+      `Reply to this customer message: ${text}`,
+    ].filter(Boolean).join(" ");
+
+    const result = await generateText({
+      model: kaisaRuntime.model,
+      prompt,
+    });
+    aiReply = result.text;
+    usage = result.usage;
+  }
 
   // Record AI usage
   await supabase.from("ai_usage_events").insert({

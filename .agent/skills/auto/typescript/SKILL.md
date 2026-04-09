@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 2 gotchas, 33 conventions, 60 fixes."
+description: "Typescript for node. 3 gotchas, 35 conventions, 61 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,37 +11,42 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **173 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **181 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
 > **CRITICAL:** These are real gotchas from this project. Ignoring them WILL cause bugs.
 
-### ❌ ⚠️ GOTCHA: Updated schema Promise
--   { params }: { params: { id: string } }
-+   { params }: { params: Promise<{ id: string }> }
--   try {
-+   const { id } = await params;
--     const { error } = await supabase
-+   try {
--       .from("blocked_dates")
-+     const { error } = await su
-- Modified 1 files
-- identifier: Promise
-- identifier: NextResponse
-
-### ❌ ⚠️ GOTCHA: Updated schema Date
--         const start = new Date(b.start_date);
-+         if (!b.start_date || !b.end_date) return false;
--         const end = new Date(b.end_date);
-+         const start = new Date(b.start_date);
--         return targetDate >= start && targetDa
-- Modified 1 files
-- identifier: Date
-- identifier: Base
-
+| ❌ Don't | Details |
+|----------|----------|
+| ⚠️ GOTCHA: Strengthened types Host | -       const modelInstance = settings.provider === "mistral" +       const modelInstance = google(s |
+| ⚠️ GOTCHA: Updated schema Promise | -   { params }: { params: { id: string } } +   { params }: { params: Promise<{ id: string }> } -   t |
+| ⚠️ GOTCHA: Updated schema Date | -         const start = new Date(b.start_date); +         if (!b.start_date -- !b.end_date) return  |
 
 ## 🔧 Problem Playbooks
+
+### Fixed null crash in Request
+-   req: Request,
++   req: Request
+-   { params }: { params: { bookingId: string } }
++ ) {
+- ) {
++   try {
+-   try {
++     const { messages } = await req.json();
+-     const { messages } = await req.json();
++ 
+- 
++     // Context that normally would be fetched from Supabase via `bookingId`
+-     // Context that normally would be fetched from Supabase via `bookingId`
++     // Mocking for developmen
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Request
+3. identifier: Context
+4. identifier: Supabase
+5. identifier: Mocking
 
 ### Fixed null crash in Dispatch
 -             // Dispatch to external channel
@@ -387,13 +392,6 @@ import { ChannelService } from "@/lib/services/channelService";
 type Payload = {
 
 
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Boolean — prevents null/undefined runtime crashes
--     const aiDefaults = getPersonaAIDefaults(tenant?.business_type);
-+     const aiDefaults = getPersonaAIDefaults(tenant?.business_type as any);
--     const systemPrompt = [
-+     const aiConfig = (tenant?.ai_settings || {
+**Actionab
 
 ... [Truncated — see individual observations for full content]

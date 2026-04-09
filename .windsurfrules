@@ -1,7 +1,7 @@
 # node — Project Memory
-# Auto-synced | 531 observations
+# Auto-synced | 758 observations
 
-**Stack:** JavaScript/TypeScript · Express + Next.js + React + Tailwind · DB: MongoDB
+**Stack:** JavaScript/TypeScript · Next.js + React + Tailwind
 
 # 🏛️ CORE ARCHITECTURE
 
@@ -54,7 +54,4 @@ Example:
 > ℹ️ DO NOT call get_context() or get_gotchas() at startup — context above IS your context.
 
 ---
-*Auto-synced | 2026-04-06*
-
-# BrainSync Intelligence (Auto-Synced)
-[BrainSync Rules](.brainsync/agent-rules.md)
+*Auto-synced | 2026-04-09*

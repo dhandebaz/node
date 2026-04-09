@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 42 gotchas, 80 conventions, 20 fixes."
+description: "Project for node. 54 gotchas, 108 conventions, 38 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **270 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **385 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,18 @@ Auto-compiled from **270 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - gotcha in agent-rules.md - - ⚠️ GOTCHA: Optimized Score — parall |
+| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (82 lines): # Project Intelligen |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in agent-rules.md + - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for spee |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 717 notes - Score threshold: >40 + > 731 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| gotcha in agent-rules.md | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - gotcha in agent-rules.md - - gotcha in shared-conte |
+| gotcha in agent-rules.md | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - gotcha in agent-rules.md - - gotcha in shared-conte |
+| gotcha in agent-rules.md | - - gotcha in shared-context.json + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Streng |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue PdZuCQFGAKfZtZpznyH + - Patched security issue FAiR - - problem-fix in ag |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue PdZuCQFGAKfZtZpznyH - - Fixed null cras |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue PEZVKieyTQntYFUooTNMKH - - Fixed null c |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes + - problem-fix in age |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes + - problem-fix in age |
 | ⚠️ GOTCHA: Updated schema GOTCHA | - - ⚠️ GOTCHA: Updated schema GOTCHA + - gotcha in shared-context.json - - gotcha in shared-context. |
 | ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema GOTCHA - - gotcha in agent-rules.md  |
 | ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema GOTCHA - - gotcha in agent-rules.md  |
@@ -56,285 +68,162 @@ Auto-compiled from **270 real patterns** in **node**. This skill is auto-routed 
 | Don't use innerHTML — use textContent or sanitized | Don't use innerHTML — use textContent or sanitized rendering |
 | Sanitize ALL user input before database queries —  | Sanitize ALL user input before database queries — prevent SQL injection |
 | Never use eval(), exec(), or Function() with user  | Never use eval(), exec(), or Function() with user input |
-| Don't hardcode API keys, passwords, database URLs, | Don't hardcode API keys, passwords, database URLs, or secrets anywhere |
-| Don't leave console.log, print(), debugger, or TOD | Don't leave console.log, print(), debugger, or TODO in production code |
-| Don't commit .env, secrets, API keys, or credentia | Don't commit .env, secrets, API keys, or credentials — add to .gitignore |
-| Never force push to main, master, or production br | Never force push to main, master, or production branches |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
-- - Patched security issue PJbZ
+- - Patched security issue PEZVKieyTQntYFUooTNMKH
 + - problem-fix in agent-rules.md
-- - Patched security issue ZwOgHzh
-+ - Patched security issue PJbZ
-- - Patched security issue shared-context
-+ - Patched security issue ZwOgHzh
-- - problem-fix in shared-context.json
-+ - Patched security issue shared-context
-- - problem-fix in .gitignore
+- - problem-fix in agent-rules.md
++ - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
+- - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
++ - Fixed null crash in Request
+- - Fixed null crash in Request
 + - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols li
+- - problem-fix in shar
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Patched security issue ZwOgHzh
-+ - Patched security issue PJbZ
-- - Patched security issue shared-context
-+ - Patched security issue ZwOgHzh
-- - problem-fix in shared-context.json
-+ - Patched security issue shared-context
-- - problem-fix in .gitignore
+- - problem-fix in agent-rules.md
++ - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Request
+- - problem-fix in agent-rules.md
 + - problem-fix in shared-context.json
+- - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
++ - problem-fix in brainsync_auto.md
+- - Fixed null crash in Request
++ 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Request
++ - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - Fixed null crash in Request
+- - problem-fix in brainsync_auto.md
++ - problem-fix in shared-context.json
+- - Patched security issue Cfmw
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Request
++ - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - Fixed null crash in Request
+- - problem-fix in brainsync_auto.md
++ - problem-fix in shared-context.json
+- - Patched security issue CfmwPle
++ - problem-fix in brainsync_auto.md
+- - Patched security issue CMrUzFD
++ - Patched security issue CfmwPle
+
+
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in brainsync_auto.md
+- > 628 notes | Score threshold: >40
++ > 642 notes | Score threshold: >40
+- - what-changed in brainsync_auto.md — confirmed 3x
++ - what-changed in shared-context.json — confirmed 11x
+- - what-changed in brainsync_auto.md — confirmed 3x
++ - problem-fix in agent-rules.md — confirmed 9x
+- - Optimized Score — confirmed 3x
++ - problem-fix in shared-context.json — confirmed 3x
+- - what-changed in shared
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue CfmwPle
++ - problem-fix in agent-rules.md
+- - Patched security issue CMrUzFD
++ - Patched security issue CfmwPle
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue CfmwPle
++ - problem-fix in agent-rules.md
+- - Patched security issue CMrUzFD
++ - Patched security issue CfmwPle
+- - problem-fix in .gitignore
++ - Patched security issue CMrUzFD
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue CfmwPle
++ - problem-fix in agent-rules.md
+- - Patched security issue CMrUzFD
++ - Patched security issue CfmwPle
+- - problem-fix in .gitignore
++ - Patched security issue CMrUzFD
 - - problem-fix in bookingAutomation.ts
 + - problem-fix in .gitignore
 
-📌 IDE AST Context: Modified symbol
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Archi
 
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in .gitignore
-File updated (external): .gitignore
+### problem-fix in agent-rules.md
+- - Patched security issue CfmwPle
++ - problem-fix in agent-rules.md
+- - Patched security issue CMrUzFD
++ - Patched security issue CfmwPle
+- - problem-fix in .gitignore
++ - Patched security issue CMrUzFD
+- - problem-fix in bookingAutomation.ts
++ - problem-fix in .gitignore
+- - problem-fix in tsc_errors_fresh.txt
++ - problem-fix in bookingAutomation.ts
 
-Content summary (57 lines):
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-
+📌 IDE AST Context: Modified symbols likely i
 
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in tsc_errors_fresh.txt
-File updated (external): tsc_errors_fresh.txt
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue CfmwPle
+- - problem-fix in agent-rules.md
++ - Patched security issue CMrUzFD
+- - problem-fix in agent-rules.md
++ - problem-fix in .gitignore
+- - problem-fix in agent-rules.md
++ - problem-fix in bookingAutomation.ts
+- - problem-fix in agent-rules.md
++ - problem-fix in tsc_errors_fresh.txt
 
-Content summary (15 lines):
-��s
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in task.md.resolved
-- - [ ] Update `src/app/(customer)/dashboard/ai/page.tsx` (Fix activity map callback type)
-+ - [x] Update `src/app/(customer)/dashboard/ai/page.tsx` (Fix activity map callback type)
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in task.md
-- - [ ] Verify fix by running a build or checking runtime logs
-+ - [x] Verify fix by running a build or checking runtime logs
+📌 IDE AST Context: Modified symbols likely inclu
 
 **Actionable Steps:**
 1. Modified 1 files
 
-### problem-fix in task.md.resolved
-- - [ ] Verify fix by running a build or checking runtime logs
-+ - [x] Verify fix by running a build or checking runtime logs
+### problem-fix in agent-rules.md
+- - Patched security issue CfmwPle
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue CfmwPle
 
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in task.md
-- - [/] Refactor `fetchCurrentUser` in `src/app/actions/customer.ts` to use `getSupabaseAdmin()`
-+ - [x] Refactor `fetchCurrentUser` in `src/app/actions/customer.ts` to use `getSupabaseAdmin()`
-- - [ ] Verify fix by running a build or checking runtime logs
-+ - [x] Verify fix by running a build or checking runtime logs
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in tsc_errors.txt
-File updated (external): tsc_errors.txt
-
-Content summary (243 lines):
-��s
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in BusinessType — prevents null/undefined runtime crashes
-- I will apply type casting to `tenant?.business_type` in the following files to match the expected `BusinessType` type.
-+ I will apply type casting to `tenant?.business_type` in the following files to match the expected `BusinessType` type and ensure the `BusinessType` type is imported.
-- Cast `tenant?.business_type` to `BusinessType` when calling `getPersonaCapabilities`.
-+ - Import `BusinessTyp
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: BusinessType
-3. identifier: Import
-4. identifier: Cast
-5. identifier: MODIFY
-
-### Fixed null crash in BusinessType — prevents null/undefined runtime crashes
-- I will apply type casting to `tenant?.business_type` in the following files to match the expected `BusinessType` type.
-+ I will apply type casting to `tenant?.business_type` in the following files to match the expected `BusinessType` type and ensure the `BusinessType` type is imported.
-- Cast `tenant?.business_type` to `BusinessType` when calling `getPersonaCapabilities`.
-+ - Import `BusinessTyp
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: BusinessType
-3. identifier: Import
-4. identifier: Cast
-5. identifier: MODIFY
-
-### problem-fix in build_output_utf8.txt
-- 
-+ ﻿
-- Γ£ô Compiled successfully in 60s
-+ Γ£ô Compiled successfully in 75s
-- ./src/app/api/admin/pricing
-+ ./src/app/api/chat/send/rou
-- /update/route.ts:32:7
-+ te.ts:28:10
-- Type error: Spread types 
-+ Type error: No overload 
-- may only be created from 
-+ matches this call.
-- object types.
-+   Overload 1 of 2, 
-- 
-+ '(values: { channel?: 
--   [90m30 |[0m     
-+ string | null
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in build_output.txt
-- 
-+ ��
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in ts_errors.txt
-File updated (external): ts_errors.txt
-
-Content summary (482 lines):
-��s
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in ts_errors.txt
-File updated (external): ts_errors.txt
-
-Content summary (500 lines):
-��s
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in ts_errors_after_schema.log
-File updated (external): ts_errors_after_schema.log
-
-Content summary (580 lines):
-��s
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in ts_errors_new.log
-File updated (external): ts_errors_new.log
-
-Content summary (725 lines):
-��s
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in ts_errors.log
-File updated (external): ts_errors.log
-
-Content summary (782 lines):
-��s
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in ts_errors.log
-File updated (external): ts_errors.log
-
-Content summary (1 lines):
-
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in .gitignore
-File updated (external): .gitignore
-
-Content summary (45 lines):
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-
-
-**Actionable Steps:**
-1. Modified 1 files
-
-## 📐 Conventions & Best Practices
-
-### Project Conventions
-- 📐 **Updated schema GOTCHA — confirmed 3x** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Updated 
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent
 
 ... [Truncated — see individual observations for full content]

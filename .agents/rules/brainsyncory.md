@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 528 notes | Score threshold: >40
+> 749 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -16,51 +16,49 @@
 - **ALWAYS** ask the user before running commands that modify system state, install packages, or make network requests.
 - When in doubt, **show the command first** and wait for approval.
 
-**Stack:** JavaScript/TypeScript · Express + Next.js + React + Tailwind · DB: MongoDB
+**Stack:** JavaScript/TypeScript · Next.js + React + Tailwind
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - ⚠️ GOTCHA: Updated schema GOTCHA
-+ - gotcha in shared-context.json
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "7fb0b2213993110b",
++       "id": "695b28027a101d67",
 +
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Updated schema GOTCHA
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Updated schema GOTCHA
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Updated schema GOTCHA
-- **⚠️ GOTCHA: Updated schema GOTCHA** — - - gotcha in agent-rules.md
-+ - gotcha in shared-context.json
-- - ⚠️ 
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
++ - gotcha in agent-rules.md
+- - ⚠️ GO
+- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
+
+Content summary (8
 
 ## Project Standards
 
-- convention in git_diff_utf8.txt
-- convention in agent-rules.md
-- convention in utf8_status.txt
-- what-changed in route.ts — confirmed 4x
-- problem-fix in route.ts — confirmed 3x
-- Fixed null crash in NextResponse — confirmed 3x
-- Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 3x
-- discovery in page.tsx — confirmed 4x
+- what-changed in shared-context.json — confirmed 4x
+- discovery in shared-context.json — confirmed 3x
+- Patched security issue FAiR — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Optimized Score — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Updated schema GOTCHA — confirmed 3x
 
 ## Known Fixes
 
+- ❌ - - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ const { data: { user }, error: authError } = await supabase.auth.getUser(); → ✅ problem-fix in route.ts
 - ❌ import { withErrorHandler } from "@/lib/api/withErrorHandler"; → ✅ problem-fix in route.ts
 - ❌ import { AppError, ErrorCode } from "@/lib/errors"; → ✅ problem-fix in walletService.ts
 - ❌ +     } catch (error) { → ✅ Fixed null crash in Review — prevents null/undefined runtime crashes
-- ❌ File updated (external): ts_errors.log → ✅ problem-fix in ts_errors.log
 
 ## Recent Decisions
 
-- Optimized Finished — prevents brute-force and DoS attacks
+- Optimized Score — parallelizes async operations for speed
+- Optimized Score — parallelizes async operations for speed
+- Optimized Score — parallelizes async operations for speed
+- Optimized Cannot — hardens HTTP security headers
 
 ## Learned Patterns
 
