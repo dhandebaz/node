@@ -333,6 +333,20 @@ async function processIncomingMessage(
     const engineResult = await AICoHostEngine.processIncomingMessage(text, context);
     aiReply = engineResult.responseText;
     log.info(`[WhatsApp] Host AI Intent classified as: ${engineResult.intent}`);
+
+    // CRM Status Movement Trigger
+    if (engineResult.suggestedStatus && conversationId) {
+      try {
+        await InboxService.updateConversationStatus(
+          tenantId,
+          conversationId,
+          engineResult.suggestedStatus as any
+        );
+        log.info(`[WhatsApp] CRM Movement: Moved conversation ${conversationId} to ${engineResult.suggestedStatus}`);
+      } catch (err) {
+        log.error("[WhatsApp] CRM Movement failed", { error: err });
+      }
+    }
   } else {
     // Standard AI generic fallback
     const prompt = [

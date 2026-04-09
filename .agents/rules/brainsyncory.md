@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 770 notes | Score threshold: >40
+> 887 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -22,49 +22,47 @@
 
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
 + - problem-fix in shared-context.js
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - Patched security issue QAEZ
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
 +     {
 - }
-+       "id": "695b28027a101d67",
++       "id": "a35ef8943f29d8a1",
 +
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized GOTCHA
-+ - gotcha in agent-rules.md
-- - ⚠️ GO
-- **gotcha in agent-rules.md** — File updated (external): .brainsync/agent-rules.md
-
-Content summary (8
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 779 notes | Score threshold: >40
++ > 783 notes | Score threshold: 
+- **⚠️ GOTCHA: Optimized Score — externalizes configuration for environment flexibility** — - > 770 notes | Score threshold: >40
++ > 779 notes | Score threshold: 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - problem-fix in shared-context.js
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
++ - problem-fix in agent-rules.
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 9x
+- problem-fix in agent-rules.md — confirmed 9x
+- Patched security issue RCWtJ — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 - what-changed in shared-context.json — confirmed 6x
-- problem-fix in agent-rules.md — confirmed 5x
-- Fixed null crash in Context — prevents null/undefined runtime crashes — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- Optimized GOTCHA — confirmed 3x
-- problem-fix in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
-- discovery in shared-context.json — confirmed 3x
+- problem-fix in agent-rules.md — confirmed 6x
+- Optimized Score — confirmed 3x
 
 ## Known Fixes
 
 - ❌ - - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ - - Fixed null crash in Context — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ const { data: { user }, error: authError } = await supabase.auth.getUser(); → ✅ problem-fix in route.ts
 - ❌ import { withErrorHandler } from "@/lib/api/withErrorHandler"; → ✅ problem-fix in route.ts
 - ❌ import { AppError, ErrorCode } from "@/lib/errors"; → ✅ problem-fix in walletService.ts
-- ❌ +     } catch (error) { → ✅ Fixed null crash in Review — prevents null/undefined runtime crashes
 
 ## Recent Decisions
 
-- Optimized Score — parallelizes async operations for speed
-- Optimized Score — parallelizes async operations for speed
-- Optimized Score — parallelizes async operations for speed
-- Optimized Cannot — hardens HTTP security headers
+- Optimized Score — externalizes configuration for environment flexibility
+- Optimized Score — externalizes configuration for environment flexibility
+- Optimized Score — externalizes configuration for environment flexibility
+- Optimized Score — externalizes configuration for environment flexibility
 
 ## Learned Patterns
 

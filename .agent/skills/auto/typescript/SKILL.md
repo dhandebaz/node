@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 3 gotchas, 35 conventions, 61 fixes."
+description: "Typescript for node. 3 gotchas, 36 conventions, 61 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **181 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **182 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 

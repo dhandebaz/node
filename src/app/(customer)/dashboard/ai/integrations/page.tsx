@@ -11,7 +11,8 @@ import {
   ExternalLink,
   RefreshCw,
   LogOut,
-  Loader2
+  Loader2,
+  Sparkles,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -58,6 +59,21 @@ export default function ListingIntegrationsPage() {
   const [isConnectingGoogle, setIsConnectingGoogle] = useState(false);
   const [isConnectingWhatsApp, setIsConnectingWhatsApp] = useState(false);
   const [isConnectingInstagram, setIsConnectingInstagram] = useState(false);
+  const [activeTab, setActiveTab] = useState<"all" | "messengers" | "calendars">("all");
+
+  const connectedCount = [
+    isGoogleConnected,
+    isWhatsAppConnected,
+    isInstagramConnected
+  ].filter(Boolean).length;
+  
+  const totalAvailable = [
+    capabilities.integrations.google,
+    capabilities.integrations.whatsapp,
+    capabilities.integrations.instagram
+  ].filter(Boolean).length;
+
+  const progress = Math.round((connectedCount / totalAvailable) * 100);
 
   // Deprecated direct check, use capabilities
   // const isAirbnbHost = tenant?.businessType === "airbnb_host";
@@ -244,16 +260,67 @@ export default function ListingIntegrationsPage() {
 
   return (
     <div className="space-y-8 pb-32 max-w-5xl mx-auto">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-bold text-white uppercase tracking-tight">Integrations</h1>
-        <p className="text-zinc-400">Manage your connected apps and services to boost AI capabilities.</p>
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/5">
+        <div className="space-y-2">
+            <div className="flex items-center gap-2 text-primary font-bold text-[10px] tracking-[0.2em] uppercase">
+                <Sparkles className="w-3 h-3" />
+                Connectivity
+            </div>
+            <h1 className="text-4xl font-bold text-white tracking-tight">Integrations</h1>
+            <p className="text-zinc-400 text-sm max-w-md line-clamp-2">Link your channels to activate the full power of Nodebase AI and the Sales Pipeline.</p>
+        </div>
+        <div className="flex flex-col items-end gap-2 min-w-[240px]">
+            <div className="flex justify-between w-full text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                <span>Setup Progress</span>
+                <span className="text-primary">{progress}%</span>
+            </div>
+            <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                <div 
+                    className="h-full bg-gradient-to-r from-primary to-orange-500 transition-all duration-1000 ease-out"
+                    style={{ width: `${progress}%` }}
+                />
+            </div>
+            <p className="text-[10px] text-zinc-500 italic">
+                {connectedCount === totalAvailable ? "🎉 Fully connected!" : `${totalAvailable - connectedCount} more to reach 100%`}
+            </p>
+        </div>
       </header>
+
+      <div className="flex items-center gap-1 bg-white/5 w-fit p-1 rounded-xl border border-white/5">
+        <button 
+            onClick={() => setActiveTab("all")}
+            className={cn(
+                "px-4 py-2 rounded-lg text-xs font-bold transition-all",
+                activeTab === "all" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-zinc-500 hover:text-zinc-300"
+            )}
+        >
+            All Services
+        </button>
+        <button 
+            onClick={() => setActiveTab("messengers")}
+            className={cn(
+                "px-4 py-2 rounded-lg text-xs font-bold transition-all",
+                activeTab === "messengers" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-zinc-500 hover:text-zinc-300"
+            )}
+        >
+            Messaging
+        </button>
+        <button 
+            onClick={() => setActiveTab("calendars")}
+            className={cn(
+                "px-4 py-2 rounded-lg text-xs font-bold transition-all",
+                activeTab === "calendars" ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-zinc-500 hover:text-zinc-300"
+            )}
+        >
+            Calendars
+        </button>
+      </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         
 
         {/* Google Integration */}
-        {capabilities.integrations.google && (
+        {capabilities.integrations.google && (activeTab === "all" || activeTab === "calendars") && (
           <Card className="glass-panel border-white/5 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
             <CardHeader className="relative">
@@ -337,7 +404,7 @@ export default function ListingIntegrationsPage() {
         )}
 
         {/* OTA Integrations (iCal) */}
-        {capabilities.integrations.ical && (
+        {capabilities.integrations.ical && (activeTab === "all" || activeTab === "calendars") && (
           <Card className="glass-panel border-white/5 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
             <CardHeader className="relative">
@@ -378,7 +445,7 @@ export default function ListingIntegrationsPage() {
         )}
 
         {/* WhatsApp Integration */}
-        {capabilities.integrations.whatsapp && (
+        {capabilities.integrations.whatsapp && (activeTab === "all" || activeTab === "messengers") && (
           <WhatsAppBYONCard initialStatus={whatsappStatus as any} />
         )}
 
@@ -459,7 +526,7 @@ export default function ListingIntegrationsPage() {
 
 
         {/* Instagram Integration */}
-        {capabilities.integrations.instagram && (
+        {capabilities.integrations.instagram && (activeTab === "all" || activeTab === "messengers") && (
           <Card className="glass-panel border-white/5 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
             <CardHeader className="relative">

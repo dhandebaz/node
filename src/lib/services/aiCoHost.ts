@@ -10,6 +10,8 @@ export type CoHostIntent =
   | "FAQ"
   | "MAINTENANCE_ISSUE"
   | "UPSELL_INQUIRY"
+  | "BOOKING_INQUIRY"
+  | "PAYMENT_ISSUE"
   | "HUMAN_ESCALATION"
   | "UNKNOWN";
 
@@ -30,7 +32,7 @@ export class AICoHostEngine {
   static async processIncomingMessage(
     message: string,
     context: CoHostContext
-  ): Promise<{ responseText: string; intent: CoHostIntent }> {
+  ): Promise<{ responseText: string; intent: CoHostIntent; suggestedStatus?: any }> {
     try {
       const settings = resolveAISettings({ model: "google/gemini-2.5-flash", tone: "professional" });
       const modelInstance = google(settings.model.replace("google/", ""));
@@ -49,8 +51,16 @@ export class AICoHostEngine {
         - FAQ: Wi-Fi, checkout time, rules, location, locking the door.
         - MAINTENANCE_ISSUE: Broken AC, plumbing, dirty room (Escalate this).
         - UPSELL_INQUIRY: Late checkout, airport pickup, extra cleaning.
+        - BOOKING_INQUIRY: Guest wants to book or extend.
+        - PAYMENT_ISSUE: Payment failed or guest asking for link.
         - HUMAN_ESCALATION: Angry guest, complex request that needs a real person.
         - UNKNOWN: Cannot determine.
+
+        CRM Pipeline Management:
+        - If the guest is asking for a payment link or bank details, suggest status 'payment_pending'.
+        - If the guest says they have paid or confirmed, suggest status 'paid'.
+        - If the guest is angry or has a maintenance issue, suggest status 'open' (needs human intervention).
+        - If the guest is just saying goodbye or thanks, suggest status 'resolved'.
 
         ${getToneInstruction(settings.tone)}
       `;
@@ -65,9 +75,12 @@ export class AICoHostEngine {
             "FAQ",
             "MAINTENANCE_ISSUE",
             "UPSELL_INQUIRY",
+            "BOOKING_INQUIRY",
+            "PAYMENT_ISSUE",
             "HUMAN_ESCALATION",
             "UNKNOWN",
           ]),
+          suggestedStatus: z.enum(["open", "draft", "payment_pending", "paid", "scheduled", "resolved"]).optional(),
           response: z.string()
         }),
       });
@@ -75,6 +88,7 @@ export class AICoHostEngine {
       return {
         responseText: result.object.response || "I will have the host get back to you shortly.",
         intent: result.object.intent || "UNKNOWN",
+        suggestedStatus: result.object.suggestedStatus
       };
 
     } catch (error) {

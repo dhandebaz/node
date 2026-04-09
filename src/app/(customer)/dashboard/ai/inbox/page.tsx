@@ -27,7 +27,14 @@ import {
   Pencil,
   EyeOff,
   Building,
+  LayoutDashboard,
+  Layers,
+  Plus,
+  TrendingUp,
+  History,
+  ShieldCheck,
 } from "lucide-react";
+import { PipelineBoard } from "@/components/dashboard/ai/PipelineBoard";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { cn, timeAgo } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -40,6 +47,7 @@ import Link from "next/link";
 import { getBusinessLabels } from "@/lib/business-context";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardHeader,
@@ -582,6 +590,8 @@ export default function InboxPage() {
     };
   }, [tenant?.id, selectedConversationId]);
 
+  const [viewMode, setViewMode] = useState<"list" | "pipeline">("list");
+
   const managerOptions = useMemo(() => {
     const unique = new Map<string, string>();
     conversations.forEach((conv) =>
@@ -1014,7 +1024,33 @@ export default function InboxPage() {
               <h1 className="text-xl font-bold text-foreground tracking-tight">
                 Inbox
               </h1>
-              <div className="flex items-center gap-2 bg-white/5 border border-border rounded-full px-3 py-1 ml-2">
+              <div className="flex items-center bg-white/5 border border-border rounded-lg p-0.5 ml-2">
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={cn(
+                    "p-1.5 rounded-md transition-all",
+                    viewMode === "list"
+                      ? "bg-primary text-foreground shadow-sm"
+                      : "text-foreground/40 hover:text-foreground/70"
+                  )}
+                  title="List View"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => setViewMode("pipeline")}
+                  className={cn(
+                    "p-1.5 rounded-md transition-all",
+                    viewMode === "pipeline"
+                      ? "bg-primary text-foreground shadow-sm"
+                      : "text-foreground/40 hover:text-foreground/70"
+                  )}
+                  title="Pipeline Board"
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <div className="hidden lg:flex items-center gap-2 bg-white/5 border border-border rounded-full px-3 py-1 ml-2">
                 <Label
                   htmlFor="default-ai-toggle"
                   className="text-[10px] font-medium text-foreground/60 cursor-pointer"
@@ -1278,7 +1314,29 @@ export default function InboxPage() {
           showThread ? "translate-x-0" : "translate-x-full md:translate-x-0",
         )}
       >
-        {selectedConversation ? (
+        {viewMode === "pipeline" ? (
+          <div className="flex-1 p-6 overflow-hidden">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-bold text-foreground">Sales Pipeline</h2>
+                <p className="text-xs text-muted-foreground">Manage leads and conversions visually.</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="h-8 text-xs">
+                  <Plus className="w-3 h-3 mr-2" />
+                  New Lead
+                </Button>
+              </div>
+            </div>
+            <PipelineBoard 
+              conversations={filteredConversations as any}
+              onSelect={(id) => {
+                setSelectedConversationId(id);
+                setViewMode("list");
+              }}
+            />
+          </div>
+        ) : selectedConversation ? (
           <>
             <div className="h-16 px-4 border-b border-border flex items-center justify-between bg-transparent">
               <div className="flex items-center gap-3">
@@ -1789,21 +1847,66 @@ export default function InboxPage() {
               <div className="hidden md:flex w-80 bg-[#140707] border-l border-border flex-col p-4 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-foreground/40">
-                      Context
+                    <div className="text-xs uppercase tracking-widest text-foreground/40 font-bold">
+                      Contact 360
                     </div>
-                    <div className="text-sm font-semibold text-foreground">
-                      {context?.managerName ||
-                        selectedConversation.manager.name}
+                    <div className="text-sm font-semibold text-foreground mt-1 flex items-center gap-2">
+                        {selectedConversation.customerName || "Anonymous Guest"}
+                        <Badge variant="outline" className="text-[10px] h-4 bg-emerald-500/10 text-emerald-500 border-emerald-500/20">Active</Badge>
                     </div>
                   </div>
                   <button
                     onClick={() => loadContext(selectedConversation.id)}
-                    className="text-xs text-foreground/40 hover:text-foreground"
+                    className="p-1.5 hover:bg-white/5 rounded-md text-foreground/40 hover:text-foreground transition-colors"
                   >
-                    Refresh
+                    <RefreshCw className="w-3.5 h-3.5" />
                   </button>
                 </div>
+
+                {/* CRM Value Stats */}
+                <div className="grid grid-cols-2 gap-2">
+                    <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                        <div className="text-[10px] text-foreground/40 uppercase font-bold flex items-center gap-1 mb-1">
+                            <TrendingUp className="w-3 h-3 text-emerald-400" />
+                            Value
+                        </div>
+                        <div className="text-lg font-bold text-foreground">₹7,500</div>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                        <div className="text-[10px] text-foreground/40 uppercase font-bold flex items-center gap-1 mb-1">
+                            <History className="w-3 h-3 text-blue-400" />
+                            Retention
+                        </div>
+                        <div className="text-lg font-bold text-foreground">3 <span className="text-[10px] text-foreground/40">stays</span></div>
+                    </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="text-[10px] uppercase tracking-widest text-foreground/40 font-bold mb-2">
+                    Guest Timeline
+                  </div>
+                  <div className="space-y-4 relative before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-[1px] before:bg-white/10">
+                    <div className="relative pl-8">
+                        <div className="absolute left-0 top-0.5 w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center z-10">
+                            <CheckCircle className="w-3 h-3 text-emerald-400" />
+                        </div>
+                        <div className="text-xs font-semibold text-foreground">Payment Verified</div>
+                        <div className="text-[10px] text-foreground/40 mt-0.5">Today, 10:24 AM</div>
+                    </div>
+                    <div className="relative pl-8 opacity-60">
+                        <div className="absolute left-0 top-0.5 w-5 h-5 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center z-10">
+                            <MessageCircle className="w-3 h-3 text-blue-400" />
+                        </div>
+                        <div className="text-xs font-semibold text-foreground">Inquiry about Wi-Fi</div>
+                        <div className="text-[10px] text-foreground/40 mt-0.5">Yesterday, 9:15 PM</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-white/5">
+                  <div className="text-xs uppercase tracking-widest text-foreground/40 font-bold mb-3">
+                    Knowledge Context
+                  </div>
                 {loadingContext && (
                   <div className="space-y-3">
                     <Skeleton className="w-24 h-3 bg-white/5" />

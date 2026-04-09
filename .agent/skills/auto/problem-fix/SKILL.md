@@ -21,12 +21,12 @@ Auto-compiled from **2 real patterns** in **node**. This skill is auto-routed to
 | Error Pattern | Fix | Seen |
 |-------|-----|------|
 | `- - Fixed null crash in UpsellStore — prevents nul` | problem-fix in agent-rules.md | 8x |
+| `- - Fixed null crash in Context — prevents null/un` | problem-fix in agent-rules.md | 6x |
 | `const { data: { user }, error: authError } = await` | problem-fix in route.ts | 5x |
 | `import { withErrorHandler } from "@/lib/api/withEr` | problem-fix in route.ts | 4x |
 | `import { AppError, ErrorCode } from "@/lib/errors"` | problem-fix in walletService.ts | 4x |
 | `+     } catch (error) {` | Fixed null crash in Review — prevents null/undefined runtime | 4x |
 | `+ - Fixed null crash in UpsellStore — prevents nul` | problem-fix in agent-rules.md | 4x |
-| `- - Fixed null crash in Context — prevents null/un` | problem-fix in agent-rules.md | 4x |
 | `File updated (external): ts_errors.log` | problem-fix in ts_errors.log | 3x |
 | `File updated (external): ts_errors.txt` | problem-fix in ts_errors.txt | 3x |
 | `-     const { error } = await supabase.from("syste` | problem-fix in controlService.ts | 3x |

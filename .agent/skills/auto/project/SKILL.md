@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 57 gotchas, 109 conventions, 40 fixes."
+description: "Project for node. 60 gotchas, 120 conventions, 64 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **393 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **449 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **393 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 779 notes - Score threshold: >40 + > 783 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| ⚠️ GOTCHA: Optimized Score — externalizes configur | - > 770 notes - Score threshold: >40 + > 779 notes - Score threshold: >40 - - what-changed in shared |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - Fixed null crash in Con |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - Patched security issue QAEZ - - Patched security issue QA |
@@ -65,159 +68,151 @@ Auto-compiled from **393 real patterns** in **node**. This skill is auto-routed 
 | Always validate data on the SERVER — client valida | Always validate data on the SERVER — client validation is for UX only |
 | Don't fetch data inside render loops or hot paths | Don't fetch data inside render loops or hot paths |
 | Don't swallow errors silently — empty catch blocks | Don't swallow errors silently — empty catch blocks hide bugs |
-| Never store session tokens in localStorage — use h | Never store session tokens in localStorage — use httpOnly cookies |
-| Use parameterized queries — never string concatena | Use parameterized queries — never string concatenation for SQL |
-| Don't store passwords in plain text — use bcrypt,  | Don't store passwords in plain text — use bcrypt, argon2, or scrypt |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
+- - Patched security issue RCWtJ
 + - problem-fix in agent-rules.md
-- - Fixed null crash in Context — prevents null/undefined runtime crashes
-+ - problem-fix in shared-context.json
-- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-+ - Fixed null crash in Context — prevents null/undefined runtime crashes
-- - Patched security issue QAEZ
-+ - Patched security issue LxjiczDOjVbjOCWKwMB
+- - problem-fix in agent-rules.md
++ - Patched security issue RCWtJ
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
+- - Patched security issue RCWtJ
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue RCWtJ
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue RCWtJ
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue RCWtJ
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue RCWtJ
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue RCWtJ
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Patched security issue RCWtJ
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
++ - problem-fix in agent-rules.md
+- - Patched security issue QAEZ
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated)
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
 - - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
 + - problem-fix in shared-context.json
 - - Patched security issue QAEZ
-+ - Fixed null crash in Context — prevents null/undefined runtime crashes
++ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
+- - problem-fix in brainsync_auto.md
++ - Patched security issue QAEZ
+
+📌 IDE AST Context: Modified symbols likely include [# Project
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
++ - problem-fix in shared-context.json
+- - Patched security issue QAEZ
++ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
+- - problem-fix in brainsync_auto.md
++ - Patched security issue QAEZ
+- - problem-fix in .gitignore
++ - problem-fix in brainsync_auto
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
 - - problem-fix in agent-rules.md
 + - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
 - - problem-fix in agent-rules.md
 + - Patched security issue QAEZ
-- - Fixed null crash in UpsellS
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue PEZVKieyTQntYFUooTNMKH
-+ - problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
-- - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
-+ - Fixed null crash in Request
-- - Fixed null crash in Request
-+ - problem-fix in shared-context.json
-- - problem-fix in shar
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in Request
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
 + - problem-fix in brainsync_auto.md
-- - Fixed null crash in Request
-+ 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in Request
-+ - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Request
-- - problem-fix in brainsync_auto.md
-+ - problem-fix in shared-context.json
-- - Patched security issue Cfmw
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Request
-+ - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Request
-- - problem-fix in brainsync_auto.md
-+ - problem-fix in shared-context.json
-- - Patched security issue CfmwPle
-+ - problem-fix in brainsync_auto.md
-- - Patched security issue CMrUzFD
-+ - Patched security issue CfmwPle
-
-
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in brainsync_auto.md
-- > 628 notes | Score threshold: >40
-+ > 642 notes | Score threshold: >40
-- - what-changed in brainsync_auto.md — confirmed 3x
-+ - what-changed in shared-context.json — confirmed 11x
-- - what-changed in brainsync_auto.md — confirmed 3x
-+ - problem-fix in agent-rules.md — confirmed 9x
-- - Optimized Score — confirmed 3x
-+ - problem-fix in shared-context.json — confirmed 3x
-- - what-changed in shared
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue CfmwPle
-+ - problem-fix in agent-rules.md
-- - Patched security issue CMrUzFD
-+ - Patched security issue CfmwPle
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue CfmwPle
-+ - problem-fix in agent-rules.md
-- - Patched security issue CMrUzFD
-+ - Patched security issue CfmwPle
-- - problem-fix in .gitignore
-+ - Patched security issue CMrUzFD
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue CfmwPle
-+ - problem-fix in agent-rules.md
-- - Patched security issue CMrUzFD
-+ - Patched security issue CfmwPle
-- - problem-fix in .gitignore
-+ - Patched security issue CMrUzFD
-- - problem-fix in bookingAutomation.ts
+- - problem-fix in agent-rules.md
 + - problem-fix in .gitignore
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Archi
+📌 IDE AST Context: Modified 
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Patched security issue CfmwPle
+- - problem-fix in shared-context.json
 + - problem-fix in agent-rules.md
-- - Patched security issue CMrUzFD
-+ - Patched security issue CfmwPle
-- - problem-fix in .gitignore
-+ - Patched security issue CMrUzFD
-- - pr
+- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
++ - problem-fix in shared-context.json
+- - Patched security issue QAEZ
++ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architectur
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
++ - problem-fix in shared-context.json
+- - Patched security issue QAEZ
++ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
+- - problem-fix in brainsync_auto.md
++ - Patched security issue QAEZ
+
+📌 IDE AST Context: Modified symbols likely include [# Proj
 
 ... [Truncated — see individual observations for full content]

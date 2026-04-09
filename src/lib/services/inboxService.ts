@@ -117,4 +117,35 @@ export class InboxService {
       return created;
     }
   }
+
+  /**
+   * Update conversation status explicitly (CRM Movement)
+   */
+  static async updateConversationStatus(
+    tenantId: string,
+    conversationId: string,
+    status: Conversation["status"],
+    metadata?: any
+  ) {
+    const supabase = await getSupabaseServer();
+    
+    const { data, error } = await supabase
+      .from("conversations")
+      .update({ 
+        status, 
+        metadata: metadata ? metadata : undefined,
+        updated_at: new Date().toISOString() 
+      })
+      .eq("tenant_id", tenantId)
+      .eq("id", conversationId)
+      .select()
+      .single();
+
+    if (error) {
+      log.error(`Failed to update status for conversation ${conversationId}`, error);
+      throw error;
+    }
+
+    return data;
+  }
 }
