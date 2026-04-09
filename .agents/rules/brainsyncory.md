@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 956 notes | Score threshold: >40
+> 1025 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,28 +20,30 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in AlertTriangle — avoids unnecessary re-renders in React** — - import {
++ import { motion } from "framer-motion";
+-   AlertTriangle
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 956 notes | Score threshold: >40
++ > 961 notes | Score threshold: 
+- **⚠️ GOTCHA: Optimized Score** — - > 954 notes | Score threshold: >40
++ > 956 notes | Score threshold: 
 - **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 949 notes | Score threshold: >40
 + > 954 notes | Score threshold: 
 - **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 945 notes | Score threshold: >40
 + > 949 notes | Score threshold: 
 - **⚠️ GOTCHA: Optimized Score** — - > 931 notes | Score threshold: >40
 + > 945 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score** — - > 920 notes | Score threshold: >40
-+ > 931 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 887 notes | Score threshold: >40
-+ > 920 notes | Score threshold: 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Building — avoids unnecessary re-renders in Re
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 4x
-- what-changed in business-context.ts — confirmed 3x
-- Updated a database schema — formalizes the data contract with explicit types — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
+- what-changed in shared-context.json — confirmed 5x
+- what-changed in shared-context.json — confirmed 14x
+- Strengthened types NodeBase — formalizes the data contract with explicit types
+- Strengthened types NODEBASE
+- Patched security issue YYJORwaH — confirmed 3x
+- Strengthened types XCircle — ensures atomic multi-step database operations
+- what-changed in page.tsx — confirmed 4x
 - Optimized GOTCHA — confirmed 3x
-- what-changed in shared-context.json — confirmed 11x
-- Fixed null crash in Badge — avoids unnecessary re-renders in React — confirmed 4x
-- what-changed in page.tsx — confirmed 3x
 
 ## Known Fixes
 
@@ -53,10 +55,10 @@
 
 ## Recent Decisions
 
-- decision in input.tsx
-- decision in DashboardSidebar.tsx
-- Optimized Score — externalizes configuration for environment flexibility
-- Optimized Score — externalizes configuration for environment flexibility
+- decision in page.tsx
+- Optimized Industries — hardens HTTP security headers
+- Optimized Industries — hardens HTTP security headers
+- Optimized Score — parallelizes async operations for speed
 
 ## Learned Patterns
 

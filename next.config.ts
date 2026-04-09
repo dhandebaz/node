@@ -31,13 +31,9 @@ const nextConfig: NextConfig = {
       },
     ]
   },
-  // Ignore typescript/eslint errors during build for development if needed, 
-  // but better to fix them. Keeping ignore to speed up Vercel builds.
+  // TypeScript strict mode enabled
   typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
+    ignoreBuildErrors: false,
   },
   experimental: {
     serverActions: {

@@ -55,5 +55,6 @@ export const BOOKING_MULTIPLIERS: Record<BusinessType, number> = {
   airbnb_host: 1,
   kirana_store: 10,   
   doctor_clinic: 5,   
-  thrift_store: 5     
+  thrift_store: 5,
+  service_business: 1
 };

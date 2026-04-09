@@ -10,7 +10,8 @@ import {
     Bot,
     User,
     ArrowRight,
-    Sparkles
+    Sparkles,
+    Plus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";

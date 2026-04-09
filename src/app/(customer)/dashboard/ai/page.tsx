@@ -111,7 +111,7 @@ export default async function AIDashboardPage() {
 
       <OnboardingChecklist
         stats={{
-          listingCount: serviceCount || 0,
+          listingCount: listingCount || 0,
           walletBalance: walletBalance || 0,
           isAiEnabled:
             !!tenant?.is_ai_enabled && flags["ai_global_enabled"] !== false,

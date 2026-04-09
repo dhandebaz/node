@@ -11,14 +11,16 @@ import {
   ShieldCheck,
   Sparkles,
   Waypoints,
+  CheckCircle2,
+  XCircle,
   type LucideIcon,
 } from "lucide-react";
 import { employeeDirectoryPage } from "@/lib/public-content";
 
 const heroMetrics = [
-  { label: "Enterprise Core", value: "Starts at ₹999/mo" },
+  { label: "Price Comparison", value: "23x Cheaper than Respond.io" },
   { label: "Multimodal AI", value: "Voice, Vision & Text" },
-  { label: "Trust Center", value: "Automated KYC OCR" },
+  { label: "Setup Time", value: "5 Minutes" },
 ];
 
 const workflowPillars: {
@@ -361,6 +363,86 @@ export function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* WHY NODEBASE - Competitive Comparison */}
+        <section className="glass-panel-glow p-8 sm:p-12 rounded-[2.5rem] relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-8">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+              <Activity className="h-8 w-8 text-emerald-400" />
+            </div>
+          </div>
+          
+          <div className="space-y-6 max-w-3xl mb-12">
+            <div className="text-xs font-bold tracking-[0.2em] text-emerald-400 uppercase drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]">Why Businesses Switch</div>
+            <h2 className="font-display text-4xl text-white tracking-tighter leading-[1.1]">
+              The #1 Kommo & Respond.io Alternative
+            </h2>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              Stop paying $15-45/user/month for generic chatbots. NodeBase offers domain-specific AI agents 
+              at a flat ₹999/month with Voice + Vision + KYC built-in.
+            </p>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-white/10">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-white/5 border-b border-white/10">
+                  <th className="text-left p-4 font-bold text-zinc-400">Feature</th>
+                  <th className="w-32 p-4 font-bold text-center text-emerald-400">NodeBase</th>
+                  <th className="w-32 p-4 font-bold text-center text-zinc-500">Kommo</th>
+                  <th className="w-32 p-4 font-bold text-center text-zinc-500">Respond.io</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="bg-white/5 border-b border-white/5">
+                  <td className="p-4 text-sm text-white">Price</td>
+                  <td className="p-4 text-center text-sm font-bold text-emerald-400">₹999/mo</td>
+                  <td className="p-4 text-center text-sm text-zinc-400">$15+/user</td>
+                  <td className="p-4 text-center text-sm text-zinc-400">$79+/mo</td>
+                </tr>
+                <tr className="bg-black/20 border-b border-white/5">
+                  <td className="p-4 text-sm text-white">Domain-Specific AI</td>
+                  <td className="p-4 text-center"><CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto" /></td>
+                  <td className="p-4 text-center"><XCircle className="w-5 h-5 text-zinc-300 mx-auto" /></td>
+                  <td className="p-4 text-center"><XCircle className="w-5 h-5 text-zinc-300 mx-auto" /></td>
+                </tr>
+                <tr className="bg-white/5 border-b border-white/5">
+                  <td className="p-4 text-sm text-white">Voice Calls Included</td>
+                  <td className="p-4 text-center"><CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto" /></td>
+                  <td className="p-4 text-center"><XCircle className="w-5 h-5 text-zinc-300 mx-auto" /></td>
+                  <td className="p-4 text-center text-xs text-zinc-500">$279+ tier</td>
+                </tr>
+                <tr className="bg-black/20 border-b border-white/5">
+                  <td className="p-4 text-sm text-white">Vision/OCR</td>
+                  <td className="p-4 text-center"><CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto" /></td>
+                  <td className="p-4 text-center"><XCircle className="w-5 h-5 text-zinc-300 mx-auto" /></td>
+                  <td className="p-4 text-center"><XCircle className="w-5 h-5 text-zinc-300 mx-auto" /></td>
+                </tr>
+                <tr className="bg-white/5">
+                  <td className="p-4 text-sm text-white">Automated KYC</td>
+                  <td className="p-4 text-center"><CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto" /></td>
+                  <td className="p-4 text-center"><XCircle className="w-5 h-5 text-zinc-300 mx-auto" /></td>
+                  <td className="p-4 text-center"><XCircle className="w-5 h-5 text-zinc-300 mx-auto" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <Link
+              href="/compare"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold rounded-xl hover:bg-emerald-500/20 transition-all text-sm"
+            >
+              Full Comparison <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 glass-panel text-white font-bold rounded-xl hover:bg-white/10 transition-all text-sm"
+            >
+              Start Free Trial
+            </Link>
           </div>
         </section>
 

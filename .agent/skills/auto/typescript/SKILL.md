@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 3 gotchas, 38 conventions, 61 fixes."
+description: "Typescript for node. 3 gotchas, 38 conventions, 62 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **187 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **196 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -24,6 +24,29 @@ Auto-compiled from **187 real patterns** in **node**. This skill is auto-routed 
 | ⚠️ GOTCHA: Updated schema Date | -         const start = new Date(b.start_date); +         if (!b.start_date -- !b.end_date) return  |
 
 ## 🔧 Problem Playbooks
+
+### Patched security issue TypeScript — improves module reusability
+-   // Ignore typescript/eslint errors during build for development if needed, 
++   // TypeScript strict mode enabled
+-   // but better to fix them. Keeping ignore to speed up Vercel builds.
++   typescript: {
+-   typescript: {
++     ignoreBuildErrors: false,
+-     ignoreBuildErrors: true,
++   },
+-   },
++   experimental: {
+-   eslint: {
++     serverActions: {
+-     ignoreDuringBuilds: true,
++      
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: TypeScript
+3. identifier: Map
+4. identifier: DNS
+5. identifier: Prefetch
 
 ### Fixed null crash in Request
 -   req: Request,
@@ -369,29 +392,6 @@ Content summary (162 lines):
 import { NextResponse } from "next/server";
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
 import { requireActiveTenant } from "@/lib/auth/tenant";
-import { getAppUrl } from "@/lib/runtime-config";
-
-export async function POST(req: Request) {
-  try {
-    const supabase = awa
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in route.ts
-File updated (external): src/app/api/payments/webhook/route.ts
-
-Content summary (189 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
-import { logEvent } from "@/lib/events";
-import { log } from "@/lib/logger";
-import { EVENT_TYPES } from "@/types/events";
-import { ChannelService } from "@/lib/services/channelService";
-
-type Payload = {
-
-
-**Actionab
+import { g
 
 ... [Truncated — see individual observations for full content]

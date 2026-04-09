@@ -101,12 +101,20 @@ export const publicNavLinks = [
     href: "/features",
   },
   {
+    label: "Industries",
+    href: "/industries",
+  },
+  {
     label: "AI Assistants",
     href: "/employees",
   },
   {
     label: "Pricing",
     href: "/pricing",
+  },
+  {
+    label: "Compare",
+    href: "/compare",
   },
   {
     label: "Trust",
@@ -127,8 +135,10 @@ export const footerLinkGroups = [
     title: "Product",
     links: [
       { label: "Features", href: "/features" },
+      { label: "Industries", href: "/industries" },
       { label: "AI Assistants", href: "/employees" },
       { label: "Pricing", href: "/pricing" },
+      { label: "Compare", href: "/compare" },
       { label: "Trust Center", href: "/trust" },
     ],
   },
@@ -138,6 +148,7 @@ export const footerLinkGroups = [
       { label: "Documentation", href: "/docs" },
       { label: "Quickstart", href: "/docs/getting-started/quickstart" },
       { label: "Agents API", href: "/docs/kaisa/agents-api" },
+      { label: "Integrations", href: "/integrations" },
     ],
   },
   {

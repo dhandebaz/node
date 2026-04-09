@@ -14,6 +14,7 @@ import {
   Loader2,
   Sparkles,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -60,6 +61,10 @@ export default function ListingIntegrationsPage() {
   const [isConnectingWhatsApp, setIsConnectingWhatsApp] = useState(false);
   const [isConnectingInstagram, setIsConnectingInstagram] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "messengers" | "calendars">("all");
+
+  const isGoogleConnected = googleStatus?.status === "connected";
+  const isWhatsAppConnected = whatsappStatus?.status === "connected";
+  const isInstagramConnected = instagramStatus?.status === "connected";
 
   const connectedCount = [
     isGoogleConnected,
@@ -251,12 +256,8 @@ export default function ListingIntegrationsPage() {
     }
   };
 
-  const isGoogleConnected = googleStatus?.status === "connected";
   const isGoogleExpired = googleStatus?.status === "expired";
   const isGoogleError = googleStatus?.status === "error";
-
-  const isWhatsAppConnected = whatsappStatus?.status === "connected";
-  const isInstagramConnected = instagramStatus?.status === "connected";
 
   return (
     <div className="space-y-8 pb-32 max-w-5xl mx-auto">

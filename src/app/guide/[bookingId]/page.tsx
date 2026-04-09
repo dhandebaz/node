@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Coffee, MapPin, KeyRound, Wifi, Shirt, ArrowRight, ShieldAlert, BadgeCheck } from "lucide-react";
+import { Coffee, MapPin, KeyRound, Wifi, Shirt, ArrowRight, ShieldAlert, BadgeCheck, CheckCircle2, Clock } from "lucide-react";
 import Link from "next/link";
 import AiConciergeChat from "@/components/guest/AiConciergeChat";
 

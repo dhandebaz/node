@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 2 gotchas, 24 conventions, 12 fixes, 3 error→fix pairs."
+description: "Typescript React for node. 3 gotchas, 29 conventions, 14 fixes, 3 error→fix pairs."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,32 +12,17 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **85 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **106 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
 > **CRITICAL:** These are real gotchas from this project. Ignoring them WILL cause bugs.
 
-### ❌ ⚠️ GOTCHA: Fixed null crash in Task — prevents null/undefined runtime crashes
--       const res = await fetchWithAuth("/api/tasks", {
-+       const newTask = await fetchWithAuth<{ task: Task }>("/api/tasks", {
--       if (res.ok) {
-+       setTasks([...tasks, newTask.task]);
--         const newTask = await res.json();
-+       
-- Modified 1 files
-- identifier: Task
-- identifier: Failed
-
-### ❌ ⚠️ GOTCHA: Fixed null crash in Task — prevents null/undefined runtime crashes
--       const [tasksRes, listingsRes, bookingsRes] = await Promise.all([
-+       const tasksData = await fetchWithAuth<{ tasks: Task[] }>(`/api/tasks?tenant_id=${tenant?.id}`);
--         fetchWithAuth(`/api/tasks?tenant_id=${tenant?.id}`),
-+       se
-- Modified 1 files
-- identifier: Task
-- identifier: Listing
-
+| ❌ Don't | Details |
+|----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in AlertTriangle — avo | - import { + import { motion } from "framer-motion"; -   AlertTriangle, + import { -   ArrowDownLeft |
+| ⚠️ GOTCHA: Fixed null crash in Task — prevents nul | -       const res = await fetchWithAuth("/api/tasks", { +       const newTask = await fetchWithAuth< |
+| ⚠️ GOTCHA: Fixed null crash in Task — prevents nul | -       const [tasksRes, listingsRes, bookingsRes] = await Promise.all([ +       const tasksData = a |
 
 ## 🔧 Problem Playbooks
 
@@ -48,6 +33,43 @@ Auto-compiled from **85 real patterns** in **node**. This skill is auto-routed t
 | `- - Fixed null crash in Plus — avoids unnecessary ` | problem-fix in agent-rules.md | 3x |
 | `- - Fixed null crash in Building — avoids unnecess` | problem-fix in agent-rules.md | 3x |
 | `- import { SessionExpiredError } from "@/lib/api/e` | Fixed null crash in Building — avoids unnecessary re-renders | 2x |
+
+### Fixed null crash in Card — parallelizes async operations for speed
+- import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
++ import { cn } from "@/lib/utils";
+- import { Badge } from "@/components/ui/badge";
++ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+- import { Button } from "@/components/ui/button";
++ import { Badge } from "@/components/ui/badge";
+- import { useD
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Card
+3. identifier: CardContent
+4. identifier: CardHeader
+5. identifier: CardTitle
+
+### Fixed null crash in Boolean — parallelizes async operations for speed
+-   const connectedCount = [
++   const isGoogleConnected = googleStatus?.status === "connected";
+-     isGoogleConnected,
++   const isWhatsAppConnected = whatsappStatus?.status === "connected";
+-     isWhatsAppConnected,
++   const isInstagramConnected = instagramStatus?.status === "connected";
+-     isInstagramConnected
++ 
+-   ].filter(Boolean).length;
++   const connectedCount = [
+-   
++     isGoo
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Boolean
+3. identifier: Math
+4. identifier: Deprecated
+5. identifier: Check
 
 ### Fixed null crash in RefreshCw — parallelizes async operations for speed
 -   LogOut,
@@ -309,6 +331,25 @@ Auto-compiled from **85 real patterns** in **node**. This skill is auto-routed t
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Strengthened types NodeBase — formalizes the data contract with explicit types** — -     question: "Can I jump in and reply to customers myself?",
++     question: "How does NodeBase c
+- 📐 **Strengthened types NODEBASE** — -         {/* BOTTOM CTA */}
++         {/* WHY NODEBASE - Competitive Comparison */}
+-         <sect
+- 📐 **Strengthened types XCircle — ensures atomic multi-step database operations** — -   type LucideIcon,
++   CheckCircle2,
+- } from "lucide-react";
++   XCircle,
+- import { employeeDire
+- 📐 **what-changed in page.tsx — confirmed 4x** — -           listingCount: serviceCount || 0,
++           listingCount: listingCount || 0,
+
+📌 IDE AS
+- 📐 **Strengthened types Sparkles — formalizes the data contract with explicit types** — -     Sparkles
++     Sparkles,
+- } from "lucide-react";
++     Plus
+- import { cn } from "@/lib/utils
 - 📐 **Fixed null crash in Badge — avoids unnecessary re-renders in React — confirmed 4x** — - import {
 + import { Badge } from "@/components/ui/badge";
 -   Card,
@@ -335,43 +376,6 @@ Content summary (599
 + 
 -         id: "welcome",
 +   const isLoading = status 
-- 📐 **Fixed null crash in Context — prevents null/undefined runtime crashes — confirmed 3x** — -           tenantId: "TENANT_ID_PLACEHOLDER", // Real app would inject tenant context
-+           t
-- 📐 **Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 3x** — -     </div>
-+ 
--   );
-+       {/* Add Review Modal */}
-- }
-+       {showAddModal && (
-- 
-+         
-- 📐 **discovery in page.tsx — confirmed 4x** — File updated (external): src/app/(customer)/dashboard/ai/revenue/reports/page.tsx
-
-Content summary (
-- 📐 **Fixed null crash in Review — prevents null/undefined runtime crashes — confirmed 5x** — -       const [reviewsRes, listingsRes]: [Promise<{ reviews: Review[] }>, Promise<{ listings: Listin
-- 📐 **what-changed in page.tsx — confirmed 3x** — -     </div>
-+ 
--   );
-+       {tab === "amenities" && (
-- }
-+         <div className="space-y-6">
--
-- 📐 **Strengthened types Amenities** — -           { id: "messages", label: "Messages" }
-+           { id: "amenities", label: "Amenities" 
-- 📐 **Fixed null crash in Memoize — avoids unnecessary re-renders in React — confirmed 3x** — -   const supabase = getSupabaseBrowser();
-+   // Memoize to avoid recreating the client on every re
-- 📐 **Strengthened types Nodebase — improves module reusability** — -   },
-+     images: [
--   twitter: {
-+       {
--     card: "summary_large_image",
-+         url: "/
-- 📐 **Fixed null crash in Timezone — confirmed 3x** — -                   className="input-glass bg-zinc-900 text-white cursor-pointer"
-+                 
-- 📐 **Fixed null crash in Math — confirmed 4x** — -     if (step === 1 && !capabilities.calendar) {
-+     setStep((prev) => Math.min(prev + 1, 2));
-- 
-- 📐 **what-changed in page.tsx — confirmed 3x** — -                   className="input-glass"
-+                   classNa
+- 📐 **Fixed 
 
 ... [Truncated — see individual observations for full content]

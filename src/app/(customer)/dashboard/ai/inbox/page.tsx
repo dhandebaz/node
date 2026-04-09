@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import {
   AlertTriangle,
   ArrowDownLeft,
@@ -1451,7 +1452,7 @@ export default function InboxPage() {
                 <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Select {labels.listing}</Label>
                 <Select
                   value={smartLinkForm.listingId}
-                  onValueChange={(val) => setSmartLinkData({ ...smartLinkForm, listingId: val })}
+                  onValueChange={(val: string) => setSmartLinkData({ ...smartLinkForm, listingId: val })}
                 >
                   <SelectTrigger className="h-12 rounded-2xl border-zinc-200 bg-zinc-50 font-bold">
                     <SelectValue placeholder={`Select ${labels.listing}`} />

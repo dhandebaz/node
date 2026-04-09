@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
   ArrowLeft,
@@ -156,9 +157,9 @@ export default function CustomerDetailPage() {
       <div className="text-center py-12">
         <User className="h-12 w-12 mx-auto text-muted-foreground/50" />
         <p className="mt-4 text-muted-foreground">Customer not found</p>
-        <a href="/dashboard/ai/customers" className="text-primary hover:underline mt-2 inline-block">
+        <Link href="/dashboard/ai/customers" className="text-primary hover:underline mt-2 inline-block">
           Back to customers
-        </a>
+        </Link>
       </div>
     );
   }
@@ -166,12 +167,12 @@ export default function CustomerDetailPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <a
+        <Link
           href="/dashboard/ai/customers"
           className="p-2 rounded-lg hover:bg-muted transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
-        </a>
+        </Link>
         <div className="flex-1">
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-3">
             {contact.name || "Unknown Customer"}

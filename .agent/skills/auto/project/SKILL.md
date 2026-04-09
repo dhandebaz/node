@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 67 gotchas, 123 conventions, 69 fixes."
+description: "Project for node. 69 gotchas, 127 conventions, 71 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **473 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **491 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **473 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 956 notes - Score threshold: >40 + > 961 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
+| ⚠️ GOTCHA: Optimized Score | - > 954 notes - Score threshold: >40 + > 956 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 949 notes - Score threshold: >40 + > 954 notes - Score threshold: >40 - - **gotcha in shared-con |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 945 notes - Score threshold: >40 + > 949 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
 | ⚠️ GOTCHA: Optimized Score | - > 931 notes - Score threshold: >40 + > 945 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
@@ -66,10 +68,40 @@ Auto-compiled from **473 real patterns** in **node**. This skill is auto-routed 
 | Don't use "any" type in TypeScript — define proper | Don't use "any" type in TypeScript — define proper types/interfaces |
 | Handle Promise rejections — always .catch() or try | Handle Promise rejections — always .catch() or try/catch with await |
 | Use === not == — strict equality prevents type coe | Use === not == — strict equality prevents type coercion bugs |
-| Agent: follow existing project patterns — don't in | Agent: follow existing project patterns — don't introduce a different style |
-| Agent: don't generate code with "any" type — defin | Agent: don't generate code with "any" type — define proper TypeScript types |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Patched security issue TypeScript — improves module reusability
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue TypeScript — improves module reusability
+- - Patched security issue HWWai
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - Patched security issue HWWai
+- - problem-fix in brainsync_auto.md
++ - proble
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Patched security issue TypeScript — improves module reusability
+- - Patched security issue HWWai
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - Patched security issue HWWai
+- - problem-fix in brainsync_auto.md
++ - problem-fix in shared-context.json
+- - problem-fix in .gitignore
++ - problem-fix in brainsync_auto.md
+
+📌 ID
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Building — avoids unnecessary re-renders in React
@@ -181,34 +213,6 @@ Auto-compiled from **473 real patterns** in **node**. This skill is auto-routed 
 - - Patched security issue RCWtJ
 + - problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - Patched security issue RCWtJ
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue RCWtJ
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-+ - problem-fix in agent-rules.md
-- - Patched security issue QAEZ
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated)
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-+ - problem-fix in shared-cont
++ - P
 
 ... [Truncated — see individual observations for full content]

@@ -78,6 +78,16 @@ const faq = [
       "Never. You keep 100% of your sales. We only charge a flat subscription for the software and a tiny usage fee per AI message.",
   },
   {
+    question: "How does NodeBase compare to Kommo or Respond.io?",
+    answer:
+      "NodeBase offers domain-specific AI agents (not generic bots), Voice + Vision included, and automated KYC - all at ₹999/mo flat vs Kommo's $15+/user/mo and Respond.io's $79-349/mo. We also don't charge per-user fees.",
+  },
+  {
+    question: "Why is NodeBase cheaper than Respond.io?",
+    answer:
+      "Respond.io charges $79-349/month plus $12/user extra and AI add-ons. For a 10-person team, you'd pay $279+/month. NodeBase charges ₹999/month (~$12) flat with everything included.",
+  },
+  {
     question: "Can I jump in and reply to customers myself?",
     answer:
       "Yes! You can pause the AI at any time with one click and take over the conversation from your dashboard.",
@@ -344,6 +354,89 @@ export function PricingSurface() {
                 </p>
               </motion.article>
             ))}
+          </div>
+        </section>
+
+        {/* COMPETITIVE COMPARISON */}
+        <section className="glass-panel-glow p-8 sm:p-12 rounded-[2.5rem] border border-emerald-500/30 overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-8">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+              <Activity className="h-7 w-7 text-emerald-400" />
+            </div>
+          </div>
+          
+          <div className="relative z-10 space-y-6 max-w-3xl mb-8">
+            <div className="text-xs font-bold tracking-[0.2em] text-emerald-400 uppercase">
+              Why NodeBase Wins
+            </div>
+            <h2 className="font-display text-4xl text-white tracking-tighter leading-[1.1]">
+              Why Pay $159+/month When You Get More at ₹999?
+            </h2>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              Compare NodeBase to Respond.io and Kommo. We offer domain-specific AI agents, 
+              Voice + Vision capabilities, and automated KYC - all at a fraction of the cost.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="glass-panel p-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/5">
+              <div className="text-xs font-bold text-emerald-400 mb-2">NodeBase</div>
+              <div className="text-3xl font-black text-white mb-1">₹999/mo</div>
+              <div className="text-sm text-zinc-400">Flat rate, unlimited users</div>
+              <ul className="mt-4 space-y-2 text-sm text-zinc-300">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  Voice + Vision included
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  Domain-specific AI
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  Automated KYC
+                </li>
+              </ul>
+            </div>
+            
+            <div className="glass-panel p-6 rounded-2xl opacity-60">
+              <div className="text-xs font-bold text-zinc-500 mb-2">Respond.io</div>
+              <div className="text-3xl font-black text-zinc-400 mb-1">$79-349/mo</div>
+              <div className="text-sm text-zinc-500">Plus user fees</div>
+              <ul className="mt-4 space-y-2 text-sm text-zinc-500">
+                <li>Voice costs extra ($279+)</li>
+                <li>Generic AI only</li>
+                <li>No vision/OCR</li>
+                <li>Per-user charges</li>
+              </ul>
+            </div>
+            
+            <div className="glass-panel p-6 rounded-2xl opacity-60">
+              <div className="text-xs font-bold text-zinc-500 mb-2">Kommo</div>
+              <div className="text-3xl font-black text-zinc-400 mb-1">$15-45/user</div>
+              <div className="text-sm text-zinc-500">Min 1 user, 6-mo commitment</div>
+              <ul className="mt-4 space-y-2 text-sm text-zinc-500">
+                <li>Basic AI only</li>
+                <li>No voice capabilities</li>
+                <li>No KYC built-in</li>
+                <li>Scales EXPENSIVELY</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link
+              href="/compare"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold rounded-xl hover:bg-emerald-500/20 transition-all text-sm"
+            >
+              Full Feature Comparison <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 glass-panel text-white font-bold rounded-xl hover:bg-white/10 transition-all text-sm"
+            >
+              Start Free Trial
+            </Link>
           </div>
         </section>
 
