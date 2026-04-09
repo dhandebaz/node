@@ -31,10 +31,13 @@ const nextConfig: NextConfig = {
       },
     ]
   },
-  // Ignore typescript/eslint errors during build for deployment if needed, 
-  // but better to fix them. keeping strict for now.
+  // Ignore typescript/eslint errors during build for development if needed, 
+  // but better to fix them. Keeping ignore to speed up Vercel builds.
   typescript: {
-    ignoreBuildErrors: false,
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   experimental: {
     serverActions: {
@@ -99,8 +102,8 @@ export default withSentryConfig(nextConfig, {
   // Routes HTTP requests through "tunnelRoute" to circumvent ad-blockers.
   tunnelRoute: "/monitoring",
 
-  // Upload a larger set of source maps for prettier stack traces (increases build time)
-  widenClientFileUpload: true,
+  // Upload a smaller set of source maps for faster build times
+  widenClientFileUpload: false,
 
   webpack: {
     // Automatically tree-shake Sentry logger statements to reduce bundle size

@@ -26,10 +26,10 @@ Auto-compiled from **2 real patterns** in **node**. This skill is auto-routed to
 | `import { AppError, ErrorCode } from "@/lib/errors"` | problem-fix in walletService.ts | 4x |
 | `+     } catch (error) {` | Fixed null crash in Review — prevents null/undefined runtime | 4x |
 | `+ - Fixed null crash in UpsellStore — prevents nul` | problem-fix in agent-rules.md | 4x |
+| `- - Fixed null crash in Context — prevents null/un` | problem-fix in agent-rules.md | 4x |
 | `File updated (external): ts_errors.log` | problem-fix in ts_errors.log | 3x |
 | `File updated (external): ts_errors.txt` | problem-fix in ts_errors.txt | 3x |
 | `-     const { error } = await supabase.from("syste` | problem-fix in controlService.ts | 3x |
-| `- - Fixed null crash in Context — prevents null/un` | problem-fix in agent-rules.md | 3x |
 | `yarn-error.log*` | problem-fix in .gitignore | 2x |
 | `+       const { data, error } = await supabase.fro` | problem-fix in inboxService.ts | 2x |
 | `return NextResponse.json({ error: "Unauthorized" }` | problem-fix in route.ts | 2x |

@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 765 notes | Score threshold: >40
+> 770 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,8 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
++ - problem-fix in shared-context.js
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
 + - problem-fix in agent-rules.
 - **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
@@ -40,14 +42,14 @@ Content summary (8
 
 ## Project Standards
 
+- what-changed in shared-context.json — confirmed 6x
+- problem-fix in agent-rules.md — confirmed 5x
+- Fixed null crash in Context — prevents null/undefined runtime crashes — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - Optimized GOTCHA — confirmed 3x
 - problem-fix in shared-context.json — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
 - discovery in shared-context.json — confirmed 3x
-- Patched security issue FAiR — confirmed 3x
-- what-changed in shared-context.json — confirmed 3x
-- Optimized Score — confirmed 3x
 
 ## Known Fixes
 

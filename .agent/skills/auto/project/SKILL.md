@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 56 gotchas, 108 conventions, 40 fixes."
+description: "Project for node. 57 gotchas, 109 conventions, 40 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **390 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **393 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **390 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - Fixed null crash in Con |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - Patched security issue QAEZ - - Patched security issue QA |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - gotcha in agent-rules.md - - ⚠️ GOTCHA: Optimized Score — parall |
@@ -67,7 +68,6 @@ Auto-compiled from **390 real patterns** in **node**. This skill is auto-routed 
 | Never store session tokens in localStorage — use h | Never store session tokens in localStorage — use httpOnly cookies |
 | Use parameterized queries — never string concatena | Use parameterized queries — never string concatenation for SQL |
 | Don't store passwords in plain text — use bcrypt,  | Don't store passwords in plain text — use bcrypt, argon2, or scrypt |
-| Don't use innerHTML — use textContent or sanitized | Don't use innerHTML — use textContent or sanitized rendering |
 
 ## 🔧 Problem Playbooks
 
@@ -218,6 +218,6 @@ Auto-compiled from **390 real patterns** in **node**. This skill is auto-routed 
 + - Patched security issue CfmwPle
 - - problem-fix in .gitignore
 + - Patched security issue CMrUzFD
-- - problem-fix in bookingAutomation
+- - pr
 
 ... [Truncated — see individual observations for full content]
