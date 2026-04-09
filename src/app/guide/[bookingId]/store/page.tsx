@@ -52,7 +52,7 @@ export default function UpsellStore() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tenantId: "TENANT_ID_PLACEHOLDER", // Real app would inject tenant context
+          tenantId: params?.bookingId || "default", // Context from route
           items: [item],
           totalAmount: amountValue
         })
@@ -73,9 +73,22 @@ export default function UpsellStore() {
         name: "Nodebase Upsell Store",
         description: item.title,
         order_id: data.order.id,
-        handler: function (response: any) {
+        handler: async function (response: any) {
           alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
-          // Send verification to backend...
+          // Send verification to backend
+          try {
+            await fetch(`/api/guide/${params?.bookingId}/store/verify`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                paymentId: response.razorpay_payment_id,
+                orderId: response.razorpay_order_id,
+                signature: response.razorpay_signature,
+              })
+            });
+          } catch (err) {
+            console.error("Verification failed", err);
+          }
         },
         prefill: {
           name: "Guest",

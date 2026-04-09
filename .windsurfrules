@@ -1,5 +1,5 @@
 # node — Project Memory
-# Auto-synced | 758 observations
+# Auto-synced | 769 observations
 
 **Stack:** JavaScript/TypeScript · Next.js + React + Tailwind
 
@@ -40,9 +40,9 @@ Example:
 - Git Commit: u
 - Git Commit: u
 - Git Commit: u
+- Git Commit: u
 - Extract repeated class patterns into components
 - Use responsive prefixes consistently (sm:, md:, lg:, xl:)
-- Don't use arbitrary values when a utility class exists
 
 # ⚡ Available Tools (ON-DEMAND only)
 - `save(title, content, category)` — Save a note + auto-detect conflicts

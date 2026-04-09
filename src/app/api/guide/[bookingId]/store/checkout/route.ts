@@ -3,12 +3,12 @@ import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { RazorpayService } from "@/lib/services/razorpayService";
 
 export async function POST(
-  req: Request
+  req: Request,
+  { params }: { params: Promise<{ bookingId: string }> }
 ) {
   try {
     const { items, totalAmount, tenantId } = await req.json();
-    const urlMatches = req.url.match(/guide\/([^\/]+)\/store/);
-    const bookingId = urlMatches ? urlMatches[1] : null;
+    const { bookingId } = await params;
 
     if (!bookingId || !tenantId || !items || !totalAmount) {
       return NextResponse.json({ error: "Missing required details" }, { status: 400 });

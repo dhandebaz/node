@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 54 gotchas, 108 conventions, 38 fixes."
+description: "Project for node. 56 gotchas, 108 conventions, 40 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **385 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **390 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,8 @@ Auto-compiled from **385 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - Fixed null crash in Con |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - Patched security issue QAEZ - - Patched security issue QA |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - gotcha in agent-rules.md - - ⚠️ GOTCHA: Optimized Score — parall |
 | gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (82 lines): # Project Intelligen |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in agent-rules.md + - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for spee |
@@ -66,10 +68,35 @@ Auto-compiled from **385 real patterns** in **node**. This skill is auto-routed 
 | Use parameterized queries — never string concatena | Use parameterized queries — never string concatenation for SQL |
 | Don't store passwords in plain text — use bcrypt,  | Don't store passwords in plain text — use bcrypt, argon2, or scrypt |
 | Don't use innerHTML — use textContent or sanitized | Don't use innerHTML — use textContent or sanitized rendering |
-| Sanitize ALL user input before database queries —  | Sanitize ALL user input before database queries — prevent SQL injection |
-| Never use eval(), exec(), or Function() with user  | Never use eval(), exec(), or Function() with user input |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Context — prevents null/undefined runtime crashes
++ - problem-fix in shared-context.json
+- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
++ - Fixed null crash in Context — prevents null/undefined runtime crashes
+- - Patched security issue QAEZ
++ - Patched security issue LxjiczDOjVbjOCWKwMB
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
++ - problem-fix in shared-context.json
+- - Patched security issue QAEZ
++ - Fixed null crash in Context — prevents null/undefined runtime crashes
+- - problem-fix in agent-rules.md
++ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
+- - problem-fix in agent-rules.md
++ - Patched security issue QAEZ
+- - Fixed null crash in UpsellS
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Patched security issue PEZVKieyTQntYFUooTNMKH
@@ -191,39 +218,6 @@ Auto-compiled from **385 real patterns** in **node**. This skill is auto-routed 
 + - Patched security issue CfmwPle
 - - problem-fix in .gitignore
 + - Patched security issue CMrUzFD
-- - problem-fix in bookingAutomation.ts
-+ - problem-fix in .gitignore
-- - problem-fix in tsc_errors_fresh.txt
-+ - problem-fix in bookingAutomation.ts
-
-📌 IDE AST Context: Modified symbols likely i
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue CfmwPle
-- - problem-fix in agent-rules.md
-+ - Patched security issue CMrUzFD
-- - problem-fix in agent-rules.md
-+ - problem-fix in .gitignore
-- - problem-fix in agent-rules.md
-+ - problem-fix in bookingAutomation.ts
-- - problem-fix in agent-rules.md
-+ - problem-fix in tsc_errors_fresh.txt
-
-📌 IDE AST Context: Modified symbols likely inclu
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue CfmwPle
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue CfmwPle
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent
+- - problem-fix in bookingAutomation
 
 ... [Truncated — see individual observations for full content]

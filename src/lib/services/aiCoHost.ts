@@ -1,6 +1,7 @@
-import { generateText } from "ai";
+import { generateObject } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { resolveAISettings, getToneInstruction } from "@/lib/ai/config";
+import { z } from "zod";
 
 const google = createGoogleGenerativeAI();
 
@@ -51,28 +52,29 @@ export class AICoHostEngine {
         - HUMAN_ESCALATION: Angry guest, complex request that needs a real person.
         - UNKNOWN: Cannot determine.
 
-        Return a JSON response strictly matching this structure:
-        {
-          "intent": "INTENT_NAME",
-          "response": "Your helpful reply to the guest."
-        }
-
         ${getToneInstruction(settings.tone)}
       `;
 
-      const result = await generateText({
+      const result = await generateObject({
         model: modelInstance,
         system: systemPrompt,
         prompt: message,
+        schema: z.object({
+          intent: z.enum([
+            "GREETING",
+            "FAQ",
+            "MAINTENANCE_ISSUE",
+            "UPSELL_INQUIRY",
+            "HUMAN_ESCALATION",
+            "UNKNOWN",
+          ]),
+          response: z.string()
+        }),
       });
 
-      // Simple pseudo-JSON parsing. In production use `generateObject` with Zod schema.
-      const rawText = result.text.replace(/\`\`\`json/g, "").replace(/\`\`\`/g, "").trim();
-      const parsed = JSON.parse(rawText);
-
       return {
-        responseText: parsed.response || "I will have the host get back to you shortly.",
-        intent: parsed.intent as CoHostIntent || "UNKNOWN",
+        responseText: result.object.response || "I will have the host get back to you shortly.",
+        intent: result.object.intent || "UNKNOWN",
       };
 
     } catch (error) {
