@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Coffee, MapPin, KeyRound, Wifi, Shirt, ArrowRight, ShieldAlert, BadgeCheck, CheckCircle2, Clock } from "lucide-react";
 import Link from "next/link";
-import AiConciergeChat from "@/components/guest/AiConciergeChat";
+import AiConciergeChat from "@/components/client/AiConciergeChat";
 
 // Mock data fetcher for the guide
 export default function ClientPortal() {

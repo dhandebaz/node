@@ -36,6 +36,10 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { PipelineBoard } from "@/components/dashboard/ai/PipelineBoard";
+import { ConversationListItem, type Conversation } from "@/components/dashboard/ai/inbox/ConversationListItem";
+import { ChatMessage } from "@/components/dashboard/ai/inbox/ChatMessage";
+import { ChatThread } from "@/components/dashboard/ai/inbox/ChatThread";
+import { Contact360Sidebar } from "@/components/dashboard/ai/inbox/Contact360Sidebar";
 import { getSupabaseBrowser } from "@/lib/supabase/client";
 import { cn, timeAgo } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -71,27 +75,6 @@ import {
 } from "@/app/actions/inbox";
 import { createBookingLinkAction } from "@/app/actions/payments";
 import { toast } from "sonner";
-
-type Conversation = {
-  id: string;
-  customerName: string | null;
-  customerPhone: string | null;
-  channel: "whatsapp" | "instagram" | "messenger" | "web" | "voice";
-  lastMessage: string;
-  lastMessageAt: string;
-  unreadCount: number;
-  manager: { slug: string; name: string };
-  status:
-    | "draft"
-    | "payment_pending"
-    | "paid"
-    | "scheduled"
-    | "open"
-    | "resolved";
-  bookingId?: string | null;
-  guestId?: string;
-  aiPaused?: boolean;
-};
 
 type ConversationMessage = {
   id: string;
@@ -1146,74 +1129,16 @@ export default function InboxPage() {
                     <p className="text-sm text-zinc-400 font-bold uppercase tracking-widest">No matching chats</p>
                   </div>
                 ) : (
-                  filteredConversations.map((conv) => {
-                    const Icon = channelIcon[conv.channel];
-                    const isSelected = conv.id === selectedConversationId;
-                    return (
-                      <button
-                        key={conv.id}
-                        onClick={() => setSelectedConversationId(conv.id)}
-                        className={cn(
-                          "w-full p-5 flex items-start gap-4 transition-all border-b border-zinc-50 relative group",
-                          isSelected 
-                            ? "bg-blue-50/50" 
-                            : "hover:bg-zinc-50"
-                        )}
-                      >
-                        {isSelected && (
-                          <motion.div 
-                            layoutId="active-indicator"
-                            className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-600 rounded-r-full" 
-                          />
-                        )}
-                        
-                        <div className="relative shrink-0">
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200 flex items-center justify-center text-zinc-500 font-black text-xl shadow-sm border border-zinc-200">
-                            {conv.customerName?.charAt(0) || "C"}
-                            <div className="absolute -bottom-1 -right-1 p-1 bg-white rounded-lg border border-zinc-100 shadow-md">
-                              <Icon className="w-3 h-3 text-blue-600" />
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex-1 min-w-0 text-left">
-                          <div className="flex justify-between items-start mb-1">
-                            <h3 className={cn(
-                              "text-sm font-black truncate tracking-tight uppercase",
-                              conv.unreadCount > 0 ? "text-zinc-950" : "text-zinc-600"
-                            )}>
-                              {conv.customerName || conv.customerPhone || "Anonymous"}
-                            </h3>
-                            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                              {timeAgo(conv.lastMessageAt)}
-                            </span>
-                          </div>
-                          <p className={cn(
-                            "text-xs line-clamp-2 leading-relaxed transition-colors",
-                            conv.unreadCount > 0 ? "text-zinc-800 font-medium" : "text-zinc-500"
-                          )}>
-                            {conv.lastMessage || "No messages yet"}
-                          </p>
-                          
-                          <div className="mt-3 flex items-center gap-2">
-                            {conv.unreadCount > 0 && (
-                              <Badge className="bg-blue-600 text-white border-0 px-2 min-w-[20px] h-5 flex items-center justify-center font-black">
-                                {conv.unreadCount}
-                              </Badge>
-                            )}
-                            <Badge variant="outline" className="text-[9px] h-4 bg-zinc-100 border-zinc-200 text-zinc-500 font-bold uppercase tracking-wider">
-                              {conv.manager.name}
-                            </Badge>
-                            {conv.aiPaused && (
-                              <Badge className="bg-amber-50 text-amber-600 border-amber-100 text-[9px] h-4 font-bold uppercase tracking-wider">
-                                P-MANUAL
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })
+                ) : (
+                  filteredConversations.map((conv) => (
+                    <ConversationListItem
+                      key={conv.id}
+                      conversation={conv}
+                      isSelected={conv.id === selectedConversationId}
+                      onSelect={(id) => setSelectedConversationId(id)}
+                      icon={channelIcon[conv.channel]}
+                    />
+                  ))
                 )}
               </div>
             </div>
@@ -1230,92 +1155,15 @@ export default function InboxPage() {
                 </div>
               ) : (
                 <>
-                  {/* Thread Header */}
-                  <div className="h-20 flex-shrink-0 border-b border-zinc-100 px-6 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
-                    <div className="flex items-center gap-4">
-                      <button onClick={() => setSelectedConversationId(null)} className="md:hidden p-2 text-zinc-400 hover:text-zinc-950 transition-colors">
-                        <ChevronLeft className="w-6 h-6" />
-                      </button>
-                      <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center font-black text-zinc-950 text-sm border border-zinc-200">
-                        {selectedConversation.customerName?.charAt(0) || "C"}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h2 className="font-black text-zinc-950 uppercase tracking-tight">
-                            {selectedConversation.customerName || selectedConversation.customerPhone}
-                          </h2>
-                          <Badge variant="outline" className="text-[9px] h-4 bg-zinc-50 border-zinc-200 text-zinc-400 font-bold">
-                            {selectedConversation.channel.toUpperCase()}
-                          </Badge>
-                        </div>
-                        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest flex items-center gap-2">
-                          Status: <span className="text-blue-600">{selectedConversation.status.replace("_", " ")}</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-3 px-4 py-2 bg-zinc-50 rounded-2xl border border-zinc-100">
-                        <Label htmlFor="ai-pause" className="text-[10px] font-black uppercase tracking-widest text-zinc-400">AI Assistant</Label>
-                        <Switch 
-                          id="ai-pause"
-                          checked={!selectedConversation.aiPaused}
-                          onCheckedChange={(checked) => handleAIPauseToggle(!checked)}
-                        />
-                      </div>
-                      <button onClick={() => setShowContext(!showContext)} className={cn(
-                        "p-3 rounded-2xl border transition-all",
-                        showContext ? "bg-zinc-950 text-white border-zinc-900" : "bg-white border-zinc-200 text-zinc-500 hover:border-zinc-300"
-                      )}>
-                        <User className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Messages */}
-                  <div className="flex-1 overflow-y-auto p-8 space-y-8 scrollbar-none">
-                    {loadingThread ? (
-                      <div className="flex items-center justify-center h-full">
-                        <Loader2 className="w-8 h-8 animate-spin text-blue-600/40" />
-                      </div>
-                    ) : messages.length === 0 ? (
-                      <div className="text-center py-20">
-                        <p className="text-zinc-400 text-sm font-medium">Starting a new conversation...</p>
-                      </div>
-                    ) : (
-                      messages.map((msg) => {
-                        const isCustomer = msg.senderType === "customer";
-                        const isAI = msg.senderType === "ai";
-                        const isInternal = msg.senderType === "internal";
-                        
-                        return (
-                          <div key={msg.id} className={cn(
-                            "flex flex-col max-w-[85%] animate-in fade-in slide-in-from-bottom-2 duration-300",
-                            isCustomer ? "mr-auto" : "ml-auto items-end"
-                          )}>
-                            <div className={cn(
-                              "px-5 py-4 rounded-2xl text-sm leading-relaxed shadow-sm transition-all",
-                              isCustomer ? "bg-white text-zinc-800 border border-zinc-100 rounded-tl-none" :
-                              isAI ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20 rounded-tr-none" :
-                              isInternal ? "bg-amber-50 text-amber-900 border border-amber-100 rounded-tr-none italic" :
-                              "bg-zinc-900 text-white rounded-tr-none"
-                            )}>
-                              {msg.content}
-                            </div>
-                            <div className="mt-2 flex items-center gap-2">
-                              <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">
-                                {isAI ? "AI ASSISTANT" : isCustomer ? "CLIENT" : isInternal ? "INTERNAL NOTE" : "YOU"}
-                              </span>
-                              <span className="text-[9px] font-bold text-zinc-300">•</span>
-                              <span className="text-[9px] font-black uppercase tracking-widest text-zinc-300">
-                                {timeAgo(msg.timestamp)}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
+                  <ChatThread
+                    conversation={selectedConversation}
+                    messages={messages}
+                    loading={loadingThread}
+                    aiPaused={selectedConversation.aiPaused || false}
+                    onToggleAi={handleAIPauseToggle}
+                    onToggleSidebar={() => setShowContext(!showContext)}
+                    showSidebar={showContext}
+                  />
 
                   {/* Reply Area */}
                   <div className="p-6 bg-white border-t border-zinc-100">
@@ -1390,42 +1238,12 @@ export default function InboxPage() {
 
             {/* Context Sidebar */}
             {selectedConversation && showContext && (
-              <div className="w-80 flex-shrink-0 border-l border-zinc-200 bg-white p-6 overflow-y-auto hidden lg:block">
-                <div className="space-y-8">
-                  <div>
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-4">Client Overview</h3>
-                    <div className="space-y-4">
-                      {context?.fields.map((f, i) => (
-                        <div key={i} className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
-                          <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">{getDisplayLabel(f.label)}</p>
-                          <p className="text-sm font-black text-zinc-950 uppercase tracking-tighter truncate">{f.value}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-4">Quick Actions</h3>
-                    <div className="grid grid-cols-1 gap-2">
-                      {context?.quickActions.map((action) => (
-                        <button
-                          key={action.id}
-                          onClick={() => handleQuickAction(action)}
-                          className={cn(
-                            "w-full p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all text-left group flex items-center justify-between",
-                            action.variant === "primary" 
-                              ? "bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-100 hover:bg-blue-700" 
-                              : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300"
-                          )}
-                        >
-                          {action.label}
-                          <ArrowDownLeft className="w-4 h-4 opacity-40 group-hover:opacity-100 transition-opacity" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <Contact360Sidebar
+                fields={context?.fields || []}
+                quickActions={context?.quickActions || []}
+                onAction={handleQuickAction}
+                getDisplayLabel={getDisplayLabel}
+              />
             )}
           </>
         )}

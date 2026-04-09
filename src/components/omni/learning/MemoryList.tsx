@@ -1,8 +1,7 @@
-
 "use client";
 
 import { KaisaMemory } from "@/types/kaisa-learning";
-import { deleteMemoryAction, confirmInferenceAction, rejectInferenceAction } from "@/app/actions/kaisa-learning";
+import { deleteMemoryAction, confirmInferenceAction, rejectInferenceAction, addExplicitFeedbackAction } from "@/app/actions/omni-learning";
 import { useState } from "react";
 import { 
   Trash2, 

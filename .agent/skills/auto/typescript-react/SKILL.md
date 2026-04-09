@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 6 gotchas, 32 conventions, 14 fixes, 3 error→fix pairs."
+description: "Typescript React for node. 8 gotchas, 38 conventions, 14 fixes, 3 error→fix pairs."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,7 +12,7 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **130 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **144 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -20,6 +20,8 @@ Auto-compiled from **130 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in ChatThread — avoids | - import { Contact360Sidebar } from "@/components/dashboard/ai/inbox/Contact360Sidebar"; + import {  |
+| ⚠️ GOTCHA: Fixed null crash in ConversationListIte | - import { getSupabaseBrowser } from "@/lib/supabase/client"; + import { ConversationListItem, type  |
 | gotcha in NotificationProvider.tsx | File updated (external): src/components/providers/NotificationProvider.tsx  Content summary (200 lin |
 | gotcha in public-content.tsx | -       title: "Host AI", +       title: "Omni AI", -       href: "/employees/host-ai", +       href |
 | gotcha in PricingSurface.tsx | -   "You keep 100% of your revenue. We never take a cut of your bookings or sales.", +   "You keep 1 |
@@ -334,38 +336,25 @@ Auto-compiled from **130 real patterns** in **node**. This skill is auto-routed 
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
-- 📐 **what-changed in page.tsx — confirmed 3x** — File updated (external): src/app/login/page.tsx
+- 📐 **Strengthened types Recent — prevents null/undefined runtime crashes** — -         {/* Recent Activity */}
++       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+- 
+- 📐 **what-changed in page.tsx — confirmed 3x** — File updated (external): src/app/(customer)/dashboard/ai/marketing/page.tsx
 
-Content summary (312 lines):
-"use client";
+Content summary (142 li
+- 📐 **Strengthened types Service — prevents null/undefined runtime crashes** — -         {/* OTA Integrations (iCal) */}
++         {/* Service Sync (per-resource) */}
+-           
+- 📐 **Fixed null crash in Executive — prevents null/undefined runtime crashes — confirmed 3x** — -           <h1 className="text-3xl font-bold tracking-tight text-foreground mb-1">
++           <h1 
+- 📐 **discovery in page.tsx — confirmed 3x** — File updated (external): src/app/(customer)/dashboard/ai/settings/page.tsx
 
-import 
-- 📐 **decision in page.tsx — confirmed 3x** — - export default function UpsellStore() {
-+ export default function ClientStore() {
--         name: 
-- 📐 **what-changed in layout.tsx — confirmed 4x** — File updated (external): src/app/guide/[bookingId]/layout.tsx
-
-Content summary (33 lines):
-import { 
-- 📐 **Strengthened types NodeBase — formalizes the data contract with explicit types** — -     question: "Can I jump in and reply to customers myself?",
-+     question: "How does NodeBase c
-- 📐 **Strengthened types NODEBASE** — -         {/* BOTTOM CTA */}
-+         {/* WHY NODEBASE - Competitive Comparison */}
--         <sect
-- 📐 **Strengthened types XCircle — ensures atomic multi-step database operations** — -   type LucideIcon,
-+   CheckCircle2,
-- } from "lucide-react";
-+   XCircle,
-- import { employeeDire
-- 📐 **what-changed in page.tsx — confirmed 4x** — -           listingCount: serviceCount || 0,
-+           listingCount: listingCount || 0,
-
-📌 IDE AS
-- 📐 **Strengthened types Sparkles — formalizes the data contract with explicit types** — -     Sparkles
-+     Sparkles,
-- } from "lucide-react";
-+     Plus
-- import { cn } from "@/lib/utils
-- 📐 **Fixed null crash in Badge — avoids unnecessary re-renders in React — confirmed 4x** — 
+Content summary (315 lin
+- 📐 **Updated the database schema — prevents null/undefined runtime crashes — confirmed 3x** — -                 )}
++               </div>
+-               </div>
++             </div>
+-           
+- 📐 **what-changed in page.tsx — 
 
 ... [Truncated — see individual observations for full content]

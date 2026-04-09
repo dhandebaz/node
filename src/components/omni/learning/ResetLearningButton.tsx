@@ -1,7 +1,7 @@
 
 "use client";
 
-import { resetLearningAction } from "@/app/actions/kaisa-learning";
+import { resetLearningAction } from "@/app/actions/omni-learning";
 import { useState } from "react";
 import { Loader2, RefreshCw } from "lucide-react";
 

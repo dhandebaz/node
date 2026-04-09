@@ -31,22 +31,22 @@ interface MetricCardProps {
 
 function MetricCard({ title, value, change, icon: Icon, description, color }: MetricCardProps) {
   return (
-    <div className="public-panel p-6 flex flex-col justify-between h-full">
-      <div className="flex justify-between items-start mb-4">
-        <div className={`p-3 rounded-xl bg-${color}-500/10 text-${color}-400 border border-white/10`}>
-          <Icon className="w-6 h-6" />
+    <div className="bg-white border border-zinc-200 p-6 flex flex-col justify-between h-full rounded-2xl shadow-sm hover:shadow-md transition-shadow group">
+      <div className="flex justify-between items-start mb-6">
+        <div className="p-3 rounded-xl bg-zinc-50 text-blue-600 border border-zinc-100 shadow-sm group-hover:scale-110 transition-transform">
+          <Icon className="w-5 h-5" />
         </div>
         {change !== undefined && (
-          <div className={`flex items-center gap-1 text-sm font-bold ${change >= 0 ? "text-emerald-400" : "text-red-400"}`}>
-            {change >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+          <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-widest ${change >= 0 ? "text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full" : "text-rose-600 bg-rose-50 px-2 py-1 rounded-full"}`}>
+            {change >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
             {Math.abs(change)}%
           </div>
         )}
       </div>
       <div>
-        <div className="text-3xl font-bold text-foreground mb-1 font-mono tracking-tight">{value}</div>
-        <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider">{title}</div>
-        <p className="text-xs text-zinc-600 mt-2 leading-relaxed">{description}</p>
+        <div className="text-3xl font-black text-zinc-950 mb-1 tracking-tighter">{value}</div>
+        <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">{title}</div>
+        <p className="text-[10px] text-zinc-500 mt-2 leading-relaxed font-medium italic">{description}</p>
       </div>
     </div>
   );
@@ -116,21 +116,21 @@ export default async function AIInsightsPage({
   const config = getBusinessConfig();
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="space-y-8 pb-32 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-1">AI Insights</h1>
-          <p className="text-muted-foreground">Deep dive into your business performance and AI ROI.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-zinc-100">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter">Executive Analytics</h1>
+          <p className="text-zinc-500 font-medium italic">Performance deep-dive and institutional ROI analysis.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="glass-panel border border-border rounded-lg flex p-1">
+        <div className="flex items-center gap-4">
+          <div className="bg-zinc-100/50 border border-zinc-200 rounded-xl flex p-1">
             {['today', '7d', '30d'].map((r) => (
               <Link
                 key={r}
                 href={`?range=${r}`}
-                className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-md transition-all ${
-                  range === r ? "bg-white text-black shadow-lg" : "text-muted-foreground hover:text-foreground"
+                className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${
+                  range === r ? "bg-white text-zinc-950 shadow-sm border border-zinc-200" : "text-zinc-500 hover:text-zinc-700 font-bold"
                 }`}
               >
                 {r}
@@ -163,53 +163,54 @@ export default async function AIInsightsPage({
 
       {/* AI ROI Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 public-panel overflow-hidden">
-          <div className="p-6 border-b border-white/5 flex justify-between items-center">
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-              <Zap className="w-5 h-5 text-amber-400" />
-              AI Reply Value
+        <div className="lg:col-span-2 bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-zinc-50/50 p-6 border-b border-zinc-100 flex justify-between items-center">
+            <h2 className="text-base font-black text-zinc-950 uppercase tracking-tight flex items-center gap-2">
+              <Zap className="w-5 h-5 text-blue-600" />
+              Omni AI Capital Generation
             </h2>
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Efficiency Multiplier</div>
+            <div className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Efficiency Metrics</div>
           </div>
           <div className="p-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                <div>
-                  <div className="text-xs text-muted-foreground font-bold uppercase tracking-widest mb-2">Replies Sent</div>
-                  <div className="text-4xl font-bold text-foreground font-mono">{aiRoi.aiRepliesSent}</div>
-                  <div className="h-1.5 rounded-full bg-muted overflow-hidden mt-4">
-                     <div className="h-full rounded-full bg-primary" style={{ width: '100%' }} />
+                  <div className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-2">Automated Replies</div>
+                  <div className="text-4xl font-black text-zinc-950 tracking-tighter">{aiRoi.aiRepliesSent}</div>
+                  <div className="h-1.5 rounded-full bg-zinc-100 overflow-hidden mt-4 border border-zinc-200">
+                     <div className="h-full rounded-full bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.3)]" style={{ width: '100%' }} />
                   </div>
                </div>
                <div>
-                  <div className="text-xs text-muted-foreground font-bold uppercase tracking-widest mb-2">Outcome Rate</div>
-                  <div className="text-4xl font-bold text-foreground font-mono">
+                  <div className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-2">Conversion Rate</div>
+                  <div className="text-4xl font-black text-zinc-950 tracking-tighter">
                      {aiRoi.aiRepliesSent ? Math.round((aiRoi.outcomes / aiRoi.aiRepliesSent) * 100) : 0}%
                   </div>
-                  <div className="h-1.5 rounded-full bg-muted overflow-hidden mt-4">
-                     <div className="h-full rounded-full bg-green-500" style={{ width: `${aiRoi.aiRepliesSent ? Math.min(100, (aiRoi.outcomes / aiRoi.aiRepliesSent) * 100) : 0}%` }} />
+                  <div className="h-1.5 rounded-full bg-zinc-100 overflow-hidden mt-4 border border-zinc-200">
+                     <div className="h-full rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" style={{ width: `${aiRoi.aiRepliesSent ? Math.min(100, (aiRoi.outcomes / aiRoi.aiRepliesSent) * 100) : 0}%` }} />
                   </div>
                </div>
                <div>
-                  <div className="text-xs text-muted-foreground font-bold uppercase tracking-widest mb-2">Cost Per Outcome</div>
-                  <div className="text-4xl font-bold text-foreground font-mono">
+                  <div className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-2">Unit Cost (Outcome)</div>
+                  <div className="text-4xl font-black text-zinc-950 tracking-tighter">
                      ₹{aiRoi.outcomes ? Math.round(aiRoi.creditsUsed / aiRoi.outcomes) : 0}
                   </div>
-                  <div className="h-1.5 rounded-full bg-muted overflow-hidden mt-4">
-                     <div className="h-full rounded-full bg-blue-500" style={{ width: `${aiRoi.outcomes ? '100%' : '0%'}` }} />
+                  <div className="h-1.5 rounded-full bg-zinc-100 overflow-hidden mt-4 border border-zinc-200">
+                     <div className="h-full rounded-full bg-blue-400 shadow-[0_0_10px_rgba(96,165,250,0.3)]" style={{ width: `${aiRoi.outcomes ? '100%' : '0%'}` }} />
                   </div>
                </div>
             </div>
             
-            <div className="mt-12 p-6 glass-panel rounded-xl">
-               <div className="flex items-center gap-4">
-                  <div className="p-3 bg-white/10 rounded-full">
-                     <TrendingUp className="w-6 h-6 text-emerald-400" />
+            <div className="mt-12 p-6 bg-zinc-50 border border-zinc-100 rounded-2xl relative overflow-hidden group">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+               <div className="flex items-center gap-4 relative">
+                  <div className="p-3 bg-white border border-zinc-200 rounded-xl shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-all">
+                     <TrendingUp className="w-6 h-6" />
                   </div>
                   <div>
-                     <h3 className="font-bold text-foreground">AI Profitability</h3>
-                     <p className="text-sm text-muted-foreground mt-1">
-                        Kaisa has generated <span className="text-foreground font-bold">₹{Math.round(aiRoi.valueGenerated)}</span> in value for a cost of <span className="text-foreground font-bold">₹{Math.round(aiRoi.creditsUsed)}</span>. 
-                        That&apos;s a <span className="text-emerald-400 font-bold">{aiRoi.creditsUsed ? Math.round((aiRoi.valueGenerated / aiRoi.creditsUsed) * 100) : 0}% ROI</span>.
+                     <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Yield Analysis</h3>
+                     <p className="text-sm text-zinc-600 mt-1 font-medium italic">
+                        Omni AI has yielded <span className="text-zinc-950 font-black">₹{Math.round(aiRoi.valueGenerated)}</span> in absolute value for an operational cost of <span className="text-zinc-950 font-black">₹{Math.round(aiRoi.creditsUsed)}</span>. 
+                        Effective ROI: <span className="text-emerald-600 font-black">{aiRoi.creditsUsed ? Math.round((aiRoi.valueGenerated / aiRoi.creditsUsed) * 100) : 0}%</span>.
                      </p>
                   </div>
                </div>
@@ -218,20 +219,20 @@ export default async function AIInsightsPage({
         </div>
 
         <div className="space-y-6">
-           <div className="public-panel p-6 border border-white/5">
-              <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
-                 <Zap className="w-4 h-4 text-primary" />
-                 Smart Recommendations
+           <div className="bg-white p-6 border border-zinc-200 rounded-2xl shadow-sm">
+              <h3 className="text-[10px] font-black text-zinc-950 uppercase tracking-widest mb-6 flex items-center gap-2">
+                 <Zap className="w-4 h-4 text-blue-600" />
+                 Strategic Advisories
               </h3>
               <div className="space-y-4">
                  {[
-                    { text: "Increase credits to avoid AI pause during peak hours.", action: "Top Up", href: "/dashboard/billing" },
-                    { text: "Connect Instagram DMs to improve conversion by 12%.", action: "Connect", href: "/dashboard/ai/integrations" },
-                    { text: "Update listing photos to boost click-through rate.", action: "Edit", href: "/dashboard/ai/listings" }
+                    { text: "Capital injection required to sustain AI operations during peak scaling.", action: "Optimize Billing", href: "/dashboard/billing" },
+                    { text: "Channel integration protocol for Instagram DMs can yield +12% growth.", action: "Connect Link", href: "/dashboard/ai/integrations" },
+                    { text: "Resource metadata refinement will improve associate accuracy.", action: "Manage Services", href: "/dashboard/ai/listings" }
                  ].map((rec, i) => (
-                    <div key={i} className="p-4 bg-white/5 border border-white/10 rounded-xl text-sm group cursor-pointer hover:bg-white/10 transition-all">
-                       <p className="text-muted-foreground group-hover:text-zinc-200">{rec.text}</p>
-                       <Link href={rec.href} className="text-primary font-bold uppercase tracking-wider text-[10px] mt-2 flex items-center gap-1">
+                    <div key={i} className="p-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-[10px] group cursor-pointer hover:bg-zinc-100 hover:border-zinc-200 transition-all">
+                       <p className="text-zinc-500 font-black uppercase tracking-widest leading-relaxed group-hover:text-zinc-950">{rec.text}</p>
+                       <Link href={rec.href} className="text-blue-600 font-black uppercase tracking-widest text-[10px] mt-4 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                           {rec.action} <ArrowRight className="w-3 h-3" />
                        </Link>
                     </div>

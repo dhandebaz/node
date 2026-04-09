@@ -2,7 +2,7 @@
 "use client";
 
 import { KaisaIntegrationConfig, IntegrationConfigDetails } from "@/types/kaisa";
-import { toggleIntegrationAction, updateIntegrationConfigAction, getIntegrationStatsAction } from "@/app/actions/kaisa";
+import { toggleIntegrationAction, updateIntegrationConfigAction, getIntegrationStatsAction } from "@/app/actions/omni-core";
 import { useState, useEffect } from "react";
 import { Link2, CheckCircle, XCircle, AlertCircle, Settings2, Save, X } from "lucide-react";
 

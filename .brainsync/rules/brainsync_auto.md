@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 1087 notes | Score threshold: >40
+> 1130 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,11 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **⚠️ GOTCHA: Fixed null crash in ChatThread — avoids unnecessary re-renders in React** — - import { Contact360Sidebar } from "@/components/dashboard/ai/inbox/C
+- **⚠️ GOTCHA: Fixed null crash in ConversationListItem — avoids unnecessary re-renders in R...** — - import { getSupabaseBrowser } from "@/lib/supabase/client";
++ import
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1070 notes | Score threshold: >40
++ > 1087 notes | Score threshold
 - **gotcha in NotificationProvider.tsx** — File updated (external): src/components/providers/NotificationProvider
 - **gotcha in shared-context.json** — -     }
 +     },
@@ -31,29 +36,17 @@
 - **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Patched
 + - ⚠️ GOTCHA: Optimized GOTCHA
 - - g
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - gotcha in shared-context.json
-+ - ⚠️ GOTCHA: Optimized Patched
-- -
-- **⚠️ GOTCHA: Optimized Patched** — - - Patched security issue AYASW — hardens HTTP security headers
-+ - P
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "40b95f4d598b1aae",
-+
 
 ## Project Standards
 
-- discovery in shared-context.json — confirmed 3x
-- Optimized Score — parallelizes async operations for speed — confirmed 3x
-- what-changed in page.tsx — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
-- decision in page.tsx — confirmed 3x
-- what-changed in layout.tsx — confirmed 4x
-- what-changed in shared-context.json — confirmed 6x
-- problem-fix in shared-context.json — confirmed 3x
+- Strengthened types Recent — prevents null/undefined runtime crashes
+- Strengthened types Service — prevents null/undefined runtime crashes
+- what-changed in shared-context.json — confirmed 7x
+- Optimized Fixed — confirmed 3x
+- Fixed null crash in Executive — prevents null/undefined runtime crashes — confirmed 3x
+- discovery in page.tsx — confirmed 3x
+- Updated the database schema — prevents null/undefined runtime crashes — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
 
 ## Known Fixes
 
@@ -66,9 +59,9 @@
 ## Recent Decisions
 
 - Optimized Score — parallelizes async operations for speed
+- Optimized Score — parallelizes async operations for speed
 - decision in IndustryDetail.tsx
 - decision in page.tsx
-- Optimized Industries — hardens HTTP security headers
 
 ## Learned Patterns
 

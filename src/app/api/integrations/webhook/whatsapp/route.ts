@@ -319,18 +319,18 @@ async function processIncomingMessage(
 
   // If hospitality, use the specialized Host AI Engine
   if (tenant?.business_type === "hospitality" || tenant?.business_type === "hotel") {
-    const { AICoHostEngine } = await import("@/lib/services/aiCoHost");
+    const { OmniAIExecutive } = await import("@/lib/services/omniAIExecutive");
     
-    // Simulate getting booking window/guests context
     const context = {
-      guestName: contact?.name || sender,
-      listingId: "Unknown",
-      checkIn: "2026-10-12",
-      checkOut: "2026-10-15",
-      channel: "WHATSAPP" as const
+      clientName: contact.name,
+      resourceId: searchResults?.id || "unknown",
+      startDate: searchResults?.check_in || "N/A",
+      endDate: searchResults?.check_out || "N/A",
+      channel: "WHATSAPP" as const,
+      language: "English"
     };
-    
-    const engineResult = await AICoHostEngine.processIncomingMessage(text, context);
+
+    const engineResult = await OmniAIExecutive.processIncomingMessage(text, context);
     aiReply = engineResult.responseText;
     log.info(`[WhatsApp] Host AI Intent classified as: ${engineResult.intent}`);
 

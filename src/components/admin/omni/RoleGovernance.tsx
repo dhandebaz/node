@@ -1,8 +1,7 @@
-
 "use client";
 
 import { KaisaRoleConfig, KaisaRoleType } from "@/types/kaisa";
-import { updateRoleConfigAction } from "@/app/actions/kaisa";
+import { updateRoleConfigAction } from "@/app/actions/omni-core";
 import { useState } from "react";
 import { Loader2, Crown, Shield } from "lucide-react";
 

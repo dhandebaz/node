@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { User } from "@/types/user";
-import { toggleUserKaisaStatusAction } from "@/app/actions/kaisa";
+import { toggleUserKaisaStatusAction } from "@/app/actions/omni-core";
 import { Power } from "lucide-react";
 
 export function KaisaStatusControl({ user }: { user: User }) {

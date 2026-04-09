@@ -2,7 +2,7 @@
 "use client";
 
 import { KaisaModuleConfig, KaisaModuleType, KaisaBusinessType } from "@/types/kaisa";
-import { toggleModuleAction } from "@/app/actions/kaisa";
+import { toggleModuleAction } from "@/app/actions/omni-core";
 import { useState } from "react";
 import { Loader2, Power, Layers } from "lucide-react";
 

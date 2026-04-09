@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 72 gotchas, 129 conventions, 71 fixes."
+description: "Project for node. 73 gotchas, 132 conventions, 76 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **509 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **524 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,7 @@ Auto-compiled from **509 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1070 notes - Score threshold: >40 + > 1087 notes - Score threshold: >40 - - **gotcha in shared-c |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Patched + - ⚠️ GOTCHA: Optimized GOTCHA - - gotcha in shared-context.json + |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Patched - - gotcha in public-content.tsx  |
 | ⚠️ GOTCHA: Optimized Patched | - - Patched security issue AYASW — hardens HTTP security headers + - Patched security issue LbzF - - |
@@ -67,9 +68,71 @@ Auto-compiled from **509 real patterns** in **node**. This skill is auto-routed 
 | Don't create components inside other components —  | Don't create components inside other components — causes remount on every render |
 | Always use key prop when rendering lists — use uni | Always use key prop when rendering lists — use unique ID, not array index |
 | Don't call setState directly inside render or useE | Don't call setState directly inside render or useEffect without deps array |
-| Don't mix CommonJS (require) and ESM (import) in s | Don't mix CommonJS (require) and ESM (import) in same project |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - problem-fix in brainsync_auto.md
++ - problem-fix in agent-rules.md
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - problem-fix in brainsync_auto.md
++ - problem-fix in agent-rules.md
+- - problem-fix in .gitignore
++ - problem-fix in brainsync_auto.md
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Proper
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Executive — prevents null/undefined runtime crashes
++ - problem-fix in shared-context.json
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Card — parallelizes async operations for speed
++ - problem-fix in agent-rules.md
+- - Fixed null crash in Boolean — parallelizes async operations for speed
++ - problem-fix in brainsync_auto
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Patched security issue TypeScript — improves module reusability
@@ -143,75 +206,5 @@ Auto-compiled from **509 real patterns** in **node**. This skill is auto-routed 
 
 📌 IDE AST Context: Modified symbols likely
 
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Plus — avoids unnecessary re-renders in React
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Plus — avoids unnecessary re-renders in React
-- - problem-fix in brainsync_auto.md
-+ - problem-fix in shared-context.json
-- - problem-fix in .gitignore
-+ - problem-fix in brainsync_auto.md
-- - problem-fix in bookingAutomation.ts
-+ - 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Plus — avoids unnecessary re-renders in React
-- - problem-fix in brainsync_auto.md
-+ - problem-fix in shared-context.json
-- - problem-fix in .gitignore
-+ - problem-fix in brainsync_auto.md
-- - problem-fix in bookingAutomation.ts
-+ - problem-fix in .gitignore
-- - problem-fix in tsc_errors_fresh.txt
-+ - problem-fix in bookingAutomation.t
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue RCWtJ
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue RCWtJ
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue RCWtJ
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue RCWtJ
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue RCWtJ
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Patched security issue RCWtJ
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue RCWtJ
-+ - problem-fix in agent-rules.md
--
 
 ... [Truncated — see individual observations for full content]

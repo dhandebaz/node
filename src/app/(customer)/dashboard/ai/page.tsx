@@ -92,15 +92,15 @@ export default async function AIDashboardPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground mb-1">
-            Overview
+          <h1 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter mb-1">
+            Executive Overview
           </h1>
-          <p className="text-muted-foreground">
-            Welcome back, {tenant?.name}. Here&apos;s what&apos;s happening.
+          <p className="text-zinc-500 font-medium italic">
+            Institutional control center for {tenant?.name}.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button asChild className="font-bold">
+          <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all h-12 px-6">
             <Link href="/dashboard/ai/bookings/new">
               <Plus className="w-4 h-4 mr-2" />
               New Appointment
@@ -122,17 +122,17 @@ export default async function AIDashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Card className="bg-white border-zinc-200 shadow-sm hover:shadow-md transition-all">
+        <Card className="bg-white border-zinc-200 shadow-sm hover:shadow-xl hover:shadow-zinc-200/20 transition-all border-b-4 border-b-blue-600/10">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-blue-50 rounded-xl text-blue-600">
+              <div className="p-3 bg-blue-50 rounded-2xl text-blue-600">
                 <CreditCard className="w-5 h-5" />
               </div>
               <Link
                 href="/dashboard/billing"
                 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-blue-600 transition-colors flex items-center gap-1"
               >
-                Top Up <ArrowRight className="w-3 h-3" />
+                Refill <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
@@ -140,7 +140,7 @@ export default async function AIDashboardPage() {
                 ₹{walletBalance}
               </div>
               <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
-                Wallet Balance
+                Operational Capital
               </div>
             </div>
           </CardContent>
@@ -170,10 +170,10 @@ export default async function AIDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border-zinc-200 shadow-sm hover:shadow-md transition-all">
+        <Card className="bg-white border-zinc-200 shadow-sm hover:shadow-xl hover:shadow-zinc-200/20 transition-all border-b-4 border-b-blue-600">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-blue-600 rounded-xl text-white">
+              <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-200">
                 <Sparkles className="w-5 h-5" />
               </div>
               <Link
@@ -188,7 +188,7 @@ export default async function AIDashboardPage() {
                 {messageCount || 0}
               </div>
               <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
-                AI Automations
+                Omni AI Automations
               </div>
             </div>
           </CardContent>
@@ -244,22 +244,23 @@ export default async function AIDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Activity */}
         <DashboardErrorBoundary>
-          <Card className="lg:col-span-2 glass-card p-0 border-none shadow-none overflow-hidden">
-            <CardHeader className="border-b border-border pb-4">
-              <CardTitle className="text-lg flex items-center gap-2 text-foreground">
-                <Activity className="w-5 h-5 text-muted-foreground" />
-                Recent Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
+          <div className="lg:col-span-2 bg-white border border-zinc-200 rounded-3xl shadow-sm overflow-hidden">
+            <div className="bg-zinc-50/50 p-6 border-b border-zinc-100 flex justify-between items-center">
+              <h2 className="text-base font-black text-zinc-950 uppercase tracking-tight flex items-center gap-2">
+                <Activity className="w-5 h-5 text-blue-600" />
+                Operational Activity
+              </h2>
+            </div>
+            <div className="p-0">
               {!recentActivity || recentActivity.length === 0 ? (
-                <div className="p-8 text-center text-muted-foreground text-sm">
-                  No recent activity recorded.
+                <div className="p-12 text-center text-zinc-400 text-xs font-black uppercase tracking-widest italic leading-relaxed">
+                  No institutional logs recorded.
                 </div>
               ) : (
-                <div className="divide-y divide-zinc-800/50">
+                <div className="divide-y divide-zinc-100">
                   {recentActivity.map((activity: any) => {
                       const eventType = String(activity.event_type ?? "");
                       const actorType = String(activity.actor_type ?? "");
@@ -274,10 +275,10 @@ export default async function AIDashboardPage() {
                       return (
                         <div
                           key={activity.id}
-                          className="p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors"
+                          className="p-5 flex items-center gap-5 hover:bg-zinc-50 transition-colors group cursor-pointer"
                         >
                           <div
-                            className={`p-2.5 rounded-full ${isError ? "bg-red-500/10 text-red-400" : isAiEvent ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}
+                            className={`p-2.5 rounded-xl border shadow-sm transition-transform group-hover:scale-110 ${isError ? "bg-rose-50 border-rose-100 text-rose-600" : isAiEvent ? "bg-blue-50 border-blue-100 text-blue-600" : "bg-zinc-50 border-zinc-100 text-zinc-400"}`}
                           >
                             {isError ? (
                               <AlertTriangle className="w-4 h-4" />
@@ -288,10 +289,10 @@ export default async function AIDashboardPage() {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm text-foreground font-medium truncate flex items-center gap-2">
+                            <div className="text-xs text-zinc-950 font-black uppercase tracking-tight truncate flex items-center gap-2">
                               {eventType.replace(/_/g, " ")}
                             </div>
-                            <div className="text-xs text-muted-foreground truncate mt-0.5">
+                            <div className="text-[10px] text-zinc-400 uppercase font-black tracking-widest truncate mt-1">
                               {createdAt}
                               {createdAt && actorType ? " • " : ""}
                               {actorType}
@@ -303,79 +304,84 @@ export default async function AIDashboardPage() {
                   )}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </DashboardErrorBoundary>
 
         {/* Sidebar Cards */}
         <div className="space-y-6">
           <DashboardErrorBoundary>
-            <Card className="glass-card p-0 border-none shadow-none">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg text-foreground">AI Status</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm overflow-hidden">
+              <h3 className="text-base font-black text-zinc-950 uppercase tracking-tight mb-6">Omni AI Protocol</h3>
+              <div>
                 <div
-                  className={`p-4 rounded-lg border flex items-start gap-3 mb-6 ${
+                  className={`p-4 rounded-2xl border flex items-start gap-4 mb-6 transition-colors ${
                     isAiPaused
-                      ? "bg-red-500/5 border-red-500/20"
-                      : "bg-green-500/5 border-green-500/20"
+                      ? "bg-rose-50 border-rose-100"
+                      : "bg-emerald-50 border-emerald-100"
                   }`}
                 >
-                  {isAiPaused ? (
-                    <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5" />
-                  ) : (
-                    <Zap className="w-5 h-5 text-green-400 mt-0.5" />
-                  )}
+                  <div className={cn(
+                    "p-2 rounded-xl border shadow-sm",
+                    isAiPaused ? "bg-white border-rose-200 text-rose-600" : "bg-white border-emerald-200 text-emerald-600"
+                  )}>
+                    {isAiPaused ? (
+                      <AlertTriangle className="w-4 h-4" />
+                    ) : (
+                      <Zap className="w-4 h-4" />
+                    )}
+                  </div>
                   <div>
                     <div
-                      className={`font-semibold text-sm ${isAiPaused ? "text-red-400" : "text-green-400"}`}
+                      className={cn(
+                        "text-[10px] font-black uppercase tracking-widest leading-none mb-1",
+                        isAiPaused ? "text-rose-600" : "text-emerald-600"
+                      )}
                     >
-                      {isAiPaused ? "AI is Paused" : "AI is Active"}
+                      {isAiPaused ? "Neural Engine Paused" : "Neural Engine Active"}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    <p className="text-[10px] text-zinc-500 font-bold italic leading-relaxed">
                       {isAiPaused
-                        ? "Your AI is currently not replying to incoming messages. Check your settings."
-                        : "Your AI is monitoring your inbox 24/7 and responding to clients."}
+                        ? "Institutional response core is currently inactive. Client inquiries pending."
+                        : "AI is synchronizing with inbox and orchestrating responses."}
                     </p>
                   </div>
                 </div>
- 
+
                 <Button
                   asChild
                   variant="outline"
-                  className="w-full"
+                  className="w-full h-11 border-zinc-200 bg-white text-zinc-950 text-[10px] font-black uppercase tracking-widest hover:bg-zinc-50 transition-all active:scale-95 shadow-sm"
                 >
                   <Link href="/dashboard/ai/settings">
-                    Configure AI Settings
+                    Configure Neural Core
                   </Link>
                 </Button>
-              </CardContent>
-            </Card>
-
+              </div>
+            </div>
           </DashboardErrorBoundary>
 
           <DashboardErrorBoundary>
-            <Card className="bg-primary border-0 text-white relative overflow-hidden">
-              <CardContent className="p-6 relative z-10">
-                <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-5 h-5 text-white/90" />
-                  <h3 className="font-bold text-lg">Refer & Earn</h3>
+            <div className="bg-blue-600 border border-blue-500 rounded-3xl text-white relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:scale-150 transition-transform duration-500" />
+              <div className="p-8 relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-white/10 rounded-xl border border-white/20">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-base font-black uppercase tracking-tight">Expansion Protocol</h3>
                 </div>
-                <p className="text-sm text-white/80 mb-6 leading-relaxed">
-                  Get ₹500 in free AI credits for every friend you invite to the
-                  platform.
+                <p className="text-xs text-blue-50/80 mb-8 font-medium italic leading-relaxed">
+                  Yield <span className="text-white font-black">₹500</span> in operational credits for every institution you onboard to Omni AI.
                 </p>
                 <Button
                   asChild
-                  className="w-full bg-white text-primary hover:bg-white/90 font-bold"
+                  className="w-full h-11 bg-white text-blue-600 hover:bg-zinc-50 font-black uppercase tracking-widest text-[10px] rounded-xl shadow-lg transition-all active:scale-95 border-none"
                 >
-                  <Link href="/dashboard/invite">Invite Friends</Link>
+                  <Link href="/dashboard/invite">Activate Invitation</Link>
                 </Button>
-              </CardContent>
-              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-              <div className="absolute -top-8 -left-8 w-24 h-24 bg-black/10 rounded-full blur-xl" />
-            </Card>
+              </div>
+            </div>
           </DashboardErrorBoundary>
         </div>
       </div>

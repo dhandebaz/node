@@ -12,7 +12,7 @@ import {
   getPersonaCapabilities,
 } from "@/lib/business-context";
 import { cn } from "@/lib/utils";
-import { extractAirbnbInfo } from "@/app/actions/listings";
+import { extractAirbnbInfo } from "@/app/actions/services";
 import { Search, Loader2, Sparkles } from "lucide-react";
 
 const platformLabels: Record<ListingPlatform, string> = {

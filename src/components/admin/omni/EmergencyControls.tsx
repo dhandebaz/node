@@ -1,7 +1,7 @@
 
 "use client";
 
-import { setSystemStatusAction } from "@/app/actions/kaisa";
+import { setSystemStatusAction } from "@/app/actions/omni-core";
 import { useState } from "react";
 import { AlertTriangle, Power } from "lucide-react";
 

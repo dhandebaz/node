@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { addExplicitFeedbackAction } from "@/app/actions/kaisa-learning";
+import { addExplicitFeedbackAction } from "@/app/actions/omni-learning";
 import { Loader2, Plus, MessageSquare, AlertCircle } from "lucide-react";
 
 export function FeedbackForm() {

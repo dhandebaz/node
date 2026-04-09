@@ -86,36 +86,33 @@ export default function AISettingsPage() {
   return (
     <div className="space-y-8 max-w-4xl mx-auto pb-24 md:pb-0">
       <div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          Kaisa AI Settings
+        <h1 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter mb-2">
+          Omni AI Control
         </h1>
-        <p className="text-foreground/60">
-          Configure how your AI Employee interacts with{" "}
-          {labels.customers.toLowerCase()}.
+        <p className="text-zinc-500 font-medium">
+          Manage your AI Associate settings and how it interacts with {labels.customers.toLowerCase()}.
         </p>
       </div>
 
       <div className="grid gap-6">
-        {/* Master AI Toggle */}
-        <Card className="public-panel border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.05)]">
-          <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-border/50">
+        <Card className="bg-white border-blue-100 shadow-xl shadow-blue-500/5">
+          <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-zinc-100">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <Zap
                   className={cn(
                     "w-5 h-5",
                     tenant?.is_ai_enabled
-                      ? "text-emerald-500"
-                      : "text-muted-foreground",
+                      ? "text-blue-600"
+                      : "text-zinc-400",
                   )}
                 />
-                <CardTitle className="text-foreground">
-                  AI Employee Activation
+                <CardTitle className="text-zinc-950 font-black uppercase tracking-tight">
+                  AI Activation
                 </CardTitle>
               </div>
-              <CardDescription className="text-muted-foreground">
-                Switch your AI Employee on or off. When off, Kaisa will not
-                reply to any customers.
+              <CardDescription className="text-zinc-500 font-medium">
+                When active, Omni AI will automatically handle customer inquiries across all channels.
               </CardDescription>
             </div>
             <Switch
@@ -150,136 +147,131 @@ export default function AISettingsPage() {
           initialEnabled={tenant?.is_branding_enabled ?? false}
         />
 
-        {/* Tone of Voice */}
-        <Card className="bg-transparent border-border">
-          <CardHeader>
+        <Card className="bg-white border-zinc-200 shadow-sm overflow-hidden">
+          <CardHeader className="bg-zinc-50/50">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
+                <div className="p-2 bg-blue-600 rounded-xl text-white">
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <div>
-                  <CardTitle className="text-foreground">
-                    How should Kaisa AI talk to {labels.customers.toLowerCase()}
-                    ?
+                  <CardTitle className="text-zinc-950 font-black uppercase tracking-tight">
+                    Tone of Voice
                   </CardTitle>
-                  <CardDescription className="text-foreground/50">
-                    Set the personality of your AI ({aiDefaults.role}).
+                  <CardDescription className="text-zinc-500 font-medium">
+                    Set the persona of your AI associate.
                   </CardDescription>
                 </div>
               </div>
-              <div className="text-xs font-medium h-6 flex items-center justify-end sm:justify-start">
+              <div className="text-[10px] font-black uppercase tracking-widest h-6 flex items-center justify-end sm:justify-start">
                 {saveStatus === "saving" && (
-                  <span className="text-muted-foreground animate-pulse">Saving...</span>
+                  <span className="text-blue-600 animate-pulse">Saving Changes...</span>
                 )}
                 {saveStatus === "saved" && (
-                  <span className="text-emerald-400">Saved</span>
+                  <span className="text-emerald-600">Settings Saved</span>
                 )}
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6 pt-6">
             <div className="grid gap-4 md:grid-cols-2">
               <div
                 onClick={() => setTone("professional")}
                 className={cn(
-                  "p-4 rounded-lg border cursor-pointer transition-colors",
+                  "p-6 rounded-2xl border transition-all cursor-pointer",
                   tone === "professional"
-                    ? "border-white/30 bg-white/5"
-                    : "border-border bg-black/20 hover:border-white/20",
+                    ? "border-blue-600 bg-blue-50/50 shadow-sm"
+                    : "border-zinc-100 bg-zinc-50 hover:border-zinc-200",
                 )}
               >
-                <div className="font-medium text-foreground mb-1">
-                  Professional & Polite
+                <div className="font-black text-zinc-950 uppercase tracking-tight mb-2">
+                  Institutional
                 </div>
-                <div className="text-sm text-foreground/50">
-                  Formal, respectful, and efficient. Best for business{" "}
-                  {labels.customers.toLowerCase()}.
+                <div className="text-xs text-zinc-500 font-medium leading-relaxed">
+                  Formal, respectful, and authoritative. Ideal for corporate clients and premium businesses.
                 </div>
               </div>
               <div
                 onClick={() => setTone("friendly")}
                 className={cn(
-                  "p-4 rounded-lg border cursor-pointer transition-colors",
+                  "p-6 rounded-2xl border transition-all cursor-pointer",
                   tone === "friendly"
-                    ? "border-primary bg-primary/10"
-                    : "border-border bg-black/20 hover:border-white/20",
+                    ? "border-blue-600 bg-blue-50/50 shadow-sm"
+                    : "border-zinc-100 bg-zinc-50 hover:border-zinc-200",
                 )}
               >
                 <div
                   className={cn(
-                    "font-medium mb-1",
+                    "font-black uppercase tracking-tight mb-2",
                     tone === "friendly"
-                      ? "text-primary"
-                      : "text-foreground",
+                      ? "text-blue-600"
+                      : "text-zinc-950",
                   )}
                 >
-                  Warm & Friendly
+                  Approachable
                 </div>
-                <div className="text-sm text-foreground/50">
-                  Casual, welcoming, and helpful. Best for casual{" "}
-                  {labels.listings.toLowerCase()}.
+                <div className="text-xs text-zinc-500 font-medium leading-relaxed">
+                  Casual, welcoming, and warm. Perfect for high-engagement B2C startups and retail.
                 </div>
               </div>
             </div>
-            <div className="pt-4">
-              <Label className="text-foreground mb-2 block">
-                Custom Instructions
+            <div className="pt-2">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-3 block">
+                Executive Instructions
               </Label>
               <Textarea
-                placeholder="e.g. Always mention we have a friendly dog named Max."
+                placeholder="e.g. Always emphasize our 24/7 priority support and mention our commitment to security."
                 value={customInstructions}
                 onChange={(event) => setCustomInstructions(event.target.value)}
-                className="bg-black/20 border-border text-foreground placeholder:text-foreground/20 min-h-[100px]"
+                className="bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-300 min-h-[120px] rounded-2xl focus:ring-blue-600/5 focus:bg-white transition-all font-medium"
               />
             </div>
           </CardContent>
         </Card>
 
-        {/* Allowed Actions */}
-        <Card className="bg-transparent border-border">
-          <CardHeader>
+        <Card className="bg-white border-zinc-200 shadow-sm overflow-hidden">
+          <CardHeader className="bg-zinc-50/50">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+              <div className="p-2 bg-blue-600 rounded-xl text-white">
                 <Shield className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-foreground">Allowed Actions</CardTitle>
-                <CardDescription className="text-foreground/50">
-                  Control what your AI can and cannot do.
+                <CardTitle className="text-zinc-950 font-black uppercase tracking-tight">Governance & Permissions</CardTitle>
+                <CardDescription className="text-zinc-500 font-medium">
+                  Define the operational boundaries for your AI staff.
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label className="text-foreground text-base">
-                  Accept {labels.bookings}
+          <CardContent className="space-y-6 pt-6">
+            <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+              <div className="space-y-1">
+                <Label className="text-sm font-black text-zinc-950 uppercase tracking-tight">
+                  Automated Appointments
                 </Label>
-                <div className="text-sm text-foreground/50">
+                <div className="text-xs text-zinc-500 font-medium">
                   Allow AI to confirm {labels.bookings.toLowerCase()}{" "}
-                  automatically if criteria are met.
+                  instantly based on your availability.
                 </div>
               </div>
               <Switch defaultChecked />
             </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label className="text-foreground text-base">Process Refunds</Label>
-                <div className="text-sm text-foreground/50">
-                  Allow AI to process refunds up to a certain limit.
+            <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+              <div className="space-y-1">
+                <Label className="text-sm font-black text-zinc-950 uppercase tracking-tight">Financial Exceptions</Label>
+                <div className="text-xs text-zinc-500 font-medium">
+                  Allow AI to process partial refunds or resolution credits.
                 </div>
               </div>
               <Switch />
             </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label className="text-foreground text-base">
-                  Send Special Offers
+            <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+              <div className="space-y-1">
+                <Label className="text-sm font-black text-zinc-950 uppercase tracking-tight">
+                  Commercial Incentives
                 </Label>
-                <div className="text-sm text-foreground/50">
-                  Allow AI to propose discounts to close a deal.
+                <div className="text-xs text-zinc-500 font-medium">
+                  Enable AI to offer dynamic discounts to high-intent leads.
                 </div>
               </div>
               <Switch defaultChecked />
@@ -287,30 +279,27 @@ export default function AISettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Knowledge Base */}
-        <Card className="bg-transparent border-border">
-          <CardHeader>
+        <Card className="bg-white border-zinc-200 shadow-sm overflow-hidden">
+          <CardHeader className="bg-zinc-50/50">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-400">
+              <div className="p-2 bg-blue-600 rounded-xl text-white">
                 <Brain className="w-5 h-5" />
               </div>
               <div>
-                <CardTitle className="text-foreground">Knowledge Base</CardTitle>
-                <CardDescription className="text-foreground/50">
-                  Your AI learns from your {labels.listings.toLowerCase()}, but
-                  you can add general rules here.
+                <CardTitle className="text-zinc-950 font-black uppercase tracking-tight">Institutional Knowledge</CardTitle>
+                <CardDescription className="text-zinc-500 font-medium">
+                  Upload PDF, DOCX or TXT files to train Omni AI on your specific business logic.
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-center py-8 border-2 border-dashed border-border rounded-lg">
-              <div className="text-foreground/40 mb-2">
-                No custom documents uploaded
+          <CardContent className="pt-6">
+            <div className="text-center py-12 border-2 border-dashed border-zinc-200 rounded-3xl bg-zinc-50/50">
+              <div className="text-zinc-400 font-black uppercase tracking-widest text-[10px] mb-2">
+                Central Repository Empty
               </div>
-              <div className="text-sm text-foreground/30">
-                Upload {labels.listing.toLowerCase()} rules, local guides, or
-                FAQs.
+              <div className="text-xs text-zinc-500 font-medium max-w-xs mx-auto leading-relaxed">
+                Connect your operating manuals, product guides, and FAQs to empower your AI Associate.
               </div>
             </div>
           </CardContent>
