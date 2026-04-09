@@ -103,7 +103,7 @@ export function NotificationProvider({
             "payment.captured",
             "subscription.charged",
             "payment.failed",
-            "booking.created",
+            "engagement.started",
           ];
           if (event.event_type && notifiableEvents.includes(event.event_type)) {
             addNotification({
@@ -138,10 +138,10 @@ export function NotificationProvider({
 
 function Toast({ notification, onDismiss }: { notification: Notification; onDismiss: () => void }) {
   const colors = {
-    success: "bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/50 dark:border-emerald-800 dark:text-emerald-200",
-    error: "bg-red-50 border-red-200 text-red-800 dark:bg-red-950/50 dark:border-red-800 dark:text-red-200",
-    warning: "bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/50 dark:border-amber-800 dark:text-amber-200",
-    info: "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-950/50 dark:border-blue-800 dark:text-blue-200",
+    success: "bg-emerald-50 border-emerald-200 text-emerald-800",
+    error: "bg-red-50 border-red-200 text-red-800",
+    warning: "bg-amber-50 border-amber-200 text-amber-800",
+    info: "bg-blue-50 border-blue-200 text-blue-800",
   };
 
   const icons = {
@@ -180,7 +180,7 @@ function formatEventTitle(eventType: string): string {
     "payment.captured": "Payment Received",
     "subscription.charged": "Subscription Renewed",
     "payment.failed": "Payment Failed",
-    "booking.created": "New Booking",
+    "engagement.started": "Engagement Started",
   };
   return map[eventType] || eventType;
 }
@@ -192,8 +192,8 @@ function formatEventMessage(eventType: string, metadata?: Record<string, unknown
   if (eventType === "payment.failed" && metadata?.reason) {
     return String(metadata.reason);
   }
-  if (eventType === "booking.created") {
-    return "A new booking has been confirmed.";
+  if (eventType === "engagement.started") {
+    return "A new service engagement has been initiated.";
   }
   return "";
 }

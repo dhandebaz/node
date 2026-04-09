@@ -8,13 +8,23 @@ import { Bot, X, Send, Sparkles, Loader2, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 
-export default function AiBusinessAssistant({ bookingId, propertyName }: { bookingId: string, propertyName: string }) {
+export default function AiBusinessAssistant({ 
+  bookingId, 
+  engagementId,
+  propertyName 
+}: { 
+  bookingId?: string, 
+  engagementId?: string,
+  propertyName: string 
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [chatInput, setChatInput] = useState("");
 
+  const id = engagementId || bookingId;
+
   const transport = new DefaultChatTransport({
-    api: `/api/guide/${bookingId}/chat`,
+    api: `/api/guide/${id}/chat`,
   });
 
   const { messages, status, sendMessage } = useChat({

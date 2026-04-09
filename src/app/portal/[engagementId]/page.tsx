@@ -8,7 +8,7 @@ import AiConciergeChat from "@/components/guest/AiConciergeChat";
 
 // Mock data fetcher for the guide
 export default function ClientPortal() {
-  const params = useParams<{ bookingId: string }>();
+  const params = useParams<{ engagementId: string }>();
   const [isVerified, setIsVerified] = useState(false); // Simulated state
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +48,7 @@ export default function ClientPortal() {
               Project Dashboard
             </h1>
             <p className="text-sm text-zinc-500 font-bold tracking-wide uppercase">
-              Reference: {params?.bookingId?.slice(0, 8) || "NB-772"}
+              Reference: {params?.engagementId?.slice(0, 8) || "NB-772"}
             </p>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function ClientPortal() {
                         Action Required
                       </div>
                       <p className="text-sm text-zinc-600 font-medium leading-relaxed">Please complete your identity verification to reveal sensitive access details.</p>
-                      <Link href={`/guest-id/${params?.bookingId}`} className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-zinc-950 transition-colors mt-2 shadow-lg shadow-blue-600/20">
+                      <Link href={`/guest-id/${params?.engagementId}`} className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-zinc-950 transition-colors mt-2 shadow-lg shadow-blue-600/20">
                         Complete Setup <ArrowRight className="w-4 h-4" />
                       </Link>
                   </div>
@@ -103,7 +103,7 @@ export default function ClientPortal() {
                 <p className="text-xs text-blue-600 font-mono mt-1 font-bold italic">nodebase_vip</p>
               </div>
             </div>
-            <Link href={`/guide/${params?.bookingId}/store`} className="bg-white border border-zinc-200 rounded-3xl p-5 flex flex-col justify-between aspect-square hover:bg-zinc-50 transition-all shadow-sm group">
+            <Link href={`/portal/${params?.engagementId}/store`} className="bg-white border border-zinc-200 rounded-3xl p-5 flex flex-col justify-between aspect-square hover:bg-zinc-50 transition-all shadow-sm group">
               <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Coffee className="w-4 h-4 text-blue-600" />
               </div>
@@ -142,7 +142,7 @@ export default function ClientPortal() {
         </div>
       </div>
 
-      <AiConciergeChat bookingId={params?.bookingId} propertyName="Client Portal" />
+      <AiConciergeChat engagementId={params?.engagementId} propertyName="Client Portal" />
     </>
   );
 }

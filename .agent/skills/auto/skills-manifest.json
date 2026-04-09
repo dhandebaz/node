@@ -1,7 +1,7 @@
 {
   "typescript": {
     "enabled": true,
-    "lastGenerated": "2026-04-09T20:22:26.074Z",
+    "lastGenerated": "2026-04-09T20:32:29.534Z",
     "observationCount": 197,
     "skillCount": 0,
     "domain": "typescript",
@@ -13,18 +13,18 @@
   },
   "project": {
     "enabled": true,
-    "lastGenerated": "2026-04-09T20:22:26.076Z",
-    "observationCount": 503,
+    "lastGenerated": "2026-04-09T20:32:29.533Z",
+    "observationCount": 509,
     "skillCount": 0,
     "domain": "project",
     "triggerGlobs": [
       "**/*"
     ],
-    "description": "Project for node. 69 gotchas, 128 conventions, 71 fixes."
+    "description": "Project for node. 72 gotchas, 129 conventions, 71 fixes."
   },
   "decision": {
     "enabled": true,
-    "lastGenerated": "2026-04-09T20:22:26.079Z",
+    "lastGenerated": "2026-04-09T20:32:29.536Z",
     "observationCount": 0,
     "skillCount": 11,
     "domain": "decision",
@@ -35,7 +35,7 @@
   },
   "javascript": {
     "enabled": true,
-    "lastGenerated": "2026-04-09T20:22:26.077Z",
+    "lastGenerated": "2026-04-09T20:32:29.535Z",
     "observationCount": 8,
     "skillCount": 0,
     "domain": "javascript",
@@ -47,7 +47,7 @@
   },
   "convention": {
     "enabled": true,
-    "lastGenerated": "2026-04-09T20:22:26.078Z",
+    "lastGenerated": "2026-04-09T20:32:29.535Z",
     "observationCount": 0,
     "skillCount": 27,
     "domain": "convention",
@@ -58,18 +58,18 @@
   },
   "typescript-react": {
     "enabled": true,
-    "lastGenerated": "2026-04-09T20:22:26.075Z",
-    "observationCount": 127,
+    "lastGenerated": "2026-04-09T20:32:29.533Z",
+    "observationCount": 130,
     "skillCount": 0,
     "domain": "typescript-react",
     "triggerGlobs": [
       "**/*.tsx"
     ],
-    "description": "Typescript React for node. 5 gotchas, 32 conventions, 14 fixes, 3 error→fix pairs."
+    "description": "Typescript React for node. 6 gotchas, 32 conventions, 14 fixes, 3 error→fix pairs."
   },
   "problem-fix": {
     "enabled": true,
-    "lastGenerated": "2026-04-09T20:22:26.082Z",
+    "lastGenerated": "2026-04-09T20:32:29.536Z",
     "observationCount": 0,
     "skillCount": 3,
     "domain": "problem-fix",
@@ -80,8 +80,8 @@
   },
   "config": {
     "enabled": true,
-    "lastGenerated": "2026-04-09T20:22:26.075Z",
-    "observationCount": 250,
+    "lastGenerated": "2026-04-09T20:32:29.532Z",
+    "observationCount": 258,
     "skillCount": 0,
     "domain": "config",
     "triggerGlobs": [
@@ -90,11 +90,11 @@
       "**/*.json",
       "**/*.toml"
     ],
-    "description": "Config for node. 11 gotchas, 52 conventions, 19 fixes."
+    "description": "Config for node. 12 gotchas, 55 conventions, 20 fixes."
   },
   "gotcha": {
     "enabled": true,
-    "lastGenerated": "2026-04-09T20:22:26.082Z",
+    "lastGenerated": "2026-04-09T20:32:29.536Z",
     "observationCount": 0,
     "skillCount": 13,
     "domain": "gotcha",

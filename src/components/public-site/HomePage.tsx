@@ -30,7 +30,7 @@ const workflowPillars: {
 }[] = [
   {
     title: "Autonomous AI Staff",
-    description: "Deploy specialized agents (Thrift AI, Nurse AI, Dukan AI, Host AI) tailored to your exact business vertical.",
+    description: "Deploy specialized agents (Thrift AI, Nurse AI, Dukan AI, Omni AI) tailored to your exact business vertical.",
     icon: Sparkles,
   },
   {
@@ -52,10 +52,10 @@ const operatingSequence = [
 ];
 
 const socialProof = [
-  { name: "GreenView Stays", type: "Airbnb Host", logo: "🏡" },
+  { name: "Apex Operations", type: "Service Firm", logo: "🏢" },
   { name: "Wellness Clinic", type: "Doctor's Office", logo: "🏥" },
   { name: "Kirana Direct", type: "Retail Store", logo: "🛒" },
-  { name: "ThriftHub", type: "Second-hand Store", logo: "👕" },
+  { name: "ThriftHub", type: "Social Commerce", logo: "📱" },
 ];
 
 const reveal = {
@@ -349,10 +349,8 @@ export function HomePage() {
 
         {/* SOCIAL PROOF */}
         <section className="py-8">
-          <div className="text-center mb-8">
-            <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">Trusted by businesses across</div>
-            <div className="text-sm font-bold text-zinc-400">Homestays • Clinics • Retail • Social Commerce</div>
-          </div>
+          <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">Trusted by businesses across</div>
+          <div className="text-sm font-bold text-zinc-400">Professional Services • Clinics • Retail • Social Commerce</div>
           <div className="flex flex-wrap justify-center gap-6">
             {socialProof.map((business) => (
               <div key={business.name} className="flex items-center gap-3 bg-white border border-zinc-100 shadow-sm px-6 py-4 rounded-2xl">

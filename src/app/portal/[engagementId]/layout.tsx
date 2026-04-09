@@ -5,12 +5,12 @@ import '@/app/globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Client Guide | NodeBase Digital Assistant',
-  description: 'Everything you need to know about your upcoming service or project.',
+  title: 'Client Portal | NodeBase Digital Assistant',
+  description: 'Everything you need to know about your upcoming service or project engagement.',
   themeColor: '#ffffff',
 };
 
-export default function GuideLayout({
+export default function PortalLayout({
   children,
 }: {
   children: React.ReactNode;

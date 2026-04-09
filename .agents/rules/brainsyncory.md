@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 1070 notes | Score threshold: >40
+> 1087 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,6 +20,22 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
+- **gotcha in NotificationProvider.tsx** — File updated (external): src/components/providers/NotificationProvider
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "6f502d31964c86b0",
++
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Patched
++ - ⚠️ GOTCHA: Optimized GOTCHA
+- - g
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - gotcha in shared-context.json
++ - ⚠️ GOTCHA: Optimized Patched
+- -
+- **⚠️ GOTCHA: Optimized Patched** — - - Patched security issue AYASW — hardens HTTP security headers
++ - P
 - **gotcha in shared-context.json** — -     }
 +     },
 -   ]
@@ -27,28 +43,17 @@
 - }
 +       "id": "40b95f4d598b1aae",
 +
-- **gotcha in public-content.tsx** — -       title: "Host AI",
-+       title: "Omni AI",
--       href: "/em
-- **gotcha in PricingSurface.tsx** — -   "You keep 100% of your revenue. We never take a cut of your bookin
-- **⚠️ GOTCHA: Fixed null crash in AlertTriangle — avoids unnecessary re-renders in React** — - import {
-+ import { motion } from "framer-motion";
--   AlertTriangle
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 956 notes | Score threshold: >40
-+ > 961 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score** — - > 954 notes | Score threshold: >40
-+ > 956 notes | Score threshold: 
 
 ## Project Standards
 
+- discovery in shared-context.json — confirmed 3x
+- Optimized Score — parallelizes async operations for speed — confirmed 3x
 - what-changed in page.tsx — confirmed 3x
 - what-changed in shared-context.json — confirmed 5x
 - decision in page.tsx — confirmed 3x
 - what-changed in layout.tsx — confirmed 4x
 - what-changed in shared-context.json — confirmed 6x
 - problem-fix in shared-context.json — confirmed 3x
-- Optimized Score — confirmed 3x
-- what-changed in shared-context.json — confirmed 5x
 
 ## Known Fixes
 
@@ -61,9 +66,9 @@
 ## Recent Decisions
 
 - Optimized Score — parallelizes async operations for speed
-- Optimized Score — parallelizes async operations for speed
 - decision in IndustryDetail.tsx
 - decision in page.tsx
+- Optimized Industries — hardens HTTP security headers
 
 ## Learned Patterns
 

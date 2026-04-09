@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 5 gotchas, 32 conventions, 14 fixes, 3 error→fix pairs."
+description: "Typescript React for node. 6 gotchas, 32 conventions, 14 fixes, 3 error→fix pairs."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,7 +12,7 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **127 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **130 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -20,6 +20,7 @@ Auto-compiled from **127 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| gotcha in NotificationProvider.tsx | File updated (external): src/components/providers/NotificationProvider.tsx  Content summary (200 lin |
 | gotcha in public-content.tsx | -       title: "Host AI", +       title: "Omni AI", -       href: "/employees/host-ai", +       href |
 | gotcha in PricingSurface.tsx | -   "You keep 100% of your revenue. We never take a cut of your bookings or sales.", +   "You keep 1 |
 | ⚠️ GOTCHA: Fixed null crash in AlertTriangle — avo | - import { + import { motion } from "framer-motion"; -   AlertTriangle, + import { -   ArrowDownLeft |
@@ -365,12 +366,6 @@ import {
 - } from "lucide-react";
 +     Plus
 - import { cn } from "@/lib/utils
-- 📐 **Fixed null crash in Badge — avoids unnecessary re-renders in React — confirmed 4x** — - import {
-+ import { Badge } from "@/components/ui/badge";
--   Card,
-+ import {
--   CardHeader,
-+  
-- 📐 **what-changed in page.tsx — confirm
+- 📐 **Fixed null crash in Badge — avoids unnecessary re-renders in React — confirmed 4x** — 
 
 ... [Truncated — see individual observations for full content]

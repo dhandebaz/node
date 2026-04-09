@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 69 gotchas, 128 conventions, 71 fixes."
+description: "Project for node. 72 gotchas, 129 conventions, 71 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **503 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **509 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **503 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Patched + - ⚠️ GOTCHA: Optimized GOTCHA - - gotcha in shared-context.json + |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Patched - - gotcha in public-content.tsx  |
+| ⚠️ GOTCHA: Optimized Patched | - - Patched security issue AYASW — hardens HTTP security headers + - Patched security issue LbzF - - |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 956 notes - Score threshold: >40 + > 961 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
 | ⚠️ GOTCHA: Optimized Score | - > 954 notes - Score threshold: >40 + > 956 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 949 notes - Score threshold: >40 + > 954 notes - Score threshold: >40 - - **gotcha in shared-con |
@@ -65,9 +68,6 @@ Auto-compiled from **503 real patterns** in **node**. This skill is auto-routed 
 | Always use key prop when rendering lists — use uni | Always use key prop when rendering lists — use unique ID, not array index |
 | Don't call setState directly inside render or useE | Don't call setState directly inside render or useEffect without deps array |
 | Don't mix CommonJS (require) and ESM (import) in s | Don't mix CommonJS (require) and ESM (import) in same project |
-| Don't use "any" type in TypeScript — define proper | Don't use "any" type in TypeScript — define proper types/interfaces |
-| Handle Promise rejections — always .catch() or try | Handle Promise rejections — always .catch() or try/catch with await |
-| Use === not == — strict equality prevents type coe | Use === not == — strict equality prevents type coercion bugs |
 
 ## 🔧 Problem Playbooks
 
@@ -212,7 +212,6 @@ Auto-compiled from **503 real patterns** in **node**. This skill is auto-routed 
 ### problem-fix in agent-rules.md
 - - Patched security issue RCWtJ
 + - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - P
+-
 
 ... [Truncated — see individual observations for full content]
