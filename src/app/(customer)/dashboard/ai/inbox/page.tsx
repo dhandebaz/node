@@ -686,20 +686,20 @@ export default function InboxPage() {
 
   if (listings.length === 0 && !loadingList) {
     return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
-        <div className="p-4 rounded-full bg-white/5 text-foreground/40">
-          <MessageSquare className="w-8 h-8" />
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-6">
+        <div className="w-20 h-20 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner">
+          <MessageSquare className="w-10 h-10" />
         </div>
         <div className="space-y-2">
-          <h3 className="text-xl font-semibold text-foreground">Inbox is locked</h3>
-          <p className="text-foreground/60 max-w-sm">
+          <h3 className="text-2xl font-black text-zinc-950 uppercase tracking-tighter">Inbox Locked</h3>
+          <p className="text-zinc-500 font-medium max-w-sm">
             Add a {labels.listing.toLowerCase()} to start receiving messages
-            from {labels.customers.toLowerCase()}.
+            from your {labels.customers.toLowerCase()}.
           </p>
         </div>
         <Link
           href="/dashboard/ai/listings"
-          className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:bg-gray-200 transition-colors"
+          className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-blue-600 text-white text-sm font-black uppercase tracking-tighter hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95"
         >
           Add {labels.listing}
         </Link>
@@ -1011,1640 +1011,505 @@ export default function InboxPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] flex bg-transparent rounded-2xl border border-border overflow-hidden relative">
-      <div
-        className={cn(
-          "w-full md:w-80 lg:w-96 bg-transparent border-r border-border flex flex-col absolute md:relative inset-0 z-10 transition-transform duration-300",
-          showThread ? "-translate-x-full md:translate-x-0" : "translate-x-0",
-        )}
-      >
-        <div className="p-4 border-b border-border bg-transparent space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold text-foreground tracking-tight">
-                Inbox
-              </h1>
-              <div className="flex items-center bg-white/5 border border-border rounded-lg p-0.5 ml-2">
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={cn(
-                    "p-1.5 rounded-md transition-all",
-                    viewMode === "list"
-                      ? "bg-primary text-foreground shadow-sm"
-                      : "text-foreground/40 hover:text-foreground/70"
-                  )}
-                  title="List View"
-                >
-                  <MessageSquare className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => setViewMode("pipeline")}
-                  className={cn(
-                    "p-1.5 rounded-md transition-all",
-                    viewMode === "pipeline"
-                      ? "bg-primary text-foreground shadow-sm"
-                      : "text-foreground/40 hover:text-foreground/70"
-                  )}
-                  title="Pipeline Board"
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                </button>
-              </div>
-              <div className="hidden lg:flex items-center gap-2 bg-white/5 border border-border rounded-full px-3 py-1 ml-2">
-                <Label
-                  htmlFor="default-ai-toggle"
-                  className="text-[10px] font-medium text-foreground/60 cursor-pointer"
-                >
-                  Default AI Paused
-                </Label>
-                <Switch
-                  id="default-ai-toggle"
-                  checked={defaultAiPaused}
-                  onCheckedChange={setDefaultAiPaused}
-                  className="scale-75"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowFilters(true)}
-                className="p-2 hover:bg-white/5 rounded-full text-foreground/60"
-              >
-                <Filter className="w-5 h-5" />
-              </button>
-            </div>
+    <div className="flex flex-col h-[calc(100vh-4rem)] bg-white overflow-hidden relative font-sans">
+      {sessionExpired && <SessionExpiredCard />}
+
+      {/* Header */}
+      <div className="h-20 flex-shrink-0 border-b border-zinc-100 px-8 flex items-center justify-between bg-white relative z-20">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-black text-zinc-950 tracking-tighter uppercase">Inbox</h1>
+            {conversations.filter(c => c.unreadCount > 0).length > 0 && (
+              <Badge className="bg-blue-600 text-white border-blue-500 font-black">
+                {conversations.reduce((sum, c) => sum + c.unreadCount, 0)} NEW
+              </Badge>
+            )}
           </div>
-          <div className="flex items-center gap-2 bg-white/5 border border-border rounded-xl px-3 py-2">
-            <Search className="w-4 h-4 text-foreground/40" />
-            <input
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Search name or phone"
-              className="bg-transparent text-sm text-foreground placeholder:text-foreground/40 focus:outline-none flex-1"
-            />
-          </div>
-          <div className="hidden md:flex items-center gap-2 text-xs text-foreground/50 flex-wrap">
+          
+          <div className="hidden lg:flex items-center p-1 bg-zinc-100 rounded-2xl border border-zinc-200">
             <button
-              onClick={() => setAwaitingReplyOnly((prev) => !prev)}
+              onClick={() => setViewMode("list")}
               className={cn(
-                "px-3 py-1 rounded-full border transition-colors flex items-center gap-1",
-                awaitingReplyOnly
-                  ? "border-amber-400 text-amber-400 bg-amber-400/10"
-                  : "border-border hover:border-white/40 text-foreground/70",
+                "px-5 py-2 text-xs font-black uppercase tracking-tighter transition-all rounded-xl",
+                viewMode === "list" 
+                  ? "bg-white text-blue-600 shadow-sm" 
+                  : "text-zinc-500 hover:text-zinc-950"
               )}
             >
-              <Clock className="w-3 h-3" />
-              Awaiting Reply
+              List View
             </button>
             <button
-              onClick={() => setUnreadOnly((prev) => !prev)}
+              onClick={() => setViewMode("pipeline")}
               className={cn(
-                "px-3 py-1 rounded-full border transition-colors",
-                unreadOnly
-                  ? "border-white/60 text-foreground"
-                  : "border-border hover:border-white/40",
+                "px-5 py-2 text-xs font-black uppercase tracking-tighter transition-all rounded-xl",
+                viewMode === "pipeline" 
+                  ? "bg-white text-blue-600 shadow-sm" 
+                  : "text-zinc-500 hover:text-zinc-950"
               )}
             >
-              Unread
+              Pipeline
             </button>
-            <div className="flex items-center gap-1 border border-border rounded-full px-3 py-1">
-              <span>
-                {channelFilter === "all"
-                  ? "All channels"
-                  : channelLabel[channelFilter]}
-              </span>
-              <ChevronDown className="w-3 h-3" />
-            </div>
-            <div className="flex items-center gap-1 border border-border rounded-full px-3 py-1">
-              <span>
-                {managerFilter === "all"
-                  ? "All AI Managers"
-                  : managerOptions.find(
-                      ([slug]) => slug === managerFilter,
-                    )?.[1]}
-              </span>
-              <ChevronDown className="w-3 h-3" />
-            </div>
-            <div className="flex items-center gap-1 border border-border rounded-full px-3 py-1">
-              <span>
-                {statusFilter === "all" ? "All status" : statusFilter}
-              </span>
-              <ChevronDown className="w-3 h-3" />
-            </div>
           </div>
         </div>
 
-        {systemMeta && (
-          <div className="p-4 space-y-3 border-b border-border">
-            {systemMeta.integrationStatus !== "connected" && (
-              <div className="flex items-start gap-3 bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs text-amber-200">
-                <AlertTriangle className="w-4 h-4 mt-0.5" />
-                <div>
-                  <div className="font-semibold">Integration disconnected</div>
-                  <div>Reconnect channels to resume replies.</div>
-                </div>
-              </div>
-            )}
-            {systemMeta.walletStatus === "empty" && (
-              <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-xs text-red-200">
-                <AlertTriangle className="w-4 h-4 mt-0.5" />
-                <div>
-                  <div className="font-semibold">Wallet empty</div>
-                  <div>AI Manager is paused until credits are added.</div>
-                </div>
-              </div>
-            )}
-            {systemMeta.channelErrors?.length ? (
-              <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-xs text-red-200">
-                <AlertTriangle className="w-4 h-4 mt-0.5" />
-                <div>
-                  <div className="font-semibold">Channel error</div>
-                  <div>{systemMeta.channelErrors.join(", ")}</div>
-                </div>
-              </div>
-            ) : null}
+        <div className="flex items-center gap-3">
+          <div className="relative group hidden md:block">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-blue-600 transition-colors" />
+            <Input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search conversations..."
+              className="pl-11 pr-4 py-2 w-72 bg-zinc-50 border-zinc-200 rounded-2xl focus:bg-white transition-all text-sm"
+            />
           </div>
-        )}
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={cn(
+              "p-3 rounded-2xl border transition-all active:scale-95",
+              showFilters 
+                ? "bg-blue-50 border-blue-200 text-blue-600" 
+                : "bg-zinc-100 border-zinc-200 text-zinc-600 hover:bg-zinc-200"
+            )}
+          >
+            <Filter className="w-5 h-5" />
+          </button>
+          <button
+            onClick={loadConversations}
+            disabled={loadingList}
+            className="p-3 bg-zinc-100 border border-zinc-200 text-zinc-600 rounded-2xl hover:bg-zinc-200 transition-all active:scale-90 disabled:opacity-50"
+          >
+            <RefreshCw className={cn("w-5 h-5", loadingList && "animate-spin")} />
+          </button>
+        </div>
+      </div>
 
-        <div className="flex-1 overflow-y-auto">
-          {loadingList && (
-            <div className="divide-y divide-white/5">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex items-start gap-3 p-4">
-                  <Skeleton className="w-10 h-10 rounded-lg bg-white/5 flex-shrink-0" />
-                  <div className="space-y-2 flex-1">
-                    <div className="flex justify-between">
-                      <Skeleton className="w-24 h-4 bg-white/5" />
-                      <Skeleton className="w-12 h-3 bg-white/5" />
-                    </div>
-                    <Skeleton className="w-full h-3 bg-white/5" />
-                    <Skeleton className="w-16 h-3 bg-white/5 mt-2" />
+      <div className="flex-1 flex overflow-hidden bg-zinc-50/50">
+        {viewMode === "pipeline" ? (
+          <div className="flex-1 p-6 overflow-hidden">
+             <PipelineBoard 
+              conversations={filteredConversations as any}
+              onSelect={(id) => setSelectedConversationId(id)}
+            />
+          </div>
+        ) : (
+          <>
+            {/* Sidebar / List View */}
+            <div className={cn(
+              "w-full md:w-96 flex-shrink-0 border-r border-zinc-200 bg-white flex flex-col relative z-10 transition-transform",
+              selectedConversationId && "hidden md:flex"
+            )}>
+              {/* Quick Filters */}
+              <div className="p-4 border-b border-zinc-100 flex gap-2 overflow-x-auto scrollbar-none">
+                <button
+                  onClick={() => setUnreadOnly(prev => !prev)}
+                  className={cn(
+                    "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap",
+                    unreadOnly 
+                      ? "bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-200" 
+                      : "bg-zinc-50 text-zinc-500 border-zinc-200 hover:border-zinc-300"
+                  )}
+                >
+                  Unread
+                </button>
+                <button
+                  onClick={() => setAwaitingReplyOnly(prev => !prev)}
+                  className={cn(
+                    "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all whitespace-nowrap",
+                    awaitingReplyOnly 
+                      ? "bg-amber-500 text-white border-amber-400 shadow-lg shadow-amber-100" 
+                      : "bg-zinc-50 text-zinc-500 border-zinc-200 hover:border-zinc-300"
+                  )}
+                >
+                  Awaiting
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto scrollbar-none">
+                {loadingList ? (
+                  <div className="p-4 space-y-4">
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <div key={i} className="flex gap-4 p-4">
+                        <Skeleton className="w-12 h-12 rounded-2xl bg-zinc-100" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-4 w-3/4 bg-zinc-100" />
+                          <Skeleton className="h-3 w-1/2 bg-zinc-100" />
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-          {listError && (
-            <div className="p-6 text-sm text-foreground/60 space-y-3">
-              <div>{listError}</div>
-              <button
-                onClick={loadConversations}
-                className="inline-flex items-center gap-2 text-sm text-foreground border border-white/20 px-3 py-2 rounded-lg hover:border-white/40"
-              >
-                <RefreshCw className="w-4 h-4" />
-                Retry
-              </button>
-            </div>
-          )}
-          {showEmptyState && (
-            <div className="p-8 text-center text-foreground/40">
-              <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-20" />
-              <p>No conversations yet</p>
-              <p className="text-xs text-foreground/30 mt-2">
-                Connect a channel to start receiving messages.
-              </p>
-            </div>
-          )}
-          {!loadingList && !listError && filteredConversations.length > 0 && (
-            <div className="divide-y divide-white/5">
-              {filteredConversations.map((conversation) => {
-                const ChannelIcon = channelIcon[conversation.channel];
-                const isReturning =
-                  (conversation.customerName?.length || 0) % 2 === 0 &&
-                  conversation.customerName !== null; // Mock VIP logic
-
-                return (
-                  <div
-                    key={conversation.id}
-                    className={cn(
-                      "group w-full text-left flex hover:bg-white/5 transition-colors border-l-2",
-                      selectedConversationId === conversation.id
-                        ? "bg-white/5 border-primary"
-                        : "border-transparent",
-                    )}
-                  >
-                    <button
-                      onClick={() => setSelectedConversationId(conversation.id)}
-                      className="flex-1 px-4 py-4"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-2">
-                          <div className="p-1.5 rounded-lg bg-black/40 text-foreground/70">
-                            <ChannelIcon className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span
-                                className={cn(
-                                  "text-sm font-semibold",
-                                  conversation.unreadCount
-                                    ? "text-foreground"
-                                    : "text-foreground/70",
-                                )}
-                              >
-                                {conversation.customerName ||
-                                  conversation.customerPhone ||
-                                  "Unknown"}
-                              </span>
-                              {conversation.unreadCount > 0 && (
-                                <span className="text-[10px] font-semibold text-foreground bg-primary rounded-full px-2 py-0.5">
-                                  {conversation.unreadCount}
-                                </span>
-                              )}
-                              {conversation.aiPaused && (
-                                <span className="text-[10px] font-semibold text-red-400 bg-red-400/10 border border-red-400/20 rounded px-1.5 py-0.5">
-                                  Needs Attention
-                                </span>
-                              )}
-                              {isReturning && (
-                                <span className="text-[10px] font-semibold text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded px-1.5 py-0.5">
-                                  VIP
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-[11px] text-foreground/40">
-                              {conversation.manager.name}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-[10px] text-foreground/40 whitespace-nowrap">
-                          {timeAgo(conversation.lastMessageAt)}
-                        </div>
-                      </div>
-                      <div className="mt-2 text-xs text-foreground/60 line-clamp-2">
-                        {conversation.lastMessage}
-                      </div>
-                      <div className="mt-3 flex items-center justify-between text-[10px] text-foreground/30 uppercase tracking-wider">
-                        <span>{channelLabel[conversation.channel]}</span>
-                        <span
-                          className={cn(
-                            "px-1.5 py-0.5 rounded",
-                            conversation.status === "payment_pending"
-                              ? "bg-orange-500/20 text-orange-400"
-                              : "",
-                          )}
-                        >
-                          {conversation.status.replace("_", " ")}
-                        </span>
-                      </div>
-                    </button>
-                    <div className="hidden group-hover:flex items-center px-2 border-l border-white/5">
+                ) : filteredConversations.length === 0 ? (
+                  <div className="p-12 text-center">
+                    <div className="w-16 h-16 rounded-full bg-zinc-50 flex items-center justify-center mx-auto mb-4">
+                      <Search className="w-8 h-8 text-zinc-200" />
+                    </div>
+                    <p className="text-sm text-zinc-400 font-bold uppercase tracking-widest">No matching chats</p>
+                  </div>
+                ) : (
+                  filteredConversations.map((conv) => {
+                    const Icon = channelIcon[conv.channel];
+                    const isSelected = conv.id === selectedConversationId;
+                    return (
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleResolve(conversation.id);
-                        }}
-                        className="p-2 hover:bg-white/10 rounded-full text-foreground/40 hover:text-emerald-400 transition-colors"
-                        title="Mark as Resolved"
+                        key={conv.id}
+                        onClick={() => setSelectedConversationId(conv.id)}
+                        className={cn(
+                          "w-full p-5 flex items-start gap-4 transition-all border-b border-zinc-50 relative group",
+                          isSelected 
+                            ? "bg-blue-50/50" 
+                            : "hover:bg-zinc-50"
+                        )}
                       >
-                        <CheckCircle className="w-4 h-4" />
+                        {isSelected && (
+                          <motion.div 
+                            layoutId="active-indicator"
+                            className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-600 rounded-r-full" 
+                          />
+                        )}
+                        
+                        <div className="relative shrink-0">
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200 flex items-center justify-center text-zinc-500 font-black text-xl shadow-sm border border-zinc-200">
+                            {conv.customerName?.charAt(0) || "C"}
+                            <div className="absolute -bottom-1 -right-1 p-1 bg-white rounded-lg border border-zinc-100 shadow-md">
+                              <Icon className="w-3 h-3 text-blue-600" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex-1 min-w-0 text-left">
+                          <div className="flex justify-between items-start mb-1">
+                            <h3 className={cn(
+                              "text-sm font-black truncate tracking-tight uppercase",
+                              conv.unreadCount > 0 ? "text-zinc-950" : "text-zinc-600"
+                            )}>
+                              {conv.customerName || conv.customerPhone || "Anonymous"}
+                            </h3>
+                            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                              {timeAgo(conv.lastMessageAt)}
+                            </span>
+                          </div>
+                          <p className={cn(
+                            "text-xs line-clamp-2 leading-relaxed transition-colors",
+                            conv.unreadCount > 0 ? "text-zinc-800 font-medium" : "text-zinc-500"
+                          )}>
+                            {conv.lastMessage || "No messages yet"}
+                          </p>
+                          
+                          <div className="mt-3 flex items-center gap-2">
+                            {conv.unreadCount > 0 && (
+                              <Badge className="bg-blue-600 text-white border-0 px-2 min-w-[20px] h-5 flex items-center justify-center font-black">
+                                {conv.unreadCount}
+                              </Badge>
+                            )}
+                            <Badge variant="outline" className="text-[9px] h-4 bg-zinc-100 border-zinc-200 text-zinc-500 font-bold uppercase tracking-wider">
+                              {conv.manager.name}
+                            </Badge>
+                            {conv.aiPaused && (
+                              <Badge className="bg-amber-50 text-amber-600 border-amber-100 text-[9px] h-4 font-bold uppercase tracking-wider">
+                                P-MANUAL
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            {/* Thread View */}
+            <div className="flex-1 flex flex-col relative bg-zinc-50/30">
+              {!selectedConversation ? (
+                <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
+                  <div className="w-24 h-24 rounded-[2.5rem] bg-white border border-zinc-100 flex items-center justify-center mb-6 shadow-xl shadow-zinc-200/50">
+                    <MessageSquare className="w-10 h-10 text-zinc-200" />
+                  </div>
+                  <h2 className="text-2xl font-black text-zinc-950 uppercase tracking-tighter">No chat selected</h2>
+                  <p className="text-sm text-zinc-500 mt-2 font-medium max-w-xs">Select a conversation from the left to start communicating with your lead.</p>
+                </div>
+              ) : (
+                <>
+                  {/* Thread Header */}
+                  <div className="h-20 flex-shrink-0 border-b border-zinc-100 px-6 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+                    <div className="flex items-center gap-4">
+                      <button onClick={() => setSelectedConversationId(null)} className="md:hidden p-2 text-zinc-400 hover:text-zinc-950 transition-colors">
+                        <ChevronLeft className="w-6 h-6" />
+                      </button>
+                      <div className="w-10 h-10 rounded-xl bg-zinc-100 flex items-center justify-center font-black text-zinc-950 text-sm border border-zinc-200">
+                        {selectedConversation.customerName?.charAt(0) || "C"}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h2 className="font-black text-zinc-950 uppercase tracking-tight">
+                            {selectedConversation.customerName || selectedConversation.customerPhone}
+                          </h2>
+                          <Badge variant="outline" className="text-[9px] h-4 bg-zinc-50 border-zinc-200 text-zinc-400 font-bold">
+                            {selectedConversation.channel.toUpperCase()}
+                          </Badge>
+                        </div>
+                        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest flex items-center gap-2">
+                          Status: <span className="text-blue-600">{selectedConversation.status.replace("_", " ")}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3 px-4 py-2 bg-zinc-50 rounded-2xl border border-zinc-100">
+                        <Label htmlFor="ai-pause" className="text-[10px] font-black uppercase tracking-widest text-zinc-400">AI Assistant</Label>
+                        <Switch 
+                          id="ai-pause"
+                          checked={!selectedConversation.aiPaused}
+                          onCheckedChange={(checked) => handleAIPauseToggle(!checked)}
+                        />
+                      </div>
+                      <button onClick={() => setShowContext(!showContext)} className={cn(
+                        "p-3 rounded-2xl border transition-all",
+                        showContext ? "bg-zinc-950 text-white border-zinc-900" : "bg-white border-zinc-200 text-zinc-500 hover:border-zinc-300"
+                      )}>
+                        <User className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
 
-      <div
-        className={cn(
-          "flex-1 bg-transparent flex flex-col absolute md:relative inset-0 z-20 transition-transform duration-300",
-          showThread ? "translate-x-0" : "translate-x-full md:translate-x-0",
-        )}
-      >
-        {viewMode === "pipeline" ? (
-          <div className="flex-1 p-6 overflow-hidden">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-lg font-bold text-foreground">Sales Pipeline</h2>
-                <p className="text-xs text-muted-foreground">Manage leads and conversions visually.</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="h-8 text-xs">
-                  <Plus className="w-3 h-3 mr-2" />
-                  New Lead
-                </Button>
-              </div>
-            </div>
-            <PipelineBoard 
-              conversations={filteredConversations as any}
-              onSelect={(id) => {
-                setSelectedConversationId(id);
-                setViewMode("list");
-              }}
-            />
-          </div>
-        ) : selectedConversation ? (
-          <>
-            <div className="h-16 px-4 border-b border-border flex items-center justify-between bg-transparent">
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setSelectedConversationId(null)}
-                  className="md:hidden p-2 -ml-2 hover:bg-white/5 rounded-full text-foreground/60"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-xs font-bold text-foreground">
-                  {(
-                    selectedConversation.customerName ||
-                    selectedConversation.customerPhone ||
-                    "U"
-                  ).charAt(0)}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-sm font-bold text-foreground">
-                      {selectedConversation.customerName ||
-                        selectedConversation.customerPhone ||
-                        "Unknown"}
-                    </h2>
-                    {(selectedConversation.customerName?.length || 0) % 2 ===
-                      0 &&
-                      selectedConversation.customerName !== null && (
-                        <span className="text-[10px] font-semibold text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded px-1.5 py-0.5 uppercase tracking-wider">
-                          Returning Guest
-                        </span>
-                      )}
-                  </div>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] text-foreground/50">
-                      {channelLabel[selectedConversation.channel]}
-                    </span>
-                    <span className="text-foreground/20">•</span>
-                    <select
-                      value={selectedConversation.status}
-                      onChange={(e) =>
-                        handleStatusChange(
-                          selectedConversation.id,
-                          e.target.value as any,
-                        )
-                      }
-                      className={cn(
-                        "text-[10px] bg-transparent border-none p-0 uppercase tracking-wider focus:ring-0 cursor-pointer font-semibold",
-                        selectedConversation.status === "payment_pending"
-                          ? "text-orange-400"
-                          : "text-foreground/50",
-                      )}
-                    >
-                      <option className="public-panel" value="open">
-                        Open
-                      </option>
-                      <option className="public-panel" value="draft">
-                        Draft
-                      </option>
-                      <option className="public-panel" value="payment_pending">
-                        Payment Pending
-                      </option>
-                      <option className="public-panel" value="paid">
-                        Paid
-                      </option>
-                      <option className="public-panel" value="scheduled">
-                        Scheduled
-                      </option>
-                      <option className="public-panel" value="resolved">
-                        Resolved
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  {selectedConversation.aiPaused && (
-                    <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-red-500/10 text-red-400 border border-red-500/20">
-                      AI Paused - Human taking over
-                    </span>
-                  )}
-                  <div className="flex items-center gap-2 bg-white/5 border border-border rounded-full px-3 py-1">
-                    <Label
-                      htmlFor="ai-toggle"
-                      className="text-[10px] font-medium text-foreground cursor-pointer"
-                    >
-                      AI Autopilot
-                    </Label>
-                    <Switch
-                      id="ai-toggle"
-                      checked={!selectedConversation.aiPaused}
-                      onCheckedChange={(checked) =>
-                        handleAIPauseToggle(!checked)
-                      }
-                      className="scale-75"
-                    />
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    let extractedAmount = "";
-                    let extractedCheckIn = "";
-                    let extractedCheckOut = "";
-
-                    if (context?.fields) {
-                      context.fields.forEach((f) => {
-                        const l = f.label.toLowerCase();
-                        if (
-                          l.includes("amount") ||
-                          l.includes("price") ||
-                          l.includes("total")
-                        )
-                          extractedAmount = f.value.replace(/[^0-9.]/g, "");
-                        if (l.includes("check-in") || l.includes("start"))
-                          extractedCheckIn = f.value;
-                        if (l.includes("check-out") || l.includes("end"))
-                          extractedCheckOut = f.value;
-                      });
-                    }
-
-                    setSmartLinkData({
-                      amount: extractedAmount,
-                      listingId: listings[0]?.id || "",
-                      startDate: extractedCheckIn,
-                      endDate: extractedCheckOut,
-                    });
-                    setShowSmartLinkModal(true);
-                  }}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-600 text-foreground hover:bg-emerald-700 transition-colors"
-                >
-                  Send booking link
-                </button>
-                <button
-                  onClick={openPaymentModal}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 text-foreground/80 hover:border-white/50"
-                >
-                  Send payment link
-                </button>
-                <div className="flex items-center gap-2 text-[10px] text-foreground/40">
-                  <Calendar className="w-4 h-4" />
-                  {timeAgo(selectedConversation.lastMessageAt)}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-              <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="md:hidden border-b border-border bg-transparent">
-                  <button
-                    onClick={() => setShowContext((prev) => !prev)}
-                    className="w-full px-4 py-3 flex items-center justify-between text-xs text-foreground/70"
-                  >
-                    <span>{context?.managerName || "Context"}</span>
-                    <ChevronDown
-                      className={cn(
-                        "w-4 h-4 transition-transform",
-                        showContext ? "rotate-180" : "",
-                      )}
-                    />
-                  </button>
-                  {showContext && (
-                    <div className="px-4 pb-4">
-                      {contextError && (
-                        <div className="text-xs text-foreground/50">
-                          {contextError}
-                        </div>
-                      )}
-                      {loadingContext && (
-                        <div className="space-y-3">
-                          <Skeleton className="w-24 h-3 bg-white/5" />
-                          <div className="grid grid-cols-2 gap-2">
-                            <Skeleton className="h-16 bg-white/5 rounded-lg" />
-                            <Skeleton className="h-16 bg-white/5 rounded-lg" />
-                            <Skeleton className="h-16 bg-white/5 rounded-lg" />
-                            <Skeleton className="h-16 bg-white/5 rounded-lg" />
-                          </div>
-                        </div>
-                      )}
-                      {context && (
-                        <div className="space-y-3">
-                          <div className="text-xs text-foreground/40">
-                            Updated {timeAgo(context.updatedAt)}
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 text-xs">
-                            {context.fields.map((field) => (
-                              <button
-                                key={field.label}
-                                onClick={() =>
-                                  setReplyText(
-                                    (prev) =>
-                                      (prev ? prev + "\n" : "") +
-                                      `${field.label}: ${field.value}`,
-                                  )
-                                }
-                                className="bg-white/5 hover:bg-white/10 text-left border border-border rounded-lg p-2 transition-colors group cursor-pointer"
-                                title="Click to insert into reply"
-                              >
-                                <div className="flex justify-between items-center">
-                                  <div className="text-foreground/40 text-[10px] uppercase tracking-wider group-hover:text-foreground/60">
-                                    {field.label}
-                                  </div>
-                                  <Copy className="w-3 h-3 text-foreground/20 group-hover:text-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                </div>
-                                <div
-                                  className={cn(
-                                    "text-foreground mt-1 text-xs",
-                                    field.tone === "good" && "text-emerald-300",
-                                    field.tone === "warn" && "text-amber-300",
-                                    field.tone === "bad" && "text-red-300",
-                                  )}
-                                >
-                                  {field.value}
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                          <div className="flex gap-2">
-                            {context.quickActions
-                              .filter((action) => action.variant === "primary")
-                              .slice(0, 2)
-                              .map((action) => (
-                                <button
-                                  key={action.id}
-                                  onClick={() => handleQuickAction(action)}
-                                  disabled={action.disabled || sending}
-                                  className="flex-1 text-xs font-semibold bg-white text-black py-2 rounded-lg disabled:opacity-50"
-                                >
-                                  {action.label}
-                                </button>
-                              ))}
-                          </div>
-                          {context.quickActions.filter(
-                            (action) => action.variant === "secondary",
-                          ).length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {context.quickActions
-                                .filter(
-                                  (action) => action.variant === "secondary",
-                                )
-                                .map((action) => (
-                                  <button
-                                    key={action.id}
-                                    onClick={() => handleQuickAction(action)}
-                                    disabled={action.disabled || sending}
-                                    className="text-xs text-foreground/80 border border-white/20 px-3 py-1.5 rounded-lg disabled:opacity-50"
-                                  >
-                                    {action.label}
-                                  </button>
-                                ))}
+                  {/* Messages */}
+                  <div className="flex-1 overflow-y-auto p-8 space-y-8 scrollbar-none">
+                    {loadingThread ? (
+                      <div className="flex items-center justify-center h-full">
+                        <Loader2 className="w-8 h-8 animate-spin text-blue-600/40" />
+                      </div>
+                    ) : messages.length === 0 ? (
+                      <div className="text-center py-20">
+                        <p className="text-zinc-400 text-sm font-medium">Starting a new conversation...</p>
+                      </div>
+                    ) : (
+                      messages.map((msg) => {
+                        const isCustomer = msg.senderType === "customer";
+                        const isAI = msg.senderType === "ai";
+                        const isInternal = msg.senderType === "internal";
+                        
+                        return (
+                          <div key={msg.id} className={cn(
+                            "flex flex-col max-w-[85%] animate-in fade-in slide-in-from-bottom-2 duration-300",
+                            isCustomer ? "mr-auto" : "ml-auto items-end"
+                          )}>
+                            <div className={cn(
+                              "px-5 py-4 rounded-2xl text-sm leading-relaxed shadow-sm transition-all",
+                              isCustomer ? "bg-white text-zinc-800 border border-zinc-100 rounded-tl-none" :
+                              isAI ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20 rounded-tr-none" :
+                              isInternal ? "bg-amber-50 text-amber-900 border border-amber-100 rounded-tr-none italic" :
+                              "bg-zinc-900 text-white rounded-tr-none"
+                            )}>
+                              {msg.content}
                             </div>
-                          )}
-                          <div className="text-[10px] text-foreground/40">
-                            {channelConstraint[selectedConversation.channel]}
+                            <div className="mt-2 flex items-center gap-2">
+                              <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">
+                                {isAI ? "AI ASSISTANT" : isCustomer ? "CLIENT" : isInternal ? "INTERNAL NOTE" : "YOU"}
+                              </span>
+                              <span className="text-[9px] font-bold text-zinc-300">•</span>
+                              <span className="text-[9px] font-black uppercase tracking-widest text-zinc-300">
+                                {timeAgo(msg.timestamp)}
+                              </span>
+                            </div>
                           </div>
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* Reply Area */}
+                  <div className="p-6 bg-white border-t border-zinc-100">
+                    <div className="max-w-4xl mx-auto space-y-4">
+                      {suggestions.length > 0 && (
+                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+                          {suggestions.map((s, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setReplyText(s)}
+                              className="px-4 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-bold text-zinc-600 hover:bg-zinc-100 hover:border-zinc-300 transition-all whitespace-nowrap active:scale-95"
+                            >
+                              {s}
+                            </button>
+                          ))}
                         </div>
                       )}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-transparent">
-                  {loadingThread && (
-                    <div className="space-y-4">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
+                      
+                      <div className="relative group">
+                        <textarea
+                          id="message-input"
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          placeholder={isInternalNote ? "Type an internal note (only visible to team)..." : "Type a message to the client..."}
                           className={cn(
-                            "flex gap-3 max-w-[85%]",
-                            i % 2 === 0 ? "ml-auto flex-row-reverse" : "",
+                            "w-full bg-zinc-50 border-zinc-200 rounded-3xl p-5 pr-14 text-sm focus:outline-none focus:ring-4 transition-all min-h-[100px] resize-none font-medium",
+                            isInternalNote 
+                              ? "focus:ring-amber-500/10 border-amber-200 bg-amber-50/30 text-amber-900" 
+                              : "focus:ring-blue-600/5 focus:bg-white"
+                          )}
+                        />
+                        <button
+                          onClick={() => handleSend("human")}
+                          disabled={sending || !replyText.trim()}
+                          className={cn(
+                            "absolute right-4 bottom-4 p-3 rounded-2xl transition-all active:scale-90 disabled:opacity-50 disabled:grayscale disabled:scale-100 shadow-lg",
+                            isInternalNote ? "bg-amber-500 text-white shadow-amber-500/20" : "bg-blue-600 text-white shadow-blue-500/20"
                           )}
                         >
-                          <Skeleton className="w-8 h-8 rounded-full bg-white/5 flex-shrink-0" />
-                          <div className="space-y-1 w-full">
-                            <Skeleton
-                              className={cn(
-                                "h-16 bg-white/5 rounded-2xl",
-                                i % 2 === 0
-                                  ? "rounded-tr-none ml-auto w-3/4"
-                                  : "rounded-tl-none w-2/3",
-                              )}
-                            />
-                            <Skeleton
-                              className={cn(
-                                "h-3 w-12 bg-white/5 mt-1",
-                                i % 2 === 0 ? "ml-auto" : "",
-                              )}
-                            />
-                          </div>
+                          <Send className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between px-2">
+                        <div className="flex items-center gap-4">
+                           <button 
+                             onClick={() => setIsInternalNote(!isInternalNote)}
+                             className={cn(
+                               "text-[10px] font-black uppercase tracking-widest transition-colors flex items-center gap-2",
+                               isInternalNote ? "text-amber-600" : "text-zinc-400 hover:text-zinc-600"
+                             )}
+                           >
+                             <Bot className="w-3.5 h-3.5" />
+                             {isInternalNote ? "Internal Note Active" : "Human Mode"}
+                           </button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                           <button 
+                             onClick={() => setShowSmartLinkModal(true)}
+                             className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-700 flex items-center gap-1.5 p-2 rounded-lg hover:bg-blue-50 transition-all"
+                           >
+                             <Sparkles className="w-3.5 h-3.5" />
+                             Create Booking Link
+                           </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Context Sidebar */}
+            {selectedConversation && showContext && (
+              <div className="w-80 flex-shrink-0 border-l border-zinc-200 bg-white p-6 overflow-y-auto hidden lg:block">
+                <div className="space-y-8">
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-4">Client Overview</h3>
+                    <div className="space-y-4">
+                      {context?.fields.map((f, i) => (
+                        <div key={i} className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
+                          <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">{getDisplayLabel(f.label)}</p>
+                          <p className="text-sm font-black text-zinc-950 uppercase tracking-tighter truncate">{f.value}</p>
                         </div>
                       ))}
                     </div>
-                  )}
-                  {threadError && (
-                    <div className="text-sm text-foreground/50">{threadError}</div>
-                  )}
-                  {!loadingThread && !threadError && messages.length === 0 && (
-                    <div className="text-sm text-foreground/40">
-                      No messages in this conversation yet.
-                    </div>
-                  )}
-                  {messages.map((message) => {
-                    const isCustomer = message.senderType === "customer";
-                    const isAi = message.senderType === "ai";
-                    const isInternal = message.senderType === "internal";
-                    return (
-                      <div
-                        key={message.id}
-                        className={cn(
-                          "flex gap-3 max-w-[85%]",
-                          isCustomer ? "" : "ml-auto flex-row-reverse",
-                          isInternal ? "w-full mx-auto" : "",
-                        )}
-                      >
-                        <div
-                          className={cn(
-                            "w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-foreground mt-1 relative",
-                            isCustomer
-                              ? "bg-gradient-to-br from-orange-400 to-red-500"
-                              : "bg-white/10 border border-border",
-                          )}
-                        >
-                          {isCustomer ? (
-                            (
-                              selectedConversation.customerName ||
-                              selectedConversation.customerPhone ||
-                              "U"
-                            ).charAt(0)
-                          ) : isAi ? (
-                            <Bot className="w-4 h-4" />
-                          ) : isInternal ? (
-                            <EyeOff className="w-4 h-4" />
-                          ) : (
-                            <User className="w-4 h-4" />
-                          )}
-                          
-                          {/* Channel Badge on Avatar */}
-                          <div className="absolute -bottom-1 -right-1 bg-black rounded-full p-0.5 border border-white/10 shadow-lg">
-                            {(() => {
-                                const Icon = channelIcon[message.channel];
-                                return <Icon className="w-2.5 h-2.5 text-foreground/70" />;
-                            })()}
-                          </div>
-                        </div>
-                        <div>
-                          <div
-                            className={cn(
-                              "rounded-2xl p-3 text-sm leading-relaxed shadow-sm whitespace-pre-wrap",
-                              isCustomer
-                                ? "bg-transparent border border-border rounded-tl-none text-foreground/90"
-                                : isInternal
-                                  ? "bg-amber-500/10 border border-amber-500/20 text-amber-200"
-                                  : "bg-white/10 border border-border rounded-tr-none text-foreground",
-                            )}
-                          >
-                            {message.mediaUrl && (
-                              <div className="mb-3 rounded-lg overflow-hidden border border-white/5 bg-black/20">
-                                {message.mediaType === "image" ? (
-                                  <img 
-                                    src={message.mediaUrl} 
-                                    alt={message.caption || "Image"} 
-                                    className="max-w-full h-auto object-cover hover:scale-105 transition-transform cursor-pointer"
-                                    onClick={() => window.open(message.mediaUrl, '_blank')}
-                                  />
-                                ) : message.mediaType === "video" ? (
-                                  <video src={message.mediaUrl} controls className="max-w-full" />
-                                ) : message.mediaType === "audio" ? (
-                                  <audio src={message.mediaUrl} controls className="max-w-full" />
-                                ) : (
-                                  <a 
-                                    href={message.mediaUrl} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors"
-                                  >
-                                    <div className="p-2 bg-white/10 rounded-lg">
-                                      <Copy className="w-4 h-4" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <div className="text-[11px] font-bold uppercase tracking-widest text-foreground/40">Document</div>
-                                      <div className="text-xs truncate">{message.caption || "View Attachment"}</div>
-                                    </div>
-                                  </a>
-                                )}
-                              </div>
-                            )}
-                            {message.content}
-                          </div>
-                          <div
-                            className={cn(
-                              "text-[10px] mt-1 flex items-center gap-2",
-                              isCustomer
-                                ? "text-foreground/30 ml-1"
-                                : "text-foreground/40 justify-end mr-1",
-                            )}
-                          >
-                            <span>{timeAgo(message.timestamp)}</span>
-                            {message.status && !isCustomer && (
-                                <span className={cn(
-                                    "px-1 rounded-sm uppercase tracking-tighter font-bold",
-                                    message.status === 'read' ? 'text-emerald-400' : 'text-foreground/20'
-                                )}>
-                                    {message.status}
-                                </span>
-                            )}
-                            <span>
-                              {isAi
-                                ? "AI"
-                                : isInternal
-                                  ? "Internal Note"
-                                  : isCustomer
-                                    ? "Customer"
-                                    : "You"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                  </div>
 
-                <div className="p-3 bg-transparent border-t border-border pb-safe md:pb-3 space-y-3">
-                  <div className="flex items-center gap-4 px-2 mb-1">
-                    <label className="flex items-center gap-2 text-xs text-foreground/50 hover:text-foreground cursor-pointer transition-colors">
-                      <input
-                        type="checkbox"
-                        checked={isInternalNote}
-                        onChange={(e) => setIsInternalNote(e.target.checked)}
-                        className="rounded border-white/20 bg-white/5 text-primary focus:ring-0"
-                      />
-                      <EyeOff className="w-3 h-3" />
-                      Internal Note
-                    </label>
-                  </div>
-                  <div
-                    className={cn(
-                      "flex items-end gap-2 bg-transparent border rounded-2xl p-2 transition-colors",
-                      isInternalNote
-                        ? "border-amber-500/50 focus-within:border-amber-500 bg-amber-500/5"
-                        : "border-border focus-within:border-white/30",
-                    )}
-                  >
-                    <textarea
-                      id="message-input"
-                      value={replyText}
-                      onChange={(event) => setReplyText(event.target.value)}
-                      placeholder={
-                        isInternalNote
-                          ? "Type an internal note (won't be sent to customer)..."
-                          : "Type a message..."
-                      }
-                      className={cn(
-                        "flex-1 bg-transparent text-sm focus:outline-none max-h-32 py-2 resize-none",
-                        isInternalNote
-                          ? "text-amber-100 placeholder:text-amber-500/50"
-                          : "text-foreground placeholder:text-foreground/30",
-                      )}
-                      rows={1}
-                    />
-                    <button
-                      onClick={() => handleSend("human")}
-                      disabled={!replyText.trim() || sending}
-                      className={cn(
-                        "p-2 rounded-full disabled:opacity-50 transition-colors",
-                        isInternalNote
-                          ? "bg-amber-500/20 text-amber-500 hover:bg-amber-500/30"
-                          : "bg-white/10 text-foreground hover:bg-white/20",
-                      )}
-                    >
-                      <Send className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex flex-wrap gap-2">
-                      {loadingSuggestions && (
-                        <span className="text-[10px] text-foreground/40">
-                          Loading AI replies...
-                        </span>
-                      )}
-                      {!loadingSuggestions &&
-                        suggestions.slice(0, 3).map((suggestion) => (
-                          <button
-                            key={suggestion}
-                            onClick={() => {
-                              setReplyText(suggestion);
-                              document.getElementById("message-input")?.focus();
-                            }}
-                            className="text-xs text-foreground/80 border border-border px-3 py-1.5 rounded-full hover:border-white/40 hover:bg-white/5 transition-all flex items-center gap-2 group"
-                          >
-                            <Sparkles className="w-3 h-3 text-emerald-400 group-hover:scale-110 transition-transform" />
-                            <span className="truncate max-w-[150px]">{suggestion}</span>
-                          </button>
-                        ))}
-                    </div>
-                    <button
-                      onClick={() => handleSend("ai")}
-                      disabled={!replyText.trim() || sending}
-                      className="text-xs font-semibold bg-primary text-foreground px-4 py-2 rounded-full disabled:opacity-50"
-                    >
-                      Send as AI
-                    </button>
-                  </div>
-                  <div className="text-[10px] text-foreground/40 flex items-center gap-2">
-                    <ArrowDownLeft className="w-3 h-3" />
-                    Sending as AI uses credits
-                  </div>
-                </div>
-              </div>
-
-              <div className="hidden md:flex w-80 bg-[#140707] border-l border-border flex-col p-4 space-y-4">
-                <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-foreground/40 font-bold">
-                      Contact 360
-                    </div>
-                    <div className="text-sm font-semibold text-foreground mt-1 flex items-center gap-2">
-                        {selectedConversation.customerName || "Anonymous Guest"}
-                        <Badge variant="outline" className="text-[10px] h-4 bg-emerald-500/10 text-emerald-500 border-emerald-500/20">Active</Badge>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => loadContext(selectedConversation.id)}
-                    className="p-1.5 hover:bg-white/5 rounded-md text-foreground/40 hover:text-foreground transition-colors"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                {/* CRM Value Stats */}
-                <div className="grid grid-cols-2 gap-2">
-                    <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                        <div className="text-[10px] text-foreground/40 uppercase font-bold flex items-center gap-1 mb-1">
-                            <TrendingUp className="w-3 h-3 text-emerald-400" />
-                            Value
-                        </div>
-                        <div className="text-lg font-bold text-foreground">₹7,500</div>
-                    </div>
-                    <div className="p-3 bg-white/5 rounded-xl border border-white/5">
-                        <div className="text-[10px] text-foreground/40 uppercase font-bold flex items-center gap-1 mb-1">
-                            <History className="w-3 h-3 text-blue-400" />
-                            Retention
-                        </div>
-                        <div className="text-lg font-bold text-foreground">3 <span className="text-[10px] text-foreground/40">stays</span></div>
-                    </div>
-                </div>
-
-                <div className="space-y-1">
-                  <div className="text-[10px] uppercase tracking-widest text-foreground/40 font-bold mb-2">
-                    Guest Timeline
-                  </div>
-                  <div className="space-y-4 relative before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-[1px] before:bg-white/10">
-                    <div className="relative pl-8">
-                        <div className="absolute left-0 top-0.5 w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center z-10">
-                            <CheckCircle className="w-3 h-3 text-emerald-400" />
-                        </div>
-                        <div className="text-xs font-semibold text-foreground">Payment Verified</div>
-                        <div className="text-[10px] text-foreground/40 mt-0.5">Today, 10:24 AM</div>
-                    </div>
-                    <div className="relative pl-8 opacity-60">
-                        <div className="absolute left-0 top-0.5 w-5 h-5 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center z-10">
-                            <MessageCircle className="w-3 h-3 text-blue-400" />
-                        </div>
-                        <div className="text-xs font-semibold text-foreground">Inquiry about Wi-Fi</div>
-                        <div className="text-[10px] text-foreground/40 mt-0.5">Yesterday, 9:15 PM</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-white/5">
-                  <div className="text-xs uppercase tracking-widest text-foreground/40 font-bold mb-3">
-                    Knowledge Context
-                  </div>
-                {loadingContext && (
-                  <div className="space-y-3">
-                    <Skeleton className="w-24 h-3 bg-white/5" />
-                    <div className="space-y-3">
-                      <Skeleton className="h-16 bg-white/5 rounded-lg w-full" />
-                      <Skeleton className="h-16 bg-white/5 rounded-lg w-full" />
-                      <Skeleton className="h-16 bg-white/5 rounded-lg w-full" />
-                    </div>
-                  </div>
-                )}
-                {contextError && (
-                  <div className="text-xs text-foreground/50">{contextError}</div>
-                )}
-                {context && (
-                  <>
-                    <div className="text-[10px] text-foreground/40">
-                      Updated {timeAgo(context.updatedAt)}
-                    </div>
-                    <div className="grid grid-cols-1 gap-3 text-xs">
-                      {context.fields.map((field) => (
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-4">Quick Actions</h3>
+                    <div className="grid grid-cols-1 gap-2">
+                      {context?.quickActions.map((action) => (
                         <button
-                          key={field.label}
-                          onClick={() =>
-                            setReplyText(
-                              (prev) =>
-                                (prev ? prev + "\n" : "") +
-                                `${getDisplayLabel(field.label)}: ${field.value}`,
-                            )
-                          }
-                          className="bg-white/5 hover:bg-white/10 text-left border border-border rounded-lg p-3 transition-colors group cursor-pointer"
-                          title="Click to insert into reply"
+                          key={action.id}
+                          onClick={() => handleQuickAction(action)}
+                          className={cn(
+                            "w-full p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all text-left group flex items-center justify-between",
+                            action.variant === "primary" 
+                              ? "bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-100 hover:bg-blue-700" 
+                              : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-300"
+                          )}
                         >
-                          <div className="flex justify-between items-center">
-                            <div className="text-foreground/40 uppercase tracking-wider text-[10px] group-hover:text-foreground/60">
-                              {getDisplayLabel(field.label)}
-                            </div>
-                            <Copy className="w-3 h-3 text-foreground/20 group-hover:text-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </div>
-                          <div className="flex items-center justify-between w-full">
-                            <div
-                              className={cn(
-                                "text-foreground mt-1 text-left flex-1",
-                                field.tone === "good" && "text-emerald-300",
-                                field.tone === "warn" && "text-amber-300",
-                                field.tone === "bad" && "text-red-300",
-                              )}
-                            >
-                              {field.value}
-                            </div>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const newValue = window.prompt(
-                                  `Update ${field.label}:`,
-                                  field.value,
-                                );
-                                if (newValue !== null) {
-                                  setContext((prev) =>
-                                    prev
-                                      ? {
-                                          ...prev,
-                                          fields: prev.fields.map((f) =>
-                                            f.label === field.label
-                                              ? { ...f, value: newValue }
-                                              : f,
-                                          ),
-                                        }
-                                      : null,
-                                  );
-                                  toast.success(`Updated ${field.label}`);
-                                }
-                              }}
-                              className="p-1 hover:bg-white/10 rounded ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                              title="Edit value"
-                            >
-                              <Pencil className="w-3 h-3 text-foreground/40 hover:text-foreground" />
-                            </button>
-                          </div>
+                          {action.label}
+                          <ArrowDownLeft className="w-4 h-4 opacity-40 group-hover:opacity-100 transition-opacity" />
                         </button>
                       ))}
                     </div>
-
-                    <div className="border-t border-border pt-4 mt-2">
-                      <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-foreground/40 mb-3">
-                        <Building className="w-3 h-3" />
-                        Quick Facts
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          "WiFi: Guest_5G",
-                          "Check-in: 3PM",
-                          "Check-out: 11AM",
-                          "Parking: Free",
-                        ].map((fact) => (
-                          <button
-                            key={fact}
-                            onClick={() =>
-                              setReplyText(
-                                (prev) => (prev ? prev + "\n" : "") + fact,
-                              )
-                            }
-                            className="bg-white/5 hover:bg-white/10 text-[10px] text-left border border-border rounded p-2 transition-colors group"
-                            title="Click to insert"
-                          >
-                            <div className="text-foreground/70 truncate">{fact}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      {context.quickActions
-                        .filter((action) => action.variant === "primary")
-                        .slice(0, 2)
-                        .map((action) => (
-                          <button
-                            key={action.id}
-                            onClick={() => handleQuickAction(action)}
-                            disabled={action.disabled || sending}
-                            className="w-full text-sm font-semibold bg-white text-black py-2 rounded-lg disabled:opacity-50"
-                          >
-                            {action.label}
-                          </button>
-                        ))}
-                    </div>
-                    {context.quickActions.filter(
-                      (action) => action.variant === "secondary",
-                    ).length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {context.quickActions
-                          .filter((action) => action.variant === "secondary")
-                          .map((action) => (
-                            <button
-                              key={action.id}
-                              onClick={() => handleQuickAction(action)}
-                              disabled={action.disabled || sending}
-                              className="text-xs text-foreground/80 border border-white/20 px-3 py-1.5 rounded-lg disabled:opacity-50"
-                            >
-                              {action.label}
-                            </button>
-                          ))}
-                      </div>
-                    )}
-                    <div className="text-[10px] text-foreground/40">
-                      {channelConstraint[selectedConversation.channel]}
-                    </div>
-                  </>
-                )}
-                {!context && !loadingContext && (
-                  <div className="text-xs text-foreground/40">
-                    Context will appear here once available.
                   </div>
-                )}
+                </div>
               </div>
-            </div>
+            )}
           </>
-        ) : (
-          <div className="hidden md:flex flex-col items-center justify-center h-full text-foreground/30">
-            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-4">
-              <MessageSquare className="w-8 h-8 opacity-50" />
-            </div>
-            <p className="font-medium">Select a conversation to view details</p>
-          </div>
         )}
       </div>
 
-      {showFilters && (
-        <div className="fixed inset-0 z-50 flex items-end md:hidden bg-black/70">
-          <div className="bg-transparent border-t border-border rounded-t-2xl w-full p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold text-foreground">Filters</div>
-              <button
-                onClick={() => setShowFilters(false)}
-                className="text-xs text-foreground/50"
-              >
-                Close
-              </button>
-            </div>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-foreground/40 mb-2">
-                Listing
-              </div>
-              <select
-                value={listingFilter}
-                onChange={(e) => setListingFilter(e.target.value)}
-                className="w-full bg-white/5 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-white/30"
-              >
-                <option value="all">All Listings</option>
-                {listings.map((l) => (
-                  <option key={l.id} value={l.name}>
-                    {l.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-4">
-              <button
-                onClick={() => setAwaitingReplyOnly((prev) => !prev)}
-                className={cn(
-                  "px-3 py-2 rounded-full text-xs border flex items-center gap-1",
-                  awaitingReplyOnly
-                    ? "border-amber-400 text-amber-400 bg-amber-400/10"
-                    : "border-border text-foreground/70",
-                )}
-              >
-                <Clock className="w-3 h-3" />
-                Awaiting Reply
-              </button>
-              <button
-                onClick={() => setUnreadOnly((prev) => !prev)}
-                className={cn(
-                  "px-3 py-2 rounded-full text-xs border",
-                  unreadOnly
-                    ? "border-white/60 text-foreground"
-                    : "border-border text-foreground/70",
-                )}
-              >
-                Unread only
-              </button>
-              {(
-                ["all", "whatsapp", "instagram", "messenger", "web"] as const
-              ).map((channel) => (
-                <button
-                  key={channel}
-                  onClick={() => setChannelFilter(channel)}
-                  className={cn(
-                    "px-3 py-2 rounded-full text-xs border",
-                    channelFilter === channel
-                      ? "border-white/60 text-foreground"
-                      : "border-border text-foreground/70",
-                  )}
-                >
-                  {channel === "all" ? "All channels" : channelLabel[channel]}
-                </button>
-              ))}
-            </div>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-foreground/40 mb-2">
-                AI Manager
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setManagerFilter("all")}
-                  className={cn(
-                    "px-3 py-2 rounded-full text-xs border",
-                    managerFilter === "all"
-                      ? "border-white/60 text-foreground"
-                      : "border-border text-foreground/70",
-                  )}
-                >
-                  All AI Managers
-                </button>
-                {managerOptions.map(([slug, name]) => (
-                  <button
-                    key={slug}
-                    onClick={() => setManagerFilter(slug)}
-                    className={cn(
-                      "px-3 py-2 rounded-full text-xs border",
-                      managerFilter === slug
-                        ? "border-white/60 text-foreground"
-                        : "border-border text-foreground/70",
-                    )}
-                  >
-                    {name}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs uppercase tracking-widest text-foreground/40 mb-2">
-                Status
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {(
-                  [
-                    "all",
-                    "open",
-                    "draft",
-                    "payment_pending",
-                    "paid",
-                    "scheduled",
-                    "resolved",
-                  ] as const
-                ).map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setStatusFilter(status)}
-                    className={cn(
-                      "px-3 py-2 rounded-full text-xs border",
-                      statusFilter === status
-                        ? "border-white/60 text-foreground"
-                        : "border-border text-foreground/70",
-                    )}
-                  >
-                    {status === "all" ? "All status" : status.replace("_", " ")}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showPaymentModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="bg-transparent border border-border rounded-2xl w-full max-w-2xl overflow-hidden">
-            <div className="p-4 border-b border-border flex items-center justify-between">
-              <div className="text-sm font-semibold text-foreground">
-                Send payment link
-              </div>
-              <button
-                onClick={() => setShowPaymentModal(false)}
-                className="p-2 hover:bg-white/5 rounded-full text-foreground/60"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
-                    Property
-                  </label>
-                  <select
-                    value={paymentForm.listingId}
-                    onChange={(event) =>
-                      setPaymentForm((prev) => ({
-                        ...prev,
-                        listingId: event.target.value,
-                      }))
-                    }
-                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-                  >
-                    <option value="">Select property</option>
-                    {listings.map((listing) => (
-                      <option key={listing.id} value={listing.id}>
-                        {listing.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
-                    Amount
-                  </label>
-                  <input
-                    type="number"
-                    value={paymentForm.amount}
-                    onChange={(event) =>
-                      setPaymentForm((prev) => ({
-                        ...prev,
-                        amount: event.target.value,
-                      }))
-                    }
-                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-                    placeholder="Amount in INR"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
-                    Guest name
-                  </label>
-                  <input
-                    type="text"
-                    value={paymentForm.guestName}
-                    onChange={(event) =>
-                      setPaymentForm((prev) => ({
-                        ...prev,
-                        guestName: event.target.value,
-                      }))
-                    }
-                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-                    placeholder="Guest name"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
-                    Guest phone
-                  </label>
-                  <input
-                    type="tel"
-                    value={paymentForm.guestPhone}
-                    onChange={(event) =>
-                      setPaymentForm((prev) => ({
-                        ...prev,
-                        guestPhone: event.target.value,
-                      }))
-                    }
-                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-                    placeholder="+91 90000 00000"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
-                    Guest email
-                  </label>
-                  <input
-                    type="email"
-                    value={paymentForm.guestEmail}
-                    onChange={(event) =>
-                      setPaymentForm((prev) => ({
-                        ...prev,
-                        guestEmail: event.target.value,
-                      }))
-                    }
-                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-                    placeholder="guest@email.com"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
-                    Check-in
-                  </label>
-                  <input
-                    type="date"
-                    value={paymentForm.checkIn}
-                    onChange={(event) =>
-                      setPaymentForm((prev) => ({
-                        ...prev,
-                        checkIn: event.target.value,
-                      }))
-                    }
-                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground/60 mb-1">
-                    Check-out
-                  </label>
-                  <input
-                    type="date"
-                    value={paymentForm.checkOut}
-                    onChange={(event) =>
-                      setPaymentForm((prev) => ({
-                        ...prev,
-                        checkOut: event.target.value,
-                      }))
-                    }
-                    className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-foreground/60 mb-1">
-                  Notes (optional)
-                </label>
-                <textarea
-                  value={paymentForm.notes}
-                  onChange={(event) =>
-                    setPaymentForm((prev) => ({
-                      ...prev,
-                      notes: event.target.value,
-                    }))
-                  }
-                  className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
-                  placeholder="Add any notes for the guest"
-                />
-              </div>
-
-              {paymentLink && (
-                <div className="space-y-3 border border-border rounded-xl p-4 bg-white/5">
-                  <div className="text-xs font-semibold text-foreground/70 uppercase tracking-wider">
-                    Payment link
-                  </div>
-                  <div className="text-sm text-foreground break-all">
-                    {paymentLink}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      onClick={handleCopyLink}
-                      className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-foreground/80 px-3 py-1.5 rounded-full"
-                    >
-                      <Copy className="w-3 h-3" />
-                      Copy link
-                    </button>
-                    <button
-                      onClick={sendPaymentInChat}
-                      disabled={paymentLoading}
-                      className="inline-flex items-center gap-2 text-xs font-semibold bg-white text-black px-3 py-1.5 rounded-full disabled:opacity-60"
-                    >
-                      Send in chat
-                    </button>
-                    {whatsappUrl && (
-                      <a
-                        href={whatsappUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-foreground/80 px-3 py-1.5 rounded-full"
-                      >
-                        WhatsApp
-                      </a>
-                    )}
-                    {smsUrl && (
-                      <a
-                        href={smsUrl}
-                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-foreground/80 px-3 py-1.5 rounded-full"
-                      >
-                        SMS
-                      </a>
-                    )}
-                    {emailUrl && (
-                      <a
-                        href={emailUrl}
-                        className="inline-flex items-center gap-2 text-xs font-semibold border border-white/20 text-foreground/80 px-3 py-1.5 rounded-full"
-                      >
-                        Email
-                      </a>
-                    )}
-                  </div>
-                  {paymentSent && (
-                    <div className="text-xs text-emerald-300">
-                      Payment link ready to share.
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="p-4 border-t border-border flex items-center justify-between">
-              <div className="text-xs text-red-300">{paymentError}</div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowPaymentModal(false)}
-                  className="px-3 py-1.5 text-xs text-foreground/60 hover:text-foreground"
-                >
-                  Close
-                </button>
-                <button
-                  onClick={handleCreatePaymentLink}
-                  disabled={paymentLoading}
-                  className="px-4 py-2 bg-primary text-foreground rounded-lg text-xs font-semibold disabled:opacity-60"
-                >
-                  {paymentLoading
-                    ? "Generating..."
-                    : paymentLink
-                      ? "Generate again"
-                      : "Generate payment link"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showIdModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="bg-transparent border border-border rounded-2xl w-full max-w-md overflow-hidden">
-            <div className="p-4 border-b border-border flex items-center justify-between">
-              <div className="text-sm font-semibold text-foreground">Request ID</div>
-              <button
-                onClick={() => setShowIdModal(false)}
-                className="p-2 hover:bg-white/5 rounded-full text-foreground/60"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="p-4 space-y-3">
-              <div>
-                <div className="text-xs text-foreground/40 mb-1">Booking</div>
-                <select
-                  value={idBookingId}
-                  onChange={(e) => setIdBookingId(e.target.value)}
-                  className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-                >
-                  {bookingOptions.map((option) => (
-                    <option key={option.id} value={option.id}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <div className="text-xs text-foreground/40 mb-1">ID Type</div>
-                <select
-                  value={idType}
-                  onChange={(e) => setIdType(e.target.value as any)}
-                  className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30"
-                >
-                  <option value="aadhaar">Aadhaar</option>
-                  <option value="passport">Passport</option>
-                  <option value="driving_license">Driving License</option>
-                  <option value="voter_id">Voter ID</option>
-                  <option value="any">Any Govt ID</option>
-                </select>
-              </div>
-              <div>
-                <div className="text-xs text-foreground/40 mb-1">
-                  Message (optional)
-                </div>
-                <textarea
-                  value={idNote}
-                  onChange={(e) => setIdNote(e.target.value)}
-                  className="w-full bg-white/5 border border-border text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-white/30 min-h-[80px]"
-                  placeholder="Hi! Please upload a government-issued ID to complete check-in compliance."
-                />
-              </div>
-              {idUploadUrl && (
-                <div className="text-xs text-foreground/60 break-all">
-                  Upload link: {idUploadUrl}
-                </div>
-              )}
-              {idRequestMessage && (
-                <div className="text-xs text-foreground/60 break-all">
-                  Message: {idRequestMessage}
-                </div>
-              )}
-            </div>
-            <div className="p-4 border-t border-border flex items-center justify-between">
-              <div className="text-[10px] text-foreground/40">
-                Nodebase will store IDs securely.
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setShowIdModal(false)}
-                  className="px-3 py-1.5 text-xs text-foreground/60 hover:text-foreground"
-                >
-                  Close
-                </button>
-                <button
-                  onClick={handleRequestId}
-                  disabled={idRequesting}
-                  className="px-4 py-2 bg-primary text-foreground rounded-lg text-xs font-semibold disabled:opacity-60"
-                >
-                  {idRequesting ? "Generating..." : "Generate link"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Smart Booking Link Modal */}
+      {/* Modals */}
       {showSmartLinkModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <Card className="w-full max-w-md public-panel border-border shadow-2xl">
-            <CardHeader className="border-b border-white/5">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-foreground text-lg flex items-center gap-2">
-                  <Zap className="text-emerald-500 w-5 h-5" />
-                  Generate Smart Link
-                </CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowSmartLinkModal(false)}
-                  className="text-foreground/40 hover:text-foreground"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/20 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-zinc-100">
+            <div className="p-8 border-b border-zinc-100 bg-zinc-50/50 flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-black text-zinc-950 uppercase tracking-tighter flex items-center gap-2">
+                  Create Booking Link
+                  <Sparkles className="w-5 h-5 text-blue-600" />
+                </h3>
+                <p className="text-xs text-zinc-500 font-medium">Generate a secure payment & booking link.</p>
               </div>
-              <CardDescription>
-                Create a temporary checkout link for this guest.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6 space-y-4">
-              <div className="space-y-2">
-                <Label className="text-foreground">Select Listing</Label>
+              <button onClick={() => setShowSmartLinkModal(false)} className="p-2 hover:bg-zinc-200 rounded-xl transition-colors">
+                <X className="w-5 h-5 text-zinc-400" />
+              </button>
+            </div>
+            <div className="p-8 space-y-6">
+              <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Select {labels.listing}</Label>
                 <Select
                   value={smartLinkForm.listingId}
-                  onValueChange={(v: string) =>
-                    setSmartLinkData({ ...smartLinkForm, listingId: v })
-                  }
+                  onValueChange={(val) => setSmartLinkData({ ...smartLinkForm, listingId: val })}
                 >
-                  <SelectTrigger className="bg-black/20 border-border text-foreground">
-                    <SelectValue placeholder="Select Listing" />
+                  <SelectTrigger className="h-12 rounded-2xl border-zinc-200 bg-zinc-50 font-bold">
+                    <SelectValue placeholder={`Select ${labels.listing}`} />
                   </SelectTrigger>
-                  <SelectContent className="public-panel border-border text-foreground">
+                  <SelectContent className="rounded-2xl border-zinc-200 shadow-xl">
                     {listings.map((l) => (
-                      <SelectItem key={l.id} value={l.id}>
-                        {l.name}
-                      </SelectItem>
+                      <SelectItem key={l.id} value={l.id} className="font-bold">{l.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-foreground">Amount (₹)</Label>
+              <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total Amount (₹)</Label>
                 <Input
                   type="number"
-                  placeholder="e.g. 2500"
+                  placeholder="e.g. 5000"
                   value={smartLinkForm.amount}
-                  onChange={(e) =>
-                    setSmartLinkData({
-                      ...smartLinkForm,
-                      amount: e.target.value,
-                    })
-                  }
-                  className="bg-black/20 border-border text-foreground"
+                  onChange={(e) => setSmartLinkData({ ...smartLinkForm, amount: e.target.value })}
+                  className="h-12 rounded-2xl border-zinc-200 bg-zinc-50 font-bold focus:ring-blue-600/5 focus:bg-white transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-foreground">Check-in</Label>
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{labels.checkIn}</Label>
                   <Input
                     type="date"
                     value={smartLinkForm.startDate}
-                    onChange={(e) =>
-                      setSmartLinkData({
-                        ...smartLinkForm,
-                        startDate: e.target.value,
-                      })
-                    }
-                    className="bg-black/20 border-border text-foreground"
+                    onChange={(e) => setSmartLinkData({ ...smartLinkForm, startDate: e.target.value })}
+                    className="h-12 rounded-2xl border-zinc-200 bg-zinc-50 font-bold"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-foreground">Check-out</Label>
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">{labels.checkOut}</Label>
                   <Input
                     type="date"
                     value={smartLinkForm.endDate}
-                    onChange={(e) =>
-                      setSmartLinkData({
-                        ...smartLinkForm,
-                        endDate: e.target.value,
-                      })
-                    }
-                    className="bg-black/20 border-border text-foreground"
+                    onChange={(e) => setSmartLinkData({ ...smartLinkForm, endDate: e.target.value })}
+                    className="h-12 rounded-2xl border-zinc-200 bg-zinc-50 font-bold"
                   />
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-white/5">
-                <Button
-                  onClick={handleCreateSmartLink}
-                  disabled={smartLinkLoading}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-foreground font-bold"
-                >
-                  {smartLinkLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  ) : (
-                    <Sparkles className="w-4 h-4 mr-2" />
-                  )}
-                  Generate & Insert Link
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              <Button
+                onClick={handleCreateSmartLink}
+                disabled={smartLinkLoading}
+                className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
+              >
+                {smartLinkLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                ) : (
+                  <Sparkles className="w-5 h-5 mr-2" />
+                )}
+                Generate & Insert Link
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

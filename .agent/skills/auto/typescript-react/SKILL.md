@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 2 gotchas, 21 conventions, 9 fixes."
+description: "Typescript React for node. 2 gotchas, 24 conventions, 12 fixes, 3 error→fix pairs."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,7 +12,7 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **67 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **85 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -40,6 +40,80 @@ Auto-compiled from **67 real patterns** in **node**. This skill is auto-routed t
 
 
 ## 🔧 Problem Playbooks
+
+### Known Error → Fix
+
+| Error Pattern | Fix | Seen |
+|-------|-----|------|
+| `- - Fixed null crash in Plus — avoids unnecessary ` | problem-fix in agent-rules.md | 3x |
+| `- - Fixed null crash in Building — avoids unnecess` | problem-fix in agent-rules.md | 3x |
+| `- import { SessionExpiredError } from "@/lib/api/e` | Fixed null crash in Building — avoids unnecessary re-renders | 2x |
+
+### Fixed null crash in RefreshCw — parallelizes async operations for speed
+-   LogOut,
++   RefreshCw,
+-   Loader2,
++   LogOut,
+-   Sparkles,
++   Loader2,
+- } from "lucide-react";
++   Sparkles,
+- import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
++ } from "lucide-react";
+- import { Badge } from "@/components/ui/badge";
++ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+- import
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: RefreshCw
+3. identifier: LogOut
+4. identifier: Sparkles
+5. identifier: Card
+
+### Fixed null crash in Building — avoids unnecessary re-renders in React
+-   Plus,
++   Building,
+-   TrendingUp,
++   LayoutDashboard,
+-   History,
++   Layers,
+-   ShieldCheck,
++   Plus,
+- } from "lucide-react";
++   TrendingUp,
+- import { PipelineBoard } from "@/components/dashboard/ai/PipelineBoard";
++   History,
+- import { getSupabaseBrowser } from "@/lib/supabase/client";
++   ShieldCheck,
+- import { cn, timeAgo } from "@/lib/utils";
++ } from "lucide-react";
+- import 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Building
+3. identifier: LayoutDashboard
+4. identifier: Layers
+5. identifier: Plus
+
+### Fixed null crash in Plus — avoids unnecessary re-renders in React
+- } from "lucide-react";
++   Plus,
+- import { getSupabaseBrowser } from "@/lib/supabase/client";
++ } from "lucide-react";
+- import { cn, timeAgo } from "@/lib/utils";
++ import { PipelineBoard } from "@/components/dashboard/ai/PipelineBoard";
+- import { Skeleton } from "@/components/ui/skeleton";
++ import { getSupabaseBrowser } from "@/lib/supabase/client";
+- import { fetchWithAuth } from "@/lib/ap
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Plus
+3. identifier: PipelineBoard
+4. identifier: Skeleton
+5. identifier: SessionExpiredCard
 
 ### Fixed null crash in UpsellStore — prevents null/undefined runtime crashes
 - 
@@ -235,6 +309,23 @@ Auto-compiled from **67 real patterns** in **node**. This skill is auto-routed t
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
+- 📐 **Fixed null crash in Badge — avoids unnecessary re-renders in React — confirmed 4x** — - import {
++ import { Badge } from "@/components/ui/badge";
+-   Card,
++ import {
+-   CardHeader,
++  
+- 📐 **what-changed in page.tsx — confirmed 3x** — File updated (external): src/app/(customer)/dashboard/ai/integrations/page.tsx
+
+Content summary (599
+- 📐 **Strengthened types Plus — filters out falsy/null values explicitly** — -   Building,
++   Plus,
+-   LayoutDashboard,
++   TrendingUp,
+-   Layers,
++   History,
+-   Plus,
++   
 - 📐 **Strengthened types ReactMarkdown** — -                     <ReactMarkdown className="prose prose-invert prose-sm max-w-none prose-p:leadi
 - 📐 **Strengthened types Concierge** — -   const isLoading = status === "submitted" || status === "streaming" || status === "waiting";
 +   
@@ -281,41 +372,6 @@ Content summary (
 +     setStep((prev) => Math.min(prev + 1, 2));
 - 
 - 📐 **what-changed in page.tsx — confirmed 3x** — -                   className="input-glass"
-+                   className="input-glass bg-zinc-900 t
-- 📐 **Fixed null crash in ListingType — avoids unnecessary re-renders in React — confirmed 3x** — -   const [type, setType] = useState<ListingType>("Homestay");
-+   const [address, setAddress] = use
-- 📐 **Fixed null crash in Search — avoids unnecessary re-renders in React — confirmed 3x** — - import { extractAirbnbInfo } from "@/app/actions/listings";
-+ import { cn } from "@/lib/utils";
-- 
-- 📐 **what-changed in page.tsx — confirmed 3x** — File updated (external): src/app/(customer)/dashboard/ai/listings/page.tsx
++                   classNa
 
-Content summary (198 lin
-- 📐 **Strengthened types page** — -                   {(recentActivity || []).map((activity: any) => {
-+                   {(recentAct
-- 📐 **Fixed null crash in System — prevents null/undefined runtime crashes — confirmed 3x** — -                       {f.tenants?.name} • {f.category} • {f.source}
-+                       {f.ten
-- 📐 **what-changed in page.tsx — confirmed 3x** — File updated (external): src/app/(customer)/dashboard/billing/history/page.tsx
-
-Content summary (95 
-- 📐 **Strengthened types UNKNOWN — prevents null/undefined runtime crashes** — -               {subscription.status.toUpperCase()}
-+               {(subscription.status || 'UNKNOW
-
-## 🤔 Decisions & Trade-offs
-
-- **trade-off in DashboardSidebar.tsx** — -     { label: "Integrations", icon: Puzzle, href: "/dashboard/ai/integrations" },
-+     ...(isHost 
-- **trade-off in DashboardSidebar.tsx** — -     { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },
-+     ...(isHost ? [
--
-- **decision in AuthContext.tsx** — File updated (external): src/contexts/AuthContext.tsx
-
-Content summary (142 lines):
-"use client";
-
-i
-- **Optimized Auto — reduces excessive function call frequency** — -       // Only auto-collapse/expand when crossing the 1024px threshold
-+       // Auto-collapse log
-- **decision in DashboardSidebar.tsx** — -           ? "bg-primary/20 text-primary border border-primary/20 shadow-[0_0_15px_rgba(66,133,244,
-
----
-*Auto-generated by BrainSync 🧠 | 67 patterns | 2026-04-09*
+... [Truncated — see individual observations for full content]

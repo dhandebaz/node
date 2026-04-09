@@ -16,7 +16,7 @@ export const loginSchema = z.object({
 export const signupSchema = z.object({
   phone: z.string().regex(/^\+?[1-9]\d{9,14}$/, "Invalid phone number"),
   fullName: z.string().min(2, "Name must be at least 2 characters").max(100),
-  businessType: z.enum(["airbnb_host", "kirana_store", "doctor_clinic", "thrift_store"]).optional(),
+  businessType: z.enum(["service_business", "airbnb_host", "kirana_store", "doctor_clinic", "thrift_store"]).optional(),
 });
 
 // ==========================================

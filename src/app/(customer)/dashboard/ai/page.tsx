@@ -103,7 +103,7 @@ export default async function AIDashboardPage() {
           <Button asChild className="font-bold">
             <Link href="/dashboard/ai/bookings/new">
               <Plus className="w-4 h-4 mr-2" />
-              New Booking
+              New Appointment
             </Link>
           </Button>
         </div>
@@ -111,7 +111,7 @@ export default async function AIDashboardPage() {
 
       <OnboardingChecklist
         stats={{
-          listingCount: listingCount || 0,
+          listingCount: serviceCount || 0,
           walletBalance: walletBalance || 0,
           isAiEnabled:
             !!tenant?.is_ai_enabled && flags["ai_global_enabled"] !== false,
@@ -122,121 +122,121 @@ export default async function AIDashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Card className="glass-card p-0 border-none shadow-none">
+        <Card className="bg-white border-zinc-200 shadow-sm hover:shadow-md transition-all">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+              <div className="p-2 bg-blue-50 rounded-xl text-blue-600">
                 <CreditCard className="w-5 h-5" />
               </div>
               <Link
                 href="/dashboard/billing"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-blue-600 transition-colors flex items-center gap-1"
               >
                 Top Up <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground mb-1">
+              <div className="text-2xl font-black text-zinc-950 tracking-tighter mb-1">
                 ₹{walletBalance}
               </div>
-              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+              <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
                 Wallet Balance
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card p-0 border-none shadow-none">
+        <Card className="bg-white border-zinc-200 shadow-sm hover:shadow-md transition-all">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+              <div className="p-2 bg-zinc-50 rounded-xl text-zinc-600">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <Link
                 href="/dashboard/ai/inbox"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-blue-600 transition-colors flex items-center gap-1"
               >
-                View Inbox <ArrowRight className="w-3 h-3" />
+                Inbox <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground mb-1">
+              <div className="text-2xl font-black text-zinc-950 tracking-tighter mb-1">
                 {manualMessageCount || 0}
               </div>
-              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+              <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
                 Manual Replies
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card p-0 border-none shadow-none">
+        <Card className="bg-white border-zinc-200 shadow-sm hover:shadow-md transition-all">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-green-500/10 rounded-lg text-green-400">
-                <MessageSquare className="w-5 h-5" />
+              <div className="p-2 bg-blue-600 rounded-xl text-white">
+                <Sparkles className="w-5 h-5" />
               </div>
               <Link
                 href="/dashboard/ai/activity"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-blue-600 transition-colors flex items-center gap-1"
               >
-                View Log <ArrowRight className="w-3 h-3" />
+                Log <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground mb-1">
+              <div className="text-2xl font-black text-zinc-950 tracking-tighter mb-1">
                 {messageCount || 0}
               </div>
-              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
-                AI Replies Sent
+              <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
+                AI Automations
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card p-0 border-none shadow-none">
+        <Card className="bg-white border-zinc-200 shadow-sm hover:shadow-md transition-all">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
+              <div className="p-2 bg-zinc-100 rounded-xl text-zinc-600">
                 <Calendar className="w-5 h-5" />
               </div>
               <Link
                 href="/dashboard/ai/bookings"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-blue-600 transition-colors flex items-center gap-1"
               >
-                View All <ArrowRight className="w-3 h-3" />
+                View <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground mb-1">
+              <div className="text-2xl font-black text-zinc-950 tracking-tighter mb-1">
                 {bookingCount || 0}
               </div>
-              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
-                Total Bookings
+              <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
+                Active Leads
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card p-0 border-none shadow-none">
+        <Card className="bg-white border-zinc-200 shadow-sm hover:shadow-md transition-all">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-orange-500/10 rounded-lg text-orange-400">
-                <Home className="w-5 h-5" />
+              <div className="p-2 bg-blue-50 rounded-xl text-blue-600">
+                <Activity className="w-5 h-5" />
               </div>
               <Link
                 href="/dashboard/ai/listings"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-blue-600 transition-colors flex items-center gap-1"
               >
                 Manage <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
             <div>
-              <div className="text-2xl font-bold text-foreground mb-1">
+              <div className="text-2xl font-black text-zinc-950 tracking-tighter mb-1">
                 {listingCount || 0}
               </div>
-              <div className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
-                Active Listings
+              <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
+                Active Services
               </div>
             </div>
           </CardContent>
@@ -336,7 +336,7 @@ export default async function AIDashboardPage() {
                     <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                       {isAiPaused
                         ? "Your AI is currently not replying to incoming messages. Check your settings."
-                        : "Your AI is monitoring your inbox 24/7 and responding to guests."}
+                        : "Your AI is monitoring your inbox 24/7 and responding to clients."}
                     </p>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 60 gotchas, 120 conventions, 64 fixes."
+description: "Project for node. 67 gotchas, 123 conventions, 69 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **449 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **473 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,13 @@ Auto-compiled from **449 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 949 notes - Score threshold: >40 + > 954 notes - Score threshold: >40 - - **gotcha in shared-con |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 945 notes - Score threshold: >40 + > 949 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
+| ⚠️ GOTCHA: Optimized Score | - > 931 notes - Score threshold: >40 + > 945 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
+| ⚠️ GOTCHA: Optimized Score | - > 920 notes - Score threshold: >40 + > 931 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 887 notes - Score threshold: >40 + > 920 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Building — avoids unnecessary re-renders in React + - problem-fix in agent-r |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Plus — avoids unnecessary re-renders in React + - problem-fix in agent-rules |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 779 notes - Score threshold: >40 + > 783 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
 | ⚠️ GOTCHA: Optimized Score — externalizes configur | - > 770 notes - Score threshold: >40 + > 779 notes - Score threshold: >40 - - what-changed in shared |
@@ -61,15 +68,81 @@ Auto-compiled from **449 real patterns** in **node**. This skill is auto-routed 
 | Use === not == — strict equality prevents type coe | Use === not == — strict equality prevents type coercion bugs |
 | Agent: follow existing project patterns — don't in | Agent: follow existing project patterns — don't introduce a different style |
 | Agent: don't generate code with "any" type — defin | Agent: don't generate code with "any" type — define proper TypeScript types |
-| Agent: always handle loading/error states — don't  | Agent: always handle loading/error states — don't just render data |
-| Agent: don't use deprecated APIs — check library v | Agent: don't use deprecated APIs — check library version, use current API |
-| Agent: check existing code before creating utility | Agent: check existing code before creating utility functions — avoid duplicates |
-| Don't expose database errors to clients — map to u | Don't expose database errors to clients — map to user-friendly messages |
-| Always validate data on the SERVER — client valida | Always validate data on the SERVER — client validation is for UX only |
-| Don't fetch data inside render loops or hot paths | Don't fetch data inside render loops or hot paths |
-| Don't swallow errors silently — empty catch blocks | Don't swallow errors silently — empty catch blocks hide bugs |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Building — avoids unnecessary re-renders in React
++ - problem-fix in agent-rules.md
+- - Patched security issue HWWai
++ - Fixed null crash in Building — avoids unnecessary re-renders in React
+- - problem-fix in agent-rules.md
++ - Patched security issue HWWai
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in Building — avoids unnecessary re-renders in React
+- - problem-fix in agent-rules.md
++ - Patched security issue HWWai
+- - Fixed null crash in Plus — avoids unnecessary re-renders in React
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+
+📌 IDE AST Context: Modified symbols likely inc
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Plus — avoids unnecessary re-renders in React
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Plus — avoids unnecessary re-renders in React
+- - problem-fix in brainsync_auto.md
++ - problem-fix in shared-context.json
+- - problem-fix in .gitignore
++ - problem-fix in brainsync_auto.md
+
+📌 IDE AST Context: Modified symbols likely
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in Plus — avoids unnecessary re-renders in React
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Plus — avoids unnecessary re-renders in React
+- - problem-fix in brainsync_auto.md
++ - problem-fix in shared-context.json
+- - problem-fix in .gitignore
++ - problem-fix in brainsync_auto.md
+- - problem-fix in bookingAutomation.ts
++ - 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Plus — avoids unnecessary re-renders in React
+- - problem-fix in brainsync_auto.md
++ - problem-fix in shared-context.json
+- - problem-fix in .gitignore
++ - problem-fix in brainsync_auto.md
+- - problem-fix in bookingAutomation.ts
++ - problem-fix in .gitignore
+- - problem-fix in tsc_errors_fresh.txt
++ - problem-fix in bookingAutomation.t
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Patched security issue RCWtJ
@@ -136,83 +209,6 @@ Auto-compiled from **449 real patterns** in **node**. This skill is auto-routed 
 - - problem-fix in shared-context.json
 + - problem-fix in agent-rules.md
 - - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-+ - problem-fix in shared-context.json
-- - Patched security issue QAEZ
-+ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-- - problem-fix in brainsync_auto.md
-+ - Patched security issue QAEZ
-
-📌 IDE AST Context: Modified symbols likely include [# Project
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-+ - problem-fix in shared-context.json
-- - Patched security issue QAEZ
-+ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-- - problem-fix in brainsync_auto.md
-+ - Patched security issue QAEZ
-- - problem-fix in .gitignore
-+ - problem-fix in brainsync_auto
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - problem-fix in agent-rules.md
-+ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-- - problem-fix in agent-rules.md
-+ - Patched security issue QAEZ
-- - problem-fix in agent-rules.md
-+ - problem-fix in brainsync_auto.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in .gitignore
-
-📌 IDE AST Context: Modified 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-+ - problem-fix in shared-context.json
-- - Patched security issue QAEZ
-+ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architectur
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-+ - problem-fix in shared-context.json
-- - Patched security issue QAEZ
-+ - Patched security issue LxjiczDOjVbjOCWKwMBQYDESrBeJDTnVCR
-- - problem-fix in brainsync_auto.md
-+ - Patched security issue QAEZ
-
-📌 IDE AST Context: Modified symbols likely include [# Proj
++ - problem-fix in shared-cont
 
 ... [Truncated — see individual observations for full content]

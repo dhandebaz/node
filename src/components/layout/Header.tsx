@@ -101,10 +101,10 @@ export function Header({ viewer }: HeaderProps) {
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex shrink-0 items-center group">
-              <Logo className="text-white group-hover:opacity-80 transition-opacity" />
+              <Logo className="text-zinc-950 group-hover:opacity-80 transition-opacity" />
             </Link>
 
-            <div className="hidden md:flex items-center gap-1 rounded-full p-1 bg-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
+            <div className="hidden md:flex items-center gap-1 rounded-full p-1 bg-zinc-100/50 border border-zinc-200 shadow-sm">
               {publicNavLinks.map((item) => {
                 const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
                 return (
@@ -114,8 +114,8 @@ export function Header({ viewer }: HeaderProps) {
                     className={cn(
                       "rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide transition-all",
                       active
-                        ? "bg-white/10 text-white border border-white/10 shadow-[inner_0_1px_1px_rgba(255,255,255,0.05)]"
-                        : "text-zinc-400 hover:text-white hover:bg-white/5"
+                        ? "bg-white text-zinc-950 border border-zinc-200 shadow-sm"
+                        : "text-zinc-500 hover:text-zinc-900 hover:bg-white"
                     )}
                   >
                     {item.label}
@@ -130,7 +130,7 @@ export function Header({ viewer }: HeaderProps) {
               <>
                 <Link
                   href={dashboardHref}
-                  className="rounded-full bg-white/10 border border-white/10 px-4 py-2 text-xs font-semibold text-white hover:bg-white/20 hover:border-white/20 transition-all shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                  className="rounded-full bg-zinc-100 border border-zinc-200 px-4 py-2 text-xs font-semibold text-zinc-950 hover:bg-zinc-200 transition-all shadow-sm"
                 >
                   Dashboard
                 </Link>
@@ -138,12 +138,12 @@ export function Header({ viewer }: HeaderProps) {
                   <button
                     type="button"
                     onClick={() => setAccountOpen((open) => !open)}
-                    className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1 pr-3 hover:bg-white/10 transition-colors"
+                    className="flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-100/50 p-1 pr-3 hover:bg-zinc-100 transition-colors"
                   >
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-[10px] font-bold text-white shadow-inner">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-700 text-[10px] font-bold text-white shadow-inner">
                       {initials || "NB"}
                     </div>
-                    <span className="text-xs font-semibold text-zinc-300">
+                    <span className="text-xs font-semibold text-zinc-700">
                       {currentViewer.name?.split(" ")[0] || "Account"}
                     </span>
                   </button>
@@ -159,23 +159,23 @@ export function Header({ viewer }: HeaderProps) {
                         <div className="relative z-10 space-y-1">
                           <Link
                             href={dashboardHref}
-                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/5 transition-all"
+                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-all"
                           >
-                            <LayoutDashboard className="h-4 w-4 text-blue-400" />
+                            <LayoutDashboard className="h-4 w-4 text-blue-600" />
                             Dashboard
                           </Link>
                           <Link
                             href="/dashboard/billing"
-                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/5 transition-all"
+                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-all"
                           >
-                            <CreditCard className="h-4 w-4 text-blue-400" />
+                            <CreditCard className="h-4 w-4 text-blue-600" />
                             Billing & usage
                           </Link>
                           <Link
                             href="/dashboard/settings"
-                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/5 transition-all"
+                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-all"
                           >
-                            <Settings className="h-4 w-4 text-blue-400" />
+                            <Settings className="h-4 w-4 text-blue-600" />
                             Settings
                           </Link>
                           <button

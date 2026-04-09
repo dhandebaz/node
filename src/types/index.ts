@@ -29,6 +29,7 @@ export interface Tenant {
 }
 
 export type BusinessType =
+  | "service_business"
   | "airbnb_host"
   | "kirana_store"
   | "doctor_clinic"

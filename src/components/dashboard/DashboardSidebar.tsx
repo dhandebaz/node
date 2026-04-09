@@ -52,14 +52,14 @@ function SidebarItem({
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group relative",
         active
-          ? "bg-primary text-primary-foreground border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
-          : "text-zinc-400 hover:text-white hover:bg-white/10",
+          ? "bg-blue-600 text-white shadow-[0_4px_12px_rgba(37,99,235,0.2)]"
+          : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100",
       )}
     >
       <Icon
         className={cn(
           "w-5 h-5 shrink-0 transition-colors duration-200",
-          active ? "text-primary-foreground" : "text-zinc-500 group-hover:text-white",
+          active ? "text-white" : "text-zinc-400 group-hover:text-zinc-900",
         )}
       />
       {!collapsed && (
@@ -68,7 +68,7 @@ function SidebarItem({
         </span>
       )}
       {collapsed && (
-        <div className="absolute left-full ml-4 px-2 py-1 bg-zinc-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-white/10">
+        <div className="absolute left-full ml-4 px-2 py-1 bg-zinc-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap border border-zinc-200">
           {label}
         </div>
       )}
@@ -115,21 +115,15 @@ export function DashboardSidebar() {
     { label: "Overview", icon: LayoutDashboard, href: "/dashboard/ai" },
     { label: "Inbox", icon: MessageSquare, href: "/dashboard/ai/inbox" },
     { label: "Customers", icon: Users, href: "/dashboard/ai/customers" },
-    { label: "Bookings", icon: Calendar, href: "/dashboard/ai/bookings" },
+    { label: "Appointments", icon: Calendar, href: "/dashboard/ai/bookings" },
     { label: "Marketing", icon: Megaphone, href: "/dashboard/ai/marketing" },
     { label: "Content Hub", icon: Share2, href: "/dashboard/ai/content" },
     { label: "Meta Catalog", icon: ShoppingBag, href: "/dashboard/ai/catalog" },
     { label: "Calendar", icon: CalendarDays, href: "/dashboard/ai/calendar" },
-    { label: "Listings", icon: Briefcase, href: "/dashboard/ai/listings" },
-    ...(isHost ? [
-      { label: "Reviews", icon: Star, href: "/dashboard/ai/reviews" },
-      { label: "Tasks", icon: CheckSquare, href: "/dashboard/ai/tasks" },
-      { label: "Loyalty", icon: Award, href: "/dashboard/ai/loyalty" },
-      { label: "Channels", icon: Link2, href: "/dashboard/ai/channels" },
-    ] : []),
-    { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },
-    ...(isHost ? [{ label: "Reports", icon: CreditCard, href: "/dashboard/ai/revenue/reports" }] : []),
+    { label: "Services", icon: Briefcase, href: "/dashboard/ai/listings" },
+    { label: "Tasks", icon: CheckSquare, href: "/dashboard/ai/tasks" },
     { label: "Integrations", icon: Puzzle, href: "/dashboard/ai/integrations" },
+    { label: "Insights", icon: BarChart3, href: "/dashboard/ai/insights" },
     { label: "Notifications", icon: Bell, href: "/dashboard/notifications" },
   ];
 
@@ -145,7 +139,7 @@ export function DashboardSidebar() {
       initial={false}
       animate={{ width: isCollapsed ? 80 : 260 }}
       className={cn(
-        "hidden md:flex flex-col sticky top-0 h-screen z-40 bg-zinc-950/80 backdrop-blur-3xl border-r border-white/10 transition-all duration-300 ease-in-out pb-6",
+        "hidden md:flex flex-col sticky top-0 h-screen z-40 bg-white/80 backdrop-blur-3xl border-r border-zinc-200 transition-all duration-300 ease-in-out pb-6",
         // Enhanced layering for stability on resize
       )}
     >

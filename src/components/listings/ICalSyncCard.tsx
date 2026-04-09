@@ -34,40 +34,49 @@ export function ICalSyncCard({ listingId }: { listingId: string }) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Sync Calendar (iCal)</CardTitle>
+    <Card className="bg-white border-zinc-200 shadow-sm overflow-hidden rounded-3xl">
+      <CardHeader className="border-b border-zinc-50 pb-4">
+        <CardTitle className="text-xs font-black uppercase tracking-widest text-zinc-950 flex items-center gap-2">
+          Sync External Calendar
+          <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[9px] font-black">iCal</span>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="platform">Platform</Label>
+      <CardContent className="space-y-6 pt-6">
+        <div className="space-y-3">
+          <Label htmlFor="platform" className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Source Platform</Label>
           <Select value={platform} onValueChange={setPlatform}>
-            <SelectTrigger id="platform">
+            <SelectTrigger id="platform" className="rounded-xl border-zinc-200 bg-zinc-50/50 font-bold focus:ring-blue-500/20">
               <SelectValue placeholder="Select platform" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="airbnb">Airbnb</SelectItem>
-              <SelectItem value="booking">Booking.com</SelectItem>
-              <SelectItem value="vrbo">Vrbo</SelectItem>
+            <SelectContent className="rounded-xl border-zinc-200">
+              <SelectItem value="generic">Generic Calendar</SelectItem>
+              <SelectItem value="google">Google Calendar</SelectItem>
+              <SelectItem value="airbnb">Airbnb / Hospitality</SelectItem>
+              <SelectItem value="booking">Booking / OTA</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="ical-url">iCal URL</Label>
+        <div className="space-y-3">
+          <Label htmlFor="ical-url" className="text-[10px] font-black uppercase tracking-widest text-zinc-400">External iCal URL</Label>
           <Input
             id="ical-url"
-            placeholder="https://..."
+            placeholder="https://calendar.google.com/..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            className="rounded-xl border-zinc-200 bg-zinc-50/50 font-bold focus:ring-blue-500/20"
           />
         </div>
       </CardContent>
-      <CardFooter className="flex flex-col items-start gap-4">
-        <Button onClick={handleSync} disabled={isLoading || !url} className="w-full">
-          {isLoading ? "Syncing..." : "Sync Calendar"}
+      <CardFooter className="flex flex-col items-start gap-4 pb-6">
+        <Button 
+          onClick={handleSync} 
+          disabled={isLoading || !url} 
+          className="w-full rounded-xl h-12 font-black uppercase tracking-widest bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20"
+        >
+          {isLoading ? "Syncing..." : "Connect Calendar"}
         </Button>
         {message && (
-          <p className={`text-sm ${message.type === "success" ? "text-green-600" : "text-red-600"}`}>
+          <p className={`text-[10px] font-black uppercase tracking-widest ${message.type === "success" ? "text-emerald-600" : "text-red-600"}`}>
             {message.text}
           </p>
         )}

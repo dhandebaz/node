@@ -17,11 +17,28 @@ export const PERSONA_LABELS: Record<BusinessType, {
     timeLabel: string;
   };
 }> = {
+  service_business: {
+    listing: "Service",
+    listings: "Services",
+    booking: "Project",
+    bookings: "Projects",
+    calendar: "Availability",
+    customer: "Client",
+    customers: "Clients",
+    checkIn: "Start Date",
+    checkOut: "Deadline",
+    emptyListings: "Define your first service to start responding to clients.",
+    emptyBookings: "No active projects yet.",
+    inboxContext: {
+      customerLabel: "Client",
+      timeLabel: "Project timeline",
+    },
+  },
   airbnb_host: {
     listing: "Property",
     listings: "Properties",
-    booking: "Booking",
-    bookings: "Bookings",
+    booking: "Stay",
+    bookings: "Stays",
     calendar: "Availability Calendar",
     customer: "Guest",
     customers: "Guests",
@@ -113,6 +130,30 @@ export interface PersonaCapabilities {
 }
 
 export const PERSONA_CAPABILITIES: Record<BusinessType, PersonaCapabilities> = {
+  service_business: {
+    listings: true,
+    multi_listing: true,
+    calendar: true,
+    bookings: true,
+    payments: true,
+    id_verification: false,
+    direct_booking: true,
+    reviews: true,
+    tasks: true,
+    loyalty: true,
+    channels: true,
+    integrations: {
+      airbnb: false,
+      google: true,
+      ical: true,
+      whatsapp: true,
+      instagram: true,
+      booking: false,
+      mmt: false,
+      Vrbo: false,
+      expedia: false,
+    },
+  },
   airbnb_host: {
     listings: true,
     multi_listing: true,
@@ -215,9 +256,13 @@ export const PERSONA_AI_DEFAULTS: Record<BusinessType, {
   role: string;
   instructions: string;
 }> = {
+  service_business: {
+    role: "Business Assistant",
+    instructions: "You are a professional business assistant. Answer questions about services, provide pricing details, and help clients schedule meetings or book services. Always be polite, expert, and efficient."
+  },
   airbnb_host: {
     role: "Host",
-    instructions: "You are a friendly Airbnb host. Answer questions about the property, check-in/out times, and local recommendations. Always be welcoming and helpful."
+    instructions: "You are a friendly hospitality host. Answer questions about the property, check-in/out times, and local recommendations. Always be welcoming and helpful."
   },
   kirana_store: {
     role: "Shop Assistant",
@@ -234,16 +279,16 @@ export const PERSONA_AI_DEFAULTS: Record<BusinessType, {
 };
 
 export function getBusinessLabels(type?: BusinessType | null) {
-  // Default to airbnb_host if undefined (safe fallback)
-  return PERSONA_LABELS[type || "airbnb_host"];
+  // Default to service_business if undefined (safe fallback)
+  return PERSONA_LABELS[type || "service_business"];
 }
 
 export function getPersonaAIDefaults(type?: BusinessType | null) {
-  return PERSONA_AI_DEFAULTS[type || "airbnb_host"];
+  return PERSONA_AI_DEFAULTS[type || "service_business"];
 }
 
 export function getPersonaCapabilities(type?: BusinessType | null): PersonaCapabilities {
-  return PERSONA_CAPABILITIES[type || "airbnb_host"];
+  return PERSONA_CAPABILITIES[type || "service_business"];
 }
 
 export function isCalendarEnabled(type?: BusinessType | null) {

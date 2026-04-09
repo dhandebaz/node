@@ -1,6 +1,6 @@
 ---
 name: problem-fix
-description: "Problem Fix for node. 20 error→fix pairs."
+description: "Problem Fix for node. 23 error→fix pairs."
 domain: problem-fix
 composesFrom:
   - fix
@@ -30,6 +30,8 @@ Auto-compiled from **2 real patterns** in **node**. This skill is auto-routed to
 | `File updated (external): ts_errors.log` | problem-fix in ts_errors.log | 3x |
 | `File updated (external): ts_errors.txt` | problem-fix in ts_errors.txt | 3x |
 | `-     const { error } = await supabase.from("syste` | problem-fix in controlService.ts | 3x |
+| `- - Fixed null crash in Plus — avoids unnecessary ` | problem-fix in agent-rules.md | 3x |
+| `- - Fixed null crash in Building — avoids unnecess` | problem-fix in agent-rules.md | 3x |
 | `yarn-error.log*` | problem-fix in .gitignore | 2x |
 | `+       const { data, error } = await supabase.fro` | problem-fix in inboxService.ts | 2x |
 | `return NextResponse.json({ error: "Unauthorized" }` | problem-fix in route.ts | 2x |
@@ -38,8 +40,6 @@ Auto-compiled from **2 real patterns** in **node**. This skill is auto-routed to
 | `import { FailureService } from "@/lib/services/fai` | problem-fix in route.ts | 2x |
 | `status?: "paid" - "failed" - "expired" - "refunded` | problem-fix in route.ts | 2x |
 | `-     } catch (error) {` | Fixed null crash in Review — prevents null/undefined runtime | 2x |
-| `-             } catch (dispatchError) {` | Fixed null crash in Dispatch | 2x |
-| `+ - problem-fix in tsc_errors_fresh.txt` | problem-fix in agent-rules.md | 2x |
 
 ## 📐 Conventions & Best Practices
 

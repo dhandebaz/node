@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 887 notes | Score threshold: >40
+> 956 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,34 +20,28 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.js
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "a35ef8943f29d8a1",
-+
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 779 notes | Score threshold: >40
-+ > 783 notes | Score threshold: 
-- **⚠️ GOTCHA: Optimized Score — externalizes configuration for environment flexibility** — - > 770 notes | Score threshold: >40
-+ > 779 notes | Score threshold: 
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.js
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 949 notes | Score threshold: >40
++ > 954 notes | Score threshold: 
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 945 notes | Score threshold: >40
++ > 949 notes | Score threshold: 
+- **⚠️ GOTCHA: Optimized Score** — - > 931 notes | Score threshold: >40
++ > 945 notes | Score threshold: 
+- **⚠️ GOTCHA: Optimized Score** — - > 920 notes | Score threshold: >40
++ > 931 notes | Score threshold: 
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 887 notes | Score threshold: >40
++ > 920 notes | Score threshold: 
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in Building — avoids unnecessary re-renders in Re
 
 ## Project Standards
 
-- what-changed in shared-context.json — confirmed 3x
-- what-changed in shared-context.json — confirmed 9x
-- problem-fix in agent-rules.md — confirmed 9x
-- Patched security issue RCWtJ — confirmed 3x
-- Added JWT tokens authentication — confirmed 3x
-- what-changed in shared-context.json — confirmed 6x
-- problem-fix in agent-rules.md — confirmed 6x
-- Optimized Score — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- what-changed in business-context.ts — confirmed 3x
+- Updated a database schema — formalizes the data contract with explicit types — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- Optimized GOTCHA — confirmed 3x
+- what-changed in shared-context.json — confirmed 11x
+- Fixed null crash in Badge — avoids unnecessary re-renders in React — confirmed 4x
+- what-changed in page.tsx — confirmed 3x
 
 ## Known Fixes
 
@@ -59,8 +53,8 @@
 
 ## Recent Decisions
 
-- Optimized Score — externalizes configuration for environment flexibility
-- Optimized Score — externalizes configuration for environment flexibility
+- decision in input.tsx
+- decision in DashboardSidebar.tsx
 - Optimized Score — externalizes configuration for environment flexibility
 - Optimized Score — externalizes configuration for environment flexibility
 

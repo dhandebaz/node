@@ -45,9 +45,21 @@ export function BusinessDetailsForm({
 
   const getQuestionConfig = () => {
     switch (businessType) {
+      case "service_business":
+        return {
+          countLabel: "How many active projects or retainers do you manage?",
+          platformLabel: "Where do your leads come from?",
+          platforms: [
+            { id: "linkedin", label: "LinkedIn" },
+            { id: "whatsapp", label: "WhatsApp" },
+            { id: "email", label: "Email" },
+            { id: "referrals", label: "Referrals" },
+            { id: "website", label: "Company Website" },
+          ],
+        };
       case "airbnb_host":
         return {
-          countLabel: "How many properties do you manage?",
+          countLabel: "How many properties or units do you manage?",
           platformLabel: "Which channels matter most right now?",
           platforms: [
             { id: "airbnb", label: "Airbnb" },
@@ -83,7 +95,7 @@ export function BusinessDetailsForm({
         };
       case "thrift_store":
         return {
-          countLabel: "How many active inventory items do you usually manage?",
+          countLabel: "How many active inventory items do you manage?",
           platformLabel: "Where are you currently selling?",
           platforms: [
             { id: "instagram", label: "Instagram" },
@@ -95,9 +107,13 @@ export function BusinessDetailsForm({
         };
       default:
         return {
-          countLabel: "How many units should the employee manage?",
+          countLabel: "How many units should the AI employee manage?",
           platformLabel: "Which channels should we plan around?",
-          platforms: [],
+          platforms: [
+            { id: "whatsapp", label: "WhatsApp" },
+            { id: "email", label: "Email" },
+            { id: "web", label: "Web Widget" },
+          ],
         };
     }
   };

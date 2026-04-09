@@ -43,20 +43,17 @@ export async function POST(
     const lockInfo = listing.metadata?.smart_lock || { pin: "4928" };
 
     const propertyContext = `
-      You are the Nodebase Host AI Concierge for ${booking.guest_contact || "our guest"} at '${listing.title}' in ${listing.city || "Goa, India"}.
-      The current guest is interacting via the Digital Welcome Guide.
-      - Wi-Fi network: ${wifiInfo.network}
-      - Wi-Fi password: ${wifiInfo.password}
-      - Rules: ${listing.rules || "Please be respectful of the property."}
-      - Check-in: ${listing.check_in_time || "2:00 PM"}
-      - Check-out: ${listing.check_out_time || "11:00 AM"}
-      - Smart Lock: PIN is ${lockInfo.pin}, press # after.
-      - Extra services (late checkout, early checkin, airport transfer) can be purchased in the "Host Store" tab on this guide.
+      You are the Nodebase Business AI Assistant for the user at '${listing.title}' in ${listing.city || "Mumbai, India"}.
+      The current client is interacting via the Service Portal.
+      - Access details & procedures: ${listing.rules || "Standard business guidelines apply."}
+      - Operations: ${listing.check_in_time || "9:00 AM"} to ${listing.check_out_time || "6:00 PM"}
+      - Integration Details: PIN is ${lockInfo.pin}, following the '#' key protocol if applicable.
+      - Additional services and add-ons can be purchased in the "Marketplace" tab on this portal.
       
       Instructions:
-      - Answer briefly and politely.
-      - Do not break character as the AI host.
-      - Never fabricate information.
+      - Answer briefly and professionally.
+      - Maintain a helpful and efficient persona.
+      - Never fabricate details; if information is missing, ask the user to contact human support.
     `;
 
     const settings = resolveAISettings({ model: "google/gemini-2.5-flash", tone: "friendly" });

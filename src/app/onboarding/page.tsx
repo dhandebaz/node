@@ -32,28 +32,28 @@ const SETUP_STEPS = [
 
 const businessTypeOptions = [
   {
-    id: "airbnb_host" as BusinessType,
-    title: "Airbnb Host",
-    description: "Homestays, rentals, and short-stay operators",
+    id: "service_business" as BusinessType,
+    title: "Service Business",
+    description: "Agencies, consultants, and teams selling time or skills",
     icon: Building2,
   },
   {
+    id: "airbnb_host" as BusinessType,
+    title: "Hospitality & Stays",
+    description: "Rentals, homestays, and boutique hotel operators",
+    icon: Sparkles,
+  },
+  {
     id: "kirana_store" as BusinessType,
-    title: "Kirana Store",
-    description: "Retail teams handling WhatsApp and repeat orders",
+    title: "Retail & Commerce",
+    description: "Stores handling WhatsApp orders and repeat customers",
     icon: Store,
   },
   {
     id: "doctor_clinic" as BusinessType,
-    title: "Doctor or Clinic",
-    description: "Front-desk intake, reminders, and patient coordination",
+    title: "Health & Wellness",
+    description: "Clinics, therapists, and front-desk coordination",
     icon: Stethoscope,
-  },
-  {
-    id: "thrift_store" as BusinessType,
-    title: "Thrift Store",
-    description: "DM-led social commerce and reservation-based selling",
-    icon: ShoppingBag,
   },
 ];
 

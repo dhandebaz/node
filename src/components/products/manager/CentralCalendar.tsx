@@ -41,45 +41,46 @@ export function CentralCalendar({ listingId = "demo-listing" }: CentralCalendarP
   const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-brand-bone/5 rounded-xl border border-brand-bone/10 overflow-hidden backdrop-blur-sm">
-      <div className="p-4 border-b border-brand-bone/10 flex justify-between items-center bg-black/20">
-        <div className="flex items-center gap-2 text-brand-bone">
-          <CalendarIcon className="w-5 h-5 text-brand-bone/60" />
-          <span className="font-medium text-lg">
+    <div className="w-full max-w-4xl mx-auto bg-white rounded-[2rem] border border-zinc-200 shadow-xl shadow-zinc-200/50 overflow-hidden">
+      <div className="p-6 border-b border-zinc-100 flex justify-between items-center bg-zinc-50/50">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-500/20">
+            <CalendarIcon className="w-5 h-5" />
+          </div>
+          <span className="font-black text-xl text-zinc-950 uppercase tracking-tighter">
             {currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
           </span>
         </div>
         <div className="flex gap-2">
-          <button onClick={prevMonth} className="p-1 hover:bg-brand-bone/10 rounded transition-colors text-brand-bone">
+          <button onClick={prevMonth} className="p-2 hover:bg-zinc-100 rounded-xl transition-all text-zinc-500 hover:text-zinc-950 border border-transparent hover:border-zinc-200">
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <button onClick={nextMonth} className="p-1 hover:bg-brand-bone/10 rounded transition-colors text-brand-bone">
+          <button onClick={nextMonth} className="p-2 hover:bg-zinc-100 rounded-xl transition-all text-zinc-500 hover:text-zinc-950 border border-transparent hover:border-zinc-200">
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-8">
         {loading ? (
           <div className="h-[400px] flex items-center justify-center">
-            <Loader2 className="w-8 h-8 animate-spin text-brand-bone/40" />
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
           </div>
         ) : (
-          <div className="grid grid-cols-7 gap-px bg-brand-bone/10 rounded-lg overflow-hidden border border-brand-bone/10">
+          <div className="grid grid-cols-7 gap-px bg-zinc-200 rounded-[1.5rem] overflow-hidden border border-zinc-200 shadow-inner">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-              <div key={day} className="bg-brand-deep-red p-2 text-center text-xs font-mono uppercase text-brand-bone/40">
+              <div key={day} className="bg-zinc-50 p-4 text-center text-[10px] font-black uppercase tracking-widest text-zinc-400">
                 {day}
               </div>
             ))}
             
             {Array.from({ length: firstDay }).map((_, i) => (
-              <div key={`empty-${i}`} className="bg-black/20 min-h-[100px]" />
+              <div key={`empty-${i}`} className="bg-white/50 min-h-[120px]" />
             ))}
-
+ 
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
               const dateStr = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day).toISOString().split('T')[0];
-              // Simple check if date is within any booking range (very naive for demo)
               const booking = bookings.find(b => {
                  const start = new Date(b.startDate);
                  const end = new Date(b.endDate);
@@ -88,19 +89,20 @@ export function CentralCalendar({ listingId = "demo-listing" }: CentralCalendarP
               });
 
               return (
-                <div key={day} className="bg-black/20 min-h-[100px] p-2 relative group hover:bg-brand-bone/5 transition-colors">
-                  <span className="text-sm text-brand-bone/60 font-mono">{day}</span>
+                <div key={day} className="bg-white min-h-[120px] p-3 relative group hover:bg-zinc-50 transition-colors">
+                  <span className="text-sm text-zinc-400 font-black tracking-tighter">{day}</span>
                   {booking && (
                     <motion.div 
-                      initial={{ opacity: 0, scale: 0.9 }}
+                      layoutId={`booking-${booking.id}-${day}`}
+                      initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className={`mt-2 p-1.5 rounded text-xs font-medium truncate ${
-                        booking.status === 'confirmed' ? 'bg-green-500/20 text-green-300 border border-green-500/30' :
-                        booking.status === 'blocked' ? 'bg-red-500/20 text-red-300 border border-red-500/30' :
-                        'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                      className={`mt-2 p-2 rounded-xl text-[10px] font-black uppercase tracking-tight truncate border shadow-sm ${
+                        booking.status === 'confirmed' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                        booking.status === 'blocked' ? 'bg-zinc-100 text-zinc-600 border-zinc-200' :
+                        'bg-blue-50 text-blue-700 border-blue-100'
                       }`}
                     >
-                      {booking.source === 'airbnb' ? 'Airbnb' : 'Direct'}
+                      {booking.source === 'direct' ? 'Direct' : 'Sync: ' + booking.source.toUpperCase()}
                     </motion.div>
                   )}
                 </div>
@@ -109,18 +111,18 @@ export function CentralCalendar({ listingId = "demo-listing" }: CentralCalendarP
           </div>
         )}
       </div>
-      <div className="p-4 border-t border-brand-bone/10 bg-black/40 flex gap-4 text-xs font-mono">
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded bg-green-500/20 border border-green-500/30" />
-          <span className="text-brand-bone/60">Confirmed</span>
+      <div className="px-8 py-6 border-t border-zinc-100 bg-zinc-50/50 flex flex-wrap gap-6 text-[10px] font-black uppercase tracking-widest">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/20" />
+          <span className="text-zinc-500">Confirmed</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded bg-red-500/20 border border-red-500/30" />
-          <span className="text-brand-bone/60">Blocked</span>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-zinc-400 shadow-lg shadow-zinc-400/20" />
+          <span className="text-zinc-500">Blocked</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded bg-blue-500/20 border border-blue-500/30" />
-          <span className="text-brand-bone/60">External</span>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-blue-600 shadow-lg shadow-blue-500/20" />
+          <span className="text-zinc-500">Sync Connector</span>
         </div>
       </div>
     </div>

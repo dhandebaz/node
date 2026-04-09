@@ -9,16 +9,16 @@ function Badge({ className, variant = "default", ...props }: BadgeProps) {
   let variantStyles = ""
   switch (variant) {
     case "default": 
-      variantStyles = "border border-white/10 bg-white/5 text-white backdrop-blur-md shadow-[0_0_15px_rgba(255,255,255,0.05)]"; 
+      variantStyles = "border border-blue-100 bg-blue-50 text-blue-700 shadow-sm"; 
       break;
     case "secondary": 
-      variantStyles = "border border-white/5 bg-white/5 text-zinc-400 backdrop-blur-sm"; 
+      variantStyles = "border border-zinc-200 bg-zinc-100 text-zinc-600"; 
       break;
     case "destructive": 
-      variantStyles = "border border-red-500/20 bg-red-500/5 text-red-400 backdrop-blur-md"; 
+      variantStyles = "border border-red-100 bg-red-50 text-red-600 shadow-sm"; 
       break;
     case "outline": 
-      variantStyles = "border border-white/10 bg-transparent text-zinc-400"; 
+      variantStyles = "border border-zinc-200 bg-transparent text-zinc-500"; 
       break;
   }
 

@@ -8,7 +8,7 @@ import { Bot, X, Send, Sparkles, Loader2, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 
-export default function AiConciergeChat({ bookingId, propertyName }: { bookingId: string, propertyName: string }) {
+export default function AiBusinessAssistant({ bookingId, propertyName }: { bookingId: string, propertyName: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [chatInput, setChatInput] = useState("");
@@ -33,7 +33,6 @@ export default function AiConciergeChat({ bookingId, propertyName }: { bookingId
     e.preventDefault();
     if (!chatInput.trim() || isLoading) return;
     
-    // In this specific version of useChat, we use sendMessage
     sendMessage({ text: chatInput });
     setChatInput("");
   };
@@ -50,9 +49,9 @@ export default function AiConciergeChat({ bookingId, propertyName }: { bookingId
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(true)}
-              className="relative flex items-center justify-center p-4 rounded-full bg-primary text-primary-foreground shadow-2xl overflow-hidden group border border-primary/50"
+              className="relative flex items-center justify-center p-4 rounded-full bg-blue-600 text-white shadow-2xl overflow-hidden group border border-blue-500/50"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <Sparkles className="w-6 h-6 relative z-10 animate-pulse" />
             </motion.button>
           )}
@@ -65,37 +64,37 @@ export default function AiConciergeChat({ bookingId, propertyName }: { bookingId
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            className="fixed bottom-6 right-6 md:right-10 z-50 w-[calc(100vw-2rem)] md:w-[420px] h-[600px] max-h-[calc(100vh-6rem)] bg-zinc-950/95 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden"
+            className="fixed bottom-6 right-6 md:right-10 z-50 w-[calc(100vw-2rem)] md:w-[420px] h-[600px] max-h-[calc(100vh-6rem)] bg-white border border-zinc-200 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-gradient-to-b from-white/[0.05] to-transparent">
+            <div className="px-8 py-6 border-b border-zinc-100 flex items-center justify-between bg-gradient-to-b from-zinc-50 to-transparent">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 relative group-hover:scale-110 transition-transform">
-                  <Bot className="w-6 h-6 text-primary" />
-                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-zinc-950 shadow-lg" />
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center border border-blue-100 relative group-hover:scale-110 transition-transform">
+                  <Bot className="w-6 h-6 text-blue-600" />
+                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-lg" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white tracking-tight">AI Concierge</h3>
-                  <p className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest mt-0.5">{propertyName}</p>
+                  <h3 className="text-sm font-black text-zinc-950 tracking-tighter uppercase leading-none">AI ASSISTANT</h3>
+                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1.5">{propertyName}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-all active:scale-90"
+                className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500 hover:text-zinc-950 hover:bg-zinc-200 transition-all active:scale-90"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-8 space-y-8 scroll-smooth scrollbar-none">
+            <div className="flex-1 overflow-y-auto p-8 space-y-8 scroll-smooth scrollbar-none bg-zinc-50/30">
               {messages.length === 0 && (
                 <div className="flex gap-4 items-start">
-                  <div className="w-9 h-9 rounded-2xl bg-zinc-900 border border-white/5 text-zinc-300 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-2xl bg-white border border-zinc-200 text-zinc-400 flex items-center justify-center shrink-0 shadow-sm">
                     <Bot className="w-5 h-5" />
                   </div>
-                  <div className="px-5 py-4 text-sm leading-relaxed max-w-[85%] rounded-[1.5rem] bg-zinc-900/50 text-zinc-200 rounded-tl-md border border-white/[0.03] shadow-sm">
-                    Hi! I'm your AI Concierge for {propertyName}. How can I help you today? You can ask me about Wi-Fi, property rules, or how to use the smart lock.
+                  <div className="px-5 py-4 text-sm leading-relaxed max-w-[85%] rounded-[1.5rem] bg-white text-zinc-600 rounded-tl-md border border-zinc-200 shadow-sm">
+                    Hi! I'm your AI Business Assistant for {propertyName}. How can I help you today? You can ask me about project status, common procedures, or access details.
                   </div>
                 </div>
               )}
@@ -106,8 +105,8 @@ export default function AiConciergeChat({ bookingId, propertyName }: { bookingId
                     className={cn(
                       "w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 border transition-all shadow-sm",
                       m.role === "user"
-                        ? "bg-primary text-primary-foreground border-primary/50"
-                        : "bg-zinc-900 text-zinc-300 border-white/5"
+                        ? "bg-blue-600 text-white border-blue-500 shadow-blue-200"
+                        : "bg-white text-zinc-400 border-zinc-200 shadow-sm"
                     )}
                   >
                     {m.role === "user" ? (
@@ -120,11 +119,11 @@ export default function AiConciergeChat({ bookingId, propertyName }: { bookingId
                     className={cn(
                       "px-5 py-4 text-sm leading-relaxed max-w-[85%] rounded-[1.5rem] shadow-sm",
                       m.role === "user"
-                        ? "bg-primary/10 text-white rounded-tr-md border border-primary/20"
-                        : "bg-zinc-900/50 text-zinc-200 rounded-tl-md border border-white/[0.03]"
+                        ? "bg-blue-600 text-white rounded-tr-md border border-blue-500"
+                        : "bg-white text-zinc-600 rounded-tl-md border border-zinc-200"
                     )}
                   >
-                    <div className="prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-black/50 prose-pre:border prose-pre:border-white/5">
+                    <div className={cn("prose prose-sm max-w-none prose-p:leading-relaxed", m.role === "user" ? "prose-invert" : "prose-zinc")}>
                       <ReactMarkdown>
                         {m.content || m.text}
                       </ReactMarkdown>
@@ -135,13 +134,13 @@ export default function AiConciergeChat({ bookingId, propertyName }: { bookingId
 
               {isLoading && (
                 <div className="flex gap-4 items-start">
-                  <div className="w-9 h-9 rounded-2xl bg-zinc-900 border border-white/5 text-zinc-300 flex items-center justify-center shrink-0 animate-pulse">
+                  <div className="w-9 h-9 rounded-2xl bg-white border border-zinc-200 text-zinc-400 flex items-center justify-center shrink-0 animate-pulse shadow-sm">
                     <Bot className="w-5 h-5" />
                   </div>
-                  <div className="px-5 py-4 rounded-[1.5rem] bg-zinc-900/30 border border-white/[0.03] rounded-tl-md flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                    <div className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                    <div className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-bounce" />
+                  <div className="px-5 py-3 rounded-[1.5rem] bg-white border border-zinc-200 rounded-tl-md flex items-center gap-1.5 shadow-sm">
+                    <div className="w-1.5 h-1.5 bg-blue-600/40 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                    <div className="w-1.5 h-1.5 bg-blue-600/40 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                    <div className="w-1.5 h-1.5 bg-blue-600/40 rounded-full animate-bounce" />
                   </div>
                 </div>
               )}
@@ -149,7 +148,7 @@ export default function AiConciergeChat({ bookingId, propertyName }: { bookingId
             </div>
 
             {/* Input Form */}
-            <div className="p-6 bg-gradient-to-t from-white/[0.02] to-transparent border-t border-white/5">
+            <div className="p-6 bg-white border-t border-zinc-100">
               <form 
                 onSubmit={handleSubmit} 
                 className="relative flex items-center group"
@@ -157,13 +156,13 @@ export default function AiConciergeChat({ bookingId, propertyName }: { bookingId
                 <input
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Need something? Just ask..."
-                  className="w-full bg-zinc-900/50 border border-white/10 rounded-[1.5rem] pl-6 pr-14 py-4 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all shadow-inner"
+                  placeholder="Need assistance? Type here..."
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-[1.5rem] pl-6 pr-14 py-4 text-sm text-zinc-950 placeholder:text-zinc-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all shadow-inner"
                 />
                 <button
                   type="submit"
                   disabled={!chatInput.trim() || isLoading}
-                  className="absolute right-2.5 p-2.5 bg-primary text-primary-foreground rounded-2xl hover:scale-105 active:scale-95 transition-all disabled:opacity-20 disabled:hover:scale-100 shadow-lg"
+                  className="absolute right-2 p-2.5 bg-blue-600 text-white rounded-[1.2rem] hover:scale-105 active:scale-95 transition-all disabled:opacity-20 disabled:hover:scale-100 shadow-lg shadow-blue-200"
                 >
                   {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </button>

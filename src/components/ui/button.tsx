@@ -11,33 +11,33 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", asChild = false, ...props }, ref) => {
     // Base styles: centered, interactive, smooth transitions
-    const baseStyles = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-bold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]";
+    const baseStyles = "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-bold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]";
     
     let variantStyles = "";
     switch (variant) {
       case "default": 
-        variantStyles = "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-[0_4px_15px_-3px_rgba(37,99,235,0.4)] hover:shadow-[0_8px_25px_-5px_rgba(37,99,235,0.5)] hover:-translate-y-0.5 border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"; 
+        variantStyles = "bg-blue-600 text-white shadow-sm hover:bg-blue-700 hover:-translate-y-0.5 border border-blue-500/20"; 
         break;
       case "glass":
-        variantStyles = "bg-white/[0.03] backdrop-blur-md border border-white/10 text-white hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-0.5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]";
+        variantStyles = "bg-zinc-100/50 backdrop-blur-md border border-zinc-200 text-zinc-900 hover:bg-zinc-100 hover:-translate-y-0.5 shadow-sm";
         break;
       case "neon":
-        variantStyles = "bg-blue-500/10 border border-blue-500/30 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.15)] hover:bg-blue-500/20 hover:shadow-[0_0_30px_rgba(59,130,246,0.25)] hover:border-blue-500/50";
+        variantStyles = "bg-blue-50/50 border border-blue-200 text-blue-700 shadow-sm hover:bg-blue-100 hover:border-blue-300";
         break;
       case "destructive": 
-        variantStyles = "bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20"; 
+        variantStyles = "bg-red-50 border border-red-200 text-red-600 hover:bg-red-100"; 
         break;
       case "outline": 
-        variantStyles = "border border-white/10 bg-transparent text-zinc-400 hover:bg-white/5 hover:text-white"; 
+        variantStyles = "border border-zinc-200 bg-transparent text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950"; 
         break;
       case "secondary": 
-        variantStyles = "bg-zinc-800 text-white hover:bg-zinc-700"; 
+        variantStyles = "bg-zinc-100 text-zinc-900 hover:bg-zinc-200"; 
         break;
       case "ghost": 
-        variantStyles = "text-zinc-400 hover:bg-white/5 hover:text-white"; 
+        variantStyles = "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950"; 
         break;
       case "link": 
-        variantStyles = "text-blue-400 underline-offset-4 hover:underline"; 
+        variantStyles = "text-blue-600 underline-offset-4 hover:underline"; 
         break;
     }
 
