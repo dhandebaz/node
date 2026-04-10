@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 9 gotchas, 57 conventions, 21 fixes, 4 error→fix pairs."
+description: "Typescript React for node. 9 gotchas, 58 conventions, 24 fixes, 4 error→fix pairs."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,7 +12,7 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **200 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **204 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -40,6 +40,65 @@ Auto-compiled from **200 real patterns** in **node**. This skill is auto-routed 
 | `- - Fixed null crash in Building — avoids unnecess` | problem-fix in agent-rules.md | 3x |
 | `- - Fixed null crash in MessageSquare — avoids unn` | problem-fix in agent-rules.md | 3x |
 | `- import { SessionExpiredError } from "@/lib/api/e` | Fixed null crash in Building — avoids unnecessary re-renders | 2x |
+
+### Patched security issue Strategic
+-         <div className="lg:col-span-2 card-chunky overflow-hidden p-0 relative">
++         <div className="lg:col-span-2 card-chunky overflow-hidden p-0 relative h-full">
+-             <div className="space-y-6">
++ 
+-            <div className="card-chunky p-7">
++         <div className="space-y-6">
+-               <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-widest mb
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Zap
+3. identifier: Strategic
+4. identifier: Advisories
+5. identifier: Capital
+
+### Patched security issue OmniCompanion
+-                     </div>
++               <div className="flex items-center gap-6 relative">
+-                  ))}
++                 <OmniCompanion state="success" size="md" className="shrink-0 scale-90" />
+-               </div>
++                 <div>
+-            </div>
++                   <h3 className="text-[11px] font-black uppercase tracking-widest text-indigo-900">Yield Audit Result</h
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: OmniCompanion
+3. identifier: Yield
+4. identifier: Audit
+5. identifier: Result
+
+### Fixed null crash in OmniCompanion — parallelizes async operations for speed
+- 
++ import { OmniCompanion } from "@/components/ui/OmniCompanion";
+- export const dynamic = 'force-dynamic';
++ 
+- 
++ export const dynamic = 'force-dynamic';
+- interface MetricCardProps {
++ 
+-   title: string;
++ interface MetricCardProps {
+-   value: string | number;
++   title: string;
+-   change?: number;
++   value: string | number;
+-   icon: LucideIcon;
++   change?: number;
+-   description: stri
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: OmniCompanion
+3. identifier: MetricCardProps
+4. identifier: LucideIcon
+5. identifier: MetricCard
 
 ### Fixed null crash in BusinessType — fixes memory leak from uncleared timers
 - import { BusinessDetailsForm } from "@/components/onboarding/BusinessDetailsForm";
@@ -303,73 +362,6 @@ Auto-compiled from **200 real patterns** in **node**. This skill is auto-routed 
 + import { useState, useEffect } from "react";
 - export default function UpsellStore() {
 + 
--   const params = useParams<{ bookingId: string }>();
-+ export default function UpsellStore() {
-- 
-+   const params = useParams<{ bookingId: string }>();
--   const extras = [
-+ 
--     {
-+   const extras = [
--       id: "early-checkin",
-+     {
--       title: "Early Check-in (11:00 AM)",
-+       id: "ear
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: UpsellStore
-3. identifier: Early
-4. identifier: Check
-5. identifier: Arriving
-
-### Fixed null crash in Review — prevents null/undefined runtime crashes
-- 
-+   const [showAddModal, setShowAddModal] = useState(false);
--   useEffect(() => {
-+   const [newReview, setNewReview] = useState({
--     if (tenant?.id) {
-+     listingId: "",
--       loadData();
-+     guestName: "",
--     }
-+     platform: "direct",
--   }, [tenant?.id]);
-+     rating: 5,
-- 
-+     title: "",
--   const loadData = async () => {
-+     content: ""
--     try {
-+   });
--       const
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Review
-3. identifier: Listing
-4. identifier: Failed
-5. identifier: POST
-
-### Fixed null crash in Promise — parallelizes async operations for speed
--       const [reviewsRes, listingsRes] = await Promise.all([
-+       const [reviewsRes, listingsRes]: [Promise<{ reviews: Review[] }>, Promise<{ listings: Listing[] }>] = await Promise.all([
--       if (reviewsRes.ok) {
-+       const reviewsData = await reviewsRes;
--         const reviewsData = await reviewsRes.json() as { reviews: any[] };
-+       setReviews(reviewsData.reviews || []);
--        
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Promise
-3. identifier: Review
-4. identifier: Listing
-5. identifier: Failed
-
-### Fixed null crash in Failed — prevents null/undefined runtime crashes
--       const reviewsData = await res.json() as { reviews: any[] };
-+       if (reviewsRes.ok) {
--       
+-   const params = useParams<{ bookingId: st
 
 ... [Truncated — see individual observations for full content]

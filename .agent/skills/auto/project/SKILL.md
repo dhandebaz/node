@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 118 gotchas, 180 conventions, 138 fixes."
+description: "Project for node. 122 gotchas, 194 conventions, 148 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **786 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **842 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,10 @@ Auto-compiled from **786 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1824 notes - Score threshold: >40 + > 1828 notes - Score threshold: >40 - - **⚠️ GOTCHA: Added J |
+| ⚠️ GOTCHA: Optimized Score | - > 1798 notes - Score threshold: >40 + > 1824 notes - Score threshold: >40 - - what-changed in brai |
+| ⚠️ GOTCHA: Added JWT tokens authentication | - > 1793 notes - Score threshold: >40 + > 1794 notes - Score threshold: >40 - - Added JWT tokens aut |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1762 notes - Score threshold: >40 + > 1783 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Optimized Score | - > 1752 notes - Score threshold: >40 + > 1754 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Optimized Score | - > 1750 notes - Score threshold: >40 + > 1752 notes - Score threshold: >40 - - what-changed in shar |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in admin.ts + - problem-fix in agent-rules.md - - problem-fix in admin.test.ts + - p |
@@ -64,77 +68,14 @@ Auto-compiled from **786 real patterns** in **node**. This skill is auto-routed 
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - gotcha in shared-context.json - - ⚠️ GOTCHA: Fixed  |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1070 notes - Score threshold: >40 + > 1087 notes - Score threshold: >40 - - **gotcha in shared-c |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Patched + - ⚠️ GOTCHA: Optimized GOTCHA - - gotcha in shared-context.json + |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Patched - - gotcha in public-content.tsx  |
-| ⚠️ GOTCHA: Optimized Patched | - - Patched security issue AYASW — hardens HTTP security headers + - Patched security issue LbzF - - |
-| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 956 notes - Score threshold: >40 + > 961 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in admin.ts
-- - Fixed null crash in WalletService — parallelizes async operations for speed
-+ - problem-fix in admin.ts
-- - problem-fix in admin.ts
-+ - problem-fix in admin.test.ts
-- - Fixed null crash in Date — prevents null/undefined runtime crashes
-+ - problem-fix in flows.ts
-- - Fixed null crash in Date — prevents null/undefined runtime cr
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Date — prevents null/undefined runtime crashes
+- - Patched security issue MMiSRmnu
 + - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Date — prevents null/undefined runtime crashes
-- - Patched security issue LbAlzXk
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual P
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Date — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Date — prevents null/undefined runtime crashes
-- - Patched security issue LbAlzXk
-+ - problem-fix in shared-context.json
-- - problem-fix in admin.ts
-+ - Patched security issue LbAlzXk
-
-📌 IDE AST Context: Modified symbols likely inc
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Fixed null crash in Date — prevents null/undefined runtime crashes
-- - problem-fix in route.ts
-+ - problem-fix in shared-context.json
-- - problem-fix in route.ts
-+ - problem-fix in shared-context.json
-- - problem-fix in route.ts
-+ - Patched security issue LbAlzXk
-- - problem-fix in route.ts
-+ - problem-fix in admin.ts
-
-📌 IDE AST Context: Modified symbols
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue NUKsaHZi
-+ - problem-fix in agent-rules.md
-- - problem-fix in admin.ts
-+ - Patched security issue NUKsaHZi
+- - problem-fix in agent-rules.md
++ - Patched security issue MMiSRmnu
 
 📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
@@ -142,12 +83,10 @@ Auto-compiled from **786 real patterns** in **node**. This skill is auto-routed 
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Patched security issue NUKsaHZi
+- - Patched security issue MMiSRmnu
 + - problem-fix in agent-rules.md
-- - problem-fix in admin.ts
-+ - Patched security issue NUKsaHZi
-- - Patched security issue EQFicmfBsSE
-+ - problem-fix in admin.ts
+- - problem-fix in agent-rules.md
++ - Patched security issue MMiSRmnu
 
 📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
@@ -155,47 +94,103 @@ Auto-compiled from **786 real patterns** in **node**. This skill is auto-routed 
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Patched security issue NUKsaHZi
+- - Patched security issue MMiSRmnu
 + - problem-fix in agent-rules.md
-- - problem-fix in admin.ts
-+ - Patched security issue NUKsaHZi
-- - Patched security issue EQFicmfBsSE
-+ - problem-fix in admin.ts
-- - Patched security issue Comprehensive — improves module reusability
-+ - Patched security issue EQFicmfBsSE
+- - problem-fix in agent-rules.md
++ - Patched security issue MMiSRmnu
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-genera
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Patched security issue NUKsaHZi
+- - Patched security issue MMiSRmnu
 + - problem-fix in agent-rules.md
-- - problem-fix in admin.ts
-+ - Patched security issue NUKsaHZi
-- - Patched security issue EQFicmfBsSE
-+ - problem-fix in admin.ts
-- - Patched security issue Comprehensive — improves module reusability
-+ - Patched security issue EQFicmfBsSE
-- - problem-fix in admin.test.ts
-+ - Patched security issue Comprehensive — improves modu
+- - problem-fix in agent-rules.md
++ - Patched security issue MMiSRmnu
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - problem-fix in route.ts
-+ - Patched security issue NUKsaHZi
-- - problem-fix in route.ts
-+ - problem-fix in admin.ts
-- - problem-fix in route.ts
-+ - Patched security issue EQFicmfBsSE
-- - problem-fix in route.ts
-+ - Patched security issue Comprehensive — improves module reusability
-- - problem-fix in admin.ts
-+ - problem-fix in admin.test.ts
+- - problem-fix in agent-rules.md
++ - Patched security issue MMiSRmnu
+- - Patched security issue RdiXQvpTdmg
++ - problem-fix in agent-rules.md
 
-📌 IDE AST Context: Modi
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue RdiXQvpTdmg
++ - problem-fix in agent-rules.md
+- - Patched security issue Strategic
++ - Patched security issue RdiXQvpTdmg
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue RdiXQvpTdmg
++ - problem-fix in agent-rules.md
+- - Patched security issue Strategic
++ - Patched security issue RdiXQvpTdmg
+- - problem-fix in shared-context.json
++ - Patched security issue Strategic
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue RdiXQvpTdmg
++ - problem-fix in agent-rules.md
+- - Patched security issue Strategic
++ - Patched security issue RdiXQvpTdmg
+- - problem-fix in shared-context.json
++ - Patched security issue Strategic
+- - Patched security issue OmniCompanion
++ - problem-fix in shared-context.json
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue RdiXQvpTdmg
++ - problem-fix in agent-rules.md
+- - Patched security issue Strategic
++ - Patched security issue RdiXQvpTdmg
+- - problem-fix in shared-context.json
++ - Patched security issue Strategic
+- - Patched security issue OmniCompanion
++ - problem-fix in shared-context.json
+- - problem-fix in agent-rules.md
++ - Patched security issue OmniCompanion
+
+📌 IDE AST Context:
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue Strategic
++ - Patched security issue RdiXQvpTdmg
+- - problem-fix in shared-context.json
++ - Patched security issue Strategic
+- - Patched security issue OmniCompanion
++ - problem-fix in shared-context.json
+- - problem-fix in agent-rules.md
++ - Patched security issue OmniCompanion
+- - prob
 
 ... [Truncated — see individual observations for full content]

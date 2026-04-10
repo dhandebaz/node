@@ -32,6 +32,7 @@ Auto-compiled from **4 real patterns** in **node**. This skill is auto-routed to
 | `import { AppError, ErrorCode } from "@/lib/errors"` | problem-fix in walletService.ts | 4x |
 | `+ - Fixed null crash in UpsellStore — prevents nul` | problem-fix in agent-rules.md | 4x |
 | `+ - Fixed null crash in Date — prevents null/undef` | problem-fix in agent-rules.md | 4x |
+| `- - Fixed null crash in WalletService — paralleliz` | problem-fix in agent-rules.md | 4x |
 | `File updated (external): ts_errors.log` | problem-fix in ts_errors.log | 3x |
 | `+       const { data, error } = await supabase.fro` | problem-fix in flows.ts | 3x |
 | `File updated (external): ts_errors.txt` | problem-fix in ts_errors.txt | 3x |
@@ -39,7 +40,6 @@ Auto-compiled from **4 real patterns** in **node**. This skill is auto-routed to
 | `-     const { error } = await supabase.from("syste` | problem-fix in controlService.ts | 3x |
 | `- - Fixed null crash in Plus — avoids unnecessary ` | problem-fix in agent-rules.md | 3x |
 | `- - Fixed null crash in Building — avoids unnecess` | problem-fix in agent-rules.md | 3x |
-| `- - Fixed null crash in OmniGlobalConfig — prevent` | problem-fix in agent-rules.md | 3x |
 
 ## 📐 Conventions & Best Practices
 

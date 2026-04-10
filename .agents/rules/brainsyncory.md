@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 1762 notes | Score threshold: >40
+> 1878 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,31 +20,39 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized Score** — - > 1752 notes | Score threshold: >40
-+ > 1754 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score** — - > 1750 notes | Score threshold: >40
-+ > 1752 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - problem-fix in admin.ts
-+ - problem-fix in agent-rules.md
-- - prob
-- **gotcha in route.ts** — File updated (external): src/app/api/inbox/context/route.ts
-
-Content s
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1674 notes | Score threshold: >40
-+ > 1676 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1666 notes | Score threshold: >40
-+ > 1674 notes | Score threshold
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "7577da91c3fc52c5",
++
+- **gotcha in shared-context.json** — -     }
++     },
+-   ]
++     {
+- }
++       "id": "fa1f01fd5f3e19f4",
++
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1824 notes | Score threshold: >40
++ > 1828 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score** — - > 1798 notes | Score threshold: >40
++ > 1824 notes | Score threshold
+- **⚠️ GOTCHA: Added JWT tokens authentication** — - > 1793 notes | Score threshold: >40
++ > 1794 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1762 notes | Score threshold: >40
++ > 1783 notes | Score threshold
 
 ## Project Standards
 
-- Optimized Score — parallelizes async operations for speed — confirmed 3x
 - what-changed in shared-context.json — confirmed 3x
-- Optimized Fixed — confirmed 3x
+- Optimized Score — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
 - what-changed in shared-context.json — confirmed 4x
-- problem-fix in shared-context.json — confirmed 3x
-- Fixed null crash in WalletService — parallelizes async operations for speed — confirmed 3x
-- Strengthened types OmniCompanion — prevents null/undefined runtime crashes
-- Replaced lucide-react with next/link — formalizes the data contract with expl... — confirmed 3x
+- Optimized Score — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in shared-context.json — confirmed 4x
+- Optimized Score — confirmed 3x
 
 ## Known Fixes
 
@@ -56,9 +64,9 @@ Content s
 
 ## Recent Decisions
 
+- Optimized Score — parallelizes async operations for speed
+- Optimized Score — parallelizes async operations for speed
 - decision in globals.css
-- Optimized Score — parallelizes async operations for speed
-- Optimized Score — parallelizes async operations for speed
 - Optimized Score — parallelizes async operations for speed
 
 ## Learned Patterns
