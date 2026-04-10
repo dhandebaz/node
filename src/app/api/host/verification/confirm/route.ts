@@ -78,7 +78,7 @@ export async function POST(req: Request) {
 
     const { error } = await admin
       .from("tenants")
-      .update(updatePayload)
+      .update(updatePayload as any)
       .eq("id", resolvedTenantId);
 
     if (error) {

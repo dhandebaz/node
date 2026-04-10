@@ -40,7 +40,7 @@ export async function updatePlanAction(planId: string, updates: Partial<any>) {
   const supabaseAdmin = await getSupabaseAdmin();
   const { error } = await supabaseAdmin
     .from('billing_plans')
-    .update(updates)
+    .update(updates as any)
     .eq('id', planId);
 
   if (error) throw error;

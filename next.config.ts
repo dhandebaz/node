@@ -24,6 +24,11 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  logging: {
+    fetches: {
+      fullUrl: true
+    }
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',

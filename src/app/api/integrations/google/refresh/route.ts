@@ -70,7 +70,7 @@ export async function POST() {
 
   const { error: updateError } = await supabase
     .from("integrations")
-    .update(updateData)
+    .update(updateData as any)
     .eq("id", integration.id);
 
   if (updateError) {

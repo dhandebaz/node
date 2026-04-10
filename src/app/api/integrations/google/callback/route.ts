@@ -124,7 +124,7 @@ export async function GET(request: Request) {
 
     const { error: upsertError } = await supabase
       .from("integrations")
-      .upsert(upsertData, {
+      .upsert(upsertData as any, {
         onConflict: "user_id,provider" // Note: Schema might need unique constraint on tenant_id,provider too, but for now user_id is unique enough per provider
       });
 
@@ -140,7 +140,7 @@ export async function GET(request: Request) {
       has_gmail_access: true,
       has_calendar_access: true,
       updated_at: new Date().toISOString()
-    }, { onConflict: "user_id" });
+    } as any, { onConflict: "user_id" });
 
     return NextResponse.redirect(new URL("/dashboard/ai/integrations?status=connected", request.url));
 

@@ -25,7 +25,7 @@ export async function generateWhatsAppQRAction() {
           status: "pending_qr",
           metadata: { qr_url: qrUrl, last_qr_generated_at: new Date().toISOString() },
           updated_at: new Date().toISOString(),
-        },
+        } as any,
         { onConflict: "tenant_id, provider" }
       );
     }
@@ -53,7 +53,7 @@ export async function checkWhatsAppStatusAction() {
           credentials: { type: "baileys" },
           metadata: { qr_url: null }, // Clear QR URL on success
           updated_at: new Date().toISOString(),
-        },
+        } as any,
         { onConflict: "tenant_id, provider" },
       );
 

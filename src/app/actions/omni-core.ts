@@ -26,11 +26,11 @@ export async function createOmniAccount(businessType: OmniBusinessType, role: Om
     const { error } = await supabase
       .from("omni_accounts")
       .insert({
-        user_id: session.userId,
+        id: session.userId,
         business_type: businessType,
         role: role,
         status: "active"
-      });
+      } as any);
 
     if (error) {
       if (error.code === '23505') { // Unique violation

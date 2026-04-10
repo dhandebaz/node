@@ -53,7 +53,7 @@ export async function POST() {
       connected_name: "Instagram Account",
       last_synced_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    },
+    } as any,
     { onConflict: "tenant_id, provider" },
   );
 

@@ -126,7 +126,7 @@ export async function PATCH(
 
     const { error: updateError } = await supabase
       .from("tenants")
-      .update(updateData)
+      .update(updateData as any)
       .eq("id", tenantId);
 
     if (updateError) {
@@ -166,7 +166,7 @@ export async function DELETE(
         kyc_status: "suspended",
         suspended_at: new Date().toISOString(),
         suspension_reason: reason || "Suspended by admin",
-      })
+      } as any)
       .eq("id", tenantId);
 
     if (updateError) {

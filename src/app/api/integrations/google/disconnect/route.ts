@@ -53,7 +53,7 @@ export async function POST() {
         connected_email: null,
         connected_name: null,
         updated_at: new Date().toISOString()
-      })
+      } as any)
       .eq("id", integration.id);
 
     if (updateError) {
@@ -80,7 +80,7 @@ export async function POST() {
       has_calendar_access: false,
       has_business_access: false,
       updated_at: new Date().toISOString()
-    },
+    } as any,
     { onConflict: "user_id" }
   );
 

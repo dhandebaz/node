@@ -55,7 +55,7 @@ export async function updateHostUPIAction(params: UPIUpdateParams) {
 
   const { error } = await supabase
     .from('tenants')
-    .update(updateData)
+    .update(updateData as any)
     .eq('id', tenantId);
 
   if (error) {

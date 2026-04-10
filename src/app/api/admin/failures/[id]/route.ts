@@ -36,7 +36,7 @@ export async function PATCH(
         resolved_at: new Date().toISOString(),
         resolution_reason: reason || null,
         resolved_by: failure.tenant_id,
-      })
+      } as any)
       .eq("id", id);
 
     if (updateError) {

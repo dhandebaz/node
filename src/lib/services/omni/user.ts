@@ -51,7 +51,7 @@ export const omniUserService = {
     const supabase = await getSupabaseServer();
     const { data, error } = await supabase
       .from("omni_tasks")
-      .select("*")
+      .select("id, user_id, intent, status, module, created_at, completed_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
@@ -78,7 +78,7 @@ export const omniUserService = {
     // Fetch user actions from audit_events
     const { data, error } = await supabase
       .from("audit_events")
-      .select("*")
+      .select("id, actor_id, entity_id, event_type, metadata, created_at")
       .or(`actor_id.eq.${userId},entity_id.eq.${userId}`)
       .order("created_at", { ascending: false })
       .limit(20);
@@ -141,7 +141,7 @@ export const omniUserService = {
     // 3. Get History from Wallet Transactions
     const { data: historyData } = await supabase
       .from("wallet_transactions")
-      .select("*")
+      .select("created_at, amount, description, type")
       .eq("tenant_id", targetTenantId)
       .order("created_at", { ascending: false })
       .limit(10);

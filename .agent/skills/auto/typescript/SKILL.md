@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 7 gotchas, 48 conventions, 72 fixes."
+description: "Typescript for node. 7 gotchas, 51 conventions, 77 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **246 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **266 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -28,6 +28,96 @@ Auto-compiled from **246 real patterns** in **node**. This skill is auto-routed 
 | ⚠️ GOTCHA: Updated schema Date | -         const start = new Date(b.start_date); +         if (!b.start_date -- !b.end_date) return  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in route.ts
+File updated (external): src/app/api/guests/[id]/upload-id/route.ts
+
+Content summary (243 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
+import { withErrorHandler } from "@/l
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/admin/tenants/[id]/route.ts
+
+Content summary (189 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth/admin";
+import { getSupabaseAdmin } from "@/lib/supabase/admin";
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authError = await requireAdm
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/admin/overrides/route.ts
+
+Content summary (111 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "@/lib/auth/session";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
+
+export async function POST(request: NextRequest) {
+  con
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in admin.ts
+File updated (external): src/app/actions/admin.ts
+
+Content summary (87 lines):
+"use server";
+
+import { ControlService, SystemFlagKey } from "@/lib/services/controlService";
+import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
+
+export async function toggleSystemFlagAction(key: SystemFlagKey, value: boolean) {
+  const supabase = aw
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Patched security issue Comprehensive — improves module reusability
+-     serverActions: {
++     logging: {
+-       bodySizeLimit: '2mb',
++       fetches: {
+-     },
++         fullUrl: true
+-     // Comprehensive tree-shaking and import optimization
++       }
+-     optimizePackageImports: [
++     },
+-       'lucide-react', 
++     serverActions: {
+-       'date-fns', 
++       bodySizeLimit: '2mb',
+-       'framer-motion',
++     },
+-       '@radix-ui/react-avatar',
+
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Comprehensive
+3. identifier: DNS
+4. identifier: Prefetch
+5. identifier: Control
 
 ### problem-fix in admin.test.ts
 File updated (external): src/lib/services/omni/admin.test.ts
@@ -309,95 +399,6 @@ export async function getFlowsAction() {
 5. identifier: ChannelService
 
 ### problem-fix in route.ts
-File updated (external): src/app/api/payments/webhook/route.ts
-
-Content summary (211 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase/server";
-import { logEvent } from "@/lib/events";
-import { log } from "@/lib/logger";
-import { EVENT_TYPES } from "@/types/events";
-import { ChannelService } from "@/lib/services/channelService";
-import { FlowServi
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in bookingAutomation.ts
--   const { bookingId, tenantId, listingId, startDate, endDate } = options;
-+   const { bookingId, tenantId, listingId, guestId, startDate, endDate } = options;
--       updateGuestLoyalty(tenantId, guestId),
-+       guestId ? updateGuestLoyalty(tenantId, guestId) : Promise.resolve(),
-
-📌 IDE AST Context: Modified symbols likely include [supabase, BookingAutomationOptions, runBookingAutomation, cre
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in Vrbo
--     integrations: {
-+     reviews: false,
--       airbnb: false,
-+     tasks: false,
--       google: false,
-+     loyalty: true,
--       ical: false,
-+     channels: false,
--       whatsapp: true,
-+     integrations: {
--       instagram: false,
-+       airbnb: false,
--     },
-+       google: false,
--   },
-+       ical: false,
--   doctor_clinic: {
-+       whatsapp: true,
--     listings: true, // 
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Vrbo
-3. identifier: Record
-4. identifier: BusinessType
-5. identifier: Host
-
-### problem-fix in walletService.ts
-File updated (external): src/lib/services/walletService.ts
-
-Content summary (194 lines):
-import { getSupabaseServer } from "@/lib/supabase/server";
-import { log } from "@/lib/logger";
-import { AppError, ErrorCode } from "@/lib/errors";
-import { WalletTransaction } from "@/types";
-
-export class WalletService {
-  /**
-   * Get current wallet balance for a tenant
-   */
-  static async getBalance(tenant
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in useAuthStore.ts
-File updated (external): src/store/useAuthStore.ts
-
-Content summary (99 lines):
-import { create } from 'zustand';
-import { Host } from '@/types';
-import { authApi } from '@/lib/api/auth';
-import { getSupabaseBrowser } from '@/lib/supabase/client';
-
-/** Default phone country prefix. Externalize to an env var if multi-region support is needed. */
-const DEFAULT_PHONE_PREFIX = '+91';
-
-interface AuthSt
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in User — parallelizes async operations for speed
-- import { getSupabaseAdmin } fro
+File updated (external): src/app/api/payments/webhook/ro
 
 ... [Truncated — see individual observations for full content]

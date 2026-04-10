@@ -177,7 +177,7 @@ export const POST = withErrorHandler(async function(
         back_path: backPath,
         status: "submitted",
         created_at: new Date().toISOString(),
-      });
+      } as any);
 
     // If the table doesn't exist yet, fall back gracefully  -  status update still proceeds
     if (docInsertError) {

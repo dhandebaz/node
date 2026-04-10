@@ -137,32 +137,32 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="absolute right-0 top-full mt-2 w-56 bg-white border border-zinc-200 shadow-xl rounded-2xl overflow-hidden py-1 z-[60]"
+                className="absolute right-0 top-full mt-2 w-64 bg-white border border-zinc-200 shadow-2xl rounded-[2rem] overflow-hidden py-2 z-[60]"
               >
-                <div className="px-3 py-2 border-b border-border mb-1 sm:hidden">
-                  <p className="text-xs font-medium text-foreground truncate">{tenantName || "My Business"}</p>
-                  <p className="text-[10px] font-medium text-muted-foreground truncate">{userEmail}</p>
+                <div className="px-5 py-3 border-b border-border/50 mb-1 sm:hidden">
+                  <p className="text-sm font-black text-foreground truncate">{tenantName || "My Business"}</p>
+                  <p className="text-[10px] font-bold text-muted-foreground truncate uppercase tracking-[0.1em]">{userEmail}</p>
                 </div>
-                <div className="px-3 py-2 border-b border-border mb-1 hidden sm:block">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">My Account</p>
+                <div className="px-4 py-2 border-b border-border/50 mb-1 hidden sm:block">
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Governance</p>
                 </div>
                 
                 <Link 
                   href="/dashboard/settings" 
-                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="flex items-center gap-3 px-5 py-3.5 text-sm text-muted-foreground hover:bg-zinc-50 hover:text-foreground transition-all active:scale-95"
                   onClick={() => setIsDropdownOpen(false)}
                 >
-                  <Settings size={16} />
-                  Quick Settings
+                  <Settings size={18} />
+                  System Settings
                 </Link>
                 
                 <Link 
                   href="/dashboard/account" 
-                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="flex items-center gap-3 px-5 py-3.5 text-sm text-muted-foreground hover:bg-zinc-50 hover:text-foreground transition-all active:scale-95"
                   onClick={() => setIsDropdownOpen(false)}
                 >
-                  <User size={16} />
-                  Account
+                  <User size={18} />
+                  User Profile
                 </Link>
                 
                 <div className="h-px bg-white/5 my-1" />

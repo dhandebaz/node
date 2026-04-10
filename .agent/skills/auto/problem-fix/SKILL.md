@@ -1,6 +1,6 @@
 ---
 name: problem-fix
-description: "Problem Fix for node. 34 error→fix pairs."
+description: "Problem Fix for node. 36 error→fix pairs."
 domain: problem-fix
 composesFrom:
   - fix
@@ -23,11 +23,12 @@ Auto-compiled from **3 real patterns** in **node**. This skill is auto-routed to
 | `- - Fixed null crash in UpsellStore — prevents nul` | problem-fix in agent-rules.md | 8x |
 | `const { data: { user }, error: authError } = await` | problem-fix in route.ts | 6x |
 | `- - Fixed null crash in Context — prevents null/un` | problem-fix in agent-rules.md | 6x |
-| `import { withErrorHandler } from "@/lib/api/withEr` | problem-fix in route.ts | 4x |
+| `import { withErrorHandler } from "@/lib/api/withEr` | problem-fix in route.ts | 5x |
+| `+     } catch (error) {` | Fixed null crash in Review — prevents null/undefined runtime | 5x |
+| `- - Fixed null crash in Business — prevents null/u` | problem-fix in agent-rules.md | 5x |
 | `import { AppError, ErrorCode } from "@/lib/errors"` | problem-fix in walletService.ts | 4x |
-| `+     } catch (error) {` | Fixed null crash in Review — prevents null/undefined runtime | 4x |
+| `return NextResponse.json({ error: "Unauthorized" }` | problem-fix in route.ts | 4x |
 | `+ - Fixed null crash in UpsellStore — prevents nul` | problem-fix in agent-rules.md | 4x |
-| `- - Fixed null crash in Business — prevents null/u` | problem-fix in agent-rules.md | 4x |
 | `File updated (external): ts_errors.log` | problem-fix in ts_errors.log | 3x |
 | `+       const { data, error } = await supabase.fro` | problem-fix in flows.ts | 3x |
 | `File updated (external): ts_errors.txt` | problem-fix in ts_errors.txt | 3x |
@@ -39,7 +40,6 @@ Auto-compiled from **3 real patterns** in **node**. This skill is auto-routed to
 | `- - Fixed null crash in User — prevents null/undef` | problem-fix in agent-rules.md | 3x |
 | `- - Fixed null crash in OmniModuleType — prevents ` | problem-fix in agent-rules.md | 3x |
 | `- - Fixed null crash in OmniIntegrationConfig — pr` | problem-fix in agent-rules.md | 3x |
-| `yarn-error.log*` | problem-fix in .gitignore | 2x |
 
 ## 📐 Conventions & Best Practices
 

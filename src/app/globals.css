@@ -157,6 +157,16 @@
         animation: noise 0.5s infinite steps(2);
     }
 
+    /* ─── Performance Optimization Utilities ─── */
+    .optimize-list {
+        content-visibility: auto;
+        contain-intrinsic-size: 0 500px;
+    }
+
+    .will-change-transform {
+        will-change: transform;
+    }
+
     /* Performance optimization for mobile: Disable heavy filters */
     @media (max-width: 768px) {
         .noise-overlay {
@@ -164,8 +174,15 @@
         }
         
         .glass-panel, .glass-panel-glow, .glass-nav, .public-panel {
-            backdrop-filter: blur(8px) !important; /* Lighter blur for mobile */
+            backdrop-filter: blur(8px) !important; 
             -webkit-backdrop-filter: blur(8px) !important;
+            /* Disable shadows on mobile for better FPS */
+            box-shadow: none !important;
+        }
+
+        .optimize-list {
+            /* Lower intrinsic size for mobile density */
+            contain-intrinsic-size: 0 400px;
         }
     }
 

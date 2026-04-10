@@ -13,11 +13,12 @@ export async function submitFeedbackAction(message: string) {
   // Let's create a quick 'feedback' table migration if we have time, 
   // but for now, I'll log it as a system event so admins can see it in logs.
   
-  const { error } = await supabase.from('audit_logs').insert({
+  const { error } = await supabase.from('audit_events').insert({
     tenant_id: tenantId,
     event_type: 'USER_FEEDBACK',
-    details: { message, source: 'early_access_modal' },
-    status: 'info'
+    metadata: { message, source: 'early_access_modal' },
+    actor_type: 'tenant',
+    actor_id: null // System/User as actor
   });
 
   if (error) {

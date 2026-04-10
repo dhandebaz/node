@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 8 gotchas, 50 conventions, 18 fixes, 3 error→fix pairs."
+description: "Typescript React for node. 9 gotchas, 51 conventions, 19 fixes, 4 error→fix pairs."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,7 +12,7 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **179 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **182 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -20,6 +20,7 @@ Auto-compiled from **179 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Replaced auth Booking — prevents null/u | -       const { link } = await createBookingLinkAction({ +       const { checkoutUrl } = await creat |
 | ⚠️ GOTCHA: Fixed null crash in ChatThread — avoids | - import { Contact360Sidebar } from "@/components/dashboard/ai/inbox/Contact360Sidebar"; + import {  |
 | ⚠️ GOTCHA: Fixed null crash in ConversationListIte | - import { getSupabaseBrowser } from "@/lib/supabase/client"; + import { ConversationListItem, type  |
 | gotcha in NotificationProvider.tsx | File updated (external): src/components/providers/NotificationProvider.tsx  Content summary (200 lin |
@@ -37,7 +38,35 @@ Auto-compiled from **179 real patterns** in **node**. This skill is auto-routed 
 |-------|-----|------|
 | `- - Fixed null crash in Plus — avoids unnecessary ` | problem-fix in agent-rules.md | 3x |
 | `- - Fixed null crash in Building — avoids unnecess` | problem-fix in agent-rules.md | 3x |
+| `- - Fixed null crash in MessageSquare — avoids unn` | problem-fix in agent-rules.md | 3x |
 | `- import { SessionExpiredError } from "@/lib/api/e` | Fixed null crash in Building — avoids unnecessary re-renders | 2x |
+
+### Fixed null crash in MessageSquare — avoids unnecessary re-renders in React
+- import { motion } from "framer-motion";
++ import { 
+- import {
++   Loader2, 
+-   AlertTriangle,
++   MessageSquare, 
+-   ArrowDownLeft,
++   Search 
+-   Bot,
++ } from "lucide-react";
+-   Calendar,
++ import { getSupabaseBrowser } from "@/lib/supabase/client";
+-   ChevronDown,
++ import { cn } from "@/lib/utils";
+-   ChevronLeft,
++ import { fetchWithAuth } from "@/lib/api/fetcher";
+-   Copy,
++ import
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: MessageSquare
+3. identifier: Search
+4. identifier: SessionExpiredCard
+5. identifier: SessionExpiredError
 
 ### Fixed null crash in Business — prevents null/undefined runtime crashes
 - import { getOmniDashboardData } from "@/app/actions/customer";
@@ -340,41 +369,6 @@ Auto-compiled from **179 real patterns** in **node**. This skill is auto-routed 
 - 
 +   const { tenant } = useDashboardStore();
 -   useEffect(() => {
-+   const isHost = tenant?.businessType === "airbnb_host";
--     const checkViewport = () => {
-+ 
--       const width = window.innerWidth;
-+   useEffect(() => {
--       setIsMobile(width < 768);
-+     const checkViewport = () => {
--       
-+       const width = window.innerWidth;
--       // Auto-collapse logic based on width
-+   
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Auto
-3. identifier: Use
-4. identifier: NodeJS
-5. identifier: Timeout
-
-### Fixed null crash in Search — avoids unnecessary re-renders in React
-- 
-+ import { extractAirbnbInfo } from "@/app/actions/listings";
-- const platformLabels: Record<ListingPlatform, string> = {
-+ import { Search, Loader2, Sparkles } from "lucide-react";
--   airbnb: "Airbnb",
-+ 
--   booking: "Booking.com",
-+ const platformLabels: Record<ListingPlatform, string> = {
--   mmt: "MakeMyTrip / GoIbibo",
-+   airbnb: "Airbnb",
-- };
-+   booking: "Booking.com",
-- 
-+   mmt: "M
-
-**Actionab
++   const isHost = tenant?.businessType === "air
 
 ... [Truncated — see individual observations for full content]

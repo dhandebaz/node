@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (type === 'booking_confirm') {
       const { data, error } = await supabase
         .from('bookings')
-        .update({ status: 'confirmed', updated_at: new Date().toISOString() })
+        .update({ status: 'confirmed', updated_at: new Date().toISOString() } as any)
         .eq('id', id)
         .select()
         .single();
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       
       const { data, error } = await supabase
         .from('bookings')
-        .update({ id_status: 'verified', updated_at: new Date().toISOString() })
+        .update({ id_status: 'verified', updated_at: new Date().toISOString() } as any)
         .eq('id', id)
         .select()
         .single();
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     } else if (type === 'payment_mark_paid') {
       const { data, error } = await supabase
         .from('payments')
-        .update({ status: 'completed', paid_at: new Date().toISOString() })
+        .update({ status: 'completed', paid_at: new Date().toISOString() } as any)
         .eq('id', id)
         .select()
         .single();
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
           amount: originalTx.amount,
           metadata: { reason: `Reversal of ${id}: ${reason}`, status: 'completed' },
           created_at: new Date().toISOString()
-        })
+        } as any)
         .select()
         .single();
 
