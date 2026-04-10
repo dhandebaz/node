@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 9 gotchas, 51 conventions, 19 fixes, 4 error→fix pairs."
+description: "Typescript React for node. 9 gotchas, 57 conventions, 21 fixes, 4 error→fix pairs."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,7 +12,7 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **184 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **200 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -40,6 +40,46 @@ Auto-compiled from **184 real patterns** in **node**. This skill is auto-routed 
 | `- - Fixed null crash in Building — avoids unnecess` | problem-fix in agent-rules.md | 3x |
 | `- - Fixed null crash in MessageSquare — avoids unn` | problem-fix in agent-rules.md | 3x |
 | `- import { SessionExpiredError } from "@/lib/api/e` | Fixed null crash in Building — avoids unnecessary re-renders | 2x |
+
+### Fixed null crash in BusinessType — fixes memory leak from uncleared timers
+- import { BusinessDetailsForm } from "@/components/onboarding/BusinessDetailsForm";
++ import { BusinessType } from "@/types";
+- import { completeOnboarding } from "@/app/actions/onboarding";
++ import { toast } from "sonner";
+- import { Confetti } from "@/components/ui/Confetti";
++ import { Logo } from "@/components/ui/Logo";
+- import { BusinessType } from "@/types";
++ import { OmniCompanion } fro
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: BusinessType
+3. identifier: Logo
+4. identifier: OmniCompanion
+5. identifier: Creating
+
+### Fixed null crash in CreditCard — parallelizes async operations for speed
+- import { getActiveTenantId, getTenantContext } from "@/lib/auth/tenant";
++ import {
+- import { WalletService } from "@/lib/services/walletService";
++   CreditCard,
+- import { ControlService } from "@/lib/services/controlService";
++   MessageSquare,
+- import { getSupabaseServer } from "@/lib/supabase/server";
++   Home,
+- import {
++   Calendar,
+-   CreditCard,
++   Activity,
+-   MessageSquare,
++   
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: CreditCard
+3. identifier: MessageSquare
+4. identifier: Home
+5. identifier: Calendar
 
 ### Fixed null crash in MessageSquare — avoids unnecessary re-renders in React
 - import { motion } from "framer-motion";
@@ -330,45 +370,6 @@ Auto-compiled from **184 real patterns** in **node**. This skill is auto-routed 
 ### Fixed null crash in Failed — prevents null/undefined runtime crashes
 -       const reviewsData = await res.json() as { reviews: any[] };
 +       if (reviewsRes.ok) {
--       setReviews(reviewsData.reviews || []);
-+         const reviewsData = await reviewsRes.json() as { reviews: any[] };
--       if (listingsRes.ok) {
-+         setReviews(reviewsData.reviews || []);
--         const listingsData = await listingsRes.json() as { listings: any[] };
-+       }
--         
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Failed
-3. identifier: POST
-4. identifier: JSON
-5. identifier: Review
-
-### Fixed null crash in AmenitiesEditor — avoids unnecessary re-renders in React
-- import { fetchWithAuth } from "@/lib/api/fetcher";
-+ import { AmenitiesEditor } from "@/components/listings/AmenitiesEditor";
-- 
-+ import { fetchWithAuth } from "@/lib/api/fetcher";
-- const platformLabels: Record<ListingPlatform, string> = {
-+ 
--   airbnb: "Airbnb",
-+ const platformLabels: Record<ListingPlatform, string> = {
--   booking: "Booking.com",
-+   airbnb: "Airbnb",
--   mmt: "MakeMyTrip 
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: AmenitiesEditor
-3. identifier: Record
-4. identifier: ListingPlatform
-5. identifier: Airbnb
-
-### Fixed null crash in Auto — reduces excessive function call frequency
-- 
-+   const { tenant } = useDashboardStore();
--   useEffect(() => {
-+   const isHost = tenant?.businessType === "air
+-       
 
 ... [Truncated — see individual observations for full content]

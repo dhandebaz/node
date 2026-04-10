@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 7 gotchas, 57 conventions, 85 fixes."
+description: "Typescript for node. 8 gotchas, 57 conventions, 85 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **293 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **295 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -19,6 +19,7 @@ Auto-compiled from **293 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| gotcha in route.ts | File updated (external): src/app/api/inbox/context/route.ts  Content summary (200 lines): import { N |
 | ⚠️ GOTCHA: Fixed null crash in OmniGlobalConfig —  | - import { + import { -     KaisaGlobalConfig, +     OmniGlobalConfig, -     KaisaRoleType, +     |
 | gotcha in next.config.ts | -   disableLogger: true, +   webpack: { -   transpileClientSDK: true, +     treeshake: { -   webpack |
 | gotcha in next.config.ts | -   sourcemaps: { +   disableLogger: true, -     hideSourceMaps: true, +   transpileClientSDK: true, |
@@ -401,8 +402,6 @@ export async function getFlowsAction() {
 ## 📐 Conventions & Best Practices
 
 ### Project Conventions
-- 📐 **what-changed in route.ts — confirmed 3x** — File updated (external): src/app/api/listings/[id]/sync/import/route.ts
-
-Content summar
+- 📐 **what-
 
 ... [Truncated — see individual observations for full content]

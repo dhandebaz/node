@@ -66,25 +66,29 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
 
   return (
     <>
-      <nav className="glass-nav relative flex items-center justify-between px-4 md:px-6 select-none shadow-sm h-16 w-full shrink-0">
+      <nav className="relative flex items-center justify-between px-4 md:px-8 select-none h-20 w-full shrink-0 bg-white/50 backdrop-blur-xl border-b-2 border-slate-100 z-50">
         {/* Left Zone: Logo & Mobile Toggle */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <button 
-            className="md:hidden text-muted-foreground hover:text-foreground transition-colors"
+            className="md:hidden p-2 rounded-xl hover:bg-slate-100 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
           
-          <Link href="/dashboard/ai" className="flex items-center gap-2 hover:opacity-80 transition-opacity" onClick={() => setIsMobileMenuOpen(false)}>
-            <div className="w-8 h-8">
+          <Link href="/dashboard/ai" className="flex items-center gap-3 hover:scale-105 transition-transform" onClick={() => setIsMobileMenuOpen(false)}>
+            <div className="w-10 h-10 relative">
               <Logo />
+            </div>
+            <div className="hidden lg:block">
+                <p className="text-xl font-black text-slate-900 tracking-tighter uppercase leading-none">Nodebase</p>
+                <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest leading-none">Omni Edition</p>
             </div>
           </Link>
         </div>
 
         {/* Center Zone: Tabs (Desktop) */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-md rounded-full p-1 border border-zinc-200 shadow-sm">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center gap-2">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
             return (
@@ -92,13 +96,13 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-200 flex items-center gap-2",
+                  "px-6 py-2 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 flex items-center gap-2 border-b-4",
                   isActive
-                    ? "bg-zinc-950 text-white shadow-md"
-                    : "text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100"
+                    ? "bg-omni-indigo text-white border-indigo-800 shadow-lg shadow-indigo-100 translate-y-[-2px]"
+                    : "text-slate-500 border-transparent hover:bg-slate-100 hover:text-slate-900"
                 )}
               >
-                <item.icon size={14} className={isActive ? "text-white" : "text-zinc-400 group-hover:text-zinc-950"} />
+                <item.icon size={14} />
                 {item.label}
               </Link>
             );

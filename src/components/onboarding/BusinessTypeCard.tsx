@@ -26,27 +26,35 @@ export function BusinessTypeCard({
       aria-pressed={selected}
       aria-label={`Select ${title} business type`}
       className={cn(
-        "bg-white border border-zinc-200 group h-full p-6 text-left transition-all duration-300 hover:shadow-xl hover:shadow-zinc-950/5 hover:-translate-y-1 rounded-[2rem]",
-        selected && "ring-2 ring-blue-600/20 bg-blue-50/50 border-blue-600/30",
+        "bg-white border-2 border-slate-100 group h-full p-6 text-left transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-1 rounded-[2.5rem] relative overflow-hidden",
+        selected && "border-indigo-600 ring-4 ring-indigo-50",
       )}
     >
-      <div className="flex h-full flex-col gap-4">
+      {selected && (
+        <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 blur-2xl -z-10 rounded-full" />
+      )}
+      
+      <div className="flex h-full flex-col gap-5">
         <div className={cn(
-          "flex h-12 w-12 items-center justify-center rounded-2xl transition-colors shadow-sm",
-          selected ? "bg-blue-600 text-white" : "bg-zinc-50 border border-zinc-200 text-zinc-500"
+          "flex h-14 w-14 items-center justify-center rounded-[1.25rem] transition-all duration-300 shadow-lg border-b-4",
+          selected 
+            ? "bg-indigo-600 text-white border-indigo-800 scale-110" 
+            : "bg-slate-50 border-slate-200 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-200"
         )}>
-          <Icon className="h-5 w-5" />
+          <Icon className="h-6 w-6" />
         </div>
+        
         <div>
-          <h3 className="text-xl font-black tracking-tighter text-zinc-950 font-sans uppercase">{title}</h3>
-          <p className="mt-2 text-sm leading-6 text-zinc-500 font-medium">{description}</p>
+          <h3 className="text-xl font-black tracking-tighter text-slate-900 uppercase leading-none mb-2">{title}</h3>
+          <p className="text-sm font-bold text-slate-500 leading-snug">{description}</p>
         </div>
+        
         <div className={cn(
           "mt-auto inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-colors",
-          selected ? "text-blue-600" : "text-zinc-400 group-hover:text-zinc-950"
+          selected ? "text-indigo-600" : "text-slate-300 group-hover:text-slate-900"
         )}>
           Select Ecosystem
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
         </div>
       </div>
     </button>

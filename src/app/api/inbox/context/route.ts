@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     let conversation: any = null;
     let guestId: string | null = null;
     let guestChannel = "web";
-    let contactName = "Guest";
+    let contactName = "Contact";
 
     if (conversationId && !conversationId.startsWith("booking-")) {
       const { data: conv } = await supabase
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
       
       conversation = conv;
       guestChannel = conv?.channel || "web";
-      contactName = conv?.contact_name || "Guest";
+      contactName = conv?.contact_name || "Contact";
     }
 
     // Get booking data if available
@@ -83,8 +83,8 @@ export async function GET(request: NextRequest) {
       booking = b;
       if (booking?.guests) {
         guestId = booking.guests.id;
-        if (!contactName || contactName === "Guest") {
-          contactName = booking.guests.name || "Guest";
+        if (!contactName || contactName === "Contact") {
+          contactName = booking.guests.name || "Contact";
         }
       }
     }
@@ -130,9 +130,9 @@ export async function GET(request: NextRequest) {
       fields.push({ label: "ID Status", value: booking.id_status.replace(/_/g, " "), tone: idTone });
     }
 
-    // Guest info
-    if (contactName !== "Guest") {
-      fields.push({ label: "Guest", value: contactName });
+    // Contact info
+    if (contactName !== "Contact") {
+      fields.push({ label: "Contact", value: contactName });
     }
 
     // Payment status
@@ -172,22 +172,14 @@ export async function GET(request: NextRequest) {
       .eq("id", tenantId)
       .single();
 
-    let managerName = "Host AI";
-    let role = "Host AI";
+    let managerName = "Omni AI";
+    let role = "Omni AI";
     
+    // We keep the logic for future differentiation, but standardize the UI label to Omni AI for now.
     switch (tenant?.business_type) {
-      case "kirana_store":
-      case "thrift_store":
-        managerName = "Dukan AI";
-        role = "Dukan AI";
-        break;
-      case "doctor_clinic":
-        managerName = "Nurse AI";
-        role = "Nurse AI";
-        break;
       default:
-        managerName = "Host AI";
-        role = "Host AI";
+        managerName = "Omni AI";
+        role = "Omni AI";
     }
 
     const response: ContextResponse = {

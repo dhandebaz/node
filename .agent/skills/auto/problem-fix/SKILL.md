@@ -1,6 +1,6 @@
 ---
 name: problem-fix
-description: "Problem Fix for node. 39 error→fix pairs."
+description: "Problem Fix for node. 41 error→fix pairs."
 domain: problem-fix
 composesFrom:
   - fix

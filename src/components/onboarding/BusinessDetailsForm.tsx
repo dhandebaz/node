@@ -142,9 +142,9 @@ export function BusinessDetailsForm({
   if (!isLoaded) return null;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-10">
       <div className="space-y-4">
-        <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-zinc-950">
+        <label className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-900">
           {config.countLabel}
         </label>
         <input
@@ -154,21 +154,21 @@ export function BusinessDetailsForm({
           onChange={(event) =>
             setPropertyCount(Number.parseInt(event.target.value || "0", 10))
           }
-          className="w-full bg-white border border-zinc-200 rounded-2xl px-6 py-4 text-lg font-black text-zinc-950 placeholder:text-zinc-400 focus:outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600/30 transition-all"
+          className="w-full bg-white border-2 border-slate-100 rounded-[1.5rem] px-6 py-5 text-xl font-black text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-8 focus:ring-indigo-600/5 focus:border-indigo-600/30 transition-all shadow-sm"
           required
         />
       </div>
 
       <div className="space-y-6">
         <div>
-          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-zinc-950">
+          <label className="block text-[11px] font-black uppercase tracking-[0.2em] text-slate-900">
             {config.platformLabel}
           </label>
-          <p className="mt-2 text-sm leading-6 text-zinc-500 font-medium font-sans">
-            Select the primary channels that drive your operational traffic today.
+          <p className="mt-2 text-sm font-bold text-slate-400">
+            Select the primary channels that drive your operational traffic.
           </p>
         </div>
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2">
           {config.platforms.map((platform) => {
             const selected = platforms.includes(platform.id);
 
@@ -178,23 +178,23 @@ export function BusinessDetailsForm({
                 type="button"
                 onClick={() => togglePlatform(platform.id)}
                 className={cn(
-                  "flex items-center gap-4 rounded-2xl px-5 py-5 text-left transition-all border border-zinc-200 bg-white hover:border-blue-600/30",
-                  selected && "border-blue-600 bg-blue-50/50 shadow-sm shadow-blue-600/5",
+                  "flex items-center gap-4 rounded-[1.5rem] px-6 py-6 text-left transition-all border-2 border-slate-100 bg-white hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-50",
+                  selected && "border-indigo-600 bg-indigo-50/20 shadow-lg shadow-indigo-100/50",
                 )}
               >
                 <div
                   className={cn(
-                    "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all",
+                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border-b-4 transition-all shadow-sm",
                     selected
-                      ? "border-blue-600 bg-blue-600 text-white"
-                      : "border-zinc-200 bg-zinc-50 text-transparent",
+                      ? "border-indigo-800 bg-indigo-600 text-white"
+                      : "border-slate-200 bg-slate-100 text-transparent",
                   )}
                 >
-                  <Check className="h-4 w-4" strokeWidth={3} />
+                  <Check className="h-4 w-4" strokeWidth={4} />
                 </div>
                 <span className={cn(
                   "text-sm font-black uppercase tracking-tight transition-colors",
-                  selected ? "text-zinc-950" : "text-zinc-400"
+                  selected ? "text-slate-900" : "text-slate-400"
                 )}>
                   {platform.label}
                 </span>
@@ -204,19 +204,20 @@ export function BusinessDetailsForm({
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-zinc-950 text-white rounded-2xl px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-zinc-950/20 hover:bg-zinc-800 transition-all items-center justify-center flex gap-3 active:scale-95 disabled:opacity-50"
-      >
-        {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
-        Authorize Deployment
-      </button>
+      <div className="space-y-6">
+          <button
+            type="submit"
+            disabled={loading}
+            className="button-primary w-full py-6"
+          >
+            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
+            Authorize Deployment
+          </button>
 
-      <p className="text-center text-[10px] font-black uppercase tracking-widest text-zinc-400 leading-relaxed max-w-sm mx-auto">
-        Authentication usually takes a professional moment. No immediate billing or
-        account access tokens are required during this phase.
-      </p>
+          <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 leading-relaxed max-w-xs mx-auto italic">
+            Deployment establishes secure handshakes and neural state. No billing credentials required until launch.
+          </p>
+      </div>
     </form>
   );
 }

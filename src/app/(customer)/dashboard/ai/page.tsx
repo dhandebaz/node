@@ -21,8 +21,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn, timeAgo } from "@/lib/utils";
 import { DashboardErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { OmniCompanion } from "@/components/ui/OmniCompanion";
+import { ResponseStreak } from "@/components/dashboard/widgets/ResponseStreak";
 
-// export const dynamic = "force-dynamic";
+// ... existing imports ...
 
 export default async function AIDashboardPage() {
   const tenantId = await getActiveTenantId();
@@ -81,32 +83,45 @@ export default async function AIDashboardPage() {
       .maybeSingle(),
   ]);
 
-
   const milestones = (accountData?.onboarding_milestones as string[]) || [];
 
   const isAiPaused =
     !tenant?.is_ai_enabled || flags["ai_global_enabled"] === false;
 
   return (
-    <div className="space-y-8 pb-10">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black text-zinc-950 uppercase tracking-tighter mb-1">
-            Executive Overview
-          </h1>
-          <p className="text-zinc-500 font-medium italic">
-            Institutional control center for {tenant?.name}.
-          </p>
+    <div className="space-y-10 pb-10">
+      {/* Omni Greeting & Performance */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-end">
+        <div className="lg:col-span-2">
+            <div className="flex items-start gap-6 mb-8">
+                <OmniCompanion 
+                    state="happy" 
+                    size="md" 
+                    bubbleText={`Welcome back! We have ${messageCount || 0} automated interactions today. You're doing great!`}
+                />
+                <div className="pt-4">
+                    <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter mb-1">
+                        Executive Overview
+                    </h1>
+                    <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">
+                        Institutional Intelligence Hub • {tenant?.name}
+                    </p>
+                </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <Link href="/dashboard/ai/bookings/new" className="button-primary px-8">
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Appointment
+              </Link>
+            </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all h-12 px-6">
-            <Link href="/dashboard/ai/bookings/new">
-              <Plus className="w-4 h-4 mr-2" />
-              New Appointment
-            </Link>
-          </Button>
-        </div>
+
+        <ResponseStreak 
+            currentStreak={7} 
+            responseRate={98} 
+            className="w-full"
+        />
       </div>
 
       <OnboardingChecklist

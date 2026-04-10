@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 115 gotchas, 171 conventions, 137 fixes."
+description: "Project for node. 118 gotchas, 180 conventions, 138 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **752 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **786 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,9 @@ Auto-compiled from **752 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score | - > 1752 notes - Score threshold: >40 + > 1754 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
+| ⚠️ GOTCHA: Optimized Score | - > 1750 notes - Score threshold: >40 + > 1752 notes - Score threshold: >40 - - what-changed in shar |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in admin.ts + - problem-fix in agent-rules.md - - problem-fix in admin.test.ts + - p |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1674 notes - Score threshold: >40 + > 1676 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1666 notes - Score threshold: >40 + > 1674 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed + - ⚠️ GOTCHA: Optimized Sc |
@@ -65,11 +68,22 @@ Auto-compiled from **752 real patterns** in **node**. This skill is auto-routed 
 | ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Patched - - gotcha in public-content.tsx  |
 | ⚠️ GOTCHA: Optimized Patched | - - Patched security issue AYASW — hardens HTTP security headers + - Patched security issue LbzF - - |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 956 notes - Score threshold: >40 + > 961 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
-| ⚠️ GOTCHA: Optimized Score | - > 954 notes - Score threshold: >40 + > 956 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
-| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 949 notes - Score threshold: >40 + > 954 notes - Score threshold: >40 - - **gotcha in shared-con |
-| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 945 notes - Score threshold: >40 + > 949 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in admin.ts
+- - Fixed null crash in WalletService — parallelizes async operations for speed
++ - problem-fix in admin.ts
+- - problem-fix in admin.ts
++ - problem-fix in admin.test.ts
+- - Fixed null crash in Date — prevents null/undefined runtime crashes
++ - problem-fix in flows.ts
+- - Fixed null crash in Date — prevents null/undefined runtime cr
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - Fixed null crash in Date — prevents null/undefined runtime crashes
@@ -182,20 +196,6 @@ Auto-compiled from **752 real patterns** in **node**. This skill is auto-routed 
 - - problem-fix in admin.ts
 + - problem-fix in admin.test.ts
 
-📌 IDE AST Context: Modified symbols likely include 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modif
+📌 IDE AST Context: Modi
 
 ... [Truncated — see individual observations for full content]

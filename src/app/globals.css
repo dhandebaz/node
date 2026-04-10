@@ -4,6 +4,12 @@
 /* No dark mode variants - strict Premium Light aesthetic */
 
 @theme {
+    /* Omni Identity Palette (Vibrant Duolingo-inspired) */
+    --color-omni-indigo: #6366f1;     /* Primary Action */
+    --color-omni-success: #22c55e;    /* Affirmative / Completion */
+    --color-omni-attention: #f59e0b;  /* Streaks / Alerts */
+    --color-omni-teal: #14b8a6;       /* Intelligence Feed */
+    
     /* Glowing Brand Palette adapted for Light */
     --color-brand-blue: #2563eb;      /* Vibrant blue */
     --color-brand-purple: #7c3aed;    /* Violet */
@@ -15,25 +21,25 @@
     --color-foreground: #09090b;      /* Zinc 950 */
     
     /* Semantic Variables */
-    --color-primary: #09090b;         
+    --color-primary: #6366f1;         /* Now Omni Indigo */
     --color-primary-foreground: #ffffff;
     
-    --color-secondary: #f4f4f5;       /* Zinc 100 */
-    --color-secondary-foreground: #18181b;
+    --color-secondary: #f8fafc;       /* Slate 50 */
+    --color-secondary-foreground: #0f172a;
     
-    --color-muted: #f4f4f5;
-    --color-muted-foreground: #71717a;
+    --color-muted: #f1f5f9;           /* Slate 100 */
+    --color-muted-foreground: #64748b;
     
-    --color-accent: #f4f4f5;
-    --color-accent-foreground: #09090b;
+    --color-accent: #eef2ff;          /* Indigo 50 */
+    --color-accent-foreground: #6366f1;
     
-    --color-border: #e4e4e7;          /* Zinc 200 */
-    --color-input: #e4e4e7;
-    --color-ring: #09090b;
+    --color-border: #e2e8f0;          /* Slate 200 */
+    --color-input: #e2e8f0;
+    --color-ring: #6366f1;
 
-    /* Typography */
-    --font-sans: var(--font-montserrat), system-ui, sans-serif;
-    --font-display: var(--font-montserrat), system-ui, sans-serif;
+    /* Typography - Playful but Pro */
+    --font-sans: "Outfit", var(--font-montserrat), system-ui, sans-serif;
+    --font-display: "Outfit", var(--font-montserrat), system-ui, sans-serif;
 }
 
 @layer base {
@@ -257,11 +263,25 @@
     }
 
     .button-primary {
-        @apply flex items-center justify-center gap-2 rounded-full px-8 py-3 
-        text-base font-bold text-white transition-all duration-300
-        bg-blue-600 hover:bg-blue-700
-        hover:shadow-lg hover:-translate-y-0.5
-        active:scale-[0.98] border border-white/20;
+        @apply flex items-center justify-center gap-2 rounded-2xl px-8 py-3 
+        text-base font-black text-white transition-all duration-200
+        bg-omni-indigo border-b-4 border-indigo-800
+        hover:bg-indigo-500 hover:border-indigo-700
+        active:border-b-0 active:translate-y-[2px] shadow-lg shadow-indigo-100;
+    }
+
+    .button-chunky {
+        @apply flex items-center justify-center gap-2 rounded-2xl px-6 py-2.5 
+        text-sm font-black uppercase tracking-widest transition-all duration-200
+        bg-white border-2 border-slate-200 border-b-4
+        hover:border-slate-300 hover:bg-slate-50
+        active:border-b-2 active:translate-y-[2px];
+    }
+
+    .card-chunky {
+        @apply bg-white rounded-[2rem] border-2 border-slate-100 p-6 
+        shadow-xl shadow-slate-100 transition-all duration-300
+        hover:border-slate-200 hover:shadow-slate-200/50;
     }
 
     .input-glass {
