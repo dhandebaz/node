@@ -1,12 +1,11 @@
-
 "use client";
 
-import { KaisaIntegrationConfig, IntegrationConfigDetails } from "@/types/kaisa";
+import { OmniIntegrationConfig, IntegrationConfigDetails } from "@/types/omni";
 import { toggleIntegrationAction, updateIntegrationConfigAction, getIntegrationStatsAction } from "@/app/actions/omni-core";
 import { useState, useEffect } from "react";
-import { Link2, CheckCircle, XCircle, AlertCircle, Settings2, Save, X } from "lucide-react";
+import { Link2, CheckCircle, XCircle, AlertCircle, Settings2, Save } from "lucide-react";
 
-export function IntegrationStatus({ integrations }: { integrations: KaisaIntegrationConfig[] }) {
+export function IntegrationStatus({ integrations }: { integrations: OmniIntegrationConfig[] }) {
     const [loading, setLoading] = useState<string | null>(null);
     const [editing, setEditing] = useState<string | null>(null);
   
@@ -69,7 +68,7 @@ export function IntegrationStatus({ integrations }: { integrations: KaisaIntegra
     );
 }
 
-function IntegrationEditForm({ integration, onClose }: { integration: KaisaIntegrationConfig; onClose: () => void }) {
+function IntegrationEditForm({ integration, onClose }: { integration: OmniIntegrationConfig; onClose: () => void }) {
     const [config, setConfig] = useState<IntegrationConfigDetails>(integration.config || {});
     const [saving, setSaving] = useState(false);
     const [detectedOrigin, setDetectedOrigin] = useState<string>("");
@@ -81,12 +80,12 @@ function IntegrationEditForm({ integration, onClose }: { integration: KaisaInteg
             const origin = window.location.origin;
             setDetectedOrigin(origin);
 
-            // Smart Autodetect: If URL is empty, automatically set it to current environment
+            // Smart Autodetect
             if (integration.name === "Listings" && !config.icalBaseUrl) {
                 setConfig(prev => ({ ...prev, icalBaseUrl: `${origin}/api/ical` }));
             }
         }
-    }, [integration.name]); // Depend on name so it runs when opening different integrations if needed, though component remounts
+    }, [integration.name, config.icalBaseUrl]);
 
     // Fetch stats for specific integrations
     useEffect(() => {
@@ -131,15 +130,12 @@ function IntegrationEditForm({ integration, onClose }: { integration: KaisaInteg
                                 placeholder="OAuth Client Secret"
                             />
                         </div>
-                        <div className="text-xs text-zinc-500">
-                            Enables synchronization for Channel Manager features.
-                        </div>
                     </>
                 )}
 
                 {integration.name === "CRM" && (
                     <>
-                         <div className="space-y-1">
+                        <div className="space-y-1">
                             <label className="text-xs text-zinc-400">Supported Import Providers</label>
                             <input 
                                 type="text"
@@ -148,9 +144,6 @@ function IntegrationEditForm({ integration, onClose }: { integration: KaisaInteg
                                 className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200"
                                 placeholder="Salesforce, HubSpot, Zoho (comma separated)"
                             />
-                        </div>
-                         <div className="text-xs text-zinc-500">
-                            Allows customers to import data from these external CRMs.
                         </div>
                     </>
                 )}
@@ -170,24 +163,6 @@ function IntegrationEditForm({ integration, onClose }: { integration: KaisaInteg
                         <div className="space-y-1">
                             <div className="flex items-center justify-between">
                                 <label className="text-xs text-zinc-400">iCal Base URL</label>
-                                <div className="flex gap-2">
-                                    {detectedOrigin && (
-                                        <button 
-                                            type="button"
-                                            onClick={() => handleChange("icalBaseUrl", `${detectedOrigin}/api/ical`)}
-                                            className="text-[10px] text-blue-400 hover:text-blue-300 underline"
-                                        >
-                                            Use Current Domain
-                                        </button>
-                                    )}
-                                    <button 
-                                        type="button"
-                                        onClick={() => handleChange("icalBaseUrl", `https://nodebase.space/api/ical`)}
-                                        className="text-[10px] text-blue-400 hover:text-blue-300 underline"
-                                    >
-                                        Use Production
-                                    </button>
-                                </div>
                             </div>
                             <input 
                                 type="text"
@@ -196,29 +171,6 @@ function IntegrationEditForm({ integration, onClose }: { integration: KaisaInteg
                                 className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200"
                                 placeholder="https://api.nodebase.io/ical"
                             />
-                            {detectedOrigin && config.icalBaseUrl && (
-                                <div className="flex items-center gap-1.5 mt-1 px-1">
-                                    <div className={`w-1.5 h-1.5 rounded-full ${config.icalBaseUrl.startsWith(detectedOrigin) ? 'bg-green-500' : 'bg-amber-500'}`} />
-                                    <span className="text-[10px] text-zinc-500">
-                                        {config.icalBaseUrl.startsWith(detectedOrigin) 
-                                            ? "Matches current environment" 
-                                            : "Different from current environment (Check before saving)"}
-                                    </span>
-                                </div>
-                            )}
-
-                            {stats && stats.active_icals !== undefined && (
-                                <div className="mt-3 p-3 bg-zinc-950 border border-zinc-800 rounded flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                        <span className="text-xs text-zinc-400">Active Nodebase iCals</span>
-                                        <span className="text-[10px] text-zinc-600">Live usage based on active modules</span>
-                                    </div>
-                                    <span className="text-lg font-mono text-white">{stats.active_icals}</span>
-                                </div>
-                            )}
-                        </div>
-                        <div className="text-xs text-zinc-500">
-                            Used for Airbnb, Booking.com, Agoda availability sync.
                         </div>
                     </>
                 )}
@@ -234,28 +186,10 @@ function IntegrationEditForm({ integration, onClose }: { integration: KaisaInteg
                                 className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200"
                             />
                         </div>
-                        <div className="space-y-1">
-                            <label className="text-xs text-zinc-400">Meta App Secret</label>
-                            <input 
-                                type="password"
-                                value={config.metaAppSecret || ""}
-                                onChange={(e) => handleChange("metaAppSecret", e.target.value)}
-                                className="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-200"
-                            />
-                        </div>
-                         <div className="text-xs text-zinc-500">
-                            Required for WhatsApp, Instagram, and Facebook Messenger integration.
-                        </div>
                     </>
                 )}
 
                 <div className="flex justify-end gap-2 pt-2">
-                    <button 
-                        onClick={onClose}
-                        className="px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-colors"
-                    >
-                        Cancel
-                    </button>
                     <button 
                         onClick={handleSave}
                         disabled={saving}

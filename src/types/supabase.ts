@@ -847,7 +847,7 @@ export type Database = {
             foreignKeyName: "flow_execution_logs_flow_id_fkey"
             columns: ["flow_id"]
             isOneToOne: false
-            referencedRelation: "kaisa_flows"
+            referencedRelation: "omni_flows"
             referencedColumns: ["id"]
           },
           {
@@ -1667,7 +1667,7 @@ export type Database = {
           },
         ]
       }
-      kaisa_accounts: {
+      omni_accounts: {
         Row: {
           active_modules: Json | null
           ai_manager_slug: string | null
@@ -1718,14 +1718,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "kaisa_accounts_tenant_id_fkey"
+            foreignKeyName: "omni_accounts_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "kaisa_accounts_user_id_fkey"
+            foreignKeyName: "omni_accounts_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -1733,7 +1733,7 @@ export type Database = {
           },
         ]
       }
-      kaisa_credits: {
+      omni_credits: {
         Row: {
           balance: number | null
           monthly_limit: number | null
@@ -1760,7 +1760,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "kaisa_credits_tenant_id_fkey"
+            foreignKeyName: "omni_credits_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1768,7 +1768,7 @@ export type Database = {
           },
         ]
       }
-      kaisa_flows: {
+      omni_flows: {
         Row: {
           created_at: string | null
           description: string | null
@@ -1810,7 +1810,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "kaisa_flows_tenant_id_fkey"
+            foreignKeyName: "omni_flows_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1818,7 +1818,7 @@ export type Database = {
           },
         ]
       }
-      kaisa_memories: {
+      omni_memories: {
         Row: {
           confidence: number | null
           created_at: string | null
@@ -1866,7 +1866,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "kaisa_memories_tenant_id_fkey"
+            foreignKeyName: "omni_memories_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1874,7 +1874,7 @@ export type Database = {
           },
         ]
       }
-      kaisa_tasks: {
+      omni_tasks: {
         Row: {
           completed_at: string | null
           created_at: string | null

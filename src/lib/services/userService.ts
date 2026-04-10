@@ -22,7 +22,7 @@ export const userService = {
     let query = supabase.from("users")
       .select(`
         *,
-        kaisa_accounts (*),
+        omni_accounts (*),
         profiles (*),
         listings (*)
       `);
@@ -67,11 +67,11 @@ export const userService = {
     // 2. Fetch Account & Tenant Info (New Schema)
     const [
       { data: account },
-      { data: kaisaAccount },
+      { data: omniAccount },
       { data: tenantUser }
     ] = await Promise.all([
       supabase.from("accounts").select("*").eq("user_id", userId).maybeSingle(),
-      supabase.from("kaisa_accounts").select("*").eq("user_id", userId).maybeSingle(),
+      supabase.from("omni_accounts").select("*").eq("user_id", userId).maybeSingle(),
       supabase.from("tenant_users").select("*, tenants(*)").eq("user_id", userId).maybeSingle()
     ]);
 
@@ -92,16 +92,16 @@ export const userService = {
         onboarding: account?.onboarding_status === 'complete' ? 'completed' : 'pending',
       },
       roles: {
-        isKaisaUser: !!kaisaAccount || account?.product_type === 'ai_employee',
+        isOmniUser: !!omniAccount || account?.product_type === 'ai_employee',
         isAdmin: user.role === 'admin' || user.role === 'superadmin',
       },
       products: {
-        kaisa: kaisaAccount ? {
+        omni: omniAccount ? {
           businessType: tenant?.business_type || "",
-          status: (kaisaAccount.status as "active" | "paused") || "active",
+          status: (omniAccount.status as "active" | "paused") || "active",
           activeModules: [], // Load if needed
           role: "owner",
-          tenantId: kaisaAccount.tenant_id || undefined
+          tenantId: omniAccount.tenant_id || undefined
         } : undefined,
       },
       metadata: {
@@ -268,23 +268,23 @@ export const userService = {
     return true;
   },
 
-  async updateKaisaStatus(
+  async updateOmniStatus(
     adminId: string,
     userId: string,
     status: "active" | "paused"
   ): Promise<boolean> {
     const supabase = await getSupabaseAdmin();
     const { error } = await supabase
-      .from("kaisa_accounts")
+      .from("omni_accounts")
       .update({ status })
       .eq("user_id", userId);
 
     if (error) {
-      log.error("Error updating kaisa status:", error);
+      log.error("Error updating omni status:", error);
       return false;
     }
 
-    await this.logAction(adminId, userId, "status_change", `Kaisa status: ${status}`);
+    await this.logAction(adminId, userId, "status_change", `Omni status: ${status}`);
     return true;
   },
 
@@ -338,12 +338,12 @@ export const userService = {
 };
 
 function mapDbUserToAppUser(dbUser: DBUser): User {
-  const kaisaAccount = Array.isArray(dbUser.kaisa_accounts)
-    ? dbUser.kaisa_accounts[0]
-    : dbUser.kaisa_accounts;
+  const omniAccount = Array.isArray(dbUser.omni_accounts)
+    ? dbUser.omni_accounts[0]
+    : dbUser.omni_accounts;
 
   // Determine roles based on existence of related records
-  const isKaisaUser = !!kaisaAccount;
+  const isOmniUser = !!omniAccount;
 
   // Map Profile
   const rawProfile = Array.isArray(dbUser.profiles) ? dbUser.profiles[0] : dbUser.profiles;
@@ -377,7 +377,7 @@ function mapDbUserToAppUser(dbUser: DBUser): User {
         : []
     },
     roles: {
-      isKaisaUser,
+      isOmniUser,
     },
     metadata: {
       tags: metadata.tags || [],
@@ -394,8 +394,8 @@ function mapDbUserToAppUser(dbUser: DBUser): User {
       businessType: "airbnb_host" // Default
     } : undefined,
     products: {
-      kaisa: isKaisaUser && kaisaAccount ? (() => {
-        const ka = kaisaAccount as unknown as Record<string, unknown>;
+      omni: isOmniUser && omniAccount ? (() => {
+        const ka = omniAccount as unknown as Record<string, unknown>;
         const du = dbUser as unknown as Record<string, unknown>;
         return {
           businessType: (ka.business_type as string) || 'hospitality', // Default

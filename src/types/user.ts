@@ -1,9 +1,9 @@
 
-import { KaisaRoleType } from "./kaisa";
+import { OmniRoleType } from "./omni";
 
 export type AccountStatus = "active" | "suspended" | "blocked";
 export type KYCStatus = "not_started" | "pending" | "verified" | "rejected";
-export type ProductType = "kaisa";
+export type ProductType = "omni";
 
 export interface UserIdentity {
   id: string; // Immutable internal ID
@@ -35,7 +35,7 @@ export interface UserStatus {
 }
 
 export interface UserRoles {
-  isKaisaUser: boolean;
+  isOmniUser: boolean;
   isAdmin?: boolean;
 }
 
@@ -45,16 +45,16 @@ export interface UserMetadata {
   lastActivity: string; // ISO date string
 }
 
-export interface KaisaProfile {
+export interface OmniProfile {
   businessType: string;
   tenantId?: string; // Added tenantId
   activeModules: string[];
-  role: KaisaRoleType;
+  role: OmniRoleType;
   status: "active" | "paused";
 }
 
 export interface UserProductProfiles {
-  kaisa?: KaisaProfile;
+  omni?: OmniProfile;
 }
 
 export interface UserProfile {

@@ -1,21 +1,21 @@
-
 "use client";
 
 import { User } from "@/types/user";
+import { OmniModuleType, OmniBusinessType } from "@/types/omni";
 import Link from "next/link";
 import { useState } from "react";
 import { Search } from "lucide-react";
 
-export function KaisaUserList({ users }: { users: User[] }) {
+export function OmniUserList({ users }: { users: User[] }) {
   const [filterType, setFilterType] = useState("all");
   const [filterRole, setFilterRole] = useState("all");
   const [search, setSearch] = useState("");
 
   const filteredUsers = users.filter(user => {
-    if (!user.products.kaisa) return false;
+    if (!user.products.omni) return false;
     
-    if (filterType !== "all" && user.products.kaisa.businessType !== filterType) return false;
-    if (filterRole !== "all" && user.products.kaisa.role !== filterRole) return false;
+    if (filterType !== "all" && user.products.omni.businessType !== filterType) return false;
+    if (filterRole !== "all" && user.products.omni.role !== filterRole) return false;
     
     if (search) {
         const q = search.toLowerCase();
@@ -28,7 +28,7 @@ export function KaisaUserList({ users }: { users: User[] }) {
 
   return (
     <div className="space-y-4">
-        <h3 className="font-bold text-white text-lg">Active Nodebase Core Users</h3>
+        <h3 className="font-bold text-white text-lg">Active Omni Core Users</h3>
         
         {/* Filters */}
         <div className="flex gap-4 bg-zinc-900/50 p-4 border border-zinc-800 rounded-lg">
@@ -82,8 +82,8 @@ export function KaisaUserList({ users }: { users: User[] }) {
                                 <div className="text-white font-medium">{user.identity.email || user.identity.phone}</div>
                                 <div className="text-xs text-zinc-600 font-mono">{user.identity.id}</div>
                             </td>
-                            <td className="px-6 py-4">{user.products.kaisa?.businessType}</td>
-                            <td className="px-6 py-4 capitalize">{user.products.kaisa?.role}</td>
+                            <td className="px-6 py-4">{user.products.omni?.businessType}</td>
+                            <td className="px-6 py-4 capitalize">{user.products.omni?.role}</td>
                             <td className="px-6 py-4">
                                 <div className="flex gap-2">
                                     {/* Account Status */}
@@ -95,9 +95,9 @@ export function KaisaUserList({ users }: { users: User[] }) {
                                     
                                     {/* Core Status */}
                                     <span className={`px-2 py-0.5 rounded text-xs border uppercase tracking-wider font-bold ${
-                                        user.products.kaisa?.status === "active" ? "bg-brand-cyan/20 text-brand-cyan border-brand-cyan/50" : "bg-amber-900/30 text-amber-400 border-amber-900"
+                                        user.products.omni?.status === "active" ? "bg-brand-cyan/20 text-brand-cyan border-brand-cyan/50" : "bg-amber-900/30 text-amber-400 border-amber-900"
                                     }`}>
-                                        {user.products.kaisa?.status || "active"}
+                                        {user.products.omni?.status || "active"}
                                     </span>
                                 </div>
                             </td>

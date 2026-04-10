@@ -1,14 +1,14 @@
 "use client";
 
-import { KaisaAdminAuditLog } from "@/types/kaisa";
+import { OmniAdminAuditLog } from "@/types/omni";
 import { useState } from "react";
 import { FileText, Clock, User, Settings, AlertTriangle, ToggleLeft } from "lucide-react";
 
-export function KaisaAuditLog({ logs }: { logs: KaisaAdminAuditLog[] }) {
+export function OmniAuditLog({ logs }: { logs: OmniAdminAuditLog[] }) {
   const [showAll, setShowAll] = useState(false);
   const displayLogs = showAll ? logs : logs.slice(0, 5);
 
-  const getIcon = (type: KaisaAdminAuditLog["actionType"]) => {
+  const getIcon = (type: OmniAdminAuditLog["actionType"]) => {
     switch (type) {
       case "emergency_action": return <AlertTriangle className="w-4 h-4 text-red-500" />;
       case "module_toggle": return <ToggleLeft className="w-4 h-4 text-blue-500" />;

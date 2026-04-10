@@ -21,7 +21,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     const { id: customerId } = await params;
     const { data: account, error: accountError } = await supabase
-      .from("kaisa_accounts")
+      .from("omni_accounts")
       .select("wallet_balance")
       .eq("user_id", customerId)
       .single();
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const type = amount >= 0 ? "credit" : "debit";
 
     const { error: updateError } = await supabase
-      .from("kaisa_accounts")
+      .from("omni_accounts")
       .update({ wallet_balance: nextBalance })
       .eq("user_id", customerId);
 

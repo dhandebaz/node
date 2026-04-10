@@ -22,7 +22,7 @@ export async function GET() {
     }
 
     const { data: account, error: accountError } = await supabase
-      .from("kaisa_accounts")
+      .from("omni_accounts")
       .select("status, created_at, ai_manager_slug, plan_price")
       .eq("user_id", user.id)
       .single();

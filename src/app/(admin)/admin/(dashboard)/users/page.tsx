@@ -119,8 +119,8 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-8 py-6 text-center">
                       <div className="flex items-center justify-center gap-2">
-                        {user.roles.isKaisaUser && (
-                          <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20 text-[8px] font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(214,0,28,0.1)]">KAISA_CORE</span>
+                        {user.roles.isOmniUser && (
+                          <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20 text-[8px] font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(214,0,28,0.1)]">OMNI_CORE</span>
                         )}
                       </div>
                     </td>

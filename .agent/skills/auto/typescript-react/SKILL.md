@@ -1,6 +1,6 @@
 ---
 name: typescript-react
-description: "Typescript React for node. 8 gotchas, 38 conventions, 14 fixes, 3 error→fix pairs."
+description: "Typescript React for node. 8 gotchas, 50 conventions, 18 fixes, 3 error→fix pairs."
 domain: typescript-react
 composesFrom:
   - react
@@ -12,7 +12,7 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **144 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **179 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -38,6 +38,93 @@ Auto-compiled from **144 real patterns** in **node**. This skill is auto-routed 
 | `- - Fixed null crash in Plus — avoids unnecessary ` | problem-fix in agent-rules.md | 3x |
 | `- - Fixed null crash in Building — avoids unnecess` | problem-fix in agent-rules.md | 3x |
 | `- import { SessionExpiredError } from "@/lib/api/e` | Fixed null crash in Building — avoids unnecessary re-renders | 2x |
+
+### Fixed null crash in Business — prevents null/undefined runtime crashes
+- import { getOmniDashboardData } from "@/app/actions/customer";
++ import { getCustomerProfile } from "@/app/actions/customer";
+-     // Note: Middleware handles basic routing, but this double-check ensures data integrity
++     if (profile.status.onboarding !== "completed") {
+-     if (profile.status.onboarding !== "completed") {
++       redirect("/onboarding");
+-       console.log(
++     }
+-     
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Business
+3. identifier: Type
+4. identifier: Check
+5. identifier: Employees
+
+### Fixed null crash in AdminControls — prevents null/undefined runtime crashes
+- 
++ "use client";
+- "use client";
++ 
+- 
++ export const dynamic = 'force-dynamic';
+- export const dynamic = 'force-dynamic';
++ 
+- 
++ import { useEffect, useState } from "react";
+- 
++ import { useParams, notFound } from "next/navigation";
+- import { useEffect, useState } from "react";
++ import { getUserDetailPageData } from "@/app/actions/admin-data";
+- import { useParams, notFound } from "next/nav
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: AdminControls
+3. identifier: OmniStatusControl
+4. identifier: User
+5. identifier: AuditLog
+
+### Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes
+- import Link from "next/link";
++ import { OmniModuleType, OmniBusinessType } from "@/types/omni";
+- import { useState } from "react";
++ import Link from "next/link";
+- import { Search } from "lucide-center";
++ import { useState } from "react";
+- 
++ import { Search } from "lucide-react";
+- export function OmniUserList({ users }: { users: User[] }) {
++ 
+-   const [filterType, setFilterType] = useSt
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: OmniModuleType
+3. identifier: OmniBusinessType
+4. identifier: Link
+5. identifier: Search
+
+### Fixed null crash in User — prevents null/undefined runtime crashes
+- 
++ "use client";
+- "use client";
++ 
+- 
++ import { useState } from "react";
+- import { useState } from "react";
++ import { User, AccountStatus, KYCStatus } from "@/types/user";
+- import { User, AccountStatus, KYCStatus } from "@/types/user";
++ import { 
+- import { 
++   updateUserStatusAction, 
+-   updateUserStatusAction, 
++   updateKYCStatusAction, 
+-   updateKYCStatusAction, 
++   addNoteAction, 
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: User
+3. identifier: AccountStatus
+4. identifier: KYCStatus
+5. identifier: OmniStatusControl
 
 ### Fixed null crash in Card — parallelizes async operations for speed
 - import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -288,73 +375,6 @@ Auto-compiled from **144 real patterns** in **node**. This skill is auto-routed 
 - 
 +   mmt: "M
 
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Search
-3. identifier: Sparkles
-4. identifier: Record
-5. identifier: ListingPlatform
-
-### Fixed null crash in Redirect
--         "/dashboard/ai/settings",
-+         "/dashboard/ai/bookings",
--         "/dashboard/ai/inbox",
-+         "/dashboard/ai/calendar",
--         "/dashboard/ai/integrations",
-+         "/dashboard/ai/settings",
--         "/dashboard/ai/activity",
-+         "/dashboard/ai/inbox",
--         "/dashboard/ai/insights",
-+         "/dashboard/ai/integrations",
--         "/dashboard/ai/revenue",
-+  
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Redirect
-3. identifier: ListingsGate
-4. identifier: Count
-5. identifier: Access
-
-### Fixed null crash in DBAuditEvent — parallelizes async operations for speed
-- import { WalletService } from "@/lib/services/walletService";
-+ import { DBAuditEvent } from "@/types/database";
-- import { ControlService } from "@/lib/services/controlService";
-+ import { WalletService } from "@/lib/services/walletService";
-- import { getSupabaseServer } from "@/lib/supabase/server";
-+ import { ControlService } from "@/lib/services/controlService";
-- import {
-+ import { getSup
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: DBAuditEvent
-3. identifier: WalletService
-4. identifier: ControlService
-5. identifier: CreditCard
-
-## 📐 Conventions & Best Practices
-
-### Project Conventions
-- 📐 **Strengthened types Recent — prevents null/undefined runtime crashes** — -         {/* Recent Activity */}
-+       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-- 
-- 📐 **what-changed in page.tsx — confirmed 3x** — File updated (external): src/app/(customer)/dashboard/ai/marketing/page.tsx
-
-Content summary (142 li
-- 📐 **Strengthened types Service — prevents null/undefined runtime crashes** — -         {/* OTA Integrations (iCal) */}
-+         {/* Service Sync (per-resource) */}
--           
-- 📐 **Fixed null crash in Executive — prevents null/undefined runtime crashes — confirmed 3x** — -           <h1 className="text-3xl font-bold tracking-tight text-foreground mb-1">
-+           <h1 
-- 📐 **discovery in page.tsx — confirmed 3x** — File updated (external): src/app/(customer)/dashboard/ai/settings/page.tsx
-
-Content summary (315 lin
-- 📐 **Updated the database schema — prevents null/undefined runtime crashes — confirmed 3x** — -                 )}
-+               </div>
--               </div>
-+             </div>
--           
-- 📐 **what-changed in page.tsx — 
+**Actionab
 
 ... [Truncated — see individual observations for full content]

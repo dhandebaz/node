@@ -1,10 +1,9 @@
-
 "use client";
 
-import { KaisaStats } from "@/types/kaisa";
+import { OmniStats } from "@/types/omni";
 import { Users, UserCheck, UserMinus, Briefcase, Crown } from "lucide-react";
 
-export function KaisaOverview({ stats }: { stats: KaisaStats }) {
+export function OmniOverview({ stats }: { stats: OmniStats }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       

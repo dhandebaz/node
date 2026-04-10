@@ -3,7 +3,7 @@ export type MemoryType = 'preference' | 'process' | 'correction' | 'outcome';
 export type MemorySource = 'explicit' | 'inferred';
 export type MemoryStatus = 'active' | 'pending_confirmation' | 'archived';
 
-export interface KaisaMemory {
+export interface OmniMemory {
   id: string;
   userId: string;
   type: MemoryType;

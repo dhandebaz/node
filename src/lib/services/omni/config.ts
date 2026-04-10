@@ -1,19 +1,19 @@
 import {
-    KaisaGlobalConfig,
-    KaisaRoleType,
-    KaisaModuleType,
-    KaisaBusinessType,
+    OmniGlobalConfig,
+    OmniRoleType,
+    OmniModuleType,
+    OmniBusinessType,
     IntegrationConfigDetails
-} from "@/types/kaisa";
+} from "@/types/omni";
 import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES, EventType } from "@/types/events";
 import { log } from "@/lib/logger";
 
-const KAISA_CONFIG_KEY = "KAISA_GLOBAL_CONFIG";
+const OMNI_CONFIG_KEY = "OMNI_GLOBAL_CONFIG";
 
 // Initial Config (Default if DB is empty)
-const DEFAULT_GLOBAL_CONFIG: KaisaGlobalConfig = {
+const DEFAULT_GLOBAL_CONFIG: OmniGlobalConfig = {
     systemStatus: "operational",
     roles: [
         { type: "owner", priceMonthly: 0, enabled: true, inviteOnly: false },
@@ -105,14 +105,14 @@ async function logAction(
     }
 }
 
-export const kaisaConfigService = {
-    async getConfig(): Promise<KaisaGlobalConfig> {
+export const omniConfigService = {
+    async getConfig(): Promise<OmniGlobalConfig> {
         const supabase = await getSupabaseServer();
         try {
             const { data, error } = await supabase
                 .from("system_settings")
                 .select("value")
-                .eq("key", KAISA_CONFIG_KEY)
+                .eq("key", OMNI_CONFIG_KEY)
                 .single();
 
             if (error || !data) {
@@ -120,7 +120,7 @@ export const kaisaConfigService = {
             }
 
             // Merge with default to ensure new fields are present
-            const dbConfig = (data.value as any) as KaisaGlobalConfig;
+            const dbConfig = (data.value as any) as OmniGlobalConfig;
             return {
                 ...DEFAULT_GLOBAL_CONFIG,
                 ...dbConfig,
@@ -129,32 +129,32 @@ export const kaisaConfigService = {
                 integrations: dbConfig.integrations || DEFAULT_GLOBAL_CONFIG.integrations,
             };
         } catch (e) {
-            log.error("Failed to fetch kaisa config, using defaults", e);
+            log.error("Failed to fetch omni config, using defaults", e);
             return JSON.parse(JSON.stringify(DEFAULT_GLOBAL_CONFIG));
         }
     },
 
-    async saveConfig(config: KaisaGlobalConfig, adminId?: string): Promise<void> {
+    async saveConfig(config: OmniGlobalConfig, adminId?: string): Promise<void> {
         const supabase = await getSupabaseAdmin();
         const { error } = await supabase
             .from("system_settings")
             .upsert([{
-                key: KAISA_CONFIG_KEY,
+                key: OMNI_CONFIG_KEY,
                 value: config as any,
                 updated_by: adminId && adminId !== "SYSTEM" ? adminId : null
             }]);
 
         if (error) {
-            log.error("Failed to save kaisa config:", error);
-            throw new Error("Failed to save kaisa config to database");
+            log.error("Failed to save omni config:", error);
+            throw new Error("Failed to save omni config to database");
         }
     },
 
     async toggleModule(
         adminId: string,
-        moduleType: KaisaModuleType,
+        moduleType: OmniModuleType,
         enabledGlobal: boolean,
-        enabledFor?: KaisaBusinessType[]
+        enabledFor?: OmniBusinessType[]
     ): Promise<boolean> {
         const config = await this.getConfig();
         const mod = config.modules.find(m => m.type === moduleType);
@@ -172,11 +172,11 @@ export const kaisaConfigService = {
 
     async updateRoleConfig(
         adminId: string,
-        roleType: KaisaRoleType,
+        roleType: OmniRoleType,
         updates: { enabled?: boolean; inviteOnly?: boolean }
     ): Promise<boolean> {
         const config = await this.getConfig();
-        const role = config.roles.find(r => r.type === roleType);
+        const role = config.roles.find((r: any) => r.type === roleType);
         if (!role) return false;
 
         if (updates.enabled !== undefined) role.enabled = updates.enabled;
@@ -202,7 +202,7 @@ export const kaisaConfigService = {
 
     async toggleIntegration(adminId: string, name: string, enabled: boolean): Promise<boolean> {
         const config = await this.getConfig();
-        const int = config.integrations.find(i => i.name === name);
+        const int = config.integrations.find((i: any) => i.name === name);
         if (!int) return false;
 
         int.enabledGlobal = enabled;
@@ -225,7 +225,7 @@ export const kaisaConfigService = {
         configData: IntegrationConfigDetails
     ): Promise<boolean> {
         const config = await this.getConfig();
-        const int = config.integrations.find(i => i.name === name);
+        const int = config.integrations.find((i: any) => i.name === name);
         if (!int) return false;
 
         int.config = { ...int.config, ...configData };

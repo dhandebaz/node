@@ -1,13 +1,12 @@
-
-import { KaisaMemory, MemoryType, LearningStats } from "@/types/kaisa-learning";
+import { OmniMemory, MemoryType, LearningStats } from "@/types/omni-learning";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { log } from "@/lib/logger";
 
-export const kaisaMemoryService = {
-  async getMemories(userId: string): Promise<KaisaMemory[]> {
+export const omniMemoryService = {
+  async getMemories(userId: string): Promise<OmniMemory[]> {
     const supabase = await getSupabaseServer();
     const { data, error } = await supabase
-      .from("kaisa_memories")
+      .from("omni_memories")
       .select("*")
       .eq("user_id", userId)
       .neq("status", "archived")
@@ -77,7 +76,7 @@ export const kaisaMemoryService = {
     };
   },
 
-  async addMemory(memory: Omit<KaisaMemory, "id" | "createdAt" | "status">): Promise<KaisaMemory> {
+  async addMemory(memory: Omit<OmniMemory, "id" | "createdAt" | "status">): Promise<OmniMemory> {
     const supabase = await getSupabaseServer();
     
     // Resolve tenant_id for the user
@@ -92,7 +91,7 @@ export const kaisaMemoryService = {
     }
 
     const { data, error } = await supabase
-      .from("kaisa_memories")
+      .from("omni_memories")
       .insert({
         tenant_id: membership.tenant_id,
         user_id: memory.userId,
@@ -108,7 +107,7 @@ export const kaisaMemoryService = {
       .single();
 
     if (error) {
-      log.error("Failed to add Kaisa memory", error);
+      log.error("Failed to add Omni memory", error);
       throw new Error("Failed to store memory");
     }
 
@@ -127,10 +126,10 @@ export const kaisaMemoryService = {
     };
   },
 
-  async updateStatus(id: string, status: KaisaMemory['status']): Promise<void> {
+  async updateStatus(id: string, status: OmniMemory['status']): Promise<void> {
     const supabase = await getSupabaseServer();
     const { error } = await supabase
-      .from("kaisa_memories")
+      .from("omni_memories")
       .update({ status, updated_at: new Date().toISOString() })
       .eq("id", id);
 
@@ -144,7 +143,7 @@ export const kaisaMemoryService = {
     const supabase = await getSupabaseServer();
     // Prefer archiving over hard deletion for AI context
     const { error } = await supabase
-      .from("kaisa_memories")
+      .from("omni_memories")
       .update({ status: "archived", updated_at: new Date().toISOString() })
       .eq("id", id);
 
@@ -157,7 +156,7 @@ export const kaisaMemoryService = {
   async resetLearning(userId: string): Promise<void> {
     const supabase = await getSupabaseServer();
     const { error } = await supabase
-      .from("kaisa_memories")
+      .from("omni_memories")
       .update({ status: "archived", updated_at: new Date().toISOString() })
       .eq("user_id", userId);
 

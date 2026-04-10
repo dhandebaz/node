@@ -19,7 +19,7 @@ import { redirect } from "next/navigation";
 import { OnboardingChecklist } from "@/components/dashboard/OnboardingChecklist";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { timeAgo } from "@/lib/utils";
+import { cn, timeAgo } from "@/lib/utils";
 import { DashboardErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 // export const dynamic = "force-dynamic";
@@ -243,7 +243,6 @@ export default async function AIDashboardPage() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Activity */}
         <DashboardErrorBoundary>

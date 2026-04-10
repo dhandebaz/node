@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { kaisaAdminService } from './admin';
+import { omniAdminService } from './admin';
 import { userService } from '@/lib/services/userService';
 import { User } from '@/types/user';
 
@@ -18,7 +18,7 @@ vi.mock('@/lib/logger', () => ({
     log: { error: vi.fn() },
 }));
 
-describe('kaisaAdminService', () => {
+describe('omniAdminService', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -30,9 +30,9 @@ describe('kaisaAdminService', () => {
                 // User 1: Active Owner, Retail
                 {
                     status: { account: 'active' } as any,
-                    roles: { isKaisaUser: true } as any,
+                    roles: { isOmniUser: true } as any,
                     products: {
-                        kaisa: {
+                        omni: {
                             businessType: 'Retail',
                             role: 'owner',
                         } as any
@@ -41,24 +41,24 @@ describe('kaisaAdminService', () => {
                 // User 2: Suspended Manager, Doctor
                 {
                     status: { account: 'suspended' } as any,
-                    roles: { isKaisaUser: true } as any,
+                    roles: { isOmniUser: true } as any,
                     products: {
-                        kaisa: {
+                        omni: {
                             businessType: 'Doctor',
                             role: 'manager',
                         } as any
                     } as any
                 },
-                // User 3: Non-Kaisa User
+                // User 3: Non-Omni User
                 {
-                    roles: { isKaisaUser: false } as any,
+                    roles: { isOmniUser: false } as any,
                     products: {} as any
                 }
             ];
 
             (userService.getUsers as any).mockResolvedValue(mockUsers);
 
-            const stats = await kaisaAdminService.getStats();
+            const stats = await omniAdminService.getStats();
 
             expect(stats.totalUsers).toBe(2);
             expect(stats.activeUsers).toBe(1);
@@ -74,7 +74,7 @@ describe('kaisaAdminService', () => {
         it('should return zero stats if no users found', async () => {
             (userService.getUsers as any).mockResolvedValue([]);
 
-            const stats = await kaisaAdminService.getStats();
+            const stats = await omniAdminService.getStats();
 
             expect(stats.totalUsers).toBe(0);
             expect(stats.activeUsers).toBe(0);

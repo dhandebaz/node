@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 73 gotchas, 132 conventions, 76 fixes."
+description: "Project for node. 95 gotchas, 155 conventions, 116 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **524 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **662 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,28 @@ Auto-compiled from **524 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score | - > 1418 notes - Score threshold: >40 + > 1422 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1409 notes - Score threshold: >40 + > 1418 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed + - ⚠️ GOTCHA: Optimized GO |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Optimized Score — parallelizes async ope |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1378 notes - Score threshold: >40 + > 1409 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue Worv + - problem-fix in agent-rules.md - - problem-fix in agent-rules.md  |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed + - ⚠️ GOTCHA: Optimized GO |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Optimized Score — parallelizes async ope |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1311 notes - Score threshold: >40 + > 1378 notes - Score threshold: >40 - - **gotcha in shared-c |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in OmniIntegrationConfig — prevents null/undefined runtime c... + - problem-fix |
+| ⚠️ GOTCHA: Optimized GOTCHA — externalizes configu | - - ⚠️ GOTCHA: Fixed null crash in OmniGlobalConfig — filters out falsy/null values explicitly + - ⚠ |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes + - problem-fix in  |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - problem-fix in agent-ru |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in admin.test.ts + - problem-fix in agent-rules.md - - problem-fix in agent-rules.md |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in flows.ts + - problem-fix in agent-rules.md - - problem-fix in agent-rules.md + -  |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in brainsync_auto.md - - problem-fix in agent-rule |
+| ⚠️ GOTCHA: Optimized GOTCHA — externalizes configu | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Optimized GOTCHA — externalizes configuration for env |
+| ⚠️ GOTCHA: Optimized GOTCHA — externalizes configu | - - ⚠️ GOTCHA: Optimized GOTCHA + - gotcha in next.config.ts - - gotcha in omni-core.ts + - ⚠️ GOTCH |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in omni-core.ts + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Optimized GOTCHA + - gotch |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - gotcha in omni-core.ts - - gotcha in shared-context.json + - ⚠️  |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - gotcha in shared-context.json - - ⚠️ GOTCHA: Fixed  |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1070 notes - Score threshold: >40 + > 1087 notes - Score threshold: >40 - - **gotcha in shared-c |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Patched + - ⚠️ GOTCHA: Optimized GOTCHA - - gotcha in shared-context.json + |
 | ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Patched - - gotcha in public-content.tsx  |
@@ -46,165 +68,127 @@ Auto-compiled from **524 real patterns** in **node**. This skill is auto-routed 
 | gotcha in agent-rules.md | - - gotcha in shared-context.json + - ⚠️ GOTCHA: problem-fix in agent-rules.md - - ⚠️ GOTCHA: Streng |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Patched security issue PdZuCQFGAKfZtZpznyH + - Patched security issue FAiR - - problem-fix in ag |
 | ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue PdZuCQFGAKfZtZpznyH - - Fixed null cras |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue PEZVKieyTQntYFUooTNMKH - - Fixed null c |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes + - problem-fix in age |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes + - problem-fix in age |
-| ⚠️ GOTCHA: Updated schema GOTCHA | - - ⚠️ GOTCHA: Updated schema GOTCHA + - gotcha in shared-context.json - - gotcha in shared-context. |
-| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema GOTCHA - - gotcha in agent-rules.md  |
-| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema GOTCHA - - gotcha in agent-rules.md  |
-| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Updated schema GOTCHA - - gotcha in agent-rules.md  |
-| ⚠️ GOTCHA: Updated schema GOTCHA | - - gotcha in agent-rules.md + - gotcha in shared-context.json - - ⚠️ GOTCHA: Updated schema Promise |
-| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (80 lines): # Project Intelligen |
-| ⚠️ GOTCHA: problem-fix in build_output.txt | -  +  - > node@0.1.0 prebuild - > npm run verify -  -  - > node@0.1.0 verify - > node scripts/ |
-| Don't mix Tailwind with inline styles | Don't mix Tailwind with inline styles |
-| Don't store secrets in Docker images — use runtime | Don't store secrets in Docker images — use runtime injection |
-| Pin base image versions — not :latest | Pin base image versions — not :latest |
-| Don't run as root in containers — use USER directi | Don't run as root in containers — use USER directive |
-| Use async error handler middleware — don't let err | Use async error handler middleware — don't let errors crash server |
-| Don't import server-only code in client components | Don't import server-only code in client components |
-| Environment variables: NEXT_PUBLIC_ prefix for cli | Environment variables: NEXT_PUBLIC_ prefix for client-side only |
-| Don't use useEffect for data fetching — use server | Don't use useEffect for data fetching — use server actions or loader |
-| Clean up effects — return cleanup function from us | Clean up effects — return cleanup function from useEffect |
-| Don't create components inside other components —  | Don't create components inside other components — causes remount on every render |
-| Always use key prop when rendering lists — use uni | Always use key prop when rendering lists — use unique ID, not array index |
-| Don't call setState directly inside render or useE | Don't call setState directly inside render or useEffect without deps array |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
+- - Fixed null crash in Business — prevents null/undefined runtime crashes
 + - problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
++ - Fixed null crash in Business — prevents null/undefined runtime crashes
+- - Fixed null crash in AdminControls — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Admin
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in AdminControls — prevents null/undefined runtime crashes
++ - Fixed null crash in Business — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in AdminControls — prevents null/undefined runtime crashes
+- - problem-fix in admin.test.ts
++ - problem-fix in s
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in AdminControls — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in AdminControls — prevents null/undefined runtime crashes
+- - problem-fix in admin.test.ts
++ - problem-fix in shared-context.json
+- - Patched security issue SRgBescVb
++ - problem-fix in admin.test.ts
+
+📌 IDE AST Context: Modi
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
++ - Fixed null crash in AdminControls — prevents null/undefined runtime crashes
+- - problem-fix in admin.test.ts
++ - problem-fix in shared-context.json
+- - Patched security issue SRgBescVb
++ - problem-fix in admin.test.ts
+- - problem-fix in flows.ts
++ - Patched security issue SRgBescVb
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligen
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in OmniIntegrationConfig — prevents null/undefined runtime c...
 + - problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - problem-fix in brainsync_auto.md
++ - Fixed null crash in OmniIntegrationConfig — prevents null/undefined runtime c...
+- - Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes
 + - problem-fix in agent-rules.md
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-- - problem-fix in brainsync_auto.md
-+ - problem-fix in agent-rules.md
-- - problem-fix in .gitignore
-+ - problem-fix in brainsync_auto.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Proper
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Executive — prevents null/undefined runtime crashes
-+ - problem-fix in shared-context.json
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in Card — parallelizes async operations for speed
-+ - problem-fix in agent-rules.md
-- - Fixed null crash in Boolean — parallelizes async operations for speed
-+ - problem-fix in brainsync_auto
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Patched security issue TypeScript — improves module reusability
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue TypeScript — improves module reusability
-- - Patched security issue HWWai
-+ - problem-fix in shared-context.json
-- - problem-fix in shared-context.json
-+ - Patched security issue HWWai
-- - problem-fix in brainsync_auto.md
-+ - proble
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - Patched security issue TypeScript — improves module reusability
-- - Patched security issue HWWai
-+ - problem-fix in shared-context.json
-- - problem-fix in shared-context.json
-+ - Patched security issue HWWai
-- - problem-fix in brainsync_auto.md
-+ - problem-fix in shared-context.json
-- - problem-fix in .gitignore
-+ - problem-fix in brainsync_auto.md
-
-📌 ID
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in Building — avoids unnecessary re-renders in React
-+ - problem-fix in agent-rules.md
-- - Patched security issue HWWai
-+ - Fixed null crash in Building — avoids unnecessary re-renders in React
-- - problem-fix in agent-rules.md
-+ - Patched security issue HWWai
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property
+📌 IDE AST Context: Modified symbols likely in
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - Fixed null crash in Building — avoids unnecessary re-renders in React
++ - Fixed null crash in OmniIntegrationConfig — prevents null/undefined runtime c...
+- - Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
 - - problem-fix in agent-rules.md
-+ - Patched security issue HWWai
-- - Fixed null crash in Plus — avoids unnecessary re-renders in React
-+ - problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
++ - Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes
 
-📌 IDE AST Context: Modified symbols likely inc
+📌 IDE AST Context: Modified symbols likely includ
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - Fixed null crash in Plus — avoids unnecessary re-renders in React
+- - Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes
 + - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes
 - - problem-fix in shared-context.json
-+ - Fixed null crash in Plus — avoids unnecessary re-renders in React
-- - problem-fix in brainsync_auto.md
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
 + - problem-fix in shared-context.json
-- - problem-fix in .gitignore
-+ - problem-fix in brainsync_auto.md
 
-📌 IDE AST Context: Modified symbols likely
+📌 IDE AST Context: Mod
 
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - problem-fix in share
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - Fixed null crash in OmniModuleType — prevents null/undefined runtime crashes
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
++ - problem-fix in shared-context.json
+- - probl
 
 ... [Truncated — see individual observations for full content]

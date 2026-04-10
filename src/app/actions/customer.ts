@@ -1,6 +1,6 @@
 "use server";
 
-import { kaisaService } from "@/lib/services/kaisaService";
+import { omniService } from "@/lib/services/omniService";
 import { supportService } from "@/lib/services/supportService";
 import { OnboardingService } from "@/lib/services/onboardingService";
 import { getSession } from "@/lib/auth/session";
@@ -30,7 +30,7 @@ async function fetchCurrentUser(userId: string): Promise<User> {
     },
     { data: account },
     { data: tenantUserResult },
-    { data: kaisaAccount },
+    { data: omniAccount },
   ] = await Promise.all([
     supabase.auth.admin.getUserById(userId),
     supabase
@@ -65,7 +65,7 @@ async function fetchCurrentUser(userId: string): Promise<User> {
       .eq("user_id", userId)
       .maybeSingle(),
     supabase
-      .from("kaisa_accounts")
+      .from("omni_accounts")
       .select("user_id")
       .eq("user_id", userId)
       .maybeSingle(),
@@ -106,7 +106,7 @@ async function fetchCurrentUser(userId: string): Promise<User> {
 
   const authRole = String(authUser.user_metadata?.role || "customer");
   const isAdmin = authRole === "admin" || authRole === "superadmin";
-  const isKaisaUser = !!kaisaAccount || account?.product_type === "ai_employee";
+  const isOmniUser = !!omniAccount || account?.product_type === "ai_employee";
 
   // Robust Onboarding Check (Consistent with API/Middleware)
   // Passing supabase admin client since we are inside unstable_cache (cookies prohibited)
@@ -130,7 +130,7 @@ async function fetchCurrentUser(userId: string): Promise<User> {
       onboarding,
     },
     roles: {
-      isKaisaUser,
+      isOmniUser,
       isAdmin,
     },
     metadata: {
@@ -138,9 +138,9 @@ async function fetchCurrentUser(userId: string): Promise<User> {
       notes: [],
       lastActivity: new Date().toISOString(),
     },
-    products: isKaisaUser
+    products: isOmniUser
       ? {
-          kaisa: {
+          omni: {
             businessType:
               (onboardingStatus.businessType as string | null) ||
               (tenant?.businessType as string | undefined) ||
@@ -187,23 +187,23 @@ export async function getCustomerProfile() {
   };
 }
 
-// --- Kaisa Actions ---
+// --- Omni Actions ---
 
-export async function getKaisaDashboardData() {
+export async function getOmniDashboardData() {
   const user = await getCurrentUser();
-  if (!user.roles.isKaisaUser)
-    throw new Error("Access Denied: Not a Kaisa user");
+  if (!user.roles.isOmniUser)
+    throw new Error("Access Denied: Not an Omni user");
 
   const [tasks, activity, credits, config] = await Promise.all([
-    kaisaService.getUserTasks(user.identity.id),
-    kaisaService.getUserActivityLog(user.identity.id),
-    kaisaService.getCreditUsage(user.identity.id),
-    kaisaService.getConfig(),
+    omniService.getUserTasks(user.identity.id),
+    omniService.getUserActivityLog(user.identity.id),
+    omniService.getCreditUsage(user.identity.id),
+    omniService.getConfig(),
   ]);
 
   return {
     identity: user.identity,
-    profile: user.products.kaisa,
+    profile: user.products.omni,
     tasks,
     activity,
     credits,
@@ -211,25 +211,25 @@ export async function getKaisaDashboardData() {
   };
 }
 
-export async function toggleKaisaModuleAction(
+export async function toggleOmniModuleAction(
   moduleName: string,
   enabled: boolean,
 ): Promise<void> {
   const user = await getCurrentUser();
-  if (!user.products.kaisa?.tenantId)
-    throw new Error("No active Kaisa workspace found");
+  if (!user.products.omni?.tenantId)
+    throw new Error("No active Omni workspace found");
 
   const supabase = await getSupabaseServer();
 
   // Fetch current active_modules from DB
   const { data: account, error: fetchError } = await supabase
-    .from("kaisa_accounts")
+    .from("omni_accounts")
     .select("active_modules")
     .eq("user_id", user.identity.id)
     .maybeSingle();
 
   if (fetchError)
-    throw new Error("Failed to fetch Kaisa account: " + fetchError.message);
+    throw new Error("Failed to fetch Omni account: " + fetchError.message);
 
   const currentModules: string[] = (account?.active_modules as string[]) ?? [];
 
@@ -243,7 +243,7 @@ export async function toggleKaisaModuleAction(
   }
 
   const { error: updateError } = await supabase
-    .from("kaisa_accounts")
+    .from("omni_accounts")
     .update({
       active_modules: updatedModules,
       updated_at: new Date().toISOString(),

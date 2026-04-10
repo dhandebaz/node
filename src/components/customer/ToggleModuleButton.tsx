@@ -1,6 +1,6 @@
 "use client";
 
-import { toggleKaisaModuleAction } from "@/app/actions/customer";
+import { toggleOmniModuleAction } from "@/app/actions/customer";
 import { useOptimistic, useTransition } from "react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ export function ToggleModuleButton({ name, isActive }: { name: string, isActive:
     const newState = !optimisticActive;
     startTransition(async () => {
       setOptimisticActive(newState);
-      await toggleKaisaModuleAction(name, newState);
+      await toggleOmniModuleAction(name, newState);
       router.refresh();
     });
   };

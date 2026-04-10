@@ -1129,7 +1129,6 @@ export default function InboxPage() {
                     <p className="text-sm text-zinc-400 font-bold uppercase tracking-widest">No matching chats</p>
                   </div>
                 ) : (
-                ) : (
                   filteredConversations.map((conv) => (
                     <ConversationListItem
                       key={conv.id}

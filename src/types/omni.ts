@@ -1,19 +1,19 @@
 
-export type KaisaBusinessType = "Doctor" | "Homestay" | "Retail" | "Other";
-export type KaisaRoleType = "owner" | "manager" | "co-founder";
-export type KaisaModuleType = "Frontdesk" | "Billing" | "Social Media" | "CRM" | "Inventory";
+export type OmniBusinessType = "Doctor" | "Homestay" | "Retail" | "Other";
+export type OmniRoleType = "owner" | "manager" | "co-founder";
+export type OmniModuleType = "Frontdesk" | "Billing" | "Social Media" | "CRM" | "Inventory";
 
-export interface KaisaRoleConfig {
-  type: KaisaRoleType;
+export interface OmniRoleConfig {
+  type: OmniRoleType;
   priceMonthly: number; // Locked: 299 or 999
   enabled: boolean;
   inviteOnly: boolean;
 }
 
-export interface KaisaModuleConfig {
-  type: KaisaModuleType;
+export interface OmniModuleConfig {
+  type: OmniModuleType;
   enabledGlobal: boolean;
-  enabledFor: KaisaBusinessType[]; // Empty means none, all present means all
+  enabledFor: OmniBusinessType[]; // Empty means none, all present means all
 }
 
 export interface IntegrationConfigDetails {
@@ -36,29 +36,29 @@ export interface IntegrationConfigDetails {
   [key: string]: any;
 }
 
-export interface KaisaIntegrationConfig {
+export interface OmniIntegrationConfig {
   name: "Calendar" | "CRM" | "Listings" | "Messaging";
   status: "active" | "issues" | "disabled";
   enabledGlobal: boolean;
   config?: IntegrationConfigDetails;
 }
 
-export interface KaisaGlobalConfig {
+export interface OmniGlobalConfig {
   systemStatus: "operational" | "paused"; // Global emergency switch
-  roles: KaisaRoleConfig[];
-  modules: KaisaModuleConfig[];
-  integrations: KaisaIntegrationConfig[];
+  roles: OmniRoleConfig[];
+  modules: OmniModuleConfig[];
+  integrations: OmniIntegrationConfig[];
 }
 
-export interface KaisaStats {
+export interface OmniStats {
   totalUsers: number;
   activeUsers: number;
   pausedUsers: number;
-  byType: Record<KaisaBusinessType, number>;
-  byRole: Record<KaisaRoleType, number>;
+  byType: Record<OmniBusinessType, number>;
+  byRole: Record<OmniRoleType, number>;
 }
 
-export interface KaisaAdminAuditLog {
+export interface OmniAdminAuditLog {
   id: string;
   adminId: string;
   actionType: "config_change" | "emergency_action" | "module_toggle" | "role_update" | "user_pause";
@@ -70,32 +70,32 @@ export interface KaisaAdminAuditLog {
 
 // Customer Dashboard Types
 
-export type KaisaTaskStatus = "pending" | "in_progress" | "completed" | "scheduled" | "failed" | "queued";
-export type KaisaTaskPriority = "low" | "medium" | "high";
+export type OmniTaskStatus = "pending" | "in_progress" | "completed" | "scheduled" | "failed" | "queued";
+export type OmniTaskPriority = "low" | "medium" | "high";
 
-export interface KaisaTask {
+export interface OmniTask {
   id: string;
   userId: string;
   title: string;
   description: string; // "Task intent summary"
-  status: KaisaTaskStatus;
-  priority: KaisaTaskPriority;
-  module: KaisaModuleType;
+  status: OmniTaskStatus;
+  priority: OmniTaskPriority;
+  module: OmniModuleType;
   scheduledFor?: string;
   completedAt?: string;
   createdAt: string;
 }
 
-export interface KaisaUserActivity {
+export interface OmniUserActivity {
   id: string;
   userId: string;
   type: "system_action" | "user_command" | "alert";
   description: string;
-  module: KaisaModuleType;
+  module: OmniModuleType;
   timestamp: string;
 }
 
-export interface KaisaCreditUsage {
+export interface OmniCreditUsage {
   balance: number;
   monthlyLimit: number;
   usedThisMonth: number;

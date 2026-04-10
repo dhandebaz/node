@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 
-import { getKaisaDashboardData } from "@/app/actions/customer";
+import { getOmniDashboardData } from "@/app/actions/customer";
 import { 
   Activity, 
   CheckCircle2, 
@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 export default async function KaisaActivityPage() {
-  const { activity } = await getKaisaDashboardData();
+  const { activity } = await getOmniDashboardData();
 
   return (
     <div className="space-y-8">
@@ -22,7 +22,7 @@ export default async function KaisaActivityPage() {
 
       <div className="glass-card border border-[var(--color-brand-node-line)] rounded-xl overflow-hidden">
         <div className="p-6 space-y-6">
-          {activity.map((item) => (
+          {activity.map((item: any) => (
             <div key={item.id} className="flex gap-4">
               <div className="mt-1">
                 {item.type === "system_action" && (

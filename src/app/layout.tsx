@@ -58,16 +58,16 @@ export default async function RootLayout({
         {/* Immersive Background Engine - Light Optimized */}
         <div className="noise-overlay" />
         <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-          {/* Main Orbs - Very subtle for light mode */}
-          <div className="absolute top-[-20%] left-[-10%] h-[100vh] w-[100vw] rounded-full mesh-bg-orb-1 blur-[120px] opacity-40 animate-pulse-slow" />
-          <div className="absolute bottom-[-20%] right-[-10%] h-[100vh] w-[100vw] rounded-full mesh-bg-orb-2 blur-[120px] opacity-30 animate-pulse-slow" style={{ animationDelay: '2s' }} />
+          {/* Main Orbs - Very subtle for light mode, simplified for mobile */}
+          <div className="absolute top-[-20%] left-[-10%] h-[100vh] w-[100vw] rounded-full mesh-bg-orb-1 blur-[120px] opacity-40 animate-pulse-slow md:opacity-40 opacity-20" />
+          <div className="absolute bottom-[-20%] right-[-10%] h-[100vh] w-[100vw] rounded-full mesh-bg-orb-2 blur-[120px] opacity-30 animate-pulse-slow hidden md:block" style={{ animationDelay: '2s' }} />
           
-          {/* Subtle accent orbs */}
-          <div className="absolute top-[40%] right-[10%] h-[40vh] w-[40vw] rounded-full bg-blue-400/5 blur-[100px]" />
-          <div className="absolute bottom-[20%] left-[20%] h-[30vh] w-[30vh] rounded-full bg-purple-400/5 blur-[80px]" />
+          {/* Subtle accent orbs - Desktop Only */}
+          <div className="absolute top-[40%] right-[10%] h-[40vh] w-[40vw] rounded-full bg-blue-400/5 blur-[100px] hidden lg:block" />
+          <div className="absolute bottom-[20%] left-[20%] h-[30vh] w-[30vh] rounded-full bg-purple-400/5 blur-[80px] hidden lg:block" />
           
           {/* Grid structure - dark on light */}
-          <div className="absolute inset-0 bg-grid-white opacity-[1]" />
+          <div className="absolute inset-0 bg-grid-white opacity-[0.5] md:opacity-[1]" />
         </div>
 
         <Providers>

@@ -170,7 +170,7 @@ export async function GET() {
     }
 
     const { data: account } = await supabase
-      .from("kaisa_accounts")
+      .from("omni_accounts")
       .select("ai_manager_slug")
       .eq("user_id", user.id)
       .single();

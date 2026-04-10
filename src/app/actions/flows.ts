@@ -10,7 +10,7 @@ export async function getFlowsAction() {
   const supabase = await getSupabaseServer();
 
   const { data, error } = await supabase
-    .from('kaisa_flows')
+    .from('omni_flows')
     .select('*')
     .eq('tenant_id', tenantId)
     .order('priority', { ascending: false });
@@ -28,13 +28,13 @@ export async function saveFlowAction(flow: any) {
   let result;
   if (id) {
     result = await supabase
-      .from('kaisa_flows')
+      .from('omni_flows')
       .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', id)
       .eq('tenant_id', tenantId);
   } else {
     result = await supabase
-      .from('kaisa_flows')
+      .from('omni_flows')
       .insert({ ...updates, tenant_id: tenantId });
   }
 
@@ -48,7 +48,7 @@ export async function deleteFlowAction(id: string) {
   const supabase = await getSupabaseServer();
 
   const { error } = await supabase
-    .from('kaisa_flows')
+    .from('omni_flows')
     .delete()
     .eq('id', id)
     .eq('tenant_id', tenantId);

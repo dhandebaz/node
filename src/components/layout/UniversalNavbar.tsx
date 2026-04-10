@@ -25,8 +25,8 @@ interface UniversalNavbarProps {
   tenantName?: string;
   userEmail?: string;
   userAvatar?: string;
-  credits?: any; // To avoid type issues for now, or import KaisaCreditUsage
-  isKaisaUser?: boolean;
+  credits?: any;
+  isOmniUser?: boolean;
 }
 
 const NAV_ITEMS = [
@@ -36,7 +36,7 @@ const NAV_ITEMS = [
   { label: "Integrations", href: "/dashboard/ai/integrations", icon: Puzzle },
 ];
 
-export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, isKaisaUser }: UniversalNavbarProps) {
+export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, isOmniUser }: UniversalNavbarProps) {
   const pathname = usePathname();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -52,7 +52,7 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
   };
 
   const initials = tenantName ? getInitials(tenantName) : "NB";
-  // Generate a consistent brand color based on the name (simple hash)
+  
   const getColor = (name: string) => {
     const colors = ["bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-purple-500", "bg-pink-500"];
     let hash = 0;
@@ -80,7 +80,6 @@ export function UniversalNavbar({ tenantName, userEmail, userAvatar, credits, is
             <div className="w-8 h-8">
               <Logo />
             </div>
-            {/* Removed the all caps NODEBASE wordmark as requested */}
           </Link>
         </div>
 

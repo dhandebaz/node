@@ -79,8 +79,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   ],
   features: [
     {
-      id: "feat_kaisa_beta",
-      key: "kaisa_v2",
+      id: "feat_omni_beta",
+      key: "omni_v2",
       name: "kaisa AI v2 (Beta)",
       description: "Next-gen agentic capabilities",
       enabled: false,

@@ -91,7 +91,7 @@ export class OnboardingService {
     });
 
     // 3. Ensure Kaisa Account exists
-    await admin.from("kaisa_accounts").upsert({
+    await admin.from("omni_accounts").upsert({
       user_id: userId,
       tenant_id: tenantId,
       status: "active",

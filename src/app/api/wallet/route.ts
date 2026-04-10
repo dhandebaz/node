@@ -10,7 +10,7 @@ export async function GET() {
   }
 
   const { data: account, error } = await supabase
-    .from("kaisa_accounts")
+    .from("omni_accounts")
     .select("wallet_balance, status")
     .eq("user_id", user.id)
     .single();

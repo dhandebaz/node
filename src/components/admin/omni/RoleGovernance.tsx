@@ -1,14 +1,14 @@
 "use client";
 
-import { KaisaRoleConfig, KaisaRoleType } from "@/types/kaisa";
+import { OmniRoleConfig, OmniRoleType } from "@/types/omni";
 import { updateRoleConfigAction } from "@/app/actions/omni-core";
 import { useState } from "react";
-import { Loader2, Crown, Shield } from "lucide-react";
+import { Loader2, Crown } from "lucide-react";
 
-export function RoleGovernance({ roles }: { roles: KaisaRoleConfig[] }) {
+export function RoleGovernance({ roles }: { roles: OmniRoleConfig[] }) {
   const [loading, setLoading] = useState<string | null>(null);
 
-  const handleToggle = async (type: KaisaRoleType, field: 'enabled' | 'inviteOnly', value: boolean) => {
+  const handleToggle = async (type: OmniRoleType, field: 'enabled' | 'inviteOnly', value: boolean) => {
     setLoading(`${type}-${field}`);
     await updateRoleConfigAction(type, { [field]: value });
     setLoading(null);

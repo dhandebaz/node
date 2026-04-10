@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 1130 notes | Score threshold: >40
+> 1468 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,48 +20,44 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Fixed null crash in ChatThread — avoids unnecessary re-renders in React** — - import { Contact360Sidebar } from "@/components/dashboard/ai/inbox/C
-- **⚠️ GOTCHA: Fixed null crash in ConversationListItem — avoids unnecessary re-renders in R...** — - import { getSupabaseBrowser } from "@/lib/supabase/client";
-+ import
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1070 notes | Score threshold: >40
-+ > 1087 notes | Score threshold
-- **gotcha in NotificationProvider.tsx** — File updated (external): src/components/providers/NotificationProvider
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "6f502d31964c86b0",
-+
-- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Patched
-+ - ⚠️ GOTCHA: Optimized GOTCHA
-- - g
+- **⚠️ GOTCHA: Optimized Score** — - > 1418 notes | Score threshold: >40
++ > 1422 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1409 notes | Score threshold: >40
++ > 1418 notes | Score threshold
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for spe
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Optimized 
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1378 notes | Score threshold: >40
++ > 1409 notes | Score threshold
+- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Patched security issue Worv
++ - problem-fix in agent-rules.md
+- - 
 
 ## Project Standards
 
-- Strengthened types Recent — prevents null/undefined runtime crashes
-- Strengthened types Service — prevents null/undefined runtime crashes
-- what-changed in shared-context.json — confirmed 7x
-- Optimized Fixed — confirmed 3x
-- Fixed null crash in Executive — prevents null/undefined runtime crashes — confirmed 3x
-- discovery in page.tsx — confirmed 3x
-- Updated the database schema — prevents null/undefined runtime crashes — confirmed 3x
-- what-changed in shared-context.json — confirmed 4x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- Added JWT tokens authentication — confirmed 3x
 
 ## Known Fixes
 
 - ❌ - - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ - - Fixed null crash in Context — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ const { data: { user }, error: authError } = await supabase.auth.getUser(); → ✅ problem-fix in route.ts
+- ❌ - - Fixed null crash in Context — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ import { withErrorHandler } from "@/lib/api/withErrorHandler"; → ✅ problem-fix in route.ts
 - ❌ import { AppError, ErrorCode } from "@/lib/errors"; → ✅ problem-fix in walletService.ts
 
 ## Recent Decisions
 
 - Optimized Score — parallelizes async operations for speed
-- Optimized Score — parallelizes async operations for speed
-- decision in IndustryDetail.tsx
-- decision in page.tsx
+- decision in OmniOverview.tsx
+- Optimized GOTCHA — externalizes configuration for environment flexibility
+- Optimized Object — hardens HTTP security headers
 
 ## Learned Patterns
 

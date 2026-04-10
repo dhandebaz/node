@@ -1,14 +1,12 @@
-
 "use client";
 
 export const dynamic = 'force-dynamic';
 
-
 import { useEffect, useState } from "react";
 import { useParams, notFound } from "next/navigation";
-import { getUserDetailData } from "@/app/actions/admin-data";
+import { getUserDetailPageData } from "@/app/actions/admin-data";
 import { AdminControls } from "@/components/admin/user/AdminControls";
-import { KaisaStatusControl } from "@/components/admin/user/KaisaStatusControl";
+import { OmniStatusControl } from "@/components/admin/user/OmniStatusControl";
 import { User, AuditLog } from "@/types/user";
 import { ArrowLeft, User as UserIcon, Calendar, Phone, Mail, Box, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -17,13 +15,13 @@ export default function UserProfilePage() {
   const params = useParams();
   const id = params?.id as string;
   
-  const [data, setData] = useState<Awaited<ReturnType<typeof getUserDetailData>> | null>(null);
+  const [data, setData] = useState<Awaited<ReturnType<typeof getUserDetailPageData>> | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
     
-    getUserDetailData(id).then((res) => {
+    getUserDetailPageData(id).then((res: any) => {
       setData(res);
       setLoading(false);
     });
@@ -83,29 +81,29 @@ export default function UserProfilePage() {
           {/* Product Associations */}
           <h2 className="text-lg font-medium text-white pt-2">Product Associations</h2>
           
-          {/* Kaisa Profile */}
-          {user.roles.isKaisaUser && user.products.kaisa ? (
+          {/* Omni Profile */}
+          {user.roles.isOmniUser && user.products.omni ? (
             <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <Box className="w-24 h-24 text-blue-500" />
               </div>
               <h3 className="text-lg font-medium text-blue-400 mb-4 flex items-center gap-2">
-                kaisa AI
+                Omni AI
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
-                <InfoItem label="Business Type" value={user.products.kaisa.businessType} />
-                <InfoItem label="Role" value={user.products.kaisa.role} capitalize />
+                <InfoItem label="Business Type" value={user.products.omni.businessType} />
+                <InfoItem label="Role" value={user.products.omni.role} capitalize />
                 <InfoItem 
                   label="Active Modules" 
-                  value={user.products.kaisa.activeModules.join(", ") || "None"} 
+                  value={user.products.omni.activeModules.join(", ") || "None"} 
                 />
               </div>
               <div className="relative z-10">
-                <KaisaStatusControl user={user} />
+                <OmniStatusControl user={user} />
               </div>
             </div>
           ) : (
-            <EmptyProductCard name="kaisa AI" />
+            <EmptyProductCard name="Omni AI" />
           )}
 
           {/* Audit Logs */}

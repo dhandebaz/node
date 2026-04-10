@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     }
 
     const { data: account, error: accountError } = await supabase
-      .from("kaisa_accounts")
+      .from("omni_accounts")
       .select("wallet_balance")
       .eq("user_id", user.id)
       .eq("tenant_id", tenantId)
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     const nextBalance = currentBalance + amount;
 
     const { error: updateError } = await supabase
-      .from("kaisa_accounts")
+      .from("omni_accounts")
       .update({ wallet_balance: nextBalance })
       .eq("user_id", user.id)
       .eq("tenant_id", tenantId);

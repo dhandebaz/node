@@ -27,7 +27,7 @@ export async function GET() {
         .eq("id", tenantId)
         .single(),
       supabase
-        .from("kaisa_accounts")
+        .from("omni_accounts")
         .select("wallet_balance")
         .eq("tenant_id", tenantId)
         .maybeSingle(),

@@ -1,17 +1,24 @@
-import { KaisaTask, KaisaUserActivity, KaisaCreditUsage } from "@/types/kaisa";
+import {
+  OmniGlobalConfig,
+  OmniAdminAuditLog,
+  OmniStats,
+  OmniTask,
+  OmniUserActivity,
+  OmniCreditUsage,
+} from "@/types/omni";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { userService } from "@/lib/services/userService";
 import { logEvent } from "@/lib/events";
 import { EVENT_TYPES } from "@/types/events";
 import { log } from "@/lib/logger";
 
-export const kaisaUserService = {
-  async toggleUserKaisaStatus(
+export const omniUserService = {
+  async toggleUserOmniStatus(
     adminId: string,
     userId: string,
     status: "active" | "paused",
   ): Promise<boolean> {
-    const success = await userService.updateKaisaStatus(
+    const success = await userService.updateOmniStatus(
       adminId,
       userId,
       status,
@@ -28,7 +35,7 @@ export const kaisaUserService = {
         entity_type: "user",
         entity_id: userId,
         metadata: {
-          details: `User kaisa status set to ${status}`,
+          details: `User omni status set to ${status}`,
           scope: "user",
           action_type: "user_pause",
         },
@@ -40,10 +47,10 @@ export const kaisaUserService = {
     return true;
   },
 
-  async getUserTasks(userId: string): Promise<KaisaTask[]> {
+  async getUserTasks(userId: string): Promise<OmniTask[]> {
     const supabase = await getSupabaseServer();
     const { data, error } = await supabase
-      .from("kaisa_tasks")
+      .from("omni_tasks")
       .select("*")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
@@ -66,7 +73,7 @@ export const kaisaUserService = {
     }));
   },
 
-  async getUserActivityLog(userId: string): Promise<KaisaUserActivity[]> {
+  async getUserActivityLog(userId: string): Promise<OmniUserActivity[]> {
     const supabase = await getSupabaseServer();
     // Fetch user actions from audit_events
     const { data, error } = await supabase
@@ -98,7 +105,7 @@ export const kaisaUserService = {
   async getCreditUsage(
     userId: string,
     tenantId?: string,
-  ): Promise<KaisaCreditUsage> {
+  ): Promise<OmniCreditUsage> {
     const supabase = await getSupabaseServer();
 
     let targetTenantId = tenantId;

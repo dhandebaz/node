@@ -8,7 +8,7 @@ export async function GET() {
     const supabase = await getSupabaseServer();
     const [{ data: accounts, error: accountsError }, { data: users, error: usersError }, { data: profiles, error: profilesError }] = await Promise.all([
       supabase
-        .from("kaisa_accounts")
+        .from("omni_accounts")
         .select("user_id, status, wallet_balance, created_at, plan_price, ai_manager_slug"),
       supabase.from("users").select("id, phone, created_at"),
       supabase.from("profiles").select("user_id, business_name")

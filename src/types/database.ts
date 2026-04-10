@@ -28,7 +28,7 @@ export interface DBUser {
   metadata: UserMetadataJSON | null;
   // Relations (joined)
   profiles: DBProfile[] | DBProfile | null;
-  kaisa_accounts: DBKaisaAccount[] | DBKaisaAccount | null;
+  omni_accounts: DBOmniAccount[] | DBOmniAccount | null;
   nodes: DBNode[];
   listings: DBListing[];
   accounts: DBAccount[] | DBAccount | null;
@@ -59,7 +59,7 @@ export interface DBProfile {
   updated_at?: string;
 }
 
-export interface DBKaisaAccount {
+export interface DBOmniAccount {
   id: string;
   user_id: string;
   status: string;

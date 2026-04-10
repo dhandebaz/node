@@ -27,7 +27,7 @@ export class FlowService {
     
     // 1. Fetch active flows for this trigger
     const { data: flows } = await supabase
-      .from("kaisa_flows")
+      .from("omni_flows")
       .select("*")
       .eq("tenant_id", tenantId)
       .eq("trigger_type", triggerType)

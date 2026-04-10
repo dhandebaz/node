@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserProductProfiles, UserRoles } from "@/types/user";
-import { KaisaCreditUsage } from "@/types/kaisa";
 import { Tenant } from "@/types";
 import { getBusinessLabels, getPersonaCapabilities } from "@/lib/business-context";
 import { 
@@ -17,17 +16,15 @@ import {
   CreditCard, 
   Settings,
   BookOpen,
-  Wallet,
   HelpCircle,
   Gift,
-  Sparkles
+  Bot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CustomerSidebarProps {
   roles: UserRoles;
   products: UserProductProfiles;
-  kaisaCredits?: KaisaCreditUsage | null;
   tenant?: Tenant;
 }
 
@@ -69,7 +66,7 @@ const SectionLabel = ({ label }: { label: string }) => (
   </div>
 );
 
-export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: CustomerSidebarProps) {
+export function CustomerSidebar({ roles, products, tenant }: CustomerSidebarProps) {
   const pathname = usePathname();
   const capabilities = getPersonaCapabilities(tenant?.businessType);
   const labels = getBusinessLabels(tenant?.businessType);
@@ -91,26 +88,13 @@ export function CustomerSidebar({ roles, products, kaisaCredits, tenant }: Custo
         )}
       </div>
 
-      {/* Credit Status (Compact) */}
-      {roles.isKaisaUser && kaisaCredits && (
-        <div className="p-4 border-b border-white/5">
-           <div className="flex items-center justify-between mb-1">
-             <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Balance</span>
-              <Link href="/dashboard/billing" className="text-[10px] text-primary hover:text-foreground transition-colors">
-               Add Funds
-             </Link>
-           </div>
-           <div className="text-xl font-mono font-medium text-foreground">₹{kaisaCredits.balance.toLocaleString()}</div>
-        </div>
-      )}
-
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 overflow-y-auto custom-scrollbar">
         
-        {roles.isKaisaUser && (
+        {roles.isOmniUser && (
           <div className="space-y-0.5">
             <SectionLabel label="Workspace" />
-            <NavItem href="/dashboard/ai" label="Home" icon={LayoutDashboard} exact />
+            <NavItem href="/dashboard/ai" label="Omni AI" icon={Bot} />
             <NavItem href="/dashboard/ai/inbox" label="Inbox" icon={MessageSquare} />
             
             {capabilities.calendar && (

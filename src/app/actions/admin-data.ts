@@ -1,48 +1,50 @@
+
 "use server";
 
 import { getSupabaseServer } from "@/lib/supabase/server";
-import { kaisaService } from "@/lib/services/kaisaService";
+import { omniService } from "@/lib/services/omniService";
 import { userService } from "@/lib/services/userService";
 
 // Dashboard Overview
 export async function getAdminDashboardStats() {
     const supabase = await getSupabaseServer();
-    const [
-        { count: userCount },
-        { data: recentLogs }
-      ] = await Promise.all([
-        supabase.from("users").select("*", { count: "exact", head: true }),
-        supabase.from("admin_audit_logs").select("*").order("timestamp", { ascending: false }).limit(5)
-      ]);
     
-      return { userCount, recentLogs };
-}
-
-// Kaisa Page
-export async function getKaisaPageData() {
-    const [config, stats, allUsers, logs] = await Promise.all([
-        kaisaService.getConfig(),
-        kaisaService.getStats(),
-        userService.getUsers(),
-        kaisaService.getAuditLogs()
+    // Quick totals from raw tables for speed
+    const [stats, usersCount] = await Promise.all([
+        omniService.getStats(),
+        supabase.from("profiles").select("*", { count: "exact", head: true })
     ]);
-    // Note: User filtering logic moved to component or done here?
-    // Doing it here is safer/faster
-    const kaisaUsers = allUsers.filter(u => u.roles.isKaisaUser);
-    return { config, stats, kaisaUsers, logs };
+
+    return {
+        stats,
+        totalProfiles: usersCount.count || 0
+    };
 }
 
-// Users Page
+// Omni Core Admin Data
+export async function getOmniAdminData() {
+    const [config, stats, allUsers, logs] = await Promise.all([
+        omniService.getConfig(),
+        omniService.getStats(),
+        userService.getUsers(),
+        omniService.getAuditLogs()
+    ]);
+    
+    const omniUsers = allUsers.filter((u: any) => u.roles.isOmniUser);
+    return { config, stats, omniUsers, logs };
+}
+
+// User List (Filterable)
 export async function getUsersPageData(filters?: any) {
     return await userService.getUsers(filters);
 }
 
 // User Detail
-export async function getUserDetailData(id: string) {
+export async function getUserDetailPageData(id: string) {
     const [user, auditLogs] = await Promise.all([
         userService.getUserById(id),
         userService.getAuditLogs(id)
     ]);
+    
     return { user, auditLogs };
 }
-

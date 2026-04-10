@@ -1,15 +1,14 @@
-
 "use client";
 
-import { KaisaModuleConfig, KaisaModuleType, KaisaBusinessType } from "@/types/kaisa";
+import { OmniModuleConfig, OmniModuleType, OmniBusinessType } from "@/types/omni";
 import { toggleModuleAction } from "@/app/actions/omni-core";
 import { useState } from "react";
 import { Loader2, Power, Layers } from "lucide-react";
 
-export function CapabilitiesControl({ modules }: { modules: KaisaModuleConfig[] }) {
+export function CapabilitiesControl({ modules }: { modules: OmniModuleConfig[] }) {
   const [loading, setLoading] = useState<string | null>(null);
 
-  const handleToggle = async (type: KaisaModuleType, current: boolean, types?: KaisaBusinessType[]) => {
+  const handleToggle = async (type: OmniModuleType, current: boolean, types?: OmniBusinessType[]) => {
     if (!confirm(`Are you sure you want to ${current ? 'disable' : 'enable'} ${type}?`)) return;
     
     setLoading(type);

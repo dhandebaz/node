@@ -12,7 +12,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const supabase = await getSupabaseServer();
     const { id } = await params;
     const { error } = await supabase
-      .from("kaisa_accounts")
+      .from("omni_accounts")
       .update({ status })
       .eq("user_id", id);
 

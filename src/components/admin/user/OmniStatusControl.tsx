@@ -2,25 +2,25 @@
 
 import { useState } from "react";
 import { User } from "@/types/user";
-import { toggleUserKaisaStatusAction } from "@/app/actions/omni-core";
+import { toggleUserOmniStatusAction } from "@/app/actions/omni-core";
 import { Power } from "lucide-react";
 
-export function KaisaStatusControl({ user }: { user: User }) {
+export function OmniStatusControl({ user }: { user: User }) {
   const [isLoading, setIsLoading] = useState(false);
-  const status = user.products.kaisa?.status || "active";
+  const status = user.products.omni?.status || "active";
 
   const handleToggle = async () => {
-    if (!user.products.kaisa) return;
+    if (!user.products.omni) return;
     
     const newStatus = status === "active" ? "paused" : "active";
-    if (!confirm(`Are you sure you want to ${newStatus === "paused" ? "PAUSE" : "RESUME"} kaisa AI for this user?`)) return;
+    if (!confirm(`Are you sure you want to ${newStatus === "paused" ? "PAUSE" : "RESUME"} Omni AI for this user?`)) return;
 
     setIsLoading(true);
-    await toggleUserKaisaStatusAction(user.identity.id, newStatus);
+    await toggleUserOmniStatusAction(user.identity.id, newStatus);
     setIsLoading(false);
   };
 
-  if (!user.products.kaisa) return null;
+  if (!user.products.omni) return null;
 
   return (
     <div className="mt-4 pt-4 border-t border-zinc-800 flex items-center justify-between">

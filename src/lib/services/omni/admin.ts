@@ -1,32 +1,33 @@
 import {
-    KaisaStats,
-    KaisaAdminAuditLog,
-    KaisaBusinessType
-} from "@/types/kaisa";
+  OmniGlobalConfig,
+  OmniAdminAuditLog,
+  OmniStats,
+  OmniBusinessType,
+} from "@/types/omni";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { userService } from "@/lib/services/userService";
 import { log } from "@/lib/logger";
 
-export const kaisaAdminService = {
-    async getStats(): Promise<KaisaStats> {
+export const omniAdminService = {
+    async getStats(): Promise<OmniStats> {
         const users = await userService.getUsers();
-        // Filter users who have Kaisa product
-        const kaisaUsers = users.filter(u => u.roles.isKaisaUser && u.products.kaisa);
+        // Filter users who have Omni product
+        const omniUsers = users.filter(u => u.roles.isOmniUser && u.products.omni);
 
         // Initialize stats
-        const stats: KaisaStats = {
-            totalUsers: kaisaUsers.length,
-            activeUsers: kaisaUsers.filter(u => u.status.account === "active").length,
-            pausedUsers: kaisaUsers.filter(u => u.status.account === "suspended").length,
+        const stats: OmniStats = {
+            totalUsers: omniUsers.length,
+            activeUsers: omniUsers.filter(u => u.status.account === "active").length,
+            pausedUsers: omniUsers.filter(u => u.status.account === "suspended").length,
             byType: { Doctor: 0, Homestay: 0, Retail: 0, Other: 0 },
             byRole: { owner: 0, manager: 0, "co-founder": 0 },
         };
 
         // Aggregate stats
-        kaisaUsers.forEach(u => {
-            const kaisaProduct = u.products.kaisa;
-            if (kaisaProduct?.businessType) {
-                const type = kaisaProduct.businessType as KaisaBusinessType;
+        omniUsers.forEach(u => {
+            const omniProduct = u.products.omni;
+            if (omniProduct?.businessType) {
+                const type = omniProduct.businessType as OmniBusinessType;
                 // Validate type is a known key, else "Other"
                 if (Object.prototype.hasOwnProperty.call(stats.byType, type)) {
                     stats.byType[type]++;
@@ -34,10 +35,10 @@ export const kaisaAdminService = {
                     stats.byType.Other++;
                 }
             }
-            if (kaisaProduct?.role) {
+            if (omniProduct?.role) {
                 // Ensure role exists in stats, though TypeScript might complain if types drift
-                if (Object.prototype.hasOwnProperty.call(stats.byRole, kaisaProduct.role)) {
-                    stats.byRole[kaisaProduct.role]++;
+                if (Object.prototype.hasOwnProperty.call(stats.byRole, omniProduct.role)) {
+                    stats.byRole[omniProduct.role]++;
                 }
             }
         });
@@ -45,7 +46,7 @@ export const kaisaAdminService = {
         return stats;
     },
 
-    async getAuditLogs(): Promise<KaisaAdminAuditLog[]> {
+    async getAuditLogs(): Promise<OmniAdminAuditLog[]> {
         const supabase = await getSupabaseServer();
         const { data, error } = await supabase
             .from("audit_events")

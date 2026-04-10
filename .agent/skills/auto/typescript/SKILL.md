@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 3 gotchas, 38 conventions, 62 fixes."
+description: "Typescript for node. 7 gotchas, 48 conventions, 72 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **197 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **246 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -19,11 +19,209 @@ Auto-compiled from **197 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Fixed null crash in OmniGlobalConfig —  | - import { + import { -     KaisaGlobalConfig, +     OmniGlobalConfig, -     KaisaRoleType, +     |
+| gotcha in next.config.ts | -   disableLogger: true, +   webpack: { -   transpileClientSDK: true, +     treeshake: { -   webpack |
+| gotcha in next.config.ts | -   sourcemaps: { +   disableLogger: true, -     hideSourceMaps: true, +   transpileClientSDK: true, |
+| gotcha in omni-core.ts | File updated (external): src/app/actions/omni-core.ts  Content summary (198 lines): "use server";  i |
 | ⚠️ GOTCHA: Strengthened types Host | -       const modelInstance = settings.provider === "mistral" +       const modelInstance = google(s |
 | ⚠️ GOTCHA: Updated schema Promise | -   { params }: { params: { id: string } } +   { params }: { params: Promise<{ id: string }> } -   t |
 | ⚠️ GOTCHA: Updated schema Date | -         const start = new Date(b.start_date); +         if (!b.start_date -- !b.end_date) return  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in admin.test.ts
+File updated (external): src/lib/services/omni/admin.test.ts
+
+Content summary (84 lines):
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { omniAdminService } from './admin';
+import { userService } from '@/lib/services/userService';
+import { User } from '@/types/user';
+
+// Mock dependencies
+vi.mock('@/lib/services/userService', () => ({
+    userService: {
+        getUsers: vi
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in OmniGlobalConfig — prevents null/undefined runtime crashes
+- import {
++ import {
+-   KaisaGlobalConfig,
++   OmniGlobalConfig,
+-   KaisaAdminAuditLog,
++   OmniAdminAuditLog,
+-   KaisaStats,
++   OmniStats,
+-   KaisaTask,
++   OmniTask,
+-   KaisaUserActivity,
++   OmniUserActivity,
+-   KaisaCreditUsage,
++   OmniCreditUsage,
+- } from "@/types/omni";
++ } from "@/types/omni";
+- import { getSupabaseServer } from "@/lib/supabase/server";
++ import { getSupa
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: OmniGlobalConfig
+3. identifier: OmniAdminAuditLog
+4. identifier: OmniStats
+5. identifier: OmniTask
+
+### Fixed null crash in AppSettings — prevents brute-force and DoS attacks
+- import { DEFAULT_AI_MODEL, DEFAULT_AI_PROVIDER } from "@/lib/ai/config";
++ import { DEFAULT_AI_MODEL, DEFAULT_AI_PROVIDER } from "@/lib/ai/config";
+- import {
++ import {
+-   AppSettings,
++   AppSettings,
+-   SettingsAuditLog,
++   SettingsAuditLog,
+-   IntegrationConfig,
++   IntegrationConfig,
+-   FeatureFlag,
++   FeatureFlag,
+-   AuthSettings,
++   AuthSettings,
+-   PlatformSettings,
++   P
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: AppSettings
+3. identifier: SettingsAuditLog
+4. identifier: IntegrationConfig
+5. identifier: FeatureFlag
+
+### problem-fix in route.ts
+File updated (external): src/app/api/host/me/route.ts
+
+Content summary (74 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+
+export async function GET() {
+  const supabase = await getSupabaseServer();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supab
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/admin/customers/route.ts
+
+Content summary (44 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/admin";
+
+export async function GET() {
+  try {
+    await requireAdmin();
+    const supabase = await getSupabaseServer();
+    const [{ data: accounts, error: 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/wallet/route.ts
+
+Content summary (27 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+
+export async function GET() {
+  const supabase = await getSupabaseServer();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return NextResponse.json({ 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in flows.ts
+File updated (external): src/app/actions/flows.ts
+
+Content summary (60 lines):
+
+'use server';
+
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
+
+export async function getFlowsAction() {
+  const tenantId = await requireActiveTenant();
+  const supabase = await getSupabaseServer();
+
+  const
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Added error handling IntegrationConfigDetails
+- import { IntegrationConfigDetails, KaisaModuleType, KaisaBusinessType, KaisaRoleType } from "@/types/omni";
++ import { IntegrationConfigDetails, OmniModuleType, OmniBusinessType, OmniRoleType } from "@/types/omni";
+- export async function createKaisaAccount(businessType: KaisaBusinessType, role: KaisaRoleType) {
++ export async function createOmniAccount(businessType: OmniBusinessType, role: Omni
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: IntegrationConfigDetails
+3. identifier: OmniModuleType
+4. identifier: OmniBusinessType
+5. identifier: OmniRoleType
+
+### Fixed null crash in Omni — prevents null/undefined runtime crashes
+- // --- Kaisa Actions ---
++ // --- Omni Actions ---
+- export async function getKaisaDashboardData() {
++ export async function getOmniDashboardData() {
+-   if (!user.roles.isKaisaUser)
++   if (!user.roles.isOmniUser)
+-     throw new Error("Access Denied: Not a Kaisa user");
++     throw new Error("Access Denied: Not an Omni user");
+-     profile: user.products.kaisa,
++     profile: user.products.om
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Omni
+3. identifier: Actions
+4. identifier: Error
+5. identifier: Access
+
+### Patched security issue Comprehensive — improves module reusability
+-       {
++       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+-         protocol: 'https',
++       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+-         hostname: 'lh3.googleusercontent.com',
++       { protocol: 'https', hostname: '**.supabase.co' },
+-       },
++       { protocol: 'https', hostname: 'placehold.co' }
+-       {
++     ],
+-         protocol: 'ht
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Comprehensive
+3. identifier: DNS
+4. identifier: Prefetch
+5. identifier: Control
 
 ### Patched security issue TypeScript — improves module reusability
 -   // Ignore typescript/eslint errors during build for development if needed, 
@@ -200,198 +398,6 @@ interface AuthSt
 1. Modified 1 files
 
 ### Fixed null crash in User — parallelizes async operations for speed
-- import { getSupabaseAdmin } from "@/lib/supabase/server";
-+ import { getSession } from "@/lib/auth/session";
-- import { User } from "@/types/user";
-+ import { getSupabaseAdmin, getSupabaseServer } from "@/lib/supabase/server";
-- import { DBTenant } from "@/types/database";
-+ import { User } from "@/types/user";
-- import { BusinessType } from "@/types";
-+ import { DBTenant } from "@/types/databas
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: User
-3. identifier: DBTenant
-4. identifier: BusinessType
-5. identifier: Raw
-
-### Fixed null crash in User — parallelizes async operations for speed
-- import { getSession } from "@/lib/auth/session";
-+ import { getSupabaseAdmin } from "@/lib/supabase/server";
-- import { getSupabaseServer } from "@/lib/supabase/server";
-+ import { User } from "@/types/user";
-- import { User } from "@/types/user";
-+ import { DBTenant } from "@/types/database";
-- import { DBTenant } from "@/types/database";
-+ import { BusinessType } from "@/types";
-- import { Bus
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: User
-3. identifier: DBTenant
-4. identifier: BusinessType
-5. identifier: Raw
-
-### Fixed null crash in Listings — parallelizes async operations for speed
-- 
-+   const supabase = await getSupabaseServer();
--   const supabase = await getSupabaseServer();
-+   
--   
-+   const { data: { user } } = await supabase.auth.getUser();
--   const { data: listings, error } = await supabase
-+   console.log(`[Listings API] Fetching for User: ${user?.id}, Tenant: ${tenantId}`);
--     .from("listings")
-+ 
--     .select("*")
-+   const { data: listings, error } = await
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Listings
-3. identifier: API
-4. identifier: Fetching
-5. identifier: User
-
-### Fixed null crash in NextResponse — prevents null/undefined runtime crashes
--   const supabase = await getSupabaseServer();
-+   const session = await getSession();
--   const { data: { user }, error: authError } = await supabase.auth.getUser();
-+   if (!session?.userId) {
-- 
-+     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
--   if (authError || !user) {
-+   }
--     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-+ 
--   }
-+   
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: NextResponse
-3. identifier: Unauthorized
-4. identifier: Handle
-5. identifier: Array
-
-### Fixed null crash in Strip — prevents null/undefined runtime crashes
--   const { id: listingId } = await params;
-+   let { id: listingId } = await params;
--   const supabase = await getSupabaseServer();
-+   
-- 
-+   // Strip .ics extension if present (e.g. from Airbnb or manual URL)
--   // 1. Fetch Listing & Bookings
-+   if (listingId.endsWith(".ics")) {
--   const { data: listing, error: listingError } = await supabase
-+     listingId = listingId.slice(0, -4);
--    
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Strip
-3. identifier: Airbnb
-4. identifier: URL
-5. identifier: Fetch
-
-### Fixed null crash in Extract — prevents null/undefined runtime crashes
--     // 1. Extract Images from multiple patterns
-+     // --- 1. NEW: Extract and Parse JSON-LD for Reliable Data ---
--     const imageMatches = html.match(/"image":\s*\[([^\]]+)\]/);
-+     const ldJsonMatch = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
--     let images: string[] = [];
-+     let ldData: any = null;
--     if (imageMatches && imageMatches[1]) {
-+     if
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: NEW
-3. identifier: Extract
-4. identifier: Parse
-5. identifier: JSON
-
-### Fixed null crash in Extract
--     // 1. Extract Images from JSON-LD
-+     // 1. Extract Images from multiple patterns
--     // 2. Fallback for Images (og:image)
-+     // 1b. Look for more image patterns in __INITIAL_STATE__
--     if (images.length === 0) {
-+     if (images.length < 5) {
--       const ogImage = html.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
-+       const moreImages = html.match(/"original_pic
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Extract
-3. identifier: Images
-4. identifier: Look
-5. identifier: Set
-
-### problem-fix in paymentLinkService.ts
-File updated (external): src/lib/services/paymentLinkService.ts
-
-Content summary (94 lines):
-import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
-import { log } from "@/lib/logger";
-import { AppError, ErrorCode } from "@/lib/errors";
-import { getAppUrl } from "@/lib/runtime-config";
-
-export class PaymentLinkService {
-  /**
-   * Create a secure payment link for a conversatio
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### Fixed null crash in ListingType
-- export async function extractAirbnbInfo(url: string) {
-+ import { ListingType } from "@/types";
--   if (!url || !url.includes("airbnb")) {
-+ 
--     throw new Error("Invalid Airbnb URL");
-+ export async function extractAirbnbInfo(url: string) {
--   }
-+   if (!url || !url.includes("airbnb")) {
-- 
-+     throw new Error("Invalid Airbnb URL");
--   try {
-+   }
--     const response = await fetch(url, {
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: ListingType
-3. identifier: Error
-4. identifier: Invalid
-5. identifier: Airbnb
-
-### Fixed null crash in Extract
--     // Parse OG Tags
-+     // 1. Extract Images from JSON-LD
--     const ogTitle = html.match(/<meta property="og:title" content="([^"]+)"/)?.[1] || "";
-+     const imageMatches = html.match(/"image":\s*\[([^\]]+)\]/);
--     const ogDescription = html.match(/<meta property="og:description" content="([^"]+)"/)?.[1] || "";
-+     let images: string[] = [];
--     
-+     if (imageMatches && imageMatc
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Extract
-3. identifier: Images
-4. identifier: JSON
-5. identifier: Fallback
-
-### problem-fix in route.ts
-File updated (external): src/app/api/team/members/invite/route.ts
-
-Content summary (162 lines):
-import { NextResponse } from "next/server";
-import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
-import { requireActiveTenant } from "@/lib/auth/tenant";
-import { g
+- import { getSupabaseAdmin } fro
 
 ... [Truncated — see individual observations for full content]

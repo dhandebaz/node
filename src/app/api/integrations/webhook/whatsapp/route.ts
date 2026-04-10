@@ -322,10 +322,10 @@ async function processIncomingMessage(
     const { OmniAIExecutive } = await import("@/lib/services/omniAIExecutive");
     
     const context = {
-      clientName: contact.name,
-      resourceId: searchResults?.id || "unknown",
-      startDate: searchResults?.check_in || "N/A",
-      endDate: searchResults?.check_out || "N/A",
+      clientName: contact?.name || sender || "Client",
+      resourceId: "unknown",
+      startDate: "N/A",
+      endDate: "N/A",
       channel: "WHATSAPP" as const,
       language: "English"
     };

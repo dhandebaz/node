@@ -17,7 +17,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     ] = await Promise.all([
       supabase.from("users").select("id, phone, created_at").eq("id", customerId).single(),
       supabase.from("profiles").select("user_id, business_name").eq("user_id", customerId).single(),
-      supabase.from("kaisa_accounts").select("user_id, tenant_id, status, plan_price, ai_manager_slug, created_at").eq("user_id", customerId).single(),
+      supabase.from("omni_accounts").select("user_id, tenant_id, status, plan_price, ai_manager_slug, created_at").eq("user_id", customerId).single(),
     ]);
 
     if (userError) {

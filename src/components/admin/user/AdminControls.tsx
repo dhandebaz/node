@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -9,7 +8,8 @@ import {
   addNoteAction, 
   updateTagsAction
 } from "@/app/actions/user";
-import { Loader2, AlertTriangle, CheckCircle, XCircle, Plus, Tag, FileText, ExternalLink, Eye, ShieldCheck, Play, Pause, Box } from "lucide-react";
+import { OmniStatusControl } from "./OmniStatusControl";
+import { Loader2, AlertTriangle, CheckCircle, XCircle, Plus, Tag, FileText, ExternalLink, Eye, ShieldCheck, Box } from "lucide-react";
 
 interface AdminControlsProps {
   user: User;
@@ -142,7 +142,7 @@ export function AdminControls({ user }: AdminControlsProps) {
                 className="flex-1 py-2 rounded border border-blue-900/50 text-blue-400 bg-blue-900/10 hover:bg-blue-900/20 text-sm font-medium flex items-center justify-center gap-2"
             >
                 <ShieldCheck className="w-4 h-4" />
-                {showVerificationReport ? "Hide AI Report" : "kaisa AI Verification"}
+                {showVerificationReport ? "Hide AI Report" : "Omni AI Verification"}
             </button>
           </div>
           
@@ -150,7 +150,7 @@ export function AdminControls({ user }: AdminControlsProps) {
              <div className="col-span-2 bg-blue-950/30 border border-blue-900/50 rounded p-4 mb-2">
                 <h4 className="text-sm font-bold text-blue-400 mb-3 flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4" />
-                    kaisa AI Verification Report
+                    Omni AI Verification Report
                 </h4>
                 
                 {(!user.status.kycDocuments || user.status.kycDocuments.length === 0) ? (
@@ -269,7 +269,6 @@ export function AdminControls({ user }: AdminControlsProps) {
                         </button>
                     </div>
                     <div className="flex-1 overflow-auto p-4 flex items-center justify-center bg-black/50">
-                        {/* In a real app, use Next.js Image with proper domains */}
                         <img 
                             src={selectedDocument} 
                             alt="Document Preview" 
@@ -297,28 +296,8 @@ export function AdminControls({ user }: AdminControlsProps) {
         </div>
       </div>
 
-      {/* Kaisa AI Status */}
-      {user.roles.isKaisaUser && user.products.kaisa && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
-            <Box className="w-5 h-5 text-blue-500" />
-            kaisa AI Status
-          </h3>
-          <div className="w-full py-2 rounded border text-sm font-medium transition-colors flex items-center justify-center gap-2 border-zinc-800 text-zinc-500 cursor-not-allowed">
-            {user.products.kaisa.status === "active" ? (
-              <>
-                <Pause className="w-4 h-4" />
-                AI Employee Active
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4" />
-                AI Employee Paused
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Omni AI Status */}
+      <OmniStatusControl user={user} />
 
       {/* Tags */}
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6">
