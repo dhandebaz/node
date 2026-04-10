@@ -49,7 +49,7 @@ export async function createOmniAccount(businessType: OmniBusinessType, role: Om
 
     const { error: taskError } = await supabase
       .from("omni_tasks")
-      .insert(starterTasks);
+      .insert(starterTasks as any);
 
     if (taskError) {
        console.error("Create Starter Tasks Error:", taskError);
@@ -106,7 +106,7 @@ export async function createOmniTask(intent: string) {
       user_id: session.userId,
       intent,
       status: "queued"
-    });
+    } as any);
 
   if (error) return { success: false, message: "Failed to create task" };
   revalidatePath("/dashboard/ai/tasks");

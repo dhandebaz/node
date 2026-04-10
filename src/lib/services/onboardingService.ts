@@ -80,7 +80,7 @@ export class OnboardingService {
         tenant_id: tenantId,
         business_type: businessType,
         updated_at: new Date().toISOString()
-      })
+      } as any)
       .eq("user_id", userId);
 
     if (accountError) throw accountError;
@@ -97,7 +97,7 @@ export class OnboardingService {
       status: "active",
       business_type: businessType,
       role: "manager"
-    }, { onConflict: 'user_id' });
+    } as any, { onConflict: 'user_id' });
 
     revalidatePath("/", "layout");
     revalidatePath("/dashboard", "layout");

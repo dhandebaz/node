@@ -189,14 +189,13 @@ export async function POST(
           importedCount = bookingsToInsert.length;
         }
 
-        // Mark integration as synced
         await supabase
           .from("listing_integrations")
           .update({
             status: "connected",
             last_synced_at: new Date().toISOString(),
             error_message: null,
-          })
+          } as any)
           .eq("listing_id", listingId)
           .eq("platform", platform);
 
@@ -204,14 +203,13 @@ export async function POST(
       } catch (error: any) {
         console.error(`Push sync failed for ${platform}:`, error);
 
-        // Update status to error
         await supabase
           .from("listing_integrations")
           .update({
             status: "error",
             last_synced_at: new Date().toISOString(),
             error_message: error.message || "Unknown sync error",
-          })
+          } as any)
           .eq("listing_id", listingId)
           .eq("platform", platform);
 

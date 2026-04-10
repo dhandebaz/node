@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         total_bookings: total_bookings || 0,
         total_spent: total_spent || 0,
         last_booking_at: new Date().toISOString()
-      }, { onConflict: "tenant_id,guest_id" })
+      } as any, { onConflict: "tenant_id,guest_id" })
       .select()
       .single();
 

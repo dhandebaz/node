@@ -88,7 +88,7 @@ export async function POST(request: Request) {
   // Upsert integration
   const { data, error } = await supabase
     .from('integrations')
-    .upsert(updateData, { onConflict: 'user_id, provider' })
+    .upsert(updateData as any, { onConflict: 'user_id, provider' })
     .select()
     .single();
 

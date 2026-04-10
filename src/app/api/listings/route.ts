@@ -137,7 +137,7 @@ export async function POST(request: Request) {
     check_in_time: listing.checkInTime || listing.check_in_time || null,
     check_out_time: listing.checkOutTime || listing.check_out_time || null,
     rules: listing.rules || null
-  });
+  } as any);
 
   if (listingError) {
     console.error("[Listings API] Error inserting listing:", listingError);
@@ -152,7 +152,7 @@ export async function POST(request: Request) {
     listing_id: listingId,
     tenant_id: tenantId,
     nodebase_ical_url: nodebaseIcalUrl
-  });
+  } as any);
 
   if (calendarError) {
     console.error("[Listings API] Error creating calendar entry:", calendarError);
@@ -172,7 +172,7 @@ export async function POST(request: Request) {
     
     const { error: integrationsError } = await supabase
       .from("listing_integrations")
-      .upsert(payload, { onConflict: "listing_id, platform" });
+      .upsert(payload as any, { onConflict: "listing_id, platform" });
 
     if (integrationsError) {
       console.error("[Listings API] Error creating integrations:", integrationsError);

@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: "Typescript for node. 7 gotchas, 51 conventions, 77 fixes."
+description: "Typescript for node. 7 gotchas, 57 conventions, 85 fixes."
 domain: typescript
 triggers:
   - glob: "**/*.ts"
@@ -11,7 +11,7 @@ enabled: true
 
 # Typescript
 
-Auto-compiled from **266 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
+Auto-compiled from **293 real patterns** in **node**. This skill is auto-routed to agents when working on typescript files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -28,6 +28,143 @@ Auto-compiled from **266 real patterns** in **node**. This skill is auto-routed 
 | ⚠️ GOTCHA: Updated schema Date | -         const start = new Date(b.start_date); +         if (!b.start_date -- !b.end_date) return  |
 
 ## 🔧 Problem Playbooks
+
+### problem-fix in admin.ts
+File updated (external): src/lib/auth/admin.ts
+
+Content summary (50 lines):
+import { getSession } from "./session";
+import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
+import { NextResponse } from "next/server";
+
+export async function requireAdmin() {
+  const session = await getSession();
+  if (!session?.userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { s
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### Fixed null crash in Date — prevents null/undefined runtime crashes
+-         if (user) {
++          .single();
+-             await supabase.from('subscriptions').upsert({
++ 
+-                 user_id: user.user_id,
++         if (user) {
+-                 status: 'active',
++             await supabase.from('subscriptions').upsert({
+-                 plan_id: plan,
++                 user_id: user.user_id,
+-                 current_period_start: entity.current_start
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Date
+3. identifier: Add
+4. identifier: Monthly
+5. identifier: Credits
+
+### Fixed null crash in Date — prevents null/undefined runtime crashes
+-          .single();
++         if (user) {
+- 
++             await supabase.from('subscriptions').upsert({
+-        if (user) {
++                 user_id: user.user_id,
+-            await supabase.from('subscriptions').upsert({
++                 status: 'active',
+-                user_id: user.user_id,
++                 plan_id: plan,
+-                status: 'active',
++                 current_pe
+
+**Actionable Steps:**
+1. Modified 1 files
+2. identifier: Date
+3. identifier: Add
+4. identifier: Monthly
+5. identifier: Credits
+
+### problem-fix in route.ts
+File updated (external): src/app/api/payments/setup/route.ts
+
+Content summary (92 lines):
+import { NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { randomUUID } from "crypto";
+
+export async function GET() {
+  try {
+    const supabase = await getSupabaseServer();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+   
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/loyalty/route.ts
+
+Content summary (78 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = n
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/listings/[id]/integrations/route.ts
+
+Content summary (209 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSession } from "@/lib/auth/session";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/typ
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/listings/[id]/calendar/route.ts
+
+Content summary (392 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { getSession } from "@/lib/auth/session";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/ty
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in route.ts
+File updated (external): src/app/api/integrations/route.ts
+
+Content summary (108 lines):
+import { NextResponse } from 'next/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
+import { getSession } from '@/lib/auth/session';
+import { encryptToken } from '@/lib/crypto';
+import { requireActiveTenant } from '@/lib/auth/tenant';
+
+export async function GET() {
+  const session = await ge
+
+**Actionable Steps:**
+1. Modified 1 files
 
 ### problem-fix in route.ts
 File updated (external): src/app/api/guests/[id]/upload-id/route.ts
@@ -261,144 +398,11 @@ export async function getFlowsAction() {
 **Actionable Steps:**
 1. Modified 1 files
 
-### Added error handling IntegrationConfigDetails
-- import { IntegrationConfigDetails, KaisaModuleType, KaisaBusinessType, KaisaRoleType } from "@/types/omni";
-+ import { IntegrationConfigDetails, OmniModuleType, OmniBusinessType, OmniRoleType } from "@/types/omni";
-- export async function createKaisaAccount(businessType: KaisaBusinessType, role: KaisaRoleType) {
-+ export async function createOmniAccount(businessType: OmniBusinessType, role: Omni
+## 📐 Conventions & Best Practices
 
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: IntegrationConfigDetails
-3. identifier: OmniModuleType
-4. identifier: OmniBusinessType
-5. identifier: OmniRoleType
+### Project Conventions
+- 📐 **what-changed in route.ts — confirmed 3x** — File updated (external): src/app/api/listings/[id]/sync/import/route.ts
 
-### Fixed null crash in Omni — prevents null/undefined runtime crashes
-- // --- Kaisa Actions ---
-+ // --- Omni Actions ---
-- export async function getKaisaDashboardData() {
-+ export async function getOmniDashboardData() {
--   if (!user.roles.isKaisaUser)
-+   if (!user.roles.isOmniUser)
--     throw new Error("Access Denied: Not a Kaisa user");
-+     throw new Error("Access Denied: Not an Omni user");
--     profile: user.products.kaisa,
-+     profile: user.products.om
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Omni
-3. identifier: Actions
-4. identifier: Error
-5. identifier: Access
-
-### Patched security issue Comprehensive — improves module reusability
--       {
-+       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
--         protocol: 'https',
-+       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
--         hostname: 'lh3.googleusercontent.com',
-+       { protocol: 'https', hostname: '**.supabase.co' },
--       },
-+       { protocol: 'https', hostname: 'placehold.co' }
--       {
-+     ],
--         protocol: 'ht
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Comprehensive
-3. identifier: DNS
-4. identifier: Prefetch
-5. identifier: Control
-
-### Patched security issue TypeScript — improves module reusability
--   // Ignore typescript/eslint errors during build for development if needed, 
-+   // TypeScript strict mode enabled
--   // but better to fix them. Keeping ignore to speed up Vercel builds.
-+   typescript: {
--   typescript: {
-+     ignoreBuildErrors: false,
--     ignoreBuildErrors: true,
-+   },
--   },
-+   experimental: {
--   eslint: {
-+     serverActions: {
--     ignoreDuringBuilds: true,
-+      
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: TypeScript
-3. identifier: Map
-4. identifier: DNS
-5. identifier: Prefetch
-
-### Fixed null crash in Request
--   req: Request,
-+   req: Request
--   { params }: { params: { bookingId: string } }
-+ ) {
-- ) {
-+   try {
--   try {
-+     const { messages } = await req.json();
--     const { messages } = await req.json();
-+ 
-- 
-+     // Context that normally would be fetched from Supabase via `bookingId`
--     // Context that normally would be fetched from Supabase via `bookingId`
-+     // Mocking for developmen
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Request
-3. identifier: Context
-4. identifier: Supabase
-5. identifier: Mocking
-
-### Fixed null crash in Dispatch
--             // Dispatch to external channel
-+           // Dispatch to external channel
--             try {
-+           try {
--               await ChannelService.sendMessage({
-+             await ChannelService.sendMessage({
--                 tenantId: tenantId as string,
-+               tenantId: tenantId as string,
--                 recipientId: recipientId as string,
-+               recipien
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Dispatch
-3. identifier: ChannelService
-4. identifier: Log
-5. identifier: Reply
-
-### Fixed null crash in Booking
-- 
-+           }
--             // Dispatch to external channel
-+ 
--             try {
-+           // Run booking automation (auto tasks, calendar block, loyalty)
--               await ChannelService.sendMessage({
-+           runBookingAutomation({
--                 tenantId: tenantId as string,
-+             bookingId: payment.booking_id as string,
--                 recipientId: recipientId as str
-
-**Actionable Steps:**
-1. Modified 1 files
-2. identifier: Run
-3. identifier: Booking
-4. identifier: Dispatch
-5. identifier: ChannelService
-
-### problem-fix in route.ts
-File updated (external): src/app/api/payments/webhook/ro
+Content summar
 
 ... [Truncated — see individual observations for full content]

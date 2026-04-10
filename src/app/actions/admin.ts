@@ -58,7 +58,7 @@ export async function createPlanAction(plan: any) {
   const supabaseAdmin = await getSupabaseAdmin();
   const { error } = await supabaseAdmin
     .from('billing_plans')
-    .insert({ ...plan, id: planId });
+    .insert({ ...plan, id: planId } as any);
 
   if (error) throw error;
   revalidatePath("/admin/pricing");
@@ -77,7 +77,7 @@ export async function updatePricingAction(pricingConfig: any) {
     .update({ 
       value: pricingConfig,
       updated_at: new Date().toISOString()
-    })
+    } as any)
     .eq('key', 'pricing_config');
 
   if (error) throw error;

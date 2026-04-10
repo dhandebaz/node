@@ -12,7 +12,7 @@ enabled: true
 
 # Typescript React
 
-Auto-compiled from **182 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
+Auto-compiled from **184 real patterns** in **node**. This skill is auto-routed to agents when working on typescript-react files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 

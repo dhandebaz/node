@@ -85,7 +85,7 @@ export async function PATCH(
 
     const { error: updateError } = await supabase
       .from("listings")
-      .update(allowedFields)
+      .update(allowedFields as any)
       .eq("id", listingId)
       .eq("tenant_id", tenantId);
 

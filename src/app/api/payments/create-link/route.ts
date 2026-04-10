@@ -235,7 +235,7 @@ export async function POST(request: Request) {
         payment_link: "", // Placeholder, updated below
         paid_at: null,
         created_at: new Date().toISOString(),
-      })
+      } as any)
       .select("id")
       .single();
 
@@ -273,7 +273,7 @@ export async function POST(request: Request) {
       // Update payment status to failed?
       await supabase
         .from("payments")
-        .update({ status: "failed", metadata: { error: rzpError.message } })
+        .update({ status: "failed", metadata: { error: rzpError.message } } as any)
         .eq("id", payment.id);
       return NextResponse.json(
         { error: "Failed to create payment link: " + rzpError.message },
@@ -289,7 +289,7 @@ export async function POST(request: Request) {
       .update({
         payment_link: paymentLink,
         payment_link_id: paymentLinkData.id,
-      })
+      } as any)
       .eq("id", payment.id);
 
     if (updateError) {

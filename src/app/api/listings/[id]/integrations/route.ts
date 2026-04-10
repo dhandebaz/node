@@ -129,7 +129,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   }));
 
   if (payload.length > 0) {
-    const { error } = await supabase.from("listing_integrations").upsert(payload, {
+    const { error } = await supabase.from("listing_integrations").upsert(payload as any, {
       onConflict: "listing_id, platform"
     });
 

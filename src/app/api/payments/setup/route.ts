@@ -50,7 +50,7 @@ export async function POST(request: Request) {
           status: "active",
           onboarding_url: null,
           updated_at: new Date().toISOString()
-        }, { onConflict: "user_id, provider" })
+        } as any, { onConflict: "user_id, provider" })
         .select("status, onboarding_url")
         .maybeSingle();
 
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
         status: "setup_in_progress",
         onboarding_url: onboardingUrl,
         updated_at: new Date().toISOString()
-      }, { onConflict: "user_id, provider" })
+      } as any, { onConflict: "user_id, provider" })
       .select("status, onboarding_url")
       .maybeSingle();
 

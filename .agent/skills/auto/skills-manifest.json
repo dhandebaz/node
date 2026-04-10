@@ -1,30 +1,30 @@
 {
   "typescript": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.792Z",
-    "observationCount": 266,
+    "lastGenerated": "2026-04-10T10:22:27.802Z",
+    "observationCount": 293,
     "skillCount": 0,
     "domain": "typescript",
     "triggerGlobs": [
       "**/*.ts",
       "**/*.tsx"
     ],
-    "description": "Typescript for node. 7 gotchas, 51 conventions, 77 fixes."
+    "description": "Typescript for node. 7 gotchas, 57 conventions, 85 fixes."
   },
   "project": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.794Z",
-    "observationCount": 700,
+    "lastGenerated": "2026-04-10T10:22:27.800Z",
+    "observationCount": 752,
     "skillCount": 0,
     "domain": "project",
     "triggerGlobs": [
       "**/*"
     ],
-    "description": "Project for node. 101 gotchas, 163 conventions, 129 fixes."
+    "description": "Project for node. 115 gotchas, 171 conventions, 137 fixes."
   },
   "decision": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.826Z",
+    "lastGenerated": "2026-04-10T10:22:27.805Z",
     "observationCount": 0,
     "skillCount": 11,
     "domain": "decision",
@@ -35,7 +35,7 @@
   },
   "javascript": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.825Z",
+    "lastGenerated": "2026-04-10T10:22:27.804Z",
     "observationCount": 8,
     "skillCount": 0,
     "domain": "javascript",
@@ -47,9 +47,9 @@
   },
   "convention": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.826Z",
+    "lastGenerated": "2026-04-10T10:22:27.805Z",
     "observationCount": 0,
-    "skillCount": 37,
+    "skillCount": 38,
     "domain": "convention",
     "triggerGlobs": [
       "**/*"
@@ -58,8 +58,8 @@
   },
   "typescript-react": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.824Z",
-    "observationCount": 182,
+    "lastGenerated": "2026-04-10T10:22:27.803Z",
+    "observationCount": 184,
     "skillCount": 0,
     "domain": "typescript-react",
     "triggerGlobs": [
@@ -69,19 +69,19 @@
   },
   "problem-fix": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.827Z",
+    "lastGenerated": "2026-04-10T10:22:27.806Z",
     "observationCount": 0,
-    "skillCount": 3,
+    "skillCount": 4,
     "domain": "problem-fix",
     "triggerGlobs": [
       "**/*"
     ],
-    "description": "Problem Fix for node. 36 error→fix pairs."
+    "description": "Problem Fix for node. 39 error→fix pairs."
   },
   "config": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.795Z",
-    "observationCount": 445,
+    "lastGenerated": "2026-04-10T10:22:27.801Z",
+    "observationCount": 490,
     "skillCount": 0,
     "domain": "config",
     "triggerGlobs": [
@@ -90,13 +90,13 @@
       "**/*.json",
       "**/*.toml"
     ],
-    "description": "Config for node. 17 gotchas, 78 conventions, 27 fixes, 3 error→fix pairs."
+    "description": "Config for node. 19 gotchas, 87 conventions, 32 fixes, 3 error→fix pairs."
   },
   "gotcha": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.828Z",
+    "lastGenerated": "2026-04-10T10:22:27.806Z",
     "observationCount": 0,
-    "skillCount": 17,
+    "skillCount": 20,
     "domain": "gotcha",
     "triggerGlobs": [
       "**/*"
@@ -105,7 +105,7 @@
   },
   "css": {
     "enabled": true,
-    "lastGenerated": "2026-04-10T06:22:26.825Z",
+    "lastGenerated": "2026-04-10T10:22:27.804Z",
     "observationCount": 2,
     "skillCount": 0,
     "domain": "css",

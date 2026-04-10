@@ -20,7 +20,7 @@ interface InboxSidebarProps {
   filteredConversations: Conversation[];
   selectedConversationId: string | null;
   setSelectedConversationId: (id: string | null) => void;
-  channelIcon: Record<string, React.ReactNode>;
+  channelIcon: Record<string, any>;
 }
 
 export function InboxSidebar({

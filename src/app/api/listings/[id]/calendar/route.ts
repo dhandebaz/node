@@ -332,7 +332,7 @@ export async function POST(
             status: "connected",
             last_synced_at: new Date().toISOString(),
             error_message: null,
-          })
+          } as any)
           .eq("listing_id", listingId)
           .eq("platform", platform);
 
@@ -345,7 +345,7 @@ export async function POST(
             status: "error",
             last_synced_at: new Date().toISOString(),
             error_message: err.message,
-          })
+          } as any)
           .eq("listing_id", listingId)
           .eq("platform", platform);
         syncResults.push({ platform, imported: 0, error: err.message });

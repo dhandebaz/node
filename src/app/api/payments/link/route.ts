@@ -91,7 +91,7 @@ export async function POST(request: Request) {
         payment_link_id: paymentLinkData.id,
         paid_at: null,
         created_at: new Date().toISOString(),
-      })
+      } as any)
       .select("id")
       .single();
 

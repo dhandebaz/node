@@ -109,7 +109,7 @@ export async function GET(request: Request) {
         last_synced_at: null,
         metadata: { oauth_provider: "google" },
         updated_at: new Date().toISOString()
-      },
+      } as any,
       { onConflict: "user_id,provider" }
     )
     .select()
@@ -127,7 +127,7 @@ export async function GET(request: Request) {
       has_calendar_access: scopes.includes("https://www.googleapis.com/auth/calendar"),
       has_business_access: scopes.includes("https://www.googleapis.com/auth/business.manage"),
       updated_at: new Date().toISOString()
-    },
+    } as any,
     { onConflict: "user_id" }
   );
 

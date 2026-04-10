@@ -1,7 +1,7 @@
 
 
 # Project Memory — node
-> 1569 notes | Score threshold: >40
+> 1695 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -20,48 +20,43 @@
 
 ## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Important Warnings
 
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1548 notes | Score threshold: >40
-+ > 1555 notes | Score threshold
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1509 notes | Score threshold: >40
-+ > 1540 notes | Score threshold
-- **gotcha in shared-context.json** — -     }
-+     },
--   ]
-+     {
-- }
-+       "id": "2b86f8accf43e463",
-+
-- **⚠️ GOTCHA: Replaced auth Booking — prevents null/undefined runtime crashes** — -       const { link } = await createBookingLinkAction({
-+       const
-- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1479 notes | Score threshold: >40
-+ > 1509 notes | Score threshold
-- **⚠️ GOTCHA: problem-fix in agent-rules.md** — - - Fixed null crash in page — prevents null/undefined runtime crashes
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1674 notes | Score threshold: >40
++ > 1676 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1666 notes | Score threshold: >40
++ > 1674 notes | Score threshold
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for spe
+- **⚠️ GOTCHA: Optimized Score** — - > 1660 notes | Score threshold: >40
++ > 1666 notes | Score threshold
+- **⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed** — - > 1655 notes | Score threshold: >40
++ > 1660 notes | Score threshold
+- **⚠️ GOTCHA: Optimized GOTCHA** — - - ⚠️ GOTCHA: problem-fix in agent-rules.md
++ - ⚠️ GOTCHA: Optimized 
 
 ## Project Standards
 
-- Updated API endpoint Patched — confirmed 3x
-- Optimized Score — parallelizes async operations for speed — confirmed 3x
-- what-changed in shared-context.json — confirmed 13x
-- Optimized GOTCHA — confirmed 3x
-- problem-fix in agent-rules.md — confirmed 9x
-- problem-fix in shared-context.json — confirmed 3x
-- trade-off in shared-context.json — confirmed 3x
-- discovery in shared-context.json — confirmed 4x
+- Updated API endpoint Score — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in brainsync_auto.md — confirmed 3x
+- what-changed in shared-context.json — confirmed 3x
+- Patched security issue EATUI — confirmed 4x
+- what-changed in shared-context.json — confirmed 3x
+- what-changed in shared-context.json — confirmed 8x
+- problem-fix in agent-rules.md — confirmed 4x
 
 ## Known Fixes
 
 - ❌ - - Fixed null crash in UpsellStore — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
 - ❌ const { data: { user }, error: authError } = await supabase.auth.getUser(); → ✅ problem-fix in route.ts
+- ❌ - - Fixed null crash in Date — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
+- ❌ return NextResponse.json({ error: "Unauthorized" }, { status: 401 }); → ✅ problem-fix in admin.ts
 - ❌ - - Fixed null crash in Context — prevents null/undefined runtime crashes → ✅ problem-fix in agent-rules.md
-- ❌ import { withErrorHandler } from "@/lib/api/withErrorHandler"; → ✅ problem-fix in route.ts
-- ❌ +     } catch (error) { → ✅ Fixed null crash in Review — prevents null/undefined runtime crashes
 
 ## Recent Decisions
 
 - Optimized Score — parallelizes async operations for speed
 - Optimized Score — parallelizes async operations for speed
-- decision in OmniOverview.tsx
-- Optimized GOTCHA — externalizes configuration for environment flexibility
+- Optimized Score — parallelizes async operations for speed
+- Optimized Score — parallelizes async operations for speed
 
 ## Learned Patterns
 

@@ -105,7 +105,7 @@ export class ControlService {
       value: value as any,
       updated_by: userId,
       updated_at: new Date().toISOString(),
-    }]);
+    }] as any);
 
     if (error) throw error;
 
@@ -133,7 +133,7 @@ export class ControlService {
 
     const { error } = await supabase
       .from("tenants")
-      .update({ [control]: value })
+      .update({ [control]: value } as any)
       .eq("id", tenantId);
 
     if (error) throw error;
@@ -207,7 +207,7 @@ export class ControlService {
     };
     if (description) payload.description = description;
 
-    const { error } = await supabase.from("feature_flags").upsert(payload);
+    const { error } = await supabase.from("feature_flags").upsert(payload as any);
 
     if (error) throw error;
 

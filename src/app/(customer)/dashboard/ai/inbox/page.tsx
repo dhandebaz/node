@@ -201,9 +201,12 @@ export default function InboxPage() {
   };
 
   // -- Render Helpers --
-  const channelIcon: Record<string, React.ReactNode> = {
-    whatsapp: <div className="w-4 h-4 bg-green-500 rounded-full" />,
-    website: <div className="w-4 h-4 bg-blue-500 rounded-full" />
+  const channelIcon: Record<string, any> = {
+    whatsapp: MessageSquare,
+    website: MessageSquare,
+    instagram: MessageSquare,
+    messenger: MessageSquare,
+    voice: MessageSquare
   };
 
   if (sessionExpired) return <SessionExpiredCard />;

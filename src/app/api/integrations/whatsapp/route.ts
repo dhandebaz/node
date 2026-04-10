@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
             business_account_id,
           },
           connected_name: verifiedNumber,
-        })
+        } as any)
         .eq("id", existing.id);
     } else {
       await supabase.from("integrations").insert({
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
           business_account_id,
         },
         connected_name: verifiedNumber,
-      });
+      } as any);
     }
 
     log.info("WhatsApp Business API integration connected", { tenantId, phoneNumberId: phone_number_id });

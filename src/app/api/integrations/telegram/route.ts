@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
           enabled: true,
           credentials: { bot_token, bot_username: botUsername },
           connected_name: `@${botUsername}`,
-        })
+        } as any)
         .eq("id", existing.id);
     } else {
       await supabase.from("integrations").insert({
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
         enabled: true,
         credentials: { bot_token, bot_username: botUsername },
         connected_name: `@${botUsername}`,
-      });
+      } as any);
     }
 
     log.info("Telegram integration connected", { tenantId, botUsername });

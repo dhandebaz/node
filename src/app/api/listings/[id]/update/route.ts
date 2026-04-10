@@ -32,7 +32,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
   const { error } = await supabase
     .from("listings")
-    .update(updatePayload)
+    .update(updatePayload as any)
     .eq("id", listingId)
     .eq("tenant_id", tenantId);
 

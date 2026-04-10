@@ -58,7 +58,7 @@ export async function POST(
         external_ical_url: url,
         status: "connected",
         last_synced_at: new Date().toISOString(),
-      });
+      } as any);
 
     if (upsertError) throw upsertError;
 
@@ -117,7 +117,7 @@ export async function POST(
             name: `${platform} Guest`,
             email: `external@${platform}.com`,
             phone: "0000000000",
-          })
+          } as any)
           .select("id")
           .single();
 
@@ -136,7 +136,7 @@ export async function POST(
         amount: 0,
       }));
 
-      const { error: insertError } = await supabase.from("bookings").insert(bookingsToInsert);
+      const { error: insertError } = await supabase.from("bookings").insert(bookingsToInsert as any);
       if (insertError) throw insertError;
       importedCount = bookingsToInsert.length;
     }

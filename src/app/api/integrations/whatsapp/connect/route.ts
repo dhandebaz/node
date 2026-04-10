@@ -67,7 +67,7 @@ export async function POST() {
       connected_name: "WhatsApp",
       last_synced_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    },
+    } as any,
     { onConflict: "tenant_id, provider" },
   );
 

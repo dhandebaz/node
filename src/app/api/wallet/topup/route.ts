@@ -57,7 +57,7 @@ export async function POST(request: Request) {
         reason: "Wallet top-up",
         status: "completed",
         created_at: new Date().toISOString()
-      });
+      } as any);
 
     if (txError) {
       return NextResponse.json({ error: txError.message }, { status: 500 });

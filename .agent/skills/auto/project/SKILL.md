@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Project for node. 101 gotchas, 163 conventions, 129 fixes."
+description: "Project for node. 115 gotchas, 171 conventions, 137 fixes."
 domain: project
 triggers:
   - glob: "**/*"
@@ -10,7 +10,7 @@ enabled: true
 
 # Project
 
-Auto-compiled from **700 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
+Auto-compiled from **752 real patterns** in **node**. This skill is auto-routed to agents when working on project files.
 
 ## ⚠️ Anti-Patterns & Gotchas
 
@@ -18,6 +18,20 @@ Auto-compiled from **700 real patterns** in **node**. This skill is auto-routed 
 
 | ❌ Don't | Details |
 |----------|----------|
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1674 notes - Score threshold: >40 + > 1676 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1666 notes - Score threshold: >40 + > 1674 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for speed + - ⚠️ GOTCHA: Optimized Sc |
+| ⚠️ GOTCHA: Optimized Score | - > 1660 notes - Score threshold: >40 + > 1666 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1655 notes - Score threshold: >40 + > 1660 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: problem-fix in agent-rules.md + - ⚠️ GOTCHA: Optimized Score — parallelizes async ope |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1636 notes - Score threshold: >40 + > 1655 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Date — prevents null/undefined runtime crashes + - problem-fix in agent-rule |
+| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - Patched security issue PTZbGaaOIMYwLLVP - - Fixed null crash i |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized GOTCHA - - ⚠️ GOTCHA: Optimized Score — p |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for s |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1609 notes - Score threshold: >40 + > 1614 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
+| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in shared-context.json + - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for |
+| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1589 notes - Score threshold: >40 + > 1597 notes - Score threshold: >40 - - **⚠️ GOTCHA: Fixed n |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1548 notes - Score threshold: >40 + > 1555 notes - Score threshold: >40 - - **gotcha in omni-cor |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1509 notes - Score threshold: >40 + > 1540 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 1479 notes - Score threshold: >40 + > 1509 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimiz |
@@ -54,144 +68,134 @@ Auto-compiled from **700 real patterns** in **node**. This skill is auto-routed 
 | ⚠️ GOTCHA: Optimized Score | - > 954 notes - Score threshold: >40 + > 956 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 949 notes - Score threshold: >40 + > 954 notes - Score threshold: >40 - - **gotcha in shared-con |
 | ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 945 notes - Score threshold: >40 + > 949 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
-| ⚠️ GOTCHA: Optimized Score | - > 931 notes - Score threshold: >40 + > 945 notes - Score threshold: >40 - - **⚠️ GOTCHA: Optimized |
-| ⚠️ GOTCHA: Optimized Score | - > 920 notes - Score threshold: >40 + > 931 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 887 notes - Score threshold: >40 + > 920 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Building — avoids unnecessary re-renders in React + - problem-fix in agent-r |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - Fixed null crash in Plus — avoids unnecessary re-renders in React + - problem-fix in agent-rules |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
-| ⚠️ GOTCHA: Optimized Score — parallelizes async op | - > 779 notes - Score threshold: >40 + > 783 notes - Score threshold: >40 - - **⚠️ GOTCHA: problem-f |
-| ⚠️ GOTCHA: Optimized Score — externalizes configur | - > 770 notes - Score threshold: >40 + > 779 notes - Score threshold: >40 - - what-changed in shared |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in agent-rules.md + - problem-fix in shared-context.json - - problem-fix in agent-ru |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - problem-fix in agent-rules.md - - Fixed null crash in Con |
-| ⚠️ GOTCHA: problem-fix in agent-rules.md | - - problem-fix in shared-context.json + - Patched security issue QAEZ - - Patched security issue QA |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - ⚠️ GOTCHA: Optimized GOTCHA + - gotcha in agent-rules.md - - ⚠️ GOTCHA: Optimized Score — parall |
-| gotcha in agent-rules.md | File updated (external): .brainsync/agent-rules.md  Content summary (82 lines): # Project Intelligen |
-| ⚠️ GOTCHA: Optimized GOTCHA | - - gotcha in agent-rules.md + - ⚠️ GOTCHA: Optimized Score — parallelizes async operations for spee |
 
 ## 🔧 Problem Playbooks
 
 ### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
+- - Fixed null crash in Date — prevents null/undefined runtime crashes
 + - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Date — prevents null/undefined runtime crashes
+- - Patched security issue LbAlzXk
 + - problem-fix in shared-context.json
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual P
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
+- - Fixed null crash in Date — prevents null/undefined runtime crashes
 + - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
 - - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - problem-fix in shared-context.json
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in shared-context.json
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
++ - Fixed null crash in Date — prevents null/undefined runtime crashes
+- - Patched security issue LbAlzXk
 + - problem-fix in shared-context.json
 - - problem-fix in admin.ts
-+ - problem-fix in agent-rules.md
++ - Patched security issue LbAlzXk
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+📌 IDE AST Context: Modified symbols likely inc
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - Fixed null crash in Date — prevents null/undefined runtime crashes
+- - problem-fix in route.ts
 + - problem-fix in shared-context.json
-- - problem-fix in admin.ts
-+ - problem-fix in agent-rules.md
-- - Patched security issue EQFicmfBsSE
-+ - problem-fix in agent-rules.md
-- - Patched security issue Comprehensive — improves module reusability
+- - problem-fix in route.ts
++ - problem-fix in shared-context.json
+- - problem-fix in route.ts
++ - Patched security issue LbAlzXk
+- - problem-fix in route.ts
 + - problem-fix in admin.ts
 
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated)
+📌 IDE AST Context: Modified symbols
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - problem-fix in admin.ts
+- - Patched security issue NUKsaHZi
 + - problem-fix in agent-rules.md
+- - problem-fix in admin.ts
++ - Patched security issue NUKsaHZi
+
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - Patched security issue NUKsaHZi
++ - problem-fix in agent-rules.md
+- - problem-fix in admin.ts
++ - Patched security issue NUKsaHZi
 - - Patched security issue EQFicmfBsSE
 + - problem-fix in admin.ts
-- - Patched security issue Comprehensive — improves module reusability
-+ - Patched security issue EQFicmfBsSE
-- - problem-fix in shared-context.json
-+ - Patched security issue Comprehensive — improves module reusability
 
-📌 IDE AST Context: Modified symbols likely includ
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
-- - problem-fix in admin.ts
+- - Patched security issue NUKsaHZi
 + - problem-fix in agent-rules.md
+- - problem-fix in admin.ts
++ - Patched security issue NUKsaHZi
 - - Patched security issue EQFicmfBsSE
 + - problem-fix in admin.ts
 - - Patched security issue Comprehensive — improves module reusability
 + - Patched security issue EQFicmfBsSE
-- - problem-fix in shared-context.json
-+ - Patched security issue Comprehensive — improves module reusability
 
-📌 IDE AST Context: Modified symbols likely includ
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-genera
 
 **Actionable Steps:**
 1. Modified 1 files
 
 ### problem-fix in agent-rules.md
+- - Patched security issue NUKsaHZi
++ - problem-fix in agent-rules.md
+- - problem-fix in admin.ts
++ - Patched security issue NUKsaHZi
 - - Patched security issue EQFicmfBsSE
 + - problem-fix in admin.ts
 - - Patched security issue Comprehensive — improves module reusability
 + - Patched security issue EQFicmfBsSE
-- - problem-fix in shared-context.json
-+ - Patched security issue Comprehensive — improves module reusability
 - - problem-fix in admin.test.ts
++ - Patched security issue Comprehensive — improves modu
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in route.ts
++ - Patched security issue NUKsaHZi
+- - problem-fix in route.ts
++ - problem-fix in admin.ts
+- - problem-fix in route.ts
++ - Patched security issue EQFicmfBsSE
+- - problem-fix in route.ts
++ - Patched security issue Comprehensive — improves module reusability
+- - problem-fix in admin.ts
++ - problem-fix in admin.test.ts
+
+📌 IDE AST Context: Modified symbols likely include 
+
+**Actionable Steps:**
+1. Modified 1 files
+
+### problem-fix in agent-rules.md
+- - problem-fix in shared-context.json
++ - problem-fix in agent-rules.md
+- - problem-fix in agent-rules.md
 + - problem-fix in shared-context.json
 
-📌 IDE AST Context: Modified symbols lik
+📌 IDE AST Context: Modified symbols likely include [# Project Intelligence (auto-generated), # Intellectual Property & Architecture Rules, # 🧠 Agent Lessons]
 
 **Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - Fixed null crash in page — prevents null/undefined runtime crashes
-+ - problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null crash in page — prevents null/undefined runtime crashes
-- - Fixed null crash in MessageSquare — avoids unnecessary re-renders in React
-+ - problem-fix in agent-rules.md
-
-📌 IDE AST Context: Modified symbols likely include [# Project Intelligence 
-
-**Actionable Steps:**
-1. Modified 1 files
-
-### problem-fix in agent-rules.md
-- - problem-fix in agent-rules.md
-+ - Fixed null 
+1. Modif
 
 ... [Truncated — see individual observations for full content]

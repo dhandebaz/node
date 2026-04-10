@@ -132,7 +132,7 @@ export async function POST(request: Request) {
     // Use `telephony_sessions` table created by migrations.
     await supabase
       .from("telephony_sessions")
-      .upsert([upsertPayload], { onConflict: "provider_reference" });
+      .upsert([upsertPayload] as any, { onConflict: "provider_reference" });
 
     // If you prefer to maintain a more detailed event log, consider inserting into a telephony_events table here.
 

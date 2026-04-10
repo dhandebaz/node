@@ -87,21 +87,22 @@ export async function POST(request: Request) {
          .eq('role', 'owner')
          .single();
 
-       if (user) {
-           await supabase.from('subscriptions').upsert({
-               user_id: user.user_id,
-               status: 'active',
-               plan_id: plan,
-               current_period_start: entity.current_start 
-                 ? new Date(entity.current_start * 1000).toISOString() 
-                 : new Date().toISOString(),
-               current_period_end: entity.current_end 
-                 ? new Date(entity.current_end * 1000).toISOString() 
-                 : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-               metadata: { razorpay_subscription_id: entity.id, razorpay_plan_id: entity.plan_id },
-               updated_at: new Date().toISOString(),
-           }, { onConflict: 'user_id' });
-       }
+        if (user) {
+            await supabase.from('subscriptions').upsert({
+                user_id: user.user_id,
+                status: 'active',
+                plan_id: plan,
+                current_period_start: entity.current_start 
+                  ? new Date(entity.current_start * 1000).toISOString() 
+                  : new Date().toISOString(),
+                current_period_end: entity.current_end 
+                  ? new Date(entity.current_end * 1000).toISOString() 
+                  : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                metadata: { razorpay_subscription_id: entity.id, razorpay_plan_id: entity.plan_id },
+                updated_at: new Date().toISOString(),
+            } as any, { onConflict: 'user_id' });
+        }
+
 
        // 3. Add Monthly Credits
        const planKey = plan as SubscriptionPlan;
@@ -274,7 +275,7 @@ export async function POST(request: Request) {
               date: new Date().toISOString(),
               items: [{ description: 'Wallet Top-up', amount }],
               billing_details: { paymentId: entity.id, method: entity.method },
-            });
+            } as any);
           }
 
           // Resolve payment failures

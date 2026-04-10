@@ -41,7 +41,7 @@ async function logAdminAccess(userId: string) {
       message: `Admin access verified for user ${userId}`,
       user_id: userId,
       timestamp: new Date().toISOString()
-    });
+    } as any);
   } catch (error) {
     console.error("Failed to log admin access:", error);
     // Don't block admin access if logging fails, but warn

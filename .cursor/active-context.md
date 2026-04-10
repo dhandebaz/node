@@ -1,61 +1,77 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `src\app\actions\whatsapp.ts` (Domain: **Generic Logic**)
-
-### 🔴 Generic Logic Gotchas
-- **⚠️ GOTCHA: Fixed null crash in OmniGlobalConfig — filters out falsy/null values explicitly**: - import {
-+ import {
--     KaisaGlobalConfig,
-+     OmniGlobalConfig,
--     KaisaRoleType,
-+     OmniRoleType,
--     KaisaModuleType,
-+     OmniModuleType,
--     KaisaBusinessType,
-+     OmniBusinessType,
--     IntegrationConfigDetails
-+     IntegrationConfigDetails
-- } from "@/types/omni";
-+ } from "@/types/omni";
-- import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
-+ import { getSupabaseServer, getSupabaseAdmin } from "@/lib/supabase/server";
-- import { logEvent } from "@/lib/events";
-+ import { logEvent } from "@/lib/events";
-- import { EVENT_TYPES, EventType } from "@/types/events";
-+ import { EVENT_TYPES, EventType } from "@/types/events";
-- import { log } from "@/lib/logger";
-+ import { log } from "@/lib/logger";
-- 
-+ 
-- const OMNI_CONFIG_KEY = "OMNI_GLOBAL_CONFIG";
-+ const OMNI_CONFIG_KEY = "OMNI_GLOBAL_CONFIG";
-- 
-+ 
-- // Initial Config (Default if DB is empty)
-+ // Initial Config (Default if DB is empty)
-- const DEFAULT_GLOBAL_CONFIG: KaisaGlobalConfig = {
-+ const DEFAULT_GLOBAL_CONFIG: OmniGlobalConfig = {
--     systemStatus: "operational",
-+     systemStatus: "operational",
--     roles: [
-+     roles: [
--         { type: "owner", priceMonthly: 0, enabled: true, inviteOnly: false },
-+         { type: "owner", priceMonthly: 0, enabled: true, inviteOnly: false },
--         { type: "manager", priceMonthly: 299, enabled: true, inviteOnly: false },
-+         { type: "manager", priceMonthly: 299, enabled: true, inviteOnly: false },
--         { type: "co-founder", priceMonthly: 999, enabled: true, inviteOnly: true },
-+         { type: "co-founder", priceMonthly: 999, enabled: true, inviteOnly: true },
--     ],
-+     ],
--     modules: [
-+     modules: [
--         { type: "Frontdesk", enabledGlobal: true, enabledFor: ["Doctor", "Homestay", "Retail", "Other"] },
-+         { type: "Frontdesk", enabledGlobal: true, enabledFor: ["Doctor", "Homestay", "Retail", "Other"] },
--         { type: "Billing", enabledGlobal: tru
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [OMNI_CONFIG_KEY, DEFAULT_GLOBAL_CONFIG, logAction, omniConfigService]
+> Dynamically loaded for active file: `src\app\api\integrations\route.ts` (Domain: **Generic Logic**)
 
 ### 📐 Generic Logic Conventions & Fixes
+- **[problem-fix] problem-fix in route.ts**: File updated (external): src/app/api/integrations/route.ts
+
+Content summary (108 lines):
+import { NextResponse } from 'next/server';
+import { getSupabaseServer } from '@/lib/supabase/server';
+import { getSession } from '@/lib/auth/session';
+import { encryptToken } from '@/lib/crypto';
+import { requireActiveTenant } from '@/lib/auth/tenant';
+
+export async function GET() {
+  const session = await getSession();
+
+  if (!session || !session.userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const tenantId = await requireActiveTenant();
+
+  const sup
+- **[what-changed] what-changed in route.ts**: File updated (external): src/app/api/integrations/telegram/route.ts
+
+Content summary (138 lines):
+import { NextRequest, NextResponse } from "next/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { log } from "@/lib/logger";
+
+export async function GET(request: NextRequest) {
+  try {
+    const tenantId = await requireActiveTenant();
+    const supabase = await getSupabaseAdmin();
+
+    const { data: integration } = await supabase
+      .from("integrations")
+      .select("id, status, credentials")
+      .eq("tenant
+- **[convention] what-changed in route.ts — confirmed 4x**: File updated (external): src/app/api/integrations/instagram/connect/route.ts
+
+Content summary (76 lines):
+import { NextResponse } from "next/server";
+import { getSession } from "@/lib/auth/session";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { requireActiveTenant } from "@/lib/auth/tenant";
+import { getPersonaCapabilities } from "@/lib/business-context";
+import { logEvent } from "@/lib/events";
+import { EVENT_TYPES } from "@/types/events";
+import { BusinessType } from "@/types";
+
+export async function POST() {
+  const session = await getSession();
+
+  if (!session?.
+- **[convention] problem-fix in route.ts — confirmed 4x**: File updated (external): src/app/api/integrations/google/refresh/route.ts
+
+Content summary (82 lines):
+import { NextResponse } from "next/server";
+import { getSession } from "@/lib/auth/session";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { decryptToken, encryptToken } from "@/lib/crypto";
+
+export async function POST() {
+  const session = await getSession();
+
+  if (!session?.userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const client[REDACTED]
+  if (!
 - **[what-changed] what-changed in whatsapp.ts**: File updated (external): src/app/actions/whatsapp.ts
 
 Content summary (71 lines):
@@ -132,92 +148,6 @@ export async function toggleSystemFlagAction(key: SystemFlagKey, value: boolean)
   if (!user) throw new Error("Unauthorized");
 
   await ControlService.toggleSystemFlag(key, v
-- **[what-changed] what-changed in admin-data.ts**: -         userService.getUserAuditLogs(id)
-+         userService.getAuditLogs(id)
-
-📌 IDE AST Context: Modified symbols likely include [getAdminDashboardStats, getOmniAdminData, getUsersPageData, getUserDetailPageData]
-- **[what-changed] Updated raw database schema — parallelizes async operations for speed**: - "use server";
-+ 
-- 
-+ "use server";
-- import { getSupabaseServer } from "@/lib/supabase/server";
-+ 
-- import { omniService } from "@/lib/services/omniService";
-+ import { getSupabaseServer } from "@/lib/supabase/server";
-- import { omniMemoryService } from "@/lib/services/omniMemoryService";
-+ import { omniService } from "@/lib/services/omniService";
-- 
-+ import { userService } from "@/lib/services/userService";
-- // Dashboard Overview
-+ 
-- export async function getAdminDashboardStats() {
-+ // Dashboard Overview
--     const supabase = await getSupabaseServer();
-+ export async function getAdminDashboardStats() {
--     const [
-+     const supabase = await getSupabaseServer();
--         { count: userCount },
-+     
--         { data: recentLogs }
-+     // Quick totals from raw tables for speed
--       ] = await Promise.all([
-+     const [stats, usersCount] = await Promise.all([
--         supabase.from("users").select("*", { count: "exact", head: true }),
-+         omniService.getStats(),
--         supabase.from("admin_audit_logs").select("*").order("timestamp", { ascending: false }).limit(5)
-+         supabase.from("profiles").select("*", { count: "exact", head: true })
--       ]);
-+     ]);
--     
-+ 
--       return { userCount, recentLogs };
-+     return {
-- }
-+         stats,
-- 
-+         totalProfiles: usersCount.count || 0
-- // Omni Page
-+     };
-- export async function getOmniPageData() {
-+ }
--     const [config, stats, allUsers, logs] = await Promise.all([
-+ 
--         omniService.getConfig(),
-+ // Omni Core Admin Data
--         omniService.getStats(),
-+ export async function getOmniAdminData() {
--         omniMemoryService.getUsers(),
-+     const [config, stats, allUsers, logs] = await Promise.all([
--         omniService.getAuditLogs()
-+         omniService.getConfig(),
--     ]);
-+         omniService.getStats(),
--     
-+         userService.getUsers(),
--     const omniUsers = allUsers.filter(u => u.roles.isOmniUser);
-+         omniService.getAuditLogs()
--     
-… [diff truncated]
-
-📌 IDE AST Context: Modified symbols likely include [getAdminDashboardStats, getOmniAdminData, getUsersPageData, getUserDetailPageData]
-- **[what-changed] what-changed in omni-learning.ts**: File updated (external): src/app/actions/omni-learning.ts
-
-Content summary (101 lines):
-
-"use server";
-
-import { omniMemoryService } from "@/lib/services/omniMemoryService";
-import { userService } from "@/lib/services/userService";
-import { getSession } from "@/lib/auth/session";
-import { OmniMemory } from "@/types/omni-learning";
-import { revalidatePath } from "next/cache";
-
-// Helper to ensure user is authenticated
-async function getAuthenticatedUserId() {
-  const session = await getSession();
-  const userId = session?.userId || "USR-001"; // Dev fallback
-  
-  const user = await 
 - **[what-changed] what-changed in next.config.ts**: -   experimental: {
 +   logging: {
 -     logging: {
@@ -300,41 +230,71 @@ async function getAuthenticatedUserId() {
 … [diff truncated]
 
 📌 IDE AST Context: Modified symbols likely include [nextConfig, default]
-- **[problem-fix] problem-fix in admin.test.ts**: File updated (external): src/lib/services/omni/admin.test.ts
+- **[what-changed] what-changed in admin-data.ts**: -         userService.getUserAuditLogs(id)
++         userService.getAuditLogs(id)
 
-Content summary (84 lines):
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { omniAdminService } from './admin';
-import { userService } from '@/lib/services/userService';
-import { User } from '@/types/user';
+📌 IDE AST Context: Modified symbols likely include [getAdminDashboardStats, getOmniAdminData, getUsersPageData, getUserDetailPageData]
+- **[what-changed] Updated raw database schema — parallelizes async operations for speed**: - "use server";
++ 
+- 
++ "use server";
+- import { getSupabaseServer } from "@/lib/supabase/server";
++ 
+- import { omniService } from "@/lib/services/omniService";
++ import { getSupabaseServer } from "@/lib/supabase/server";
+- import { omniMemoryService } from "@/lib/services/omniMemoryService";
++ import { omniService } from "@/lib/services/omniService";
+- 
++ import { userService } from "@/lib/services/userService";
+- // Dashboard Overview
++ 
+- export async function getAdminDashboardStats() {
++ // Dashboard Overview
+-     const supabase = await getSupabaseServer();
++ export async function getAdminDashboardStats() {
+-     const [
++     const supabase = await getSupabaseServer();
+-         { count: userCount },
++     
+-         { data: recentLogs }
++     // Quick totals from raw tables for speed
+-       ] = await Promise.all([
++     const [stats, usersCount] = await Promise.all([
+-         supabase.from("users").select("*", { count: "exact", head: true }),
++         omniService.getStats(),
+-         supabase.from("admin_audit_logs").select("*").order("timestamp", { ascending: false }).limit(5)
++         supabase.from("profiles").select("*", { count: "exact", head: true })
+-       ]);
++     ]);
+-     
++ 
+-       return { userCount, recentLogs };
++     return {
+- }
++         stats,
+- 
++         totalProfiles: usersCount.count || 0
+- // Omni Page
++     };
+- export async function getOmniPageData() {
++ }
+-     const [config, stats, allUsers, logs] = await Promise.all([
++ 
+-         omniService.getConfig(),
++ // Omni Core Admin Data
+-         omniService.getStats(),
++ export async function getOmniAdminData() {
+-         omniMemoryService.getUsers(),
++     const [config, stats, allUsers, logs] = await Promise.all([
+-         omniService.getAuditLogs()
++         omniService.getConfig(),
+-     ]);
++         omniService.getStats(),
+-     
++         userService.getUsers(),
+-     const omniUsers = allUsers.filter(u => u.roles.isOmniUser);
++         omniService.getAuditLogs()
+-     
+… [diff truncated]
 
-// Mock dependencies
-vi.mock('@/lib/services/userService', () => ({
-    userService: {
-        getUsers: vi.fn(),
-    },
-}));
-
-vi.mock('@/lib/supabase/server', () => ({
-    getSupabaseServer: vi.fn(),
-}));
-
-vi.mock('@/lib/logger', () => ({
-    log: { error: vi.fn() },
-}));
-
-describe('omniAdminSer
-- **[what-changed] Replaced dependency config**: - import { kaisaConfigService } from "./omni/config";
-+ import { omniConfigService } from "./omni/config";
-- import { kaisaAdminService } from "./omni/admin";
-+ import { omniAdminService } from "./omni/admin";
-- import { kaisaUserService } from "./omni/user";
-+ import { omniUserService } from "./omni/user";
--   ...kaisaConfigService,
-+   ...omniConfigService,
--   ...kaisaAdminService,
-+   ...omniAdminService,
--   ...kaisaUserService,
-+   ...omniUserService,
-
-📌 IDE AST Context: Modified symbols likely include [omniService]
+📌 IDE AST Context: Modified symbols likely include [getAdminDashboardStats, getOmniAdminData, getUsersPageData, getUserDetailPageData]
